@@ -19,7 +19,13 @@ if(menuBtn&&mobileMenu){menuBtn.addEventListener('click',()=>{const open=mobileM
     '/team.html':'/en/team.html',
     '/publications.html':'/en/publications.html',
     '/join.html':'/en/join.html',
-    '/contact.html':'/en/contact.html'
+    '/contact.html':'/en/contact.html',
+    '/people/erwu-liu.html':'/en/people/erwu-liu.html',
+    '/people/rui-wang.html':'/en/people/rui-wang.html',
+    '/people/gang-shen.html':'/en/people/gang-shen.html',
+    '/people/dunhui-xiao.html':'/en/people/dunhui-xiao.html',
+    '/people/shuyan-hu.html':'/en/people/shuyan-hu.html',
+    '/people/yan-liu.html':'/en/people/yan-liu.html'
   };
   const reverse=Object.fromEntries(Object.entries(map).map(([zh,en])=>[en,zh]));
   const canonical=base+path;
