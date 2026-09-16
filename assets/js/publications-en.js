@@ -3,8 +3,8 @@
   if(!root) return;
   const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   Promise.all([
-    fetch('../data/publications.json').then(r=>r.ok?r.json():[]),
-    fetch('../data/publications-history.json').then(r=>r.ok?r.json():[]).catch(()=>[])
+    fetch('../data/publications.json').then(r=>{if(!r.ok) throw new Error('Failed to load recent publications'); return r.json();}),
+    fetch('../data/publications-archive.json').then(r=>r.ok?r.json():[])
   ]).then(parts=>parts.flat()).then(items=>{
     const byYear=new Map();
     items.sort((a,b)=>b.year-a.year).forEach(item=>{
