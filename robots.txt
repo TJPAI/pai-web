@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tjpai.github.io/pai-web/sitemap.xml
