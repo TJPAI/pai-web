@@ -25,7 +25,7 @@
 .team-grid .person{min-width:0}.team-grid .person-photo{overflow:hidden}.team-grid .person-photo img{width:100%;height:100%;object-fit:cover}.person .research-line{font-size:14px;color:#3d4551;min-height:46px}.person .bio-short{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.person .person-link{display:inline-block;margin-top:10px;font-size:13px;font-weight:600}
 
 /* Faculty detail */
-.person-detail{display:grid;grid-template-columns:300px 1fr;gap:64px;align-items:start}.person-detail .person-photo{position:sticky;top:96px}.person-detail .person-photo img{width:100%;height:100%;object-fit:cover}.person-detail h2{font-size:30px;margin:0 0 8px}.person-detail .role{color:var(--muted);margin-bottom:20px}.detail-block{padding:26px 0;border-top:1px solid var(--line)}.detail-block h3{font-size:16px;margin:0 0 10px}.detail-block p{margin:0;color:#303642}.detail-list{margin:0;padding-left:1.2em;color:#303642}.detail-list li+li{margin-top:6px}
+.person-detail{display:grid;grid-template-columns:300px 1fr;gap:64px;align-items:start}.person-detail>.person-photo{position:sticky;top:96px;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 18%;background:#f2f3f5}.person-detail h2{font-size:30px;margin:0 0 8px}.person-detail .role{color:var(--muted);margin-bottom:20px}.detail-block{padding:26px 0;border-top:1px solid var(--line)}.detail-block h3{font-size:16px;margin:0 0 10px}.detail-block p{margin:0;color:#303642}.detail-list{margin:0;padding-left:1.2em;color:#303642}.detail-list li+li{margin-top:6px}
 
 @media(max-width:1024px){.join-grid{grid-template-columns:1fr 1fr}.join-item{border-bottom:1px solid var(--line)}.join-item+.join-item{border-left:0}.join-item:nth-child(even){border-left:1px solid var(--line)}.join-item:last-child{grid-column:1/-1}}
 
@@ -48,5 +48,5 @@
  .site-footer.compact-footer{padding:24px 0 12px}.compact-footer .footer-grid{grid-template-columns:1fr;gap:14px}.compact-footer .brand strong{font-size:20px}.compact-footer .brand span{font-size:9px}.compact-footer .footer-links{gap:5px 16px;font-size:11px}.compact-footer .footer-contact{font-size:10px;line-height:1.5}.compact-footer .footer-meta{margin-top:12px;padding-top:11px;gap:8px 14px;font-size:9px}
  .publication-note{display:block;margin-bottom:38px}.publication-note span{display:block;margin-top:4px}.pub-group+.pub-group{margin-top:58px}.pub-year{font-size:34px}.pub-year-row span{font-size:11px}.pub{padding:23px 0 25px}.pub h3{font-size:18px;line-height:1.45}.pub-authors{font-size:13px!important}.pub-venue{font-size:12px!important}.pub-actions{font-size:12px}
  .team-grid .person-photo{aspect-ratio:3/2}.person .research-line{min-height:auto}.person .bio-short{-webkit-line-clamp:2}.person .person-link{margin-top:8px}
- .person-detail{grid-template-columns:1fr;gap:34px}.person-detail .person-photo{position:static;aspect-ratio:3/2}.person-detail h2{font-size:27px}.detail-block{padding:22px 0}
+ .person-detail{grid-template-columns:1fr;gap:30px}.person-detail>.person-photo{position:static;aspect-ratio:3/2;max-height:320px;object-position:50% 20%}.person-detail h2{font-size:27px}.detail-block{padding:22px 0}
 }
