@@ -151,19 +151,22 @@
     "title": "Reconfigurable Intelligent Surface-Assisted Localization in OFDM Systems With Carrier Frequency Offset and Phase Noise",
     "authors": "Hanfu Zhang, Erwu Liu, Rui Wang, Wei Ni, Zhe Xing, Yan Liu, Abbas Jamalipour",
     "venue": "IEEE Transactions on Wireless Communications, vol. 24, no. 8, pp. 7078-7094",
-    "pdf": "https://ai.tongji.edu.cn/new_web/paper/25-04-2.pdf"
+    "pdf": "https://ai.tongji.edu.cn/new_web/paper/25-04-2.pdf",
+    "doi": "10.1109/TWC.2025.3557935"
   },
   {
     "year": 2025,
     "title": "Dual-Segment Clustering Strategy for Hierarchical Federated Learning in Heterogeneous Wireless Environments",
     "authors": "Pengcheng Sun, Erwu Liu, Wei Ni, Kanglei Yu, Xinyu Qu, Yanlong Bi, Chuanchun Zhang, Abbas Jamalipour",
-    "venue": "IEEE Wireless Communications Letters, vol. 14, no. 6, pp. 1777-1781"
+    "venue": "IEEE Wireless Communications Letters, vol. 14, no. 6, pp. 1777-1781",
+    "doi": "10.1109/LWC.2025.3556462"
   },
   {
     "year": 2025,
     "title": "Reinforcement Learning Based Online Algorithm for Near-Field Time-Varying IRS Phase Shift Optimization: System Evolution Perspective",
     "authors": "Zongtai Li, Rui Wang, Erwu Liu",
-    "venue": "IEEE Transactions on Signal Processing, vol. 73, pp. 1231-1245"
+    "venue": "IEEE Transactions on Signal Processing, vol. 73, pp. 1231-1245",
+    "doi": "10.1109/TSP.2025.3545164"
   },
   {
     "year": 2025,
