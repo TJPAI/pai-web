@@ -2,9 +2,12 @@
   const root=document.querySelector('[data-publications]');
   if(!root) return;
   const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  fetch('data/publications.json')
-    .then(r=>{if(!r.ok) throw new Error('Failed to load publications'); return r.json();})
-    .then(items=>{
+  Promise.all([
+    fetch('data/publications.json').then(r=>{if(!r.ok) throw new Error('Failed to load recent publications'); return r.json();}),
+    fetch('data/publications-archive.json').then(r=>r.ok?r.json():[])
+  ])
+    .then(([recent,archive])=>{
+      const items=[...recent,...archive];
       const byYear=new Map();
       items.sort((a,b)=>b.year-a.year).forEach(item=>{
         if(!byYear.has(item.year)) byYear.set(item.year,[]);
