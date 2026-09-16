@@ -1,0 +1,64 @@
+name: One-time publication metadata fix
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Apply verified metadata corrections
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('data/publications.json')
+          items=json.loads(p.read_text(encoding='utf-8'))
+          fixes={
+            'Passive Beamforming for Practical RIS-Assisted Communication Systems With Non-Ideal Hardware': {'doi':'10.1109/TVT.2024.3416249'},
+            'Visual-Based Moving Target Tracking With Solar-Powered Fixed-Wing UAV: A New Learning-Based Approach': {'doi':'10.1109/TITS.2024.3386105'},
+            'Near-Field Localization with Limited RF Chains: An Array Partitioning Approach': {'year':2025,'venue':'IEEE Transactions on Vehicular Technology, vol. 74, no. 1, pp. 1713-1718','doi':'10.1109/TVT.2024.3457241'},
+            'When Web 3.0 Meets Reality: A Hyperdimensional Fractal Polytope P2P Ecosystems': {'doi':'10.1109/MNET.2024.3425223'},
+            'Balancing Performance and Cost for Two-Hop Cooperative Communications: Stackelberg Game and Distributed Multi-Agent Reinforcement Learning': {'doi':'10.1109/TCCN.2024.3400516'},
+            'Hybrid Digital Twin Model for Greenhouse and Underground Environments': {'venue':'IEEE Access, vol. 12, pp. 73906-73924','doi':'10.1109/ACCESS.2024.3402537'},
+            'The Electric Field DOA Estimation of Low Frequency with Small Aperture Arrays via the Sparse Bayesian Focusing Method': {'doi':'10.1109/JSEN.2024.3387581'},
+            'Hierarchical Codebook Design and Analytical Beamforming Solution for IRS Assisted Communication': {'venue':'IEEE Transactions on Wireless Communications, vol. 23, no. 8, pp. 8924-8938','doi':'10.1109/TWC.2024.3357112'},
+            'An Efficient Solution to Phase-Shift Optimization for RIS Enabled Joint Communication and Sensing': {'venue':'IEEE Transactions on Vehicular Technology, vol. 73, no. 12, pp. 19901-19906','doi':'10.1109/TVT.2024.3447030'},
+            'Blockchain for Finance: A Survey': {'venue':'IET Blockchain, vol. 4, pp. 101-123','doi':'10.1049/blc2.12067'},
+            'A Robust Evolutionary Particle Filter Technique for Integrated Navigation in Urban Environments via GNSS and 5G Signals': {'venue':'IEEE Transactions on Industrial Informatics, vol. 20, no. 4, pp. 6866-6878','doi':'10.1109/TII.2024.3353849'},
+            'Personalized Federated Learning via Directed Acyclic Graph Based Blockchain': {'doi':'10.1049/blc2.12054'},
+            'Dynamic Resource Allocation for Real Time Cloud XR Video Transmission: A Reinforcement Learning Approach': {'venue':'IEEE Transactions on Cognitive Communications and Networking, vol. 10, no. 3, pp. 996-1010','doi':'10.1109/TCCN.2024.3352982'}
+          }
+          seen=set()
+          for item in items:
+              title=item.get('title')
+              if title in fixes:
+                  item.update(fixes[title])
+                  seen.add(title)
+          missing=set(fixes)-seen
+          if missing:
+              raise SystemExit(f'Missing titles: {sorted(missing)}')
+          items.sort(key=lambda x: -x['year'])
+          titles=[x['title'].casefold() for x in items]
+          dois=[x['doi'].casefold() for x in items if x.get('doi')]
+          if len(titles)!=len(set(titles)):
+              raise SystemExit('duplicate title')
+          if len(dois)!=len(set(dois)):
+              raise SystemExit('duplicate DOI')
+          p.write_text(json.dumps(items, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+          PY
+      - name: Commit correction
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/publications.json
+          git commit -m "content: apply verified publication metadata corrections"
+          git push
