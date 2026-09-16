@@ -27,6 +27,7 @@
   const counterpartPath=isEn?(reverse[path]||'/'):(map[path]||'/en/');
   const canonical=base+path;
   const counterpart=base+counterpartPath;
+  const root=(p)=>`${prefix}${p}`;
   const addHead=(tag,attrs)=>{const el=document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));document.head.appendChild(el);return el;};
 
   const nav=document.querySelector('.site-header .nav');
@@ -34,10 +35,10 @@
   const menuBtn=document.querySelector('.menu-btn');
   let mobileMenu=document.querySelector('.mobile-menu');
 
-  const hasLanguageLink=(root)=>root&&[...root.querySelectorAll('a')].some(a=>/^(EN|中文)$/.test(a.textContent.trim()));
+  const hasLanguageLink=(el)=>el&&[...el.querySelectorAll('a')].some(a=>/^(EN|中文)$/.test(a.textContent.trim()));
   if(navLinks&&!hasLanguageLink(navLinks)){
     const lang=document.createElement('a');
-    lang.href=counterpartPath.startsWith('/')?(prefix||'')+counterpartPath:counterpartPath;
+    lang.href=root(counterpartPath);
     lang.textContent=isEn?'中文':'EN';
     navLinks.appendChild(lang);
   }
@@ -49,7 +50,7 @@
     nav.insertAdjacentElement('afterend',mobileMenu);
   }else if(mobileMenu&&!hasLanguageLink(mobileMenu)){
     const lang=document.createElement('a');
-    lang.href=counterpartPath.startsWith('/')?(prefix||'')+counterpartPath:counterpartPath;
+    lang.href=root(counterpartPath);
     lang.textContent=isEn?'中文':'EN';
     mobileMenu.appendChild(lang);
   }
@@ -60,6 +61,13 @@
       const open=mobileMenu.classList.toggle('open');
       menuBtn.setAttribute('aria-expanded',open?'true':'false');
     });
+  }
+
+  if(isEn&&path.startsWith('/en/people/')){
+    const footer=document.querySelector('.site-footer.compact-footer');
+    if(footer&&!footer.querySelector('.footer-grid')){
+      footer.innerHTML=`<div class="container"><div class="footer-grid"><div><div class="brand"><strong>PAI</strong><span>PAI Research Center · Tongji University</span></div></div><div class="footer-links"><a href="${root('/en/about.html')}">About</a><a href="${root('/en/research.html')}">Research</a><a href="${root('/en/team.html')}">People</a><a href="${root('/en/publications.html')}">Publications</a><a href="${root('/en/join.html')}">Join</a><a href="${root('/en/contact.html')}">Contact</a><a href="${root(counterpartPath)}">中文</a></div><div class="footer-contact">Zhixin Building, Tongji University Jiading Campus<br>4800 Cao'an Highway, Jiading District, Shanghai<br><a href="mailto:23666042@tongji.edu.cn">23666042@tongji.edu.cn</a></div></div><div class="footer-meta"><span>© PAI Research Center</span></div></div>`;
+    }
   }
 
   if(!document.querySelector('link[rel="canonical"]')) addHead('link',{rel:'canonical',href:canonical});
