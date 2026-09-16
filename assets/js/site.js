@@ -3,8 +3,12 @@ const mobileMenu=document.querySelector('.mobile-menu');
 if(menuBtn&&mobileMenu){menuBtn.addEventListener('click',()=>{const open=mobileMenu.classList.toggle('open');menuBtn.setAttribute('aria-expanded',open?'true':'false');});}
 
 (function(){
-  const base='https://tjpai.github.io/pai-web';
-  let path=location.pathname.replace(/^\/pai-web/,'')||'/';
+  const previewHost='tjpai.github.io';
+  const isPreview=location.hostname===previewHost;
+  const prefix=isPreview?'/pai-web':'';
+  const base=location.origin+prefix;
+  let path=location.pathname;
+  if(prefix&&path.startsWith(prefix)) path=path.slice(prefix.length)||'/';
   if(path==='/index.html') path='/';
   if(path==='/en/index.html') path='/en/';
   const isEn=path.startsWith('/en/');
@@ -27,6 +31,7 @@ if(menuBtn&&mobileMenu){menuBtn.addEventListener('click',()=>{const open=mobileM
     add('link',{rel:'alternate',hreflang:isEn?'zh-CN':'en',href:counterpart});
     add('link',{rel:'alternate',hreflang:'x-default',href:base+'/'});
   }
+  if(isPreview&&!document.querySelector('meta[name="robots"]')) add('meta',{name:'robots',content:'noindex,nofollow'});
   const title=document.title||'PAI Research Center';
   const description=document.querySelector('meta[name="description"]')?.content||'PAI Research Center at Tongji University.';
   const meta=(property,content)=>{if(!document.querySelector(`meta[property="${property}"]`)) add('meta',{property,content});};
