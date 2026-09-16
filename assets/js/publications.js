@@ -1,0 +1,33 @@
+(function(){
+  const root=document.querySelector('[data-publications]');
+  if(!root) return;
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  fetch('data/publications.json')
+    .then(r=>{if(!r.ok) throw new Error('Failed to load publications'); return r.json();})
+    .then(items=>{
+      const byYear=new Map();
+      items.sort((a,b)=>b.year-a.year).forEach(item=>{
+        if(!byYear.has(item.year)) byYear.set(item.year,[]);
+        byYear.get(item.year).push(item);
+      });
+      root.innerHTML='';
+      for(const [year,pubs] of byYear){
+        const section=document.createElement('section');
+        section.className='pub-group';
+        section.innerHTML=`<div class="pub-year-row"><h2 class="pub-year">${year}</h2><span>${pubs.length} publications</span></div>`;
+        pubs.forEach(p=>{
+          const article=document.createElement('article');
+          article.className='pub';
+          const actions=[];
+          if(p.doi) actions.push(`<a href="https://doi.org/${encodeURIComponent(p.doi)}" target="_blank" rel="noopener">DOI ↗</a>`);
+          if(p.pdf) actions.push(`<a href="${esc(p.pdf)}" target="_blank" rel="noopener">PDF ↗</a>`);
+          article.innerHTML=`<h3>${esc(p.title)}</h3><p class="pub-authors">${esc(p.authors)}</p><p class="pub-venue">${esc(p.venue)} · ${year}</p>${actions.length?`<div class="pub-actions">${actions.join('')}</div>`:''}`;
+          section.appendChild(article);
+        });
+        root.appendChild(section);
+      }
+    })
+    .catch(()=>{
+      root.innerHTML='<p class="muted">论文数据暂时无法载入，请稍后刷新。</p>';
+    });
+})();
