@@ -31,11 +31,17 @@ Prefer local files under `/assets/` for production. Avoid CDN fonts and nonessen
 Faculty photos currently referenced from the temporary Tongji site must be copied into `/assets/images/people/` and all Team / profile image URLs changed to local relative paths before formal cutover.
 
 ## Validation
-Run:
+For normal development / Preview deployment, run:
 
 `python tools/validate.py`
 
 The GitHub Pages workflow also runs this check before deployment. Do not weaken the validator merely to make a release pass; fix the underlying link or data issue.
+
+Immediately before production cutover, also run:
+
+`python tools/check_production_readiness.py`
+
+The production readiness check is intentionally expected to fail while the repository is still configured for GitHub Preview. It checks production robots/sitemap state, Preview-domain leakage, temporary-site faculty image dependencies and forbidden publication PDF fields.
 
 ## Release flow
 1. Edit content/code.
@@ -59,5 +65,6 @@ Before replacing the temporary site at `https://ai.tongji.edu.cn/`:
 - confirm `404.html` is configured as the server's real 404 error document and still returns HTTP 404;
 - add ICP / public-security filing information only when the official values are confirmed;
 - define redirects only for important legacy URLs that need continuity;
+- run `python tools/validate.py` and then `python tools/check_production_readiness.py`; both must pass;
 - run a final phone + desktop, Chinese + English, navigation + publication-link check;
 - after production verification, tag the release (for example `v1.0.0`).
