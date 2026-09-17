@@ -57,3 +57,50 @@
 /* Research naming expansion */
 .research-code-main{display:flex;flex-direction:column;gap:3px;min-width:0}.research-expansion{font-size:9px;line-height:1.35;letter-spacing:.045em;text-transform:uppercase;color:var(--muted);font-weight:500;max-width:25em}
 @media(max-width:768px){.research-code{align-items:flex-start}.research-expansion{font-size:8px;line-height:1.4;max-width:22em}}
+
+/* Mobile typography harmonization — 2026-09 */
+@media(max-width:768px){
+  /* Stable global hierarchy */
+  .page-hero h1{font-size:34px;line-height:1.12;letter-spacing:-.035em}
+  .page-hero p{font-size:17px;line-height:1.62}
+  .section-head h2,.content-section h2{font-size:26px;line-height:1.2;letter-spacing:-.025em}
+  .eyebrow{font-size:10px;line-height:1.2;letter-spacing:.18em}
+  .content-section p,.prose p{font-size:16px;line-height:1.7}
+
+  /* Homepage: strong hero, quieter supporting hierarchy */
+  .home-hero h1{font-size:38px;line-height:1.1;letter-spacing:-.04em}
+  .home-hero .hero-sub{font-size:17px;line-height:1.5}
+  .research h3{font-size:27px;line-height:1.2;letter-spacing:-.02em}
+  .research p{font-size:15px;line-height:1.68}
+  .highlight h3{font-size:20px;line-height:1.3}
+  .highlight p{font-size:14px;line-height:1.6}
+  .impact h3{font-size:26px;line-height:1.22}
+  .impact p{font-size:15px;line-height:1.62}
+  .metric strong{font-size:32px;line-height:1}
+  .metric span{font-size:13px;line-height:1.45}
+
+  /* Research detail pages */
+  .research-direction h2{font-size:27px;line-height:1.2;letter-spacing:-.02em}
+  .research-direction .research-detail>p:not(.muted){font-size:16px;line-height:1.7}
+  .research-detail .direction-keywords{font-size:13px;line-height:1.55}
+  .direction-id{font-size:11px;line-height:1.2}
+
+  /* People cards: lift small text one step for phone readability */
+  .team-grid .person h3{font-size:18px;line-height:1.25}
+  .team-grid .person .role{font-size:13px;line-height:1.45}
+  .team-grid .person .research-line{font-size:14px;line-height:1.6}
+  .team-grid .person .bio-short{font-size:14px;line-height:1.6}
+  .team-grid .person .person-link{font-size:13px;line-height:1.45}
+
+  /* Join */
+  .join-item h3{font-size:20px;line-height:1.25}
+  .join-item p{font-size:14px;line-height:1.6}
+  .join-context .section-head h2{font-size:26px;line-height:1.2}
+
+  /* Footer: readable but still subordinate */
+  .compact-footer .brand strong{font-size:21px}
+  .compact-footer .brand span{font-size:10px}
+  .compact-footer .footer-links{font-size:12px;line-height:1.4}
+  .compact-footer .footer-contact{font-size:13px;line-height:1.55}
+  .compact-footer .footer-meta{font-size:11px;line-height:1.4}
+}
