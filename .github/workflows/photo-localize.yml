@@ -1,0 +1,54 @@
+name: One-time faculty photo localization
+
+on:
+  push:
+    branches: [tmp/photo-localization]
+
+permissions:
+  contents: write
+
+jobs:
+  localize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Replace temporary faculty photo URLs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import os
+
+          root=Path('.')
+          mapping={
+            'https://ai.tongji.edu.cn/new_web/image/erwu.jpg':'erwu-liu.jpg',
+            'https://ai.tongji.edu.cn/new_web/image/Rui.png':'rui-wang.jpg',
+            'https://ai.tongji.edu.cn/new_web/image/shengang.jpg':'gang-shen.jpg',
+            'https://ai.tongji.edu.cn/new_web/image/hui.jpg':'dunhui-xiao.jpg',
+            'https://ai.tongji.edu.cn/new_web/image/HSY1.jpg':'shuyan-hu.jpg',
+            'https://ai.tongji.edu.cn/new_web/image/Yan.png':'yan-liu.jpg',
+          }
+          changed=[]
+          for p in root.rglob('*.html'):
+              text=p.read_text(encoding='utf-8')
+              before=text
+              for old,name in mapping.items():
+                  rel=os.path.relpath(root/'assets/images/people'/name, start=p.parent).replace(os.sep,'/')
+                  text=text.replace(old, rel)
+              if text!=before:
+                  p.write_text(text, encoding='utf-8')
+                  changed.append(str(p))
+          if not changed:
+              raise SystemExit('No faculty photo URLs were replaced')
+          print('Updated:', *changed, sep='\n- ')
+          PY
+          python tools/validate.py
+      - name: Commit localized photo references
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add team.html en/team.html people en/people
+          git commit -m "assets: use local faculty photos"
+          git push
