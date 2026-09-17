@@ -151,7 +151,6 @@
     "title": "Reconfigurable Intelligent Surface-Assisted Localization in OFDM Systems With Carrier Frequency Offset and Phase Noise",
     "authors": "Hanfu Zhang, Erwu Liu, Rui Wang, Wei Ni, Zhe Xing, Yan Liu, Abbas Jamalipour",
     "venue": "IEEE Transactions on Wireless Communications, vol. 24, no. 8, pp. 7078-7094",
-    "pdf": "https://ai.tongji.edu.cn/new_web/paper/25-04-2.pdf",
     "doi": "10.1109/TWC.2025.3557935"
   },
   {
@@ -207,8 +206,7 @@
     "title": "Reconfigurable Intelligent Surface-Assisted Wireless Federated Learning with Imperfect Aggregation",
     "authors": "Pengcheng Sun, Erwu Liu, Wei Ni, Rui Wang, Zhe Xing, Bofeng Li, Abbas Jamalipour",
     "venue": "IEEE Transactions on Communications",
-    "doi": "10.1109/TCOMM.2024.3450605",
-    "pdf": "https://ai.tongji.edu.cn/new_web/paper/24-08-2.pdf"
+    "doi": "10.1109/TCOMM.2024.3450605"
   },
   {
     "year": 2024,
@@ -222,8 +220,7 @@
     "title": "Fast-Fading Channel and Power Optimization of the Magnetic Inductive Cellular Network",
     "authors": "Honglei Ma, Erwu Liu, Zhijun Fang, Rui Wang, Yongbin Gao, Wenjun Yu, Dongming Zhang",
     "venue": "IEEE Transactions on Wireless Communications",
-    "doi": "10.1109/TWC.2024.3425473",
-    "pdf": "https://ai.tongji.edu.cn/new_web/paper/24-07-3.pdf"
+    "doi": "10.1109/TWC.2024.3425473"
   },
   {
     "year": 2024,
