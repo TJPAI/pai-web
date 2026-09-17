@@ -70,13 +70,17 @@
     }
   }
 
-  if(!document.querySelector('link[rel="canonical"]')) addHead('link',{rel:'canonical',href:canonical});
-  if(!document.querySelector('link[hreflang]')){
-    addHead('link',{rel:'alternate',hreflang:isEn?'en':'zh-CN',href:canonical});
-    addHead('link',{rel:'alternate',hreflang:isEn?'zh-CN':'en',href:counterpart});
-    addHead('link',{rel:'alternate',hreflang:'x-default',href:base+'/'});
+  const robots=document.querySelector('meta[name="robots"]');
+  const isNoIndex=robots&&/\bnoindex\b/i.test(robots.content||'');
+  if(isPreview&&!robots) addHead('meta',{name:'robots',content:'noindex,nofollow'});
+  if(!isNoIndex){
+    if(!document.querySelector('link[rel="canonical"]')) addHead('link',{rel:'canonical',href:canonical});
+    if(!document.querySelector('link[hreflang]')){
+      addHead('link',{rel:'alternate',hreflang:isEn?'en':'zh-CN',href:canonical});
+      addHead('link',{rel:'alternate',hreflang:isEn?'zh-CN':'en',href:counterpart});
+      addHead('link',{rel:'alternate',hreflang:'x-default',href:base+'/'});
+    }
   }
-  if(isPreview&&!document.querySelector('meta[name="robots"]')) addHead('meta',{name:'robots',content:'noindex,nofollow'});
   const title=document.title||'PAI Research Center';
   const description=document.querySelector('meta[name="description"]')?.content||'PAI Research Center at Tongji University.';
   const meta=(property,content)=>{if(!document.querySelector(`meta[property="${property}"]`)) addHead('meta',{property,content});};
