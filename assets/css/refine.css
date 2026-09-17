@@ -53,3 +53,7 @@
  .team-grid .person-photo{aspect-ratio:4/3}.person .research-line{min-height:auto}.person .bio-short{-webkit-line-clamp:2}.person .person-link{margin-top:8px}
  .person-detail{grid-template-columns:1fr;gap:30px}.person-detail>.person-photo{position:static;aspect-ratio:3/2;max-height:320px;object-position:50% 20%}.person-detail h2{font-size:27px}.detail-block{padding:22px 0}
 }
+
+/* Research naming expansion */
+.research-code-main{display:flex;flex-direction:column;gap:3px;min-width:0}.research-expansion{font-size:9px;line-height:1.35;letter-spacing:.045em;text-transform:uppercase;color:var(--muted);font-weight:500;max-width:25em}
+@media(max-width:768px){.research-code{align-items:flex-start}.research-expansion{font-size:8px;line-height:1.4;max-width:22em}}
