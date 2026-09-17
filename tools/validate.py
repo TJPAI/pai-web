@@ -24,6 +24,8 @@ for rel in ['data/publications.json','data/publications-archive.json']:
             if not item.get(key): errors.append(f'{rel}[{i}]: missing {key}')
         if 'doi' in item and item['doi'] and not str(item['doi']).startswith('10.'):
             errors.append(f'{rel}[{i}]: suspicious DOI {item["doi"]}')
+        if item.get('pdf'):
+            errors.append(f'{rel}[{i}]: publication PDF links are not maintained in pai-web; use DOI/publisher links')
         all_pubs.append((rel,i,item))
 
 # Detect duplicate titles / DOI assignments across all publication datasets.
