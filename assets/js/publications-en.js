@@ -20,10 +20,8 @@
       pubs.forEach(p=>{
         const article=document.createElement('article');
         article.className='pub';
-        const actions=[];
-        if(p.doi) actions.push(`<a href="${esc(doiHref(p.doi))}" target="_blank" rel="noopener">DOI ↗</a>`);
-        if(p.pdf) actions.push(`<a href="${esc(p.pdf)}" target="_blank" rel="noopener">PDF ↗</a>`);
-        article.innerHTML=`<h3>${esc(p.title)}</h3><p class="pub-authors">${esc(p.authors)}</p><p class="pub-venue">${esc(p.venue)} · ${year}</p>${actions.length?`<div class="pub-actions">${actions.join('')}</div>`:''}`;
+        const actions=p.doi?`<div class="pub-actions"><a href="${esc(doiHref(p.doi))}" target="_blank" rel="noopener">DOI ↗</a></div>`:'';
+        article.innerHTML=`<h3>${esc(p.title)}</h3><p class="pub-authors">${esc(p.authors)}</p><p class="pub-venue">${esc(p.venue)} · ${year}</p>${actions}`;
         section.appendChild(article);
       });
       root.appendChild(section);
