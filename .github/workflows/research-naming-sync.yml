@@ -1,0 +1,50 @@
+name: One-time research naming sync
+
+on:
+  push:
+    branches: [tmp/research-naming-sync]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Sync homepage research naming
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          files=[Path('index.html'),Path('en/index.html')]
+          reps={
+            '<span>PNL</span>':'<span class="research-code-main"><span>PNL</span><small class="research-expansion">Positioning &amp; Localization</small></span>',
+            '<span>IoT-NG</span>':'<span class="research-code-main"><span>IoT-NG</span><small class="research-expansion">Internet of Things-Next Generation</small></span>',
+            '<span>AIBI</span>':'<span class="research-code-main"><span>AIBI</span><small class="research-expansion">Artificial Intelligence &amp; Blockchain Intelligence</small></span>',
+          }
+          for p in files:
+              s=p.read_text(encoding='utf-8')
+              old=s
+              for a,b in reps.items():
+                  s=s.replace(a,b)
+              if s==old:
+                  raise SystemExit(f'No replacements in {p}')
+              p.write_text(s,encoding='utf-8')
+
+          css=Path('assets/css/refine.css')
+          s=css.read_text(encoding='utf-8')
+          marker='/* Research naming expansion */'
+          if marker not in s:
+              s += '\n\n'+marker+'\n.research-code-main{display:flex;flex-direction:column;gap:3px;min-width:0}.research-expansion{font-size:9px;line-height:1.35;letter-spacing:.045em;text-transform:uppercase;color:var(--muted);font-weight:500;max-width:25em}\n@media(max-width:768px){.research-code{align-items:flex-start}.research-expansion{font-size:8px;line-height:1.4;max-width:22em}}\n'
+              css.write_text(s,encoding='utf-8')
+          PY
+          python tools/validate.py
+      - name: Commit naming sync
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html en/index.html assets/css/refine.css
+          git commit -m "content: sync homepage research direction names"
+          git push
