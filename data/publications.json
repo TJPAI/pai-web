@@ -315,5 +315,12 @@
     "authors": "Zhaocheng Wang, Rui Wang, Jun Wu, Wei Zhang, Chenxi Li",
     "venue": "IEEE Transactions on Cognitive Communications and Networking, vol. 10, no. 3, pp. 996-1010",
     "doi": "10.1109/TCCN.2024.3352982"
+  },
+  {
+    "year": 2024,
+    "title": "Reconfigurable Intelligent Surface Empowered Federated Edge Learning with Statistical CSI",
+    "authors": "Heju Li, Rui Wang, Jun Wu, Wei Zhang, Ismael Soto",
+    "venue": "IEEE Transactions on Wireless Communications, vol. 23, no. 6, pp. 6595-6608",
+    "doi": "10.1109/TWC.2023.3334250"
   }
 ]
