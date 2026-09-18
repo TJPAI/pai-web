@@ -1,10 +1,21 @@
 (function(){
+  'use strict';
+
   const previewHost='tjpai.github.io';
   const isPreview=location.hostname===previewHost;
   const prefix=isPreview?'/pai-web':'';
-  const base=location.origin+prefix;
   const root=p=>`${prefix}${p}`;
-  let siteCacheReady=Promise.resolve();
+  const absolute=p=>new URL(root(p),location.origin).href;
+
+  const normalizedPath=()=>{
+    let p=location.pathname;
+    if(prefix&&p.startsWith(prefix)) p=p.slice(prefix.length)||'/';
+    if(p==='/index.html') p='/';
+    if(p==='/en/index.html') p='/en/';
+    return p;
+  };
+
+  const initialPath=normalizedPath();
 
   const installSharedStyles=()=>{
     if(document.getElementById('pai-shared-runtime-style')) return;
@@ -33,17 +44,22 @@
 `;
     document.head.appendChild(style);
   };
+
+  const ensureStylesheet=href=>new Promise(resolve=>{
+    const target=new URL(href,location.href).href;
+    const existing=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>new URL(link.href,location.href).href===target);
+    if(existing){ resolve(); return; }
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href=target;
+    link.onload=()=>resolve();
+    link.onerror=()=>resolve();
+    document.head.appendChild(link);
+    setTimeout(resolve,1200);
+  });
+
   installSharedStyles();
-
-  const normalizedPath=()=>{
-    let p=location.pathname;
-    if(prefix&&p.startsWith(prefix)) p=p.slice(prefix.length)||'/';
-    if(p==='/index.html') p='/';
-    if(p==='/en/index.html') p='/en/';
-    return p;
-  };
-
-  const initialPath=normalizedPath();
+  ensureStylesheet(absolute('/assets/css/team.css'));
 
   try{
     const saved=localStorage.getItem('pai-lang');
@@ -56,7 +72,7 @@
     }
   }catch(_e){}
 
-  const map={
+  const languageMap={
     '/':'/en/',
     '/about.html':'/en/about.html',
     '/research.html':'/en/research.html',
@@ -71,7 +87,34 @@
     '/people/shuyan-hu.html':'/en/people/shuyan-hu.html',
     '/people/yan-liu.html':'/en/people/yan-liu.html'
   };
-  const reverse=Object.fromEntries(Object.entries(map).map(([zh,en])=>[en,zh]));
+  const reverseLanguageMap=Object.fromEntries(Object.entries(languageMap).map(([zh,en])=>[en,zh]));
+
+  const ensureLanguageLink=()=>{
+    const p=normalizedPath();
+    const isEn=p.startsWith('/en/');
+    const counterpart=isEn?(reverseLanguageMap[p]||'/'):(languageMap[p]||'/en/');
+    const label=isEn?'中文':'EN';
+    for(const container of document.querySelectorAll('.nav-links,.mobile-menu')){
+      const existing=[...container.querySelectorAll('a')].find(a=>/^(EN|中文)$/.test((a.textContent||'').trim()));
+      if(existing){ existing.href=root(counterpart); existing.textContent=label; }
+      else{
+        const a=document.createElement('a');
+        a.href=root(counterpart);
+        a.textContent=label;
+        container.appendChild(a);
+      }
+    }
+  };
+
+  const ensureMobileMenu=()=>{
+    const header=document.querySelector('.site-header');
+    const desktop=document.querySelector('.nav-links');
+    if(!header||!desktop||header.querySelector('.mobile-menu')) return;
+    const mobile=document.createElement('nav');
+    mobile.className='mobile-menu';
+    mobile.innerHTML=desktop.innerHTML;
+    header.appendChild(mobile);
+  };
 
   const bindMenuToggle=()=>{
     const menuBtn=document.querySelector('.menu-btn');
@@ -85,21 +128,6 @@
     });
   };
 
-  const ensureLanguageLink=()=>{
-    const p=normalizedPath();
-    const isEn=p.startsWith('/en/');
-    const counterpartPath=isEn?(reverse[p]||'/'):(map[p]||'/en/');
-    const label=isEn?'中文':'EN';
-    for(const container of document.querySelectorAll('.nav-links,.mobile-menu')){
-      const existing=[...container.querySelectorAll('a')].find(a=>/^(EN|中文)$/.test((a.textContent||'').trim()));
-      if(existing){ existing.href=root(counterpartPath); existing.textContent=label; }
-      else{
-        const a=document.createElement('a');
-        a.href=root(counterpartPath); a.textContent=label; container.appendChild(a);
-      }
-    }
-  };
-
   const normalizeCopy=()=>{
     if((document.documentElement.lang||'').toLowerCase().startsWith('zh')){
       for(const h2 of document.querySelectorAll('h2')){
@@ -108,9 +136,13 @@
     }
   };
 
-  bindMenuToggle();
-  ensureLanguageLink();
-  normalizeCopy();
+  const initializeChrome=()=>{
+    ensureLanguageLink();
+    ensureMobileMenu();
+    bindMenuToggle();
+    normalizeCopy();
+  };
+  initializeChrome();
 
   document.addEventListener('click',event=>{
     const a=event.target.closest&&event.target.closest('a');
@@ -122,21 +154,33 @@
     }catch(_e){}
   });
 
-  const addHead=(tag,attrs)=>{const el=document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));document.head.appendChild(el);return el;};
-  const canonical=base+initialPath;
-  if(!document.querySelector('link[rel="canonical"]')) addHead('link',{rel:'canonical',href:canonical});
-  const title=document.title||'PAI Research Center';
-  const description=document.querySelector('meta[name="description"]')?.content||'PAI Research Center at Tongji University.';
-  const meta=(property,content)=>{if(!document.querySelector(`meta[property="${property}"]`)) addHead('meta',{property,content});};
-  meta('og:type','website'); meta('og:title',title); meta('og:description',description); meta('og:url',canonical); meta('og:site_name','PAI Research Center · Tongji University');
+  const addHead=(tag,attrs)=>{
+    const el=document.createElement(tag);
+    Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));
+    document.head.appendChild(el);
+    return el;
+  };
 
+  const updateMetadata=(doc,target)=>{
+    document.title=doc.title||document.title;
+    const nextDescription=doc.querySelector('meta[name="description"]')?.content;
+    let description=document.querySelector('meta[name="description"]');
+    if(nextDescription){
+      if(!description) description=addHead('meta',{name:'description',content:nextDescription});
+      else description.content=nextDescription;
+    }
+    let canonical=document.querySelector('link[rel="canonical"]');
+    if(!canonical) canonical=addHead('link',{rel:'canonical',href:target.href});
+    canonical.href=target.href.split('#')[0];
+  };
+
+  let siteCacheReady=Promise.resolve();
   if('serviceWorker' in navigator){
     siteCacheReady=(async()=>{
       try{
         const registration=await navigator.serviceWorker.register(root('/sw.js'),{updateViaCache:'none'});
         await navigator.serviceWorker.ready;
         if(registration.waiting) registration.waiting.postMessage({type:'SKIP_WAITING'});
-        sessionStorage.setItem('pai-sw-checked','1');
       }catch(_e){}
     })();
   }
@@ -146,56 +190,69 @@
     return m?Number(m[1]):0;
   };
 
-  const responseFor=async url=>{
-    await siteCacheReady;
-    if('caches' in window){
-      const names=(await caches.keys())
-        .filter(name=>name.startsWith('pai-site-'))
-        .sort((a,b)=>cacheVersion(b)-cacheVersion(a));
-      for(const name of names){
-        const cache=await caches.open(name);
-        let hit=await cache.match(url.href,{ignoreSearch:true});
+  const cacheNames=async()=>{
+    if(!('caches' in window)) return [];
+    return (await caches.keys())
+      .filter(name=>name.startsWith('pai-site-'))
+      .sort((a,b)=>cacheVersion(b)-cacheVersion(a));
+  };
+
+  const cachedResponse=async url=>{
+    if(!('caches' in window)) return null;
+    for(const name of await cacheNames()){
+      const cache=await caches.open(name);
+      let hit=await cache.match(url.href,{ignoreSearch:true});
+      if(hit) return hit;
+      if(url.pathname.endsWith('/')){
+        const indexUrl=new URL(url.href);
+        indexUrl.pathname=url.pathname+'index.html';
+        hit=await cache.match(indexUrl.href,{ignoreSearch:true});
         if(hit) return hit;
-        if(url.pathname.endsWith('/')){
-          const indexUrl=new URL(url.href);
-          indexUrl.pathname=url.pathname+'index.html';
-          hit=await cache.match(indexUrl.href,{ignoreSearch:true});
-          if(hit) return hit;
-        }
       }
     }
+    return null;
+  };
+
+  const responseFor=async url=>{
+    const cached=await cachedResponse(url);
+    if(cached) return cached;
     try{
-      const r=await fetch(url.href,{cache:'force-cache',credentials:'same-origin'});
-      return r&&r.ok?r:null;
+      const response=await fetch(url.href,{cache:'force-cache',credentials:'same-origin'});
+      return response&&response.ok?response:null;
     }catch(_e){ return null; }
   };
 
+  let publicationDataPromise=null;
   const jsonFor=async path=>{
-    const response=await responseFor(new URL(root(path),location.origin));
+    const response=await responseFor(new URL(absolute(path)));
     if(!response||!response.ok) throw new Error('resource unavailable');
     return response.json();
   };
+  const getPublicationData=()=>{
+    if(!publicationDataPromise){
+      publicationDataPromise=Promise.all([
+        jsonFor('/data/publications.json'),
+        jsonFor('/data/publications-archive.json').catch(()=>[])
+      ]).then(parts=>parts.flat().sort((a,b)=>b.year-a.year));
+    }
+    return publicationDataPromise;
+  };
+  getPublicationData().catch(()=>{});
 
   const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const doiHref=doi=>'https://doi.org/'+String(doi).trim().split('/').map(encodeURIComponent).join('/');
 
   const initPublications=async()=>{
     const host=document.querySelector('[data-publications]');
-    if(!host||host.dataset.paiInitialized==='1') return;
-    host.dataset.paiInitialized='1';
-    host.innerHTML='';
-    const en=(document.documentElement.lang||'').toLowerCase().startsWith('en');
+    if(!host) return;
     try{
-      const [recent,archive]=await Promise.all([
-        jsonFor('/data/publications.json'),
-        jsonFor('/data/publications-archive.json').catch(()=>[])
-      ]);
-      const items=[...recent,...archive].sort((a,b)=>b.year-a.year);
+      const items=await getPublicationData();
       const byYear=new Map();
       items.forEach(item=>{
         if(!byYear.has(item.year)) byYear.set(item.year,[]);
         byYear.get(item.year).push(item);
       });
+      const fragment=document.createDocumentFragment();
       for(const [year,pubs] of byYear){
         const section=document.createElement('section');
         section.className='pub-group';
@@ -208,16 +265,39 @@
           article.innerHTML=`<h3>${esc(p.title)}</h3><p class="pub-authors">${esc(p.authors)}</p><p class="pub-venue">${esc(p.venue)} · ${year}</p>${actions}`;
           section.appendChild(article);
         });
-        host.appendChild(section);
+        fragment.appendChild(section);
       }
+      host.replaceChildren(fragment);
+      host.dataset.paiInitialized='1';
     }catch(_e){
+      const en=(document.documentElement.lang||'').toLowerCase().startsWith('en');
       host.innerHTML=`<p class="muted">${en?'Publications are temporarily unavailable. Please refresh later.':'论文数据暂时无法载入，请稍后刷新。'}</p>`;
     }
   };
+  initPublications();
+
+  const syncHeadStyles=async(doc,targetUrl)=>{
+    const waits=[];
+    for(const link of doc.querySelectorAll('head link[rel="stylesheet"]')){
+      const raw=link.getAttribute('href');
+      if(raw) waits.push(ensureStylesheet(new URL(raw,targetUrl).href));
+    }
+    document.querySelectorAll('style[data-pai-page-head]').forEach(el=>el.remove());
+    for(const source of doc.querySelectorAll('head > style')){
+      const copy=document.createElement('style');
+      copy.dataset.paiPageHead='1';
+      copy.textContent=source.textContent||'';
+      document.head.appendChild(copy);
+    }
+    await Promise.all(waits);
+  };
 
   try{ history.scrollRestoration='manual'; }catch(_e){}
+  let transitioning=false;
+  let scrollTick=0;
 
-  const saveScroll=()=>{
+  const saveScroll=(force=false)=>{
+    if(transitioning&&!force) return;
     try{
       history.replaceState(Object.assign({},history.state||{},{paiRoute:true,scrollX:window.scrollX,scrollY:window.scrollY}),'',location.href);
     }catch(_e){}
@@ -227,30 +307,35 @@
     try{ history.replaceState({paiRoute:true,scrollX:window.scrollX,scrollY:window.scrollY},'',location.href); }catch(_e){}
   }
 
-  let scrollTick=0;
   window.addEventListener('scroll',()=>{
-    if(scrollTick) return;
-    scrollTick=requestAnimationFrame(()=>{scrollTick=0;saveScroll();});
+    if(transitioning||scrollTick) return;
+    scrollTick=requestAnimationFrame(()=>{
+      scrollTick=0;
+      saveScroll();
+    });
   },{passive:true});
-  window.addEventListener('pagehide',saveScroll);
+  window.addEventListener('pagehide',()=>saveScroll(true));
 
-  const settleScroll=(target,restore)=>{
+  const restorePosition=(target,state)=>new Promise(resolve=>{
     const apply=()=>{
-      if(restore&&Number.isFinite(restore.scrollY)){
-        window.scrollTo(Number.isFinite(restore.scrollX)?restore.scrollX:0,restore.scrollY);
+      if(state&&Number.isFinite(state.scrollY)){
+        window.scrollTo(Number.isFinite(state.scrollX)?state.scrollX:0,state.scrollY);
       }else if(target.hash){
         const id=decodeURIComponent(target.hash.slice(1));
-        document.getElementById(id)?.scrollIntoView();
+        const element=document.getElementById(id);
+        if(element) element.scrollIntoView();
+        else window.scrollTo(0,0);
       }else{
         window.scrollTo(0,0);
       }
-      saveScroll();
     };
-    requestAnimationFrame(()=>requestAnimationFrame(apply));
-    setTimeout(apply,80);
-  };
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      apply();
+      setTimeout(()=>{ apply(); resolve(); },100);
+    }));
+  });
 
-  const renderPage=async(target,push=true,restore=null)=>{
+  const renderPage=async(target,{push=true,restoreState=null}={})=>{
     const requestUrl=new URL(target.href);
     requestUrl.hash='';
     const response=await responseFor(requestUrl);
@@ -264,23 +349,19 @@
     const currentFooter=document.querySelector('.site-footer');
     if(!nextHeader||!nextMain||!nextFooter||!currentHeader||!currentMain||!currentFooter) return false;
 
-    if(push) saveScroll();
+    await syncHeadStyles(doc,requestUrl);
     currentHeader.replaceWith(document.importNode(nextHeader,true));
     currentMain.replaceWith(document.importNode(nextMain,true));
     currentFooter.replaceWith(document.importNode(nextFooter,true));
-    document.title=doc.title||document.title;
     document.documentElement.lang=doc.documentElement.lang||document.documentElement.lang;
     document.body.className=doc.body.className||'';
-    const nextDescription=doc.querySelector('meta[name="description"]')?.content;
-    const currentDescription=document.querySelector('meta[name="description"]');
-    if(nextDescription&&currentDescription) currentDescription.content=nextDescription;
+    updateMetadata(doc,target);
 
     if(push) history.pushState({paiRoute:true,scrollX:0,scrollY:0},'',target.pathname+target.search+target.hash);
-    bindMenuToggle();
-    ensureLanguageLink();
-    normalizeCopy();
+
+    initializeChrome();
     await initPublications();
-    settleScroll(target,restore);
+    await restorePosition(target,restoreState);
     return true;
   };
 
@@ -299,8 +380,8 @@
     if(typeof event.button==='number'&&event.button!==0) return;
     const a=event.target.closest&&event.target.closest('a');
     if(!isRouteableInternal(a)) return;
-    const target=new URL(a.href,location.href);
 
+    const target=new URL(a.href,location.href);
     event.preventDefault();
     event.stopImmediatePropagation();
 
@@ -308,21 +389,46 @@
     const targetNoHash=target.origin+target.pathname+target.search;
 
     if(currentNoHash===targetNoHash){
-      if(target.hash){
-        saveScroll();
+      const menu=document.querySelector('.mobile-menu');
+      const btn=document.querySelector('.menu-btn');
+      menu?.classList.remove('open');
+      btn?.setAttribute('aria-expanded','false');
+      if(target.hash&&target.hash!==location.hash){
+        saveScroll(true);
         history.pushState({paiRoute:true,scrollX:0,scrollY:0},'',target.pathname+target.search+target.hash);
-        document.getElementById(decodeURIComponent(target.hash.slice(1)))?.scrollIntoView();
-        saveScroll();
+        transitioning=true;
+        await restorePosition(target,null);
+        transitioning=false;
+        saveScroll(true);
+      }else if(!target.hash){
+        window.scrollTo(0,0);
+        saveScroll(true);
       }
       return;
     }
 
-    try{ await renderPage(target,true,null); }catch(_e){}
+    saveScroll(true);
+    transitioning=true;
+    try{
+      const ok=await renderPage(target,{push:true,restoreState:null});
+      if(!ok) throw new Error('route failed');
+    }catch(_e){}
+    finally{
+      transitioning=false;
+      saveScroll(true);
+    }
   },true);
 
   window.addEventListener('popstate',async event=>{
-    try{ await renderPage(new URL(location.href),false,event.state||null); }catch(_e){}
+    transitioning=true;
+    try{
+      await renderPage(new URL(location.href),{push:false,restoreState:event.state||null});
+    }catch(_e){}
+    finally{
+      transitioning=false;
+      saveScroll(true);
+    }
   });
 
-  initPublications();
+  siteCacheReady.catch(()=>{});
 })();
