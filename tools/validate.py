@@ -225,11 +225,13 @@ for required in ('assets/css/refine-base.css','assets/css/app-core.css'):
         errors.append(f'{required}: missing shared style layer')
 
 
-# Native-navigation reliability guardrail.
+# Lightweight-navigation reliability guardrail.
 site_js=(ROOT/'assets/js/site.js').read_text(encoding='utf-8')
-for forbidden in ('history.pushState','history.replaceState',"addEventListener('popstate'",'currentMain.replaceWith'):
-    if forbidden in site_js:
-        errors.append(f'assets/js/site.js: native navigation must not mutate browser history ({forbidden})')
+for required in ('history.pushState','popstate','DOMParser','currentMain.replaceWith','eligiblePageLink'):
+    if required not in site_js:
+        errors.append(f'assets/js/site.js: lightweight navigation contract missing ({required})')
+if "fetch(key,{credentials:'same-origin'})" not in site_js:
+    errors.append('assets/js/site.js: lightweight navigation must use ordinary HTTP caching')
 
 # Faculty portraits are ordinary static files.
 for name in ('erwu-liu','rui-wang','gang-shen','dunhui-xiao','shuyan-hu','yan-liu'):

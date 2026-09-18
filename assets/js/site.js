@@ -159,6 +159,80 @@
     siteReady=navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).catch(()=>{});
   }
 
+  /* Lightweight same-origin document navigation.
+     Keeps Safari on the current document while preserving normal URLs/history. */
+  const pageCache=new Map([[location.href.split('#')[0],document.documentElement.outerHTML]]);
+  let navigating=false;
+
+  const fetchPage=async url=>{
+    const key=url.href.split('#')[0];
+    if(pageCache.has(key)) return pageCache.get(key);
+    const response=await fetch(key,{credentials:'same-origin'});
+    if(!response.ok) throw new Error('page unavailable');
+    const html=await response.text();
+    pageCache.set(key,html);
+    return html;
+  };
+
+  const applyPage=async(url,{historyMode='push'}={})=>{
+    if(navigating) return;
+    navigating=true;
+    try{
+      const html=await fetchPage(url);
+      const next=new DOMParser().parseFromString(html,'text/html');
+      const currentMain=document.querySelector('main');
+      const nextMain=next.querySelector('main');
+      if(!currentMain||!nextMain) throw new Error('page shell unavailable');
+
+      currentMain.replaceWith(document.importNode(nextMain,true));
+      document.title=next.title||document.title;
+      document.body.className=next.body.className;
+      if(historyMode==='push') history.pushState({pai:true},'',url.href);
+      else if(historyMode==='replace') history.replaceState({pai:true},'',url.href);
+
+      renderChrome();
+      initPublications([]);
+      if(url.hash){
+        requestAnimationFrame(()=>document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView());
+      }else{
+        scrollTo(0,0);
+      }
+    }finally{
+      navigating=false;
+    }
+  };
+
+  const eligiblePageLink=link=>{
+    if(!link||link.target||link.hasAttribute('download')) return null;
+    const href=link.getAttribute('href');
+    if(!href||href.startsWith('#')||/^(mailto:|tel:|javascript:)/i.test(href)) return null;
+    const url=new URL(link.href,location.href);
+    if(url.origin!==location.origin) return null;
+    if(!/\/$|\.html$/i.test(url.pathname)) return null;
+    return url;
+  };
+
+  document.addEventListener('click',event=>{
+    if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey) return;
+    const link=event.target.closest&&event.target.closest('a');
+    const url=eligiblePageLink(link);
+    if(!url) return;
+    event.preventDefault();
+    applyPage(url).catch(()=>{ location.href=url.href; });
+  });
+
+  addEventListener('popstate',()=>{
+    applyPage(new URL(location.href),{historyMode:'none'}).catch(()=>location.reload());
+  });
+
+  /* Warm the primary navigation destinations after first paint. */
+  const warmNavigation=()=>document.querySelectorAll('.site-header a[href],.site-footer a[href]').forEach(link=>{
+    const url=eligiblePageLink(link);
+    if(url) fetchPage(url).catch(()=>{});
+  });
+  if('requestIdleCallback' in window) requestIdleCallback(warmNavigation,{timeout:1800});
+  else setTimeout(warmNavigation,700);
+
   const responseFor=async url=>{
     try{
       const response=await fetch(url.href,{credentials:'same-origin',cache:'no-store'});
