@@ -451,16 +451,26 @@
     const targetNoHash=target.origin+target.pathname+target.search;
 
     if(currentNoHash===targetNoHash){
-      if(target.hash&&target.hash!==location.hash){
-        saveScroll(true);
-        history.pushState({paiRoute:true,scrollX:0,scrollY:0,pubExpanded:getExpandedYears()},'',target.pathname+target.search+target.hash);
+      if(target.hash){
+        if(target.hash!==location.hash){
+          saveScroll(true);
+          history.pushState({paiRoute:true,scrollX:0,scrollY:0,pubExpanded:getExpandedYears()},'',target.pathname+target.search+target.hash);
+        }
         transitioning=true;
         await restorePosition(target,null);
         transitioning=false;
         renderChrome();
         saveScroll(true);
-      }else if(!target.hash){
+      }else{
+        const hadHash=Boolean(location.hash);
+        if(hadHash){
+          saveScroll(true);
+          history.pushState({paiRoute:true,scrollX:0,scrollY:0,pubExpanded:getExpandedYears()},'',target.pathname+target.search);
+        }
+        transitioning=true;
         window.scrollTo(0,0);
+        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+        transitioning=false;
         renderChrome();
         saveScroll(true);
       }
