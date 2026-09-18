@@ -32,28 +32,6 @@
   };
   const reverseLanguageMap=Object.fromEntries(Object.entries(languageMap).map(([zh,en])=>[en,zh]));
 
-  const ensureAppStyles=()=>{
-    const href=absolute('/assets/css/app.css');
-    if([...document.querySelectorAll('link[rel="stylesheet"]')].some(link=>link.href===href)) return;
-    const link=document.createElement('link');
-    link.rel='stylesheet';
-    link.href=href;
-    document.head.appendChild(link);
-  };
-  ensureAppStyles();
-
-  const initialPath=normalizedPath();
-  try{
-    const saved=localStorage.getItem('pai-lang');
-    const primary=(navigator.languages&&navigator.languages[0])||navigator.language||'en';
-    const preferred=saved||(String(primary).toLowerCase().startsWith('zh')?'zh':'en');
-    const isBot=/bot|crawler|spider|slurp/i.test(navigator.userAgent||'');
-    if(!isBot&&initialPath==='/'&&preferred==='en'){
-      location.replace(root('/en/'));
-      return;
-    }
-  }catch(_e){}
-
   const navItems=lang=>lang==='en'?
     [
       ['About','/en/about.html'],['People','/en/team.html'],['Research','/en/research.html'],
@@ -80,23 +58,60 @@
     return isEn?(reverseLanguageMap[path]||'/'):(languageMap[path]||'/en/');
   };
 
+  const sharedAnchors={
+    about:new Set(['about','overview','collaboration','achievements','international-impact']),
+    research:new Set(['pnl','iotng','aibi']),
+    contact:new Set(['cooperation','recruitment'])
+  };
+
+  const counterpartWithContext=path=>{
+    const counterpart=counterpartFor(path);
+    const section=sectionForPath(path);
+    const hash=location.hash?decodeURIComponent(location.hash.slice(1)):'';
+    if(hash&&sharedAnchors[section]?.has(hash)) return `${counterpart}#${encodeURIComponent(hash)}`;
+    return counterpart;
+  };
+
+  const ensureAppStyles=()=>{
+    const href=absolute('/assets/css/app.css');
+    if([...document.querySelectorAll('link[rel="stylesheet"]')].some(link=>link.href===href)) return;
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href=href;
+    document.head.appendChild(link);
+  };
+  ensureAppStyles();
+
+  const initialPath=normalizedPath();
+  try{
+    const saved=localStorage.getItem('pai-lang');
+    const primary=(navigator.languages&&navigator.languages[0])||navigator.language||'en';
+    const preferred=saved||(String(primary).toLowerCase().startsWith('zh')?'zh':'en');
+    const isBot=/bot|crawler|spider|slurp/i.test(navigator.userAgent||'');
+    if(!isBot&&initialPath==='/'&&preferred==='en'){
+      location.replace(root('/en/'));
+      return;
+    }
+  }catch(_e){}
+
   const renderChrome=()=>{
     const path=normalizedPath();
     const lang=path.startsWith('/en/')?'en':'zh';
     const active=sectionForPath(path);
+    const items=navItems(lang);
+    const languageLabel=lang==='en'?'中文':'EN';
+    const languageHref=counterpartWithContext(path);
+    const markup=items.map(([label,href])=>{
+      const key=sectionForPath(href);
+      return `<a${key===active?' class="active"':''} href="${root(href)}">${label}</a>`;
+    }).join('')+`<a href="${root(languageHref)}">${languageLabel}</a>`;
+
     const header=document.querySelector('.site-header');
     if(header){
       const brand=header.querySelector('.brand');
       if(brand) brand.href=root(lang==='en'?'/en/':'/');
 
       const nav=header.querySelector('.nav-links');
-      const items=navItems(lang);
-      const languageLabel=lang==='en'?'中文':'EN';
-      const languageHref=counterpartFor(path);
-      const markup=items.map(([label,href])=>{
-        const key=sectionForPath(href);
-        return `<a${key===active?' class="active"':''} href="${root(href)}">${label}</a>`;
-      }).join('')+`<a href="${root(languageHref)}">${languageLabel}</a>`;
       if(nav) nav.innerHTML=markup;
 
       let mobile=header.querySelector('.mobile-menu');
@@ -118,10 +133,8 @@
 
     const footer=document.querySelector('.site-footer');
     if(footer){
-      const items=navItems(lang);
-      const languageLabel=lang==='en'?'中文':'EN';
       const links=items.map(([label,href])=>`<a href="${root(href)}">${label}</a>`).join('')+
-        `<a href="${root(counterpartFor(path))}">${languageLabel}</a>`;
+        `<a href="${root(languageHref)}">${languageLabel}</a>`;
       const contact=lang==='en'?
         `4800 Cao'an Highway, Jiading District, Shanghai<br>Tongji University Jiading Campus<br><a href="mailto:23666042@tongji.edu.cn">23666042@tongji.edu.cn</a>`:
         `上海市嘉定区曹安公路4800号<br>同济大学嘉定校区智信馆<br><a href="mailto:23666042@tongji.edu.cn">23666042@tongji.edu.cn</a>`;
@@ -129,15 +142,13 @@
       footer.innerHTML=`<div class="container"><div class="footer-grid"><div><div class="brand"><strong>PAI</strong><span>PAI Research Center · Tongji University</span></div></div><div class="footer-links">${links}</div><div class="footer-contact">${contact}</div></div><div class="footer-meta"><span>© PAI Research Center</span></div></div>`;
     }
   };
-
   renderChrome();
 
   document.addEventListener('click',event=>{
     const button=event.target.closest&&event.target.closest('.menu-btn');
     if(!button) return;
     event.preventDefault();
-    const header=button.closest('.site-header');
-    const menu=header&&header.querySelector('.mobile-menu');
+    const menu=button.closest('.site-header')?.querySelector('.mobile-menu');
     if(!menu) return;
     const open=!menu.classList.contains('open');
     menu.classList.toggle('open',open);
@@ -221,8 +232,8 @@
       const en=(document.documentElement.lang||'').toLowerCase().startsWith('en');
       const expanded=new Set((expandedYears||[]).map(String));
       const fragment=document.createDocumentFragment();
-
       const years=[...byYear.keys()];
+
       const yearNav=document.createElement('nav');
       yearNav.className='publication-years';
       yearNav.setAttribute('aria-label',en?'Publication years':'论文年份');
@@ -433,10 +444,8 @@
     const target=new URL(link.href,location.href);
     event.preventDefault();
 
-    const menu=document.querySelector('.site-header .mobile-menu');
-    const button=document.querySelector('.site-header .menu-btn');
-    menu?.classList.remove('open');
-    button?.setAttribute('aria-expanded','false');
+    document.querySelector('.site-header .mobile-menu')?.classList.remove('open');
+    document.querySelector('.site-header .menu-btn')?.setAttribute('aria-expanded','false');
 
     const currentNoHash=location.origin+location.pathname+location.search;
     const targetNoHash=target.origin+target.pathname+target.search;
@@ -448,9 +457,11 @@
         transitioning=true;
         await restorePosition(target,null);
         transitioning=false;
+        renderChrome();
         saveScroll(true);
       }else if(!target.hash){
         window.scrollTo(0,0);
+        renderChrome();
         saveScroll(true);
       }
       return;
