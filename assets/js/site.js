@@ -15,7 +15,6 @@
   };
 
   const initialPath=normalizedPath();
-  const initialIsEn=initialPath.startsWith('/en/');
 
   /* First entry: explicit language choice wins; otherwise follow OS/browser language. */
   try{
@@ -73,8 +72,18 @@
     }
   };
 
+  /* Keep legacy homepage wording consistent with the intended public label. */
+  const normalizeCopy=()=>{
+    if((document.documentElement.lang||'').toLowerCase().startsWith('zh')){
+      for(const h2 of document.querySelectorAll('h2')){
+        if((h2.textContent||'').trim()==='高水平科研与代表成果') h2.textContent='代表性成果';
+      }
+    }
+  };
+
   bindMenuToggle();
   ensureLanguageLink();
+  normalizeCopy();
 
   /* Remember language only when the visitor explicitly switches. */
   document.addEventListener('click',event=>{
@@ -170,7 +179,37 @@
     }
   };
 
-  const renderPage=async(target,push=true)=>{
+  /* SPA-style history with explicit scroll restoration. */
+  try{ history.scrollRestoration='manual'; }catch(_e){}
+  const saveScroll=()=>{
+    try{
+      history.replaceState(Object.assign({},history.state||{},{paiRoute:true,scrollX:window.scrollX,scrollY:window.scrollY}),'',location.href);
+    }catch(_e){}
+  };
+  if(!history.state||history.state.paiRoute!==true){
+    try{ history.replaceState({paiRoute:true,scrollX:window.scrollX,scrollY:window.scrollY},'',location.href); }catch(_e){}
+  }
+  let scrollTick=0;
+  window.addEventListener('scroll',()=>{
+    if(scrollTick) return;
+    scrollTick=requestAnimationFrame(()=>{scrollTick=0;saveScroll();});
+  },{passive:true});
+
+  const settleScroll=(target,restore)=>{
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      if(restore&&Number.isFinite(restore.scrollY)){
+        window.scrollTo(Number.isFinite(restore.scrollX)?restore.scrollX:0,restore.scrollY);
+      }else if(target.hash){
+        const id=decodeURIComponent(target.hash.slice(1));
+        document.getElementById(id)?.scrollIntoView();
+      }else{
+        window.scrollTo(0,0);
+      }
+      saveScroll();
+    }));
+  };
+
+  const renderPage=async(target,push=true,restore=null)=>{
     const requestUrl=new URL(target.href); requestUrl.hash='';
     const response=await responseFor(requestUrl);
     if(!response) return false;
@@ -183,6 +222,7 @@
     const currentFooter=document.querySelector('.site-footer');
     if(!nextHeader||!nextMain||!nextFooter||!currentHeader||!currentMain||!currentFooter) return false;
 
+    if(push) saveScroll();
     currentHeader.replaceWith(document.importNode(nextHeader,true));
     currentMain.replaceWith(document.importNode(nextMain,true));
     currentFooter.replaceWith(document.importNode(nextFooter,true));
@@ -193,14 +233,12 @@
     const currentDescription=document.querySelector('meta[name="description"]');
     if(nextDescription&&currentDescription) currentDescription.content=nextDescription;
 
-    if(push) history.pushState({paiRoute:true},'',target.pathname+target.search+target.hash);
+    if(push) history.pushState({paiRoute:true,scrollX:0,scrollY:0},'',target.pathname+target.search+target.hash);
     bindMenuToggle();
     ensureLanguageLink();
+    normalizeCopy();
     await initPublications();
-    if(target.hash){
-      const id=decodeURIComponent(target.hash.slice(1));
-      requestAnimationFrame(()=>document.getElementById(id)?.scrollIntoView());
-    }else window.scrollTo(0,0);
+    settleScroll(target,restore);
     return true;
   };
 
@@ -214,7 +252,7 @@
     return target.pathname.endsWith('/')||target.pathname.endsWith('.html');
   };
 
-  /* Universal same-origin router: header, footer and every in-page internal link use the same no-document-navigation path. */
+  /* Universal same-origin router: every internal link uses the same no-document-navigation path. */
   document.addEventListener('click',async event=>{
     if(event.defaultPrevented||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey) return;
     if(typeof event.button==='number'&&event.button!==0) return;
@@ -228,14 +266,17 @@
     const currentNoHash=location.origin+location.pathname+location.search;
     const targetNoHash=target.origin+target.pathname+target.search;
     if(currentNoHash===targetNoHash&&target.hash){
-      history.pushState({paiRoute:true},'',target.pathname+target.search+target.hash);
-      document.getElementById(decodeURIComponent(target.hash.slice(1)))?.scrollIntoView();
+      saveScroll();
+      history.pushState({paiRoute:true,scrollX:0,scrollY:0},'',target.pathname+target.search+target.hash);
+      const id=decodeURIComponent(target.hash.slice(1));
+      document.getElementById(id)?.scrollIntoView();
+      saveScroll();
       return;
     }
-    try{ await renderPage(target,true); }catch(_e){}
+    try{ await renderPage(target,true,null); }catch(_e){}
   },true);
 
-  window.addEventListener('popstate',async()=>{
-    try{ await renderPage(new URL(location.href),false); }catch(_e){}
+  window.addEventListener('popstate',async event=>{
+    try{ await renderPage(new URL(location.href),false,event.state||null); }catch(_e){}
   });
 })();
