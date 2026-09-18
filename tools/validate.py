@@ -55,6 +55,12 @@ html_files=list(ROOT.rglob('*.html'))
 html_text={p.resolve():p.read_text(encoding='utf-8') for p in html_files}
 html_ids={p:{*re.findall(r'\bid=["\']([^"\']+)["\']',text)} for p,text in html_text.items()}
 
+def hrefs_in_class(text,class_name):
+    match=re.search(rf'<(?:nav|div)\b[^>]*class=["\'][^"\']*\b{re.escape(class_name)}\b[^"\']*["\'][^>]*>(.*?)</(?:nav|div)>',text,re.I|re.S)
+    if not match:
+        return None
+    return re.findall(r'<a\b[^>]*href=["\']([^"\']+)["\']',match.group(1),re.I)
+
 # Check local references, fragment targets and common page structure.
 for html in html_files:
     text=html_text[html.resolve()]
@@ -111,6 +117,16 @@ for html in html_files:
         main_match=re.search(r'<main\b[^>]*>(.*?)</main>',text,re.I|re.S)
         if main_match and re.search(r'<style\b',main_match.group(1),re.I):
             errors.append(f'{rel}: page-local <style> inside <main>; move shared presentation to CSS')
+
+        # All navigation surfaces on a page must lead to the same destinations.
+        # Order/labels may differ in legacy source, but target sets may not diverge.
+        desktop=hrefs_in_class(text,'nav-links')
+        mobile=hrefs_in_class(text,'mobile-menu')
+        footer=hrefs_in_class(text,'footer-links')
+        if desktop is not None and mobile is not None and set(desktop)!=set(mobile):
+            errors.append(f'{rel}: desktop and mobile navigation targets differ')
+        if desktop is not None and footer is not None and set(desktop)!=set(footer):
+            errors.append(f'{rel}: header and footer navigation targets differ')
 
     if '高水平科研与代表成果' in text:
         errors.append(f'{rel}: deprecated heading "高水平科研与代表成果"; use "代表性成果"')
