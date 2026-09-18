@@ -1,0 +1,76 @@
+/* PAI shared runtime UI styles. Keep behavior in site.js and presentation here. */
+
+/* Anchor targets should remain visible below the sticky header. */
+main [id]{scroll-margin-top:88px}
+@media(max-width:768px){main [id]{scroll-margin-top:74px}}
+
+/* Mobile research labels: homepage cards */
+@media(max-width:768px){
+  .research-grid .research .research-code{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;column-gap:10px;row-gap:0;margin-bottom:22px;line-height:1}
+  .research-grid .research .research-code-main{display:contents}
+  .research-grid .research .research-index{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap}
+  .research-grid .research .research-code-main>span{font-size:17px;line-height:1.05;letter-spacing:.09em;font-weight:700;color:var(--ink);white-space:nowrap}
+  .research-grid .research .research-expansion{font-size:9px;line-height:1.12;letter-spacing:.055em;font-weight:500;text-transform:uppercase;color:var(--muted);white-space:normal;text-wrap:balance;display:block;max-width:none}
+  .research-grid .research:nth-child(1) .research-expansion{width:112px}
+  .research-grid .research:nth-child(2) .research-expansion{width:146px}
+  .research-grid .research:nth-child(3) .research-expansion{width:166px}
+}
+
+/* Mobile research labels: detail page. Do not baseline-align a two-line expansion
+   against one-line 01 / PNL; center the three independent boxes instead. */
+@media(max-width:768px){
+  .research-direction .direction-id{display:grid!important;grid-template-columns:auto auto max-content;align-items:center!important;column-gap:10px!important;row-gap:0!important;margin-bottom:18px!important;line-height:1!important}
+  .research-direction .direction-id>span{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap}
+  .research-direction .direction-id>strong{font-size:17px!important;line-height:1.05!important;letter-spacing:.09em!important;font-weight:700!important;color:var(--ink)!important;white-space:nowrap}
+  .research-direction .direction-id>em{display:block!important;align-self:center!important;margin:0!important;font-size:9px!important;line-height:1.12!important;letter-spacing:.055em!important;font-style:normal!important;font-weight:500!important;text-transform:uppercase!important;color:var(--muted)!important;white-space:normal!important}
+  #pnl .direction-id>em{width:116px}
+  #iotng .direction-id>em{width:148px}
+  #aibi .direction-id>em{width:180px}
+}
+
+/* One menu button style everywhere */
+@media(max-width:768px){
+  .menu-btn{position:relative!important;width:50px!important;height:50px!important;padding:0!important;margin-right:-7px!important;font-size:0!important;line-height:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;-webkit-appearance:none!important;appearance:none!important;-webkit-tap-highlight-color:transparent!important;color:#318AF5!important;touch-action:manipulation!important;cursor:pointer}
+  .menu-btn:hover,.menu-btn:active,.menu-btn:focus,.menu-btn:focus-visible{background:transparent!important;box-shadow:none!important;outline:none!important}
+  .menu-btn::before,.menu-btn::after{content:"";position:absolute;left:8px;width:34px;height:3px;border-radius:2px;background:currentColor;transform-origin:center;transition:top .18s ease,transform .18s ease,opacity .12s ease,box-shadow .18s ease;pointer-events:none}
+  .menu-btn::before{top:13px;box-shadow:0 10px 0 currentColor,0 20px 0 currentColor}
+  .menu-btn::after{top:23px;opacity:0}
+  .menu-btn[aria-expanded="true"]::before{top:23px;box-shadow:none;transform:rotate(45deg)}
+  .menu-btn[aria-expanded="true"]::after{top:23px;opacity:1;transform:rotate(-45deg)}
+}
+
+/* Team overview: globally available so direct load and SPA navigation match */
+.team-grid img.person-photo{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:50% 20%;display:block;background:#f2f3f5}
+.team-grid .person:nth-child(1) img.person-photo{object-position:50% 22%}
+.team-grid .person:nth-child(2) img.person-photo{object-position:50% 20%}
+.team-grid .person:nth-child(3) img.person-photo{object-position:50% 18%}
+.team-grid .person:nth-child(4) img.person-photo{object-position:50% 20%}
+.team-grid .person:nth-child(5) img.person-photo{object-position:50% 18%}
+.team-grid .person:nth-child(6) img.person-photo{object-position:50% 18%}
+.person-photo-source{font-size:10px;color:var(--muted);margin-top:6px}
+@media(max-width:768px){
+  .team-grid img.person-photo{aspect-ratio:4/3}
+  .team-grid .person{padding-bottom:4px}
+  .team-grid .person h3{margin-top:14px;margin-bottom:4px}
+  .team-grid .person .role{margin-bottom:9px}
+  .team-grid .person .research-line{margin-bottom:8px}
+  .team-grid .person .bio-short{-webkit-line-clamp:2;margin-top:0}
+}
+
+/* Publications */
+.pub-year-row{justify-content:flex-start!important;align-items:baseline!important;gap:12px!important}
+.pub-year-row span{padding-bottom:0!important}
+.publication-years{display:flex;flex-wrap:wrap;gap:8px 18px;margin:-20px 0 42px;padding:0 0 20px;border-bottom:1px solid var(--line)}
+.publication-year-link{appearance:none;border:0;background:transparent;padding:0;color:var(--muted);font:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.publication-year-link:hover{color:var(--ink)}
+.pub.is-collapsed{display:none}
+.pub-toggle{appearance:none;border:0;background:transparent;padding:10px 0 0;color:var(--ink);font:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pub-toggle:hover{text-decoration:underline}
+.pub-back-top{position:fixed;right:22px;bottom:28px;z-index:45;border:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-radius:999px;padding:9px 13px;color:var(--ink);font-size:12px;font-weight:600;box-shadow:0 6px 22px rgba(17,24,39,.08);opacity:0;pointer-events:none;transform:translateY(8px);transition:.18s ease;-webkit-tap-highlight-color:transparent}
+.pub-back-top.visible{opacity:1;pointer-events:auto;transform:none}
+@media(max-width:768px){
+  .publication-years{margin:-14px 0 34px;gap:7px 16px;padding-bottom:17px}
+  .publication-year-link{font-size:12px}
+  .pub-toggle{font-size:12px;padding-top:8px}
+  .pub-back-top{right:18px;bottom:92px}
+}

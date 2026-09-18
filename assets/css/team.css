@@ -1,17 +1,1 @@
-/* Team-specific refinements */
-.team-grid img.person-photo{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:50% 20%;display:block;background:#f2f3f5}
-.team-grid .person:nth-child(1) img.person-photo{object-position:50% 22%}
-.team-grid .person:nth-child(2) img.person-photo{object-position:50% 20%}
-.team-grid .person:nth-child(3) img.person-photo{object-position:50% 18%}
-.team-grid .person:nth-child(4) img.person-photo{object-position:50% 20%}
-.team-grid .person:nth-child(5) img.person-photo{object-position:50% 18%}
-.team-grid .person:nth-child(6) img.person-photo{object-position:50% 18%}
-.person-photo-source{font-size:10px;color:var(--muted);margin-top:6px}
-@media(max-width:768px){
- .team-grid img.person-photo{aspect-ratio:4/3}
- .team-grid .person{padding-bottom:4px}
- .team-grid .person h3{margin-top:14px;margin-bottom:4px}
- .team-grid .person .role{margin-bottom:9px}
- .team-grid .person .research-line{margin-bottom:8px}
- .team-grid .person .bio-short{-webkit-line-clamp:2;margin-top:0}
-}
+/* Compatibility shim. Team presentation is part of the shared app-core.css bundle loaded by refine.css. */
