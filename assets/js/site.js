@@ -339,7 +339,7 @@
         if(section.querySelector('[data-pub-toggle]')) setYearExpanded(section,open);
       });
       syncAllPublicationToggle();
-      saveScroll(true);
+      
       return;
     }
 
@@ -350,7 +350,7 @@
       if(!section) return;
       setYearExpanded(section,section.dataset.expanded!=='true');
       syncAllPublicationToggle();
-      saveScroll(true);
+      
       return;
     }
 
@@ -361,95 +361,11 @@
     }
   },true);
 
-  const addHead=(tag,attrs)=>{
-    const element=document.createElement(tag);
-    Object.entries(attrs).forEach(([key,value])=>element.setAttribute(key,value));
-    document.head.appendChild(element);
-    return element;
-  };
 
-  const updateMetadata=(doc,target)=>{
-    document.title=doc.title||document.title;
-    const nextDescription=doc.querySelector('meta[name="description"]')?.content;
-    let description=document.querySelector('meta[name="description"]');
-    if(nextDescription){
-      if(!description) description=addHead('meta',{name:'description',content:nextDescription});
-      else description.content=nextDescription;
-    }
-    let canonical=document.querySelector('link[rel="canonical"]');
-    if(!canonical) canonical=addHead('link',{rel:'canonical',href:target.href});
-    canonical.href=target.href.split('#')[0];
-  };
-
-  try{ history.scrollRestoration='manual'; }catch(_e){}
-  let transitioning=false;
-  let scrollTick=0;
-  let navigationSeq=0;
-  let renderedPath=location.pathname+location.search;
-
-  const saveScroll=(force=false)=>{
-    if(transitioning&&!force) return;
-    try{
-      history.replaceState(Object.assign({},history.state||{},{
-        paiRoute:true,
-        scrollX:window.scrollX,
-        scrollY:window.scrollY,
-        pubExpanded:getExpandedYears()
-      }),'',location.href);
-    }catch(_e){}
-  };
-
-  if(!history.state||history.state.paiRoute!==true){
-    try{
-      history.replaceState({paiRoute:true,scrollX:window.scrollX,scrollY:window.scrollY,pubExpanded:getExpandedYears()},'',location.href);
-    }catch(_e){}
-  }
-
-  window.addEventListener('scroll',()=>{
-    updateBackTopVisibility();
-    if(transitioning||scrollTick) return;
-    scrollTick=requestAnimationFrame(()=>{
-      scrollTick=0;
-      saveScroll();
-    });
-  },{passive:true});
-  window.addEventListener('pagehide',()=>saveScroll(true));
-
-  const jumpScroll=(x,y)=>window.scrollTo({left:x,top:y,behavior:'auto'});
-
-  const restorePosition=(target,state)=>new Promise(resolve=>{
-    const apply=()=>{
-      if(state&&Number.isFinite(state.scrollY)){
-        jumpScroll(Number.isFinite(state.scrollX)?state.scrollX:0,state.scrollY);
-      }else if(target.hash){
-        const id=decodeURIComponent(target.hash.slice(1));
-        const element=document.getElementById(id);
-        if(element) element.scrollIntoView({behavior:'auto',block:'start'});
-        else jumpScroll(0,0);
-      }else{
-        jumpScroll(0,0);
-      }
-    };
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      apply();
-      setTimeout(()=>{apply();resolve();},120);
-    }));
-  });
-
-  /* Keep navigation deliberately browser-native. This site is small and static;
-     native navigation gives Safari authoritative history/back-forward behavior
-     and avoids DOM/history/cache races from a custom SPA router. */
-  document.addEventListener('click',event=>{
-    const link=event.target.closest&&event.target.closest('a');
-    if(!link) return;
-    const label=(link.textContent||'').trim();
-    try{
-      if(label==='EN') localStorage.setItem('pai-lang','en');
-      else if(label==='中文') localStorage.setItem('pai-lang','zh');
-    }catch(_e){}
-  },true);
+  /* Publications are the only page-level state that needs persistence.
+     Browser-native navigation/history remains untouched. */
 
 
-  initPublications(history.state?.pubExpanded||[]);
+  initPublications([]);
   siteReady.catch(()=>{});
 })();

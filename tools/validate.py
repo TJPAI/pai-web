@@ -242,3 +242,9 @@ if errors:
     print('\n'.join('ERROR: '+e for e in errors))
     sys.exit(1)
 print('Validation passed.')
+
+# Native-navigation reliability guardrail.
+site_js=(ROOT/'assets/js/site.js').read_text(encoding='utf-8')
+for forbidden in ('history.pushState','history.replaceState',"addEventListener('popstate'",'currentMain.replaceWith'):
+    if forbidden in site_js:
+        errors.append(f'assets/js/site.js: native navigation must not mutate browser history ({forbidden})')
