@@ -1,4 +1,4 @@
-const CACHE='pai-site-v20260918-3';
+const CACHE='pai-site-v20260918-4';
 const CORE=[
   './','./index.html','./about.html','./research.html','./team.html','./publications.html','./join.html','./contact.html',
   './en/','./en/index.html','./en/about.html','./en/research.html','./en/team.html','./en/publications.html','./en/join.html','./en/contact.html',
@@ -22,6 +22,10 @@ self.addEventListener('activate',event=>{
       .then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
       .then(()=>self.clients.claim())
   );
+});
+
+self.addEventListener('message',event=>{
+  if(event.data&&event.data.type==='SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('fetch',event=>{
