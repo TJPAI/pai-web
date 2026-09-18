@@ -1,0 +1,27 @@
+name: One-off achievement index typography
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/tune-achievement-index.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Tune achievement index typography
+        run: |
+          printf '\n/* Achievement index hierarchy */\n.highlight .num{font-size:16px;line-height:1;font-weight:450;letter-spacing:.02em;color:#7C8594}\n@media(max-width:768px){.highlight .num{font-size:22px;line-height:1;font-weight:450;margin:2px 0 0;color:#7C8594}}\n' >> assets/css/refine-base.css
+          python tools/validate.py
+      - name: Commit focused change
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/tune-achievement-index.yml
+          git add assets/css/refine-base.css
+          git commit -m 'style: strengthen achievement index hierarchy'
+          git push origin HEAD:main
