@@ -515,13 +515,34 @@
     }
 
     saveScroll(true);
+    const fromHref=location.href;
+    const fromScrollX=window.scrollX;
+    const fromScrollY=window.scrollY;
+    const fromPubExpanded=getExpandedYears();
     transitioning=true;
     const seq=++navigationSeq;
     try{
       const ok=await renderPage(target,{push:true,restoreState:null,seq});
-      if(!ok&&seq===navigationSeq) location.assign(target.href);
+      if(!ok&&seq===navigationSeq){
+        /* renderPage may already have replaced <main> before a later async step
+           fails. Restore the source URL/state before falling back to a full
+           navigation, otherwise Safari can retain mismatched history entries. */
+        try{
+          history.replaceState({
+            paiRoute:true,scrollX:fromScrollX,scrollY:fromScrollY,pubExpanded:fromPubExpanded
+          },'',fromHref);
+        }catch(_e){}
+        location.assign(target.href);
+      }
     }catch(_e){
-      if(seq===navigationSeq) location.assign(target.href);
+      if(seq===navigationSeq){
+        try{
+          history.replaceState({
+            paiRoute:true,scrollX:fromScrollX,scrollY:fromScrollY,pubExpanded:fromPubExpanded
+          },'',fromHref);
+        }catch(_restoreError){}
+        location.assign(target.href);
+      }
     }finally{
       if(seq===navigationSeq){
         transitioning=false;
