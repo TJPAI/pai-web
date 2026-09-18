@@ -136,29 +136,36 @@
 
   /*
    * App-like menu navigation.
-   * Header/footer navigation is rendered from the pre-cached HTML with History API,
-   * so Safari/Chrome does not perform a document navigation or show its loading bar.
+   * Header/footer menu clicks never perform a document navigation. Cached HTML is preferred;
+   * if it is not available yet, fetch() obtains it inside the current document, which still
+   * avoids Safari's document-loading progress bar.
    */
-  const cachedResponseFor=async(url)=>{
+  const responseFor=async(url)=>{
     await siteCacheReady;
-    if(!('caches' in window)) return null;
-    const names=(await caches.keys()).filter(name=>name.startsWith('pai-site-'));
-    for(let i=names.length-1;i>=0;i--){
-      const cache=await caches.open(names[i]);
-      const hit=await cache.match(url.href,{ignoreSearch:true});
-      if(hit) return hit;
-      if(url.pathname.endsWith('/')){
-        const indexUrl=new URL(url.href);
-        indexUrl.pathname=url.pathname+'index.html';
-        const indexHit=await cache.match(indexUrl.href,{ignoreSearch:true});
-        if(indexHit) return indexHit;
+    if('caches' in window){
+      const names=(await caches.keys()).filter(name=>name.startsWith('pai-site-'));
+      for(let i=names.length-1;i>=0;i--){
+        const cache=await caches.open(names[i]);
+        const hit=await cache.match(url.href,{ignoreSearch:true});
+        if(hit) return hit;
+        if(url.pathname.endsWith('/')){
+          const indexUrl=new URL(url.href);
+          indexUrl.pathname=url.pathname+'index.html';
+          const indexHit=await cache.match(indexUrl.href,{ignoreSearch:true});
+          if(indexHit) return indexHit;
+        }
       }
     }
-    return null;
+    try{
+      const fetched=await fetch(url.href,{cache:'force-cache',credentials:'same-origin'});
+      return fetched&&fetched.ok?fetched:null;
+    }catch(_e){
+      return null;
+    }
   };
 
-  const renderCachedPage=async(target,push)=>{
-    const response=await cachedResponseFor(target);
+  const renderPage=async(target)=>{
+    const response=await responseFor(target);
     if(!response) return false;
     const html=await response.text();
     const doc=new DOMParser().parseFromString(html,'text/html');
@@ -182,13 +189,6 @@
     const nextDescription=doc.querySelector('meta[name="description"]')?.content;
     const currentDescription=document.querySelector('meta[name="description"]');
     if(nextDescription&&currentDescription) currentDescription.content=nextDescription;
-    const canonicalLink=document.querySelector('link[rel="canonical"]');
-    if(canonicalLink) canonicalLink.href=target.href;
-    const ogUrl=document.querySelector('meta[property="og:url"]');
-    if(ogUrl) ogUrl.content=target.href;
-    const ogTitle=document.querySelector('meta[property="og:title"]');
-    if(ogTitle) ogTitle.content=document.title;
-    if(push) history.pushState({paiCachedRoute:true},'',target.href);
     bindMenuToggle();
     window.scrollTo(0,0);
     return true;
@@ -196,29 +196,18 @@
 
   const isAppMenuLink=(a)=>!!a.closest('.site-header,.site-footer');
   document.addEventListener('click',async(event)=>{
-    if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey) return;
+    if(event.defaultPrevented||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey) return;
+    if(typeof event.button==='number'&&event.button!==0) return;
     const a=event.target.closest&&event.target.closest('a');
     if(!a||!isAppMenuLink(a)||a.target==='_blank'||a.hasAttribute('download')) return;
     const href=a.getAttribute('href')||'';
     if(!href||href.startsWith('#')||href.startsWith('mailto:')||href.startsWith('tel:')||href.startsWith('javascript:')) return;
     const target=new URL(a.href,location.href);
     if(target.origin!==location.origin) return;
-    event.preventDefault();
-    try{
-      const rendered=await renderCachedPage(target,true);
-      if(!rendered) location.href=target.href;
-    }catch(_e){
-      location.href=target.href;
-    }
-  });
 
-  window.addEventListener('popstate',async()=>{
-    const target=new URL(location.href);
-    try{
-      const rendered=await renderCachedPage(target,false);
-      if(!rendered) location.reload();
-    }catch(_e){
-      location.reload();
-    }
-  });
+    /* Capture and cancel the link before Safari can start a document navigation. */
+    event.preventDefault();
+    event.stopPropagation();
+    try{await renderPage(target);}catch(_e){}
+  },true);
 })();
