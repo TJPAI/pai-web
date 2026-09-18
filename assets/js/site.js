@@ -212,6 +212,7 @@
 
       renderChrome();
       initPublications([]);
+      setTimeout(()=>warmNavigation(),80);
       if(Number.isFinite(preserveScrollY)){
         requestAnimationFrame(()=>{
           const maxY=Math.max(0,document.documentElement.scrollHeight-innerHeight);
