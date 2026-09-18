@@ -1,0 +1,88 @@
+name: One-off eyebrow naming and homepage rhythm polish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/polish-eyebrows-home-rhythm.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Normalize eyebrow naming and tighten mobile homepage rhythm
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          replacements = {
+              'about.html': [
+                  ('<div class="eyebrow">ABOUT PAI</div>', '<div class="eyebrow">ABOUT</div>'),
+                  ('<div class="eyebrow">PAI in Numbers</div>', '<div class="eyebrow">TEAM OVERVIEW</div>'),
+                  ('<div class="eyebrow">Collaboration</div>', '<div class="eyebrow">COOPERATION</div>'),
+                  ('<div class="eyebrow">Research Excellence</div>', '<div class="eyebrow">ACHIEVEMENTS</div>'),
+                  ('<div class="eyebrow">International Impact</div>', '<div class="eyebrow">INTERNATIONAL IMPACT</div>'),
+              ],
+              'en/about.html': [
+                  ('<div class="eyebrow">ABOUT PAI</div>', '<div class="eyebrow">ABOUT</div>'),
+                  ('<div class="eyebrow">PAI in Numbers</div>', '<div class="eyebrow">TEAM OVERVIEW</div>'),
+                  ('<div class="eyebrow">Collaboration</div>', '<div class="eyebrow">COOPERATION</div>'),
+                  ('<div class="eyebrow">Research Excellence</div>', '<div class="eyebrow">ACHIEVEMENTS</div>'),
+                  ('<div class="eyebrow">International Impact</div>', '<div class="eyebrow">INTERNATIONAL IMPACT</div>'),
+              ],
+              'team.html': [
+                  ('<div class="eyebrow">Core Faculty</div>', '<div class="eyebrow">CORE FACULTY</div>'),
+              ],
+              'en/team.html': [
+                  ('<div class="eyebrow">Core Faculty</div>', '<div class="eyebrow">CORE FACULTY</div>'),
+              ],
+              'join.html': [
+                  ('<div class="eyebrow">JOIN PAI</div>', '<div class="eyebrow">JOIN</div>'),
+              ],
+              'en/join.html': [
+                  ('<div class="eyebrow">JOIN PAI</div>', '<div class="eyebrow">JOIN</div>'),
+              ],
+              'contact.html': [
+                  ('<div class="eyebrow">JOIN US</div>', '<div class="eyebrow">RECRUITMENT</div>'),
+                  ('<div class="eyebrow">PAI RESEARCH CENTER</div>', '<div class="eyebrow">LOCATION</div>'),
+              ],
+              'en/contact.html': [
+                  ('<div class="eyebrow">JOIN US</div>', '<div class="eyebrow">RECRUITMENT</div>'),
+                  ('<div class="eyebrow">PAI RESEARCH CENTER</div>', '<div class="eyebrow">LOCATION</div>'),
+              ],
+          }
+
+          for filename, pairs in replacements.items():
+              path = Path(filename)
+              text = path.read_text(encoding='utf-8')
+              for old, new in pairs:
+                  if old not in text:
+                      raise SystemExit(f'{filename}: expected text not found: {old}')
+                  text = text.replace(old, new, 1)
+              path.write_text(text, encoding='utf-8')
+
+          css_path = Path('assets/css/refine.css')
+          css = css_path.read_text(encoding='utf-8')
+          marker = '/* Homepage mobile rhythm — compact but still editorial */'
+          block = '''\n/* Homepage mobile rhythm — compact but still editorial */\n@media(max-width:768px){\n  .home-hero~.section{padding-top:72px;padding-bottom:72px}\n  .home-hero~.section .section-head{margin-bottom:34px}\n  .home-hero~.section .challenge{padding-top:28px;padding-bottom:29px}\n  .home-hero~.section .research{padding-top:36px;padding-bottom:40px}\n  .home-hero~.section .partner{padding-top:21px!important;padding-bottom:21px!important}\n  .home-hero~.section .highlight,.home-hero~.section .highlight:nth-child(odd),.home-hero~.section .highlight:nth-child(even){padding-top:24px;padding-bottom:24px}\n  .home-hero~.section .impact{padding-top:39px;padding-bottom:41px}\n  .home-hero~.join{padding-top:108px;padding-bottom:108px}\n}\n'''
+          if marker not in css:
+              css = css.rstrip() + block
+              css_path.write_text(css, encoding='utf-8')
+
+          PY
+          python tools/validate.py
+          node --check assets/js/site.js
+      - name: Commit focused polish and remove one-off workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/polish-eyebrows-home-rhythm.yml
+          git add about.html en/about.html team.html en/team.html join.html en/join.html contact.html en/contact.html assets/css/refine.css
+          git commit -m 'style: unify section labels and tighten homepage rhythm'
+          git push origin HEAD:main
