@@ -174,7 +174,7 @@
     return html;
   };
 
-  const applyPage=async(url,{historyMode='push'}={})=>{
+  const applyPage=async(url,{historyMode='push',preserveScrollY=null}={})=>{
     if(navigating) return;
     navigating=true;
     try{
@@ -195,7 +195,12 @@
 
       renderChrome();
       initPublications([]);
-      if(url.hash){
+      if(Number.isFinite(preserveScrollY)){
+        requestAnimationFrame(()=>{
+          const maxY=Math.max(0,document.documentElement.scrollHeight-innerHeight);
+          scrollTo(0,Math.min(preserveScrollY,maxY));
+        });
+      }else if(url.hash){
         requestAnimationFrame(()=>document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView());
       }else{
         scrollTo(0,0);
@@ -221,7 +226,10 @@
     const url=eligiblePageLink(link);
     if(!url) return;
     event.preventDefault();
-    applyPage(url).catch(()=>{ location.href=url.href; });
+    const label=(link.textContent||'').trim();
+    const isLanguageSwitch=label==='EN'||label==='中文';
+    const options=isLanguageSwitch?{preserveScrollY:window.scrollY}:undefined;
+    applyPage(url,options).catch(()=>{ location.href=url.href; });
   });
 
   addEventListener('popstate',()=>{
