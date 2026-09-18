@@ -1,4 +1,4 @@
-const CACHE='pai-site-v20260918-8';
+const CACHE='pai-site-v20260918-9';
 const CORE=[
   './','./index.html','./about.html','./research.html','./team.html','./publications.html','./join.html','./contact.html',
   './en/','./en/index.html','./en/about.html','./en/research.html','./en/team.html','./en/publications.html','./en/join.html','./en/contact.html',
@@ -9,6 +9,27 @@ const CORE=[
   './data/publications.json','./data/publications-archive.json',
   './assets/images/people/erwu-liu.jpg','./assets/images/people/rui-wang.jpg','./assets/images/people/gang-shen.jpg','./assets/images/people/dunhui-xiao.jpg','./assets/images/people/shuyan-hu.jpg','./assets/images/people/yan-liu.jpg'
 ];
+
+const HOME_RESEARCH_STYLE=`<style id="pai-home-research-mobile">@media(max-width:768px){
+.research-grid .research .research-code{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;column-gap:10px;row-gap:0;margin-bottom:22px;line-height:1}
+.research-grid .research .research-code-main{display:contents}
+.research-grid .research .research-index{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap}
+.research-grid .research .research-code-main>span{font-size:17px;line-height:1.05;letter-spacing:.09em;font-weight:700;color:var(--ink);white-space:nowrap}
+.research-grid .research .research-expansion{font-size:9px;line-height:1.12;letter-spacing:.055em;font-weight:500;text-transform:uppercase;color:var(--muted);white-space:normal;text-wrap:balance;display:block;max-width:none}
+.research-grid .research:nth-child(1) .research-expansion{width:112px}
+.research-grid .research:nth-child(2) .research-expansion{width:146px}
+.research-grid .research:nth-child(3) .research-expansion{width:166px}
+}</style>`;
+
+const decorateHtml=async response=>{
+  if(!response) return response;
+  const type=response.headers.get('content-type')||'';
+  if(!type.includes('text/html')) return response;
+  const text=await response.text();
+  if(text.includes('id="pai-home-research-mobile"')) return new Response(text,{status:response.status,statusText:response.statusText,headers:response.headers});
+  const decorated=text.replace('<main>','<main>'+HOME_RESEARCH_STYLE);
+  return new Response(decorated,{status:response.status,statusText:response.statusText,headers:response.headers});
+};
 
 self.addEventListener('install',event=>{
   event.waitUntil(
@@ -39,16 +60,16 @@ self.addEventListener('fetch',event=>{
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE);
     const cached=await cache.match(request,{ignoreSearch:true});
-    if(cached) return cached;
+    if(cached) return decorateHtml(cached);
 
     try{
       const response=await fetch(request);
       if(response&&response.ok) await cache.put(request,response.clone());
-      return response;
+      return decorateHtml(response);
     }catch(_e){
       if(request.mode==='navigate'){
         const fallback=await cache.match('./index.html');
-        if(fallback) return fallback;
+        if(fallback) return decorateHtml(fallback);
       }
       return new Response('Offline',{status:503,statusText:'Offline'});
     }
