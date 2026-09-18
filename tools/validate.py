@@ -233,6 +233,9 @@ for required in ('history.pushState','popstate','DOMParser','currentMain.replace
 if "fetch(key,{credentials:'same-origin'})" not in site_js:
     errors.append('assets/js/site.js: lightweight navigation must use ordinary HTTP caching')
 
-# Faculty portraits are ordinary static files.
+# Faculty portraits are ordinary static files. Gang Shen intentionally uses PNG.
+portrait_ext={'gang-shen':'png'}
 for name in ('erwu-liu','rui-wang','gang-shen','dunhui-xiao','shuyan-hu','yan-liu'):
-    if not (ROOT/'assets/images/people'/f'{name}.jpg').is_file(): errors.append(f'assets/images/people/{name}.jpg: missing portrait')
+    ext=portrait_ext.get(name,'jpg')
+    rel=f'assets/images/people/{name}.{ext}'
+    if not (ROOT/rel).is_file(): errors.append(f'{rel}: missing portrait')

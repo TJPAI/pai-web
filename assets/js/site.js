@@ -184,11 +184,13 @@
       const nextMain=next.querySelector('main');
       if(!currentMain||!nextMain) throw new Error('page shell unavailable');
 
+      /* Move the URL before attaching fetched markup so relative assets resolve\n         against the destination page immediately (important on iPhone Safari). */
+      if(historyMode==='push') history.pushState({pai:true},'',url.href);
+      else if(historyMode==='replace') history.replaceState({pai:true},'',url.href);
+
       currentMain.replaceWith(document.importNode(nextMain,true));
       document.title=next.title||document.title;
       document.body.className=next.body.className;
-      if(historyMode==='push') history.pushState({pai:true},'',url.href);
-      else if(historyMode==='replace') history.replaceState({pai:true},'',url.href);
 
       renderChrome();
       initPublications([]);
