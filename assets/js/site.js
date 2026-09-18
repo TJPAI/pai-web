@@ -8,6 +8,20 @@
   if(path==='/index.html') path='/';
   if(path==='/en/index.html') path='/en/';
   const isEn=path.startsWith('/en/');
+  const root=(p)=>`${prefix}${p}`;
+
+  /* Homepage language selection: explicit user choice wins; otherwise use OS/browser language. */
+  try{
+    const saved=localStorage.getItem('pai-lang');
+    const primary=(navigator.languages&&navigator.languages[0])||navigator.language||'en';
+    const preferred=saved||(String(primary).toLowerCase().startsWith('zh')?'zh':'en');
+    const isBot=/bot|crawler|spider|slurp/i.test(navigator.userAgent||'');
+    if(!isBot&&path==='/'&&preferred==='en'){
+      location.replace(root('/en/'));
+      return;
+    }
+  }catch(_e){}
+
   const map={
     '/':'/en/',
     '/about.html':'/en/about.html',
@@ -27,8 +41,19 @@
   const counterpartPath=isEn?(reverse[path]||'/'):(map[path]||'/en/');
   const canonical=base+path;
   const counterpart=base+counterpartPath;
-  const root=(p)=>`${prefix}${p}`;
   const addHead=(tag,attrs)=>{const el=document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));document.head.appendChild(el);return el;};
+
+  /* Remember a language only when the visitor explicitly switches language. */
+  document.addEventListener('click',(event)=>{
+    const a=event.target.closest&&event.target.closest('a');
+    if(!a) return;
+    const label=(a.textContent||'').trim();
+    if(label==='EN'){
+      try{localStorage.setItem('pai-lang','en');}catch(_e){}
+    }else if(label==='中文'){
+      try{localStorage.setItem('pai-lang','zh');}catch(_e){}
+    }
+  });
 
   const nav=document.querySelector('.site-header .nav');
   const navLinks=document.querySelector('.nav-links');
@@ -85,4 +110,11 @@
   const description=document.querySelector('meta[name="description"]')?.content||'PAI Research Center at Tongji University.';
   const meta=(property,content)=>{if(!document.querySelector(`meta[property="${property}"]`)) addHead('meta',{property,content});};
   meta('og:type','website');meta('og:title',title);meta('og:description',description);meta('og:url',canonical);meta('og:site_name','PAI Research Center · Tongji University');
+
+  /* Cache the complete site shell/pages after first entry so later navigation is served locally first. */
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>{
+      navigator.serviceWorker.register(root('/sw.js')).catch(()=>{});
+    });
+  }
 })();
