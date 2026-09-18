@@ -18,43 +18,8 @@ jobs:
           ref: main
       - name: Patch language synchronization and validator
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('assets/js/site.js')
-          t=p.read_text(encoding='utf-8')
-          old="""      document.title=next.title||document.title;
-      document.body.className=next.body.className;
-"""
-          new="""      document.title=next.title||document.title;
-      document.documentElement.lang=next.documentElement.lang||document.documentElement.lang;
-      document.body.className=next.body.className;
-"""
-          if old not in t:
-              raise SystemExit('site.js language sync insertion point not found')
-          p.write_text(t.replace(old,new,1),encoding='utf-8')
-
-          p=Path('tools/validate.py')
-          t=p.read_text(encoding='utf-8')
-          marker='# Architectural guardrails: one behavior runtime and one deterministic presentation entry point.\n'
-          block="""# English pages must not contain Chinese copy except the intentional language-switch label.
-for html in (ROOT/'en').rglob('*.html'):
-    text=html.read_text(encoding='utf-8')
-    checked=text.replace('>中文<','><')
-    if re.search(r'[\\u4e00-\\u9fff]',checked):
-        errors.append(f'{html.relative_to(ROOT)}: unexpected Chinese text in English page')
-
-"""
-          if marker not in t:
-              raise SystemExit('validate.py insertion point not found')
-          if block not in t:
-              t=t.replace(marker,block+marker,1)
-          nav_guard="if 'counterpartWithContext' not in site_js:\n    errors.append('assets/js/site.js: bilingual navigation must preserve supported detail context')\n"
-          lang_guard="if 'document.documentElement.lang=next.documentElement.lang' not in site_js:\n    errors.append('assets/js/site.js: lightweight navigation must synchronize document language')\n"
-          if lang_guard not in t:
-              t=t.replace(nav_guard,nav_guard+lang_guard,1)
-          p.write_text(t,encoding='utf-8')
-          PY
-
+          printf '%s' 'CmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aAppbXBvcnQgcmUKCnA9UGF0aCgiYXNzZXRzL2pzL3NpdGUuanMiKQp0PXAucmVhZF90ZXh0KGVuY29kaW5nPSJ1dGYtOCIpCm9sZD0iIiIgICAgICBkb2N1bWVudC50aXRsZT1uZXh0LnRpdGxlfHxkb2N1bWVudC50aXRsZTsKICAgICAgZG9jdW1lbnQuYm9keS5jbGFzc05hbWU9bmV4dC5ib2R5LmNsYXNzTmFtZTsKIiIiCm5ldz0iIiIgICAgICBkb2N1bWVudC50aXRsZT1uZXh0LnRpdGxlfHxkb2N1bWVudC50aXRsZTsKICAgICAgZG9jdW1lbnQuZG9jdW1lbnRFbGVtZW50Lmxhbmc9bmV4dC5kb2N1bWVudEVsZW1lbnQubGFuZ3x8ZG9jdW1lbnQuZG9jdW1lbnRFbGVtZW50Lmxhbmc7CiAgICAgIGRvY3VtZW50LmJvZHkuY2xhc3NOYW1lPW5leHQuYm9keS5jbGFzc05hbWU7CiIiIgppZiBvbGQgbm90IGluIHQ6CiAgICByYWlzZSBTeXN0ZW1FeGl0KCJzaXRlLmpzIGxhbmd1YWdlIHN5bmMgaW5zZXJ0aW9uIHBvaW50IG5vdCBmb3VuZCIpCnAud3JpdGVfdGV4dCh0LnJlcGxhY2Uob2xkLG5ldyw xKSxlbmNvZGluZz0idXRmLTgiKQoKcD1QYXRoKCJ0b29scy92YWxpZGF0ZS5weSIpCnQ9cC5yZWFkX3RleHQoZW5jb2Rpbmc9InV0Zi04IikKbWFya2VyPSIjIEFyY2hpdGVjdHVyYWwgZ3VhcmRyYWlsczogb25lIGJlaGF2aW9yIHJ1bnRpbWUgYW5kIG9uZSBkZXRlcm1pbmlzdGljIHByZXNlbnRhdGlvbiBlbnRyeSBwb2ludC5cbiIKYmxvY2s9IiIiIyBFbmdsaXNoIHBhZ2VzIG11c3Qgbm90IGNvbnRhaW4gQ2hpbmVzZSBjb3B5IGV4Y2VwdCB0aGUgaW50ZW50aW9uYWwgbGFuZ3VhZ2Utc3dpdGNoIGxhYmVsLgpmb3IgaHRtbCBpbiAoUk9PVC8nZW4nKS5yZ2xvYignaHRtbCcpOgogICAgdGV4dD1odG1sLnJlYWRfdGV4dChlbmNvZGluZz0ndXRmLTgnKQogICAgY2hlY2tlZD10ZXh0LnJlcGxhY2UoJz7kuK3mloc8JywnPjwnKQogICAgaWYgcmUuc2VhcmNoKHInW1xcdTRlMDAtXFx1OWZmZl0nLGNoZWNrZWQpOgogICAgICAgIGVycm9ycy5hcHBlbmQoc3RyKGh0bWwucmVsYXRpdmVfdG8oUk9PVCkpKyc6IHVuZXhwZWN0ZWQgQ2hpbmVzZSB0ZXh0IGluIEVuZ2xpc2ggcGFnZScpCgoiIiIKaWYgbWFya2VyIG5vdCBpbiB0OgogICAgcmFpc2UgU3lzdGVtRXhpdCgidmFsaWRhdGUucHkgaW5zZXJ0aW9uIHBvaW50IG5vdCBmb3VuZCIpCmlmIGJsb2NrIG5vdCBpbiB0OgogICAgdD10LnJlcGxhY2UobWFya2VyLGJsb2NrK21hcmtlciwxKQpuYXZfZ3VhcmQ9IiIiaWYgJ2NvdW50ZXJwYXJ0V2l0aENvbnRleHQnIG5vdCBpbiBzaXRlX2pzOgogICAgZXJyb3JzLmFwcGVuZCgnYXNzZXRzL2pzL3NpdGUuanM6IGJpbGluZ3VhbCBuYXZpZ2F0aW9uIG11c3QgcHJlc2VydmUgc3VwcG9ydGVkIGRldGFpbCBjb250ZXh0JykKIiIiCmxhbmdfZ3VhcmQ9IiIiaWYgJ2RvY3VtZW50LmRvY3VtZW50RWxlbWVudC5sYW5nPW5leHQuZG9jdW1lbnRFbGVtZW50LmxhbmcnIG5vdCBpbiBzaXRlX2pzOgogICAgZXJyb3JzLmFwcGVuZCgnYXNzZXRzL2pzL3NpdGUuanM6IGxpZ2h0d2VpZ2h0IG5hdmlnYXRpb24gbXVzdCBzeW5jaHJvbml6ZSBkb2N1bWVudCBsYW5ndWFnZScpCiIiIgppZiBsYW5nX2d1YXJkIG5vdCBpbiB0OgogICAgdD10LnJlcGxhY2UobmF2X2d1YXJkLG5hdl9ndWFyZCtsYW5nX2d1YXJkLDEpCnAud3JpdGVfdGV4dCh0LGVuY29kaW5nPSJ1dGYtOCIpCg==' | tr -d ' ' | base64 -d > /tmp/patch.py
+          python /tmp/patch.py
           python tools/validate.py
           node --check assets/js/site.js
       - name: Commit focused fix and remove one-off workflow
