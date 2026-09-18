@@ -1,5 +1,9 @@
 /* PAI shared runtime UI styles. Keep behavior in site.js and presentation here. */
 
+/* Anchor targets should remain visible below the sticky header. */
+main [id]{scroll-margin-top:88px}
+@media(max-width:768px){main [id]{scroll-margin-top:74px}}
+
 /* Mobile research labels */
 @media(max-width:768px){
   .research-grid .research .research-code{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;column-gap:10px;row-gap:0;margin-bottom:22px;line-height:1}
@@ -10,17 +14,11 @@
   .research-grid .research:nth-child(1) .research-expansion{width:112px}
   .research-grid .research:nth-child(2) .research-expansion{width:146px}
   .research-grid .research:nth-child(3) .research-expansion{width:166px}
-
-  .research-direction .direction-id{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;column-gap:10px;margin-bottom:18px;line-height:1}
-  .research-direction .direction-id>span{font-size:16px;line-height:1.05;letter-spacing:.08em;font-weight:500}
-  .research-direction .direction-id>strong{font-size:17px;line-height:1.05;letter-spacing:.1em;font-weight:700}
-  .research-direction .direction-id>em{font-size:9px;line-height:1.12;letter-spacing:.055em;min-height:20px;display:flex;align-items:center;text-transform:uppercase}
-  .research-direction .direction-id>em br{display:block}
 }
 
 /* One menu button style everywhere */
 @media(max-width:768px){
-  .menu-btn{position:relative!important;z-index:2!important;width:50px!important;height:50px!important;padding:0!important;margin-right:-7px!important;font-size:0!important;line-height:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;-webkit-appearance:none!important;appearance:none!important;-webkit-tap-highlight-color:transparent!important;color:#318AF5!important;touch-action:manipulation!important;cursor:pointer;pointer-events:auto!important}
+  .menu-btn{position:relative!important;width:50px!important;height:50px!important;padding:0!important;margin-right:-7px!important;font-size:0!important;line-height:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;-webkit-appearance:none!important;appearance:none!important;-webkit-tap-highlight-color:transparent!important;color:#318AF5!important;touch-action:manipulation!important;cursor:pointer}
   .menu-btn:hover,.menu-btn:active,.menu-btn:focus,.menu-btn:focus-visible{background:transparent!important;box-shadow:none!important;outline:none!important}
   .menu-btn::before,.menu-btn::after{content:"";position:absolute;left:8px;width:34px;height:3px;border-radius:2px;background:currentColor;transform-origin:center;transition:top .18s ease,transform .18s ease,opacity .12s ease,box-shadow .18s ease;pointer-events:none}
   .menu-btn::before{top:13px;box-shadow:0 10px 0 currentColor,0 20px 0 currentColor}
