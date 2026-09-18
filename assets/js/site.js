@@ -153,20 +153,10 @@
     }catch(_e){}
   },true);
 
+  /* Retire the legacy worker; this static site uses native navigation and HTTP caching. */
   let siteReady=Promise.resolve();
   if('serviceWorker' in navigator){
-    siteReady=(async()=>{
-      try{
-        const registration=await navigator.serviceWorker.register(root('/sw.js'),{updateViaCache:'none'});
-        await navigator.serviceWorker.ready;
-        try{
-          if(sessionStorage.getItem('pai-sw-checked')!=='1'){
-            sessionStorage.setItem('pai-sw-checked','1');
-            registration.update().catch(()=>{});
-          }
-        }catch(_e){}
-      }catch(_e){}
-    })();
+    siteReady=navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).catch(()=>{});
   }
 
   const responseFor=async url=>{
