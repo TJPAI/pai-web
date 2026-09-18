@@ -18,49 +18,7 @@ jobs:
           ref: main
       - name: Patch language-switch scroll preservation
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('assets/js/site.js')
-          t=p.read_text(encoding='utf-8')
-          old="const applyPage=async(url,{historyMode='push'}={})=>{"
-          new="const applyPage=async(url,{historyMode='push',preserveScrollY=null}={})=>{"
-          if old not in t:
-              raise SystemExit('applyPage signature not found')
-          t=t.replace(old,new,1)
-          old="""      if(url.hash){
-        requestAnimationFrame(()=>document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView());
-      }else{
-        scrollTo(0,0);
-      }
-"""
-          new="""      if(Number.isFinite(preserveScrollY)){
-        requestAnimationFrame(()=>{
-          const maxY=Math.max(0,document.documentElement.scrollHeight-innerHeight);
-          scrollTo(0,Math.min(preserveScrollY,maxY));
-        });
-      }else if(url.hash){
-        requestAnimationFrame(()=>document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView());
-      }else{
-        scrollTo(0,0);
-      }
-"""
-          if old not in t:
-              raise SystemExit('scroll behavior block not found')
-          t=t.replace(old,new,1)
-          old="""    event.preventDefault();
-    applyPage(url).catch(()=>{ location.href=url.href; });
-"""
-          new="""    event.preventDefault();
-    const label=(link.textContent||'').trim();
-    const isLanguageSwitch=label==='EN'||label==='中文';
-    const options=isLanguageSwitch?{preserveScrollY:window.scrollY}:undefined;
-    applyPage(url,options).catch(()=>{ location.href=url.href; });
-"""
-          if old not in t:
-              raise SystemExit('navigation click block not found')
-          t=t.replace(old,new,1)
-          p.write_text(t,encoding='utf-8')
-          PY
+          python -c "from pathlib import Path; p=Path('assets/js/site.js'); t=p.read_text(encoding='utf-8'); old=\"const applyPage=async(url,{historyMode='push'}={})=>{\"; new=\"const applyPage=async(url,{historyMode='push',preserveScrollY=null}={})=>{\"; assert old in t, 'applyPage signature not found'; t=t.replace(old,new,1); old=\"      if(url.hash){\\n        requestAnimationFrame(()=>document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView());\\n      }else{\\n        scrollTo(0,0);\\n      }\\n\"; new=\"      if(Number.isFinite(preserveScrollY)){\\n        requestAnimationFrame(()=>{\\n          const maxY=Math.max(0,document.documentElement.scrollHeight-innerHeight);\\n          scrollTo(0,Math.min(preserveScrollY,maxY));\\n        });\\n      }else if(url.hash){\\n        requestAnimationFrame(()=>document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView());\\n      }else{\\n        scrollTo(0,0);\\n      }\\n\"; assert old in t, 'scroll behavior block not found'; t=t.replace(old,new,1); old=\"    event.preventDefault();\\n    applyPage(url).catch(()=>{ location.href=url.href; });\\n\"; new=\"    event.preventDefault();\\n    const label=(link.textContent||'').trim();\\n    const isLanguageSwitch=label==='EN'||label==='中文';\\n    const options=isLanguageSwitch?{preserveScrollY:window.scrollY}:undefined;\\n    applyPage(url,options).catch(()=>{ location.href=url.href; });\\n\"; assert old in t, 'navigation click block not found'; p.write_text(t.replace(old,new,1),encoding='utf-8')"
           python tools/validate.py
           node --check assets/js/site.js
       - name: Commit focused fix and remove one-off workflow
