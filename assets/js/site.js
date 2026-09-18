@@ -163,6 +163,22 @@
      Keeps Safari on the current document while preserving normal URLs/history. */
   const pageCache=new Map([[location.href.split('#')[0],document.documentElement.outerHTML]]);
   let navigating=false;
+  let scrollSaveTimer=null;
+
+  try{ history.scrollRestoration='manual'; }catch(_e){}
+  const historyStateWithScroll=scrollY=>Object.assign({},history.state||{},{pai:true,scrollY});
+  const saveCurrentScroll=()=>{
+    if(navigating) return;
+    try{ history.replaceState(historyStateWithScroll(window.scrollY),'',location.href); }catch(_e){}
+  };
+  saveCurrentScroll();
+  addEventListener('scroll',()=>{
+    if(scrollSaveTimer!==null) return;
+    scrollSaveTimer=setTimeout(()=>{
+      scrollSaveTimer=null;
+      saveCurrentScroll();
+    },120);
+  },{passive:true});
 
   const fetchPage=async url=>{
     const key=url.href.split('#')[0];
@@ -185,8 +201,9 @@
       if(!currentMain||!nextMain) throw new Error('page shell unavailable');
 
       /* Move the URL before attaching fetched markup so relative assets resolve\n         against the destination page immediately (important on iPhone Safari). */
-      if(historyMode==='push') history.pushState({pai:true},'',url.href);
-      else if(historyMode==='replace') history.replaceState({pai:true},'',url.href);
+      const destinationScroll=Number.isFinite(preserveScrollY)?preserveScrollY:0;
+      if(historyMode==='push') history.pushState({pai:true,scrollY:destinationScroll},'',url.href);
+      else if(historyMode==='replace') history.replaceState({pai:true,scrollY:destinationScroll},'',url.href);
 
       currentMain.replaceWith(document.importNode(nextMain,true));
       document.title=next.title||document.title;
@@ -226,14 +243,16 @@
     const url=eligiblePageLink(link);
     if(!url) return;
     event.preventDefault();
+    saveCurrentScroll();
     const label=(link.textContent||'').trim();
     const isLanguageSwitch=label==='EN'||label==='中文';
     const options=isLanguageSwitch?{preserveScrollY:window.scrollY}:undefined;
     applyPage(url,options).catch(()=>{ location.href=url.href; });
   });
 
-  addEventListener('popstate',()=>{
-    applyPage(new URL(location.href),{historyMode:'none'}).catch(()=>location.reload());
+  addEventListener('popstate',event=>{
+    const restoredY=Number.isFinite(event.state?.scrollY)?event.state.scrollY:0;
+    applyPage(new URL(location.href),{historyMode:'none',preserveScrollY:restoredY}).catch(()=>location.reload());
   });
 
   /* Warm the primary navigation destinations after first paint. */
