@@ -1,28 +1,29 @@
-/* PAI shared runtime UI styles. Keep behavior in site.js and presentation here. */
+/* Shared cross-page presentation. Behavior belongs in site.js. */
+
+html{scroll-behavior:auto!important}
 
 /* Anchor targets should remain visible below the sticky header. */
 main [id]{scroll-margin-top:88px}
 @media(max-width:768px){main [id]{scroll-margin-top:74px}}
 
-/* Mobile research labels: homepage cards */
+/* Mobile research labels: keep the compact identifier visually left/top aligned. */
 @media(max-width:768px){
-  .research-grid .research .research-code{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;column-gap:10px;row-gap:0;margin-bottom:22px;line-height:1}
+  .research-grid .research .research-code{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:start;column-gap:10px;row-gap:0;margin-bottom:22px;line-height:1;text-align:left}
   .research-grid .research .research-code-main{display:contents}
   .research-grid .research .research-index{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap}
   .research-grid .research .research-code-main>span{font-size:17px;line-height:1.05;letter-spacing:.09em;font-weight:700;color:var(--ink);white-space:nowrap}
-  .research-grid .research .research-expansion{font-size:9px;line-height:1.12;letter-spacing:.055em;font-weight:500;text-transform:uppercase;color:var(--muted);white-space:normal;text-wrap:balance;display:block;max-width:none}
+  .research-grid .research .research-expansion{font-size:9px;line-height:1.12;letter-spacing:.055em;font-weight:500;text-transform:uppercase;color:var(--muted);white-space:normal;text-wrap:balance;display:block;max-width:none;text-align:left;margin:0}
   .research-grid .research:nth-child(1) .research-expansion{width:112px}
   .research-grid .research:nth-child(2) .research-expansion{width:146px}
   .research-grid .research:nth-child(3) .research-expansion{width:166px}
 }
 
-/* Mobile research labels: detail page. Do not baseline-align a two-line expansion
-   against one-line 01 / PNL; center the three independent boxes instead. */
+/* Mobile research labels: detail page. Top-align 01 / PNL / expansion instead of visually centering a two-line label. */
 @media(max-width:768px){
-  .research-direction .direction-id{display:grid!important;grid-template-columns:auto auto max-content;align-items:center!important;column-gap:10px!important;row-gap:0!important;margin-bottom:18px!important;line-height:1!important}
+  .research-direction .direction-id{display:grid!important;grid-template-columns:auto auto max-content;align-items:start!important;column-gap:10px!important;row-gap:0!important;margin-bottom:18px!important;line-height:1!important;text-align:left!important}
   .research-direction .direction-id>span{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap}
   .research-direction .direction-id>strong{font-size:17px!important;line-height:1.05!important;letter-spacing:.09em!important;font-weight:700!important;color:var(--ink)!important;white-space:nowrap}
-  .research-direction .direction-id>em{display:block!important;align-self:center!important;margin:0!important;font-size:9px!important;line-height:1.12!important;letter-spacing:.055em!important;font-style:normal!important;font-weight:500!important;text-transform:uppercase!important;color:var(--muted)!important;white-space:normal!important}
+  .research-direction .direction-id>em{display:block!important;align-self:start!important;margin:0!important;font-size:9px!important;line-height:1.12!important;letter-spacing:.055em!important;font-style:normal!important;font-weight:500!important;text-transform:uppercase!important;color:var(--muted)!important;white-space:normal!important;text-align:left!important}
   #pnl .direction-id>em{width:116px}
   #iotng .direction-id>em{width:148px}
   #aibi .direction-id>em{width:180px}
@@ -60,17 +61,26 @@ main [id]{scroll-margin-top:88px}
 /* Publications */
 .pub-year-row{justify-content:flex-start!important;align-items:baseline!important;gap:12px!important}
 .pub-year-row span{padding-bottom:0!important}
-.publication-years{display:flex;flex-wrap:wrap;gap:8px 18px;margin:-20px 0 42px;padding:0 0 20px;border-bottom:1px solid var(--line)}
+.publication-toolbar{margin:-20px 0 42px;padding:0 0 20px;border-bottom:1px solid var(--line)}
+.publication-years{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 15px;padding:0}
 .publication-year-link{appearance:none;border:0;background:transparent;padding:0;color:var(--muted);font:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.publication-year-link:hover{color:var(--ink)}
+.publication-year-link:hover,.publication-year-link:focus-visible{color:var(--ink)}
+.publication-controls{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.publication-summary{font-size:12px;line-height:1.5;color:var(--muted)}
+.pub-toggle-all,.pub-toggle{appearance:none;border:0;background:transparent;color:var(--ink);font:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pub-toggle-all{padding:4px 0;white-space:nowrap}
+.pub-toggle{padding:10px 0 0}
+.pub-toggle-all:hover,.pub-toggle:hover{text-decoration:underline}
 .pub.is-collapsed{display:none}
-.pub-toggle{appearance:none;border:0;background:transparent;padding:10px 0 0;color:var(--ink);font:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.pub-toggle:hover{text-decoration:underline}
 .pub-back-top{position:fixed;right:22px;bottom:28px;z-index:45;border:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-radius:999px;padding:9px 13px;color:var(--ink);font-size:12px;font-weight:600;box-shadow:0 6px 22px rgba(17,24,39,.08);opacity:0;pointer-events:none;transform:translateY(8px);transition:.18s ease;-webkit-tap-highlight-color:transparent}
 .pub-back-top.visible{opacity:1;pointer-events:auto;transform:none}
 @media(max-width:768px){
-  .publication-years{margin:-14px 0 34px;gap:7px 16px;padding-bottom:17px}
+  .publication-toolbar{margin:-14px 0 34px;padding-bottom:17px}
+  .publication-years{gap:7px 16px;margin-bottom:13px}
   .publication-year-link{font-size:12px}
-  .pub-toggle{font-size:12px;padding-top:8px}
+  .publication-controls{align-items:flex-start;gap:12px}
+  .publication-summary{font-size:11px;max-width:70%}
+  .pub-toggle-all,.pub-toggle{font-size:12px}
+  .pub-toggle{padding-top:8px}
   .pub-back-top{right:18px;bottom:92px}
 }

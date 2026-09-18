@@ -6,6 +6,7 @@
   const prefix=isPreview?'/pai-web':'';
   const root=path=>`${prefix}${path}`;
   const absolute=path=>new URL(root(path),location.origin).href;
+  const PUB_VISIBLE_DEFAULT=3;
 
   const normalizedPath=()=>{
     let path=location.pathname;
@@ -72,16 +73,6 @@
     return counterpart;
   };
 
-  const ensureAppStyles=()=>{
-    const href=absolute('/assets/css/app.css');
-    if([...document.querySelectorAll('link[rel="stylesheet"]')].some(link=>link.href===href)) return;
-    const link=document.createElement('link');
-    link.rel='stylesheet';
-    link.href=href;
-    document.head.appendChild(link);
-  };
-  ensureAppStyles();
-
   const initialPath=normalizedPath();
   try{
     const saved=localStorage.getItem('pai-lang');
@@ -110,10 +101,8 @@
     if(header){
       const brand=header.querySelector('.brand');
       if(brand) brand.href=root(lang==='en'?'/en/':'/');
-
       const nav=header.querySelector('.nav-links');
       if(nav) nav.innerHTML=markup;
-
       let mobile=header.querySelector('.mobile-menu');
       if(!mobile){
         mobile=document.createElement('nav');
@@ -122,7 +111,6 @@
       }
       mobile.innerHTML=markup;
       mobile.classList.remove('open');
-
       const button=header.querySelector('.menu-btn');
       if(button){
         button.type='button';
@@ -214,6 +202,33 @@
   const getExpandedYears=()=>[...document.querySelectorAll('.pub-group[data-expanded="true"]')]
     .map(element=>element.dataset.year).filter(Boolean);
 
+  const publicationLanguage=()=>((document.documentElement.lang||'').toLowerCase().startsWith('en')?'en':'zh');
+  const yearToggleLabel=(open,count,en)=>open?(en?'Show less ↑':'收起 ↑'):(en?`View all ${count} ↓`:`展开全部 ${count} 篇 ↓`);
+
+  const setYearExpanded=(section,open)=>{
+    if(!section) return;
+    section.dataset.expanded=open?'true':'false';
+    section.querySelectorAll('.pub[data-pub-extra="1"]').forEach(article=>article.classList.toggle('is-collapsed',!open));
+    const toggle=section.querySelector('[data-pub-toggle]');
+    if(toggle){
+      const count=section.querySelectorAll('.pub').length;
+      const en=publicationLanguage()==='en';
+      toggle.setAttribute('aria-expanded',open?'true':'false');
+      toggle.textContent=yearToggleLabel(open,count,en);
+    }
+  };
+
+  const syncAllPublicationToggle=()=>{
+    const button=document.querySelector('[data-pub-toggle-all]');
+    if(!button) return;
+    const groups=[...document.querySelectorAll('.pub-group')].filter(section=>section.querySelector('[data-pub-toggle]'));
+    const allOpen=groups.length>0&&groups.every(section=>section.dataset.expanded==='true');
+    const en=publicationLanguage()==='en';
+    button.dataset.open=allOpen?'true':'false';
+    button.setAttribute('aria-expanded',allOpen?'true':'false');
+    button.textContent=allOpen?(en?'Collapse all ↑':'收起全部年份 ↑'):(en?'Expand all ↓':'展开全部年份 ↓');
+  };
+
   const updateBackTopVisibility=()=>{
     const button=document.querySelector('[data-pub-back-top]');
     if(button) button.classList.toggle('visible',window.scrollY>700);
@@ -229,10 +244,13 @@
         if(!byYear.has(item.year)) byYear.set(item.year,[]);
         byYear.get(item.year).push(item);
       }
-      const en=(document.documentElement.lang||'').toLowerCase().startsWith('en');
+      const en=publicationLanguage()==='en';
       const expanded=new Set((expandedYears||[]).map(String));
       const fragment=document.createDocumentFragment();
       const years=[...byYear.keys()];
+
+      const toolbar=document.createElement('div');
+      toolbar.className='publication-toolbar';
 
       const yearNav=document.createElement('nav');
       yearNav.className='publication-years';
@@ -245,7 +263,23 @@
         button.textContent=String(year);
         yearNav.appendChild(button);
       }
-      fragment.appendChild(yearNav);
+      toolbar.appendChild(yearNav);
+
+      const controls=document.createElement('div');
+      controls.className='publication-controls';
+      const summary=document.createElement('span');
+      summary.className='publication-summary';
+      summary.textContent=en?`${items.length} publications · ${years.length} years · ${PUB_VISIBLE_DEFAULT} shown per year`:`${items.length} 篇论文 · ${years.length} 个年份 · 每年默认显示 ${PUB_VISIBLE_DEFAULT} 篇`;
+      controls.appendChild(summary);
+      if([...byYear.values()].some(pubs=>pubs.length>PUB_VISIBLE_DEFAULT)){
+        const allToggle=document.createElement('button');
+        allToggle.type='button';
+        allToggle.className='pub-toggle-all';
+        allToggle.dataset.pubToggleAll='1';
+        controls.appendChild(allToggle);
+      }
+      toolbar.appendChild(controls);
+      fragment.appendChild(toolbar);
 
       for(const [year,pubs] of byYear){
         const section=document.createElement('section');
@@ -259,21 +293,22 @@
 
         pubs.forEach((publication,index)=>{
           const article=document.createElement('article');
-          article.className='pub'+(!isExpanded&&index>=4?' is-collapsed':'');
-          article.dataset.pubExtra=index>=4?'1':'0';
+          const extra=index>=PUB_VISIBLE_DEFAULT;
+          article.className='pub'+(!isExpanded&&extra?' is-collapsed':'');
+          article.dataset.pubExtra=extra?'1':'0';
           const actions=publication.doi?
             `<div class="pub-actions"><a href="${esc(doiHref(publication.doi))}" target="_blank" rel="noopener">DOI ↗</a></div>`:'';
           article.innerHTML=`<h3>${esc(publication.title)}</h3><p class="pub-authors">${esc(publication.authors)}</p><p class="pub-venue">${esc(publication.venue)} · ${year}</p>${actions}`;
           section.appendChild(article);
         });
 
-        if(pubs.length>4){
+        if(pubs.length>PUB_VISIBLE_DEFAULT){
           const toggle=document.createElement('button');
           toggle.type='button';
           toggle.className='pub-toggle';
           toggle.dataset.pubToggle=String(year);
           toggle.setAttribute('aria-expanded',isExpanded?'true':'false');
-          toggle.textContent=isExpanded?(en?'Show less ↑':'收起 ↑'):(en?`View all ${pubs.length} ↓`:`展开全部 ${pubs.length} 篇 ↓`);
+          toggle.textContent=yearToggleLabel(isExpanded,pubs.length,en);
           section.appendChild(toggle);
         }
         fragment.appendChild(section);
@@ -288,9 +323,10 @@
 
       host.replaceChildren(fragment);
       host.dataset.paiInitialized='1';
+      syncAllPublicationToggle();
       updateBackTopVisibility();
     }catch(_e){
-      const en=(document.documentElement.lang||'').toLowerCase().startsWith('en');
+      const en=publicationLanguage()==='en';
       host.innerHTML=`<p class="muted">${en?'Publications are temporarily unavailable. Please try again later.':'论文数据暂时无法载入，请稍后再试。'}</p>`;
     }
   };
@@ -303,18 +339,25 @@
       return;
     }
 
+    const allToggle=event.target.closest&&event.target.closest('[data-pub-toggle-all]');
+    if(allToggle){
+      event.preventDefault();
+      const open=allToggle.dataset.open!=='true';
+      document.querySelectorAll('.pub-group').forEach(section=>{
+        if(section.querySelector('[data-pub-toggle]')) setYearExpanded(section,open);
+      });
+      syncAllPublicationToggle();
+      saveScroll(true);
+      return;
+    }
+
     const toggle=event.target.closest&&event.target.closest('[data-pub-toggle]');
     if(toggle){
       event.preventDefault();
       const section=toggle.closest('.pub-group');
       if(!section) return;
-      const open=section.dataset.expanded!=='true';
-      section.dataset.expanded=open?'true':'false';
-      section.querySelectorAll('.pub[data-pub-extra="1"]').forEach(article=>article.classList.toggle('is-collapsed',!open));
-      const count=section.querySelectorAll('.pub').length;
-      const en=(document.documentElement.lang||'').toLowerCase().startsWith('en');
-      toggle.setAttribute('aria-expanded',open?'true':'false');
-      toggle.textContent=open?(en?'Show less ↑':'收起 ↑'):(en?`View all ${count} ↓`:`展开全部 ${count} 篇 ↓`);
+      setYearExpanded(section,section.dataset.expanded!=='true');
+      syncAllPublicationToggle();
       saveScroll(true);
       return;
     }
@@ -380,22 +423,24 @@
   },{passive:true});
   window.addEventListener('pagehide',()=>saveScroll(true));
 
+  const jumpScroll=(x,y)=>window.scrollTo({left:x,top:y,behavior:'auto'});
+
   const restorePosition=(target,state)=>new Promise(resolve=>{
     const apply=()=>{
       if(state&&Number.isFinite(state.scrollY)){
-        window.scrollTo(Number.isFinite(state.scrollX)?state.scrollX:0,state.scrollY);
+        jumpScroll(Number.isFinite(state.scrollX)?state.scrollX:0,state.scrollY);
       }else if(target.hash){
         const id=decodeURIComponent(target.hash.slice(1));
         const element=document.getElementById(id);
-        if(element) element.scrollIntoView();
-        else window.scrollTo(0,0);
+        if(element) element.scrollIntoView({behavior:'auto',block:'start'});
+        else jumpScroll(0,0);
       }else{
-        window.scrollTo(0,0);
+        jumpScroll(0,0);
       }
     };
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
       apply();
-      setTimeout(()=>{apply();resolve();},140);
+      setTimeout(()=>{apply();resolve();},120);
     }));
   });
 
@@ -445,7 +490,6 @@
 
     const target=new URL(link.href,location.href);
     event.preventDefault();
-
     document.querySelector('.site-header .mobile-menu')?.classList.remove('open');
     document.querySelector('.site-header .menu-btn')?.setAttribute('aria-expanded','false');
 
@@ -464,13 +508,12 @@
         renderChrome();
         saveScroll(true);
       }else{
-        const hadHash=Boolean(location.hash);
-        if(hadHash){
+        if(location.hash){
           saveScroll(true);
           history.pushState({paiRoute:true,scrollX:0,scrollY:0,pubExpanded:getExpandedYears()},'',target.pathname+target.search);
         }
         transitioning=true;
-        window.scrollTo(0,0);
+        jumpScroll(0,0);
         await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
         transitioning=false;
         renderChrome();
