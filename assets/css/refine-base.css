@@ -104,3 +104,7 @@
   .compact-footer .footer-contact{font-size:13px;line-height:1.55}
   .compact-footer .footer-meta{font-size:11px;line-height:1.4}
 }
+
+/* Achievement index hierarchy */
+.highlight .num{font-size:16px;line-height:1;font-weight:450;letter-spacing:.02em;color:#7C8594}
+@media(max-width:768px){.highlight .num{font-size:22px;line-height:1;font-weight:450;margin:2px 0 0;color:#7C8594}}
