@@ -111,10 +111,18 @@
   const meta=(property,content)=>{if(!document.querySelector(`meta[property="${property}"]`)) addHead('meta',{property,content});};
   meta('og:type','website');meta('og:title',title);meta('og:description',description);meta('og:url',canonical);meta('og:site_name','PAI Research Center · Tongji University');
 
-  /* Cache the complete site shell/pages after first entry so later navigation is served locally first. */
+  /* Install/cache once, then let the browser check sw.js once per browsing session for updates. */
   if('serviceWorker' in navigator){
-    window.addEventListener('load',()=>{
-      navigator.serviceWorker.register(root('/sw.js')).catch(()=>{});
-    });
+    (async()=>{
+      try{
+        if(sessionStorage.getItem('pai-sw-checked')==='1') return;
+        const registration=await navigator.serviceWorker.register(root('/sw.js'),{updateViaCache:'none'});
+        sessionStorage.setItem('pai-sw-checked','1');
+        await navigator.serviceWorker.ready;
+        // register/update of sw.js is the lightweight background update check.
+        // If sw.js changed, the new worker pre-caches the complete site before activation.
+        if(registration.waiting) registration.waiting.postMessage({type:'SKIP_WAITING'});
+      }catch(_e){}
+    })();
   }
 })();
