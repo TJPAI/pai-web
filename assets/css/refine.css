@@ -1,3 +1,14 @@
 /* Shared presentation entry point. Load stable base styles first, then cross-page component/UI refinements. */
 @import url("./refine-base.css");
 @import url("./app-core.css");
+/* Homepage mobile rhythm — compact but still editorial */
+@media(max-width:768px){
+  .home-hero~.section{padding-top:72px;padding-bottom:72px}
+  .home-hero~.section .section-head{margin-bottom:34px}
+  .home-hero~.section .challenge{padding-top:28px;padding-bottom:29px}
+  .home-hero~.section .research{padding-top:36px;padding-bottom:40px}
+  .home-hero~.section .partner{padding-top:21px!important;padding-bottom:21px!important}
+  .home-hero~.section .highlight,.home-hero~.section .highlight:nth-child(odd),.home-hero~.section .highlight:nth-child(even){padding-top:24px;padding-bottom:24px}
+  .home-hero~.section .impact{padding-top:39px;padding-bottom:41px}
+  .home-hero~.join{padding-top:108px;padding-bottom:108px}
+}
