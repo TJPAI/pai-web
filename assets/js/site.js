@@ -255,13 +255,51 @@
     applyPage(new URL(location.href),{historyMode:'none',preserveScrollY:restoredY}).catch(()=>location.reload());
   });
 
-  /* Warm the primary navigation destinations after first paint. */
-  const warmNavigation=()=>document.querySelectorAll('.site-header a[href],.site-footer a[href]').forEach(link=>{
-    const url=eligiblePageLink(link);
-    if(url) fetchPage(url).catch(()=>{});
-  });
+  /* Warm same-origin page HTML after first paint so first visits from body links are fast too. */
+  const warmNavigation=()=>{
+    if(navigator.connection&&navigator.connection.saveData) return;
+    const seen=new Set();
+    [...document.querySelectorAll('a[href]')].forEach((link,index)=>{
+      const url=eligiblePageLink(link);
+      if(!url) return;
+      const key=url.href.split('#')[0];
+      if(seen.has(key)) return;
+      seen.add(key);
+      setTimeout(()=>fetchPage(url).catch(()=>{}),Math.min(index,20)*35);
+    });
+  };
   if('requestIdleCallback' in window) requestIdleCallback(warmNavigation,{timeout:1800});
   else setTimeout(warmNavigation,700);
+
+  /* On real user intent, also start a few destination images before the click completes. */
+  const warmedAssets=new Set();
+  const warmLinkIntent=link=>{
+    const url=eligiblePageLink(link);
+    if(!url) return;
+    const key=url.href.split('#')[0];
+    if(warmedAssets.has(key)) return;
+    warmedAssets.add(key);
+    fetchPage(url).then(html=>{
+      const next=new DOMParser().parseFromString(html,'text/html');
+      [...next.querySelectorAll('main img[src]')].slice(0,6).forEach(img=>{
+        try{
+          const src=new URL(img.getAttribute('src'),url.href);
+          if(src.origin!==location.origin) return;
+          const preload=new Image();
+          preload.decoding='async';
+          preload.src=src.href;
+        }catch(_e){}
+      });
+    }).catch(()=>{});
+  };
+  document.addEventListener('touchstart',event=>{
+    const link=event.target.closest&&event.target.closest('a');
+    if(link) warmLinkIntent(link);
+  },{capture:true,passive:true});
+  document.addEventListener('mouseover',event=>{
+    const link=event.target.closest&&event.target.closest('a');
+    if(link) warmLinkIntent(link);
+  },{capture:true,passive:true});
 
   const responseFor=async url=>{
     try{
