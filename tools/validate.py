@@ -194,6 +194,13 @@ for rel in paired:
     if not (ROOT/rel).exists(): errors.append(f'missing Chinese page: {rel}')
     if not (ROOT/en_rel).exists(): errors.append(f'missing English page: {en_rel}')
 
+# English pages must not contain Chinese copy except the intentional language-switch label.
+for html in (ROOT/'en').rglob('html'):
+    text=html.read_text(encoding='utf-8')
+    checked=text.replace('>中文<','><')
+    if re.search(r'[\u4e00-\u9fff]',checked):
+        errors.append(str(html.relative_to(ROOT))+': unexpected Chinese text in English page')
+
 # Architectural guardrails: one behavior runtime and one deterministic presentation entry point.
 site_js=(ROOT/'assets/js/site.js').read_text(encoding='utf-8')
 for banned,reason in [
@@ -205,6 +212,8 @@ for banned,reason in [
         errors.append(f'assets/js/site.js: {reason} ({banned})')
 if 'counterpartWithContext' not in site_js:
     errors.append('assets/js/site.js: bilingual navigation must preserve supported detail context')
+if 'document.documentElement.lang=next.documentElement.lang' not in site_js:
+    errors.append('assets/js/site.js: lightweight navigation must synchronize document language')
 
 refine_css=(ROOT/'assets/css/refine.css').read_text(encoding='utf-8')
 for import_name in ('./refine-base.css','./app-core.css'):

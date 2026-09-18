@@ -190,6 +190,7 @@
 
       currentMain.replaceWith(document.importNode(nextMain,true));
       document.title=next.title||document.title;
+      document.documentElement.lang=next.documentElement.lang||document.documentElement.lang;
       document.body.className=next.body.className;
 
       renderChrome();
