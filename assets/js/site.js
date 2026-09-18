@@ -350,6 +350,7 @@
   let transitioning=false;
   let scrollTick=0;
   let navigationSeq=0;
+  let renderedPath=location.pathname+location.search;
 
   const saveScroll=(force=false)=>{
     if(transitioning&&!force) return;
@@ -410,6 +411,7 @@
     if(!nextMain||!currentMain||seq!==navigationSeq) return false;
 
     currentMain.replaceWith(document.importNode(nextMain,true));
+    renderedPath=target.pathname+target.search;
     document.documentElement.lang=doc.documentElement.lang||document.documentElement.lang;
     document.body.className=doc.body.className||'';
     updateMetadata(doc,target);
@@ -494,11 +496,18 @@
   },true);
 
   window.addEventListener('popstate',async event=>{
+    const target=new URL(location.href);
+    const targetPath=target.pathname+target.search;
     transitioning=true;
     const seq=++navigationSeq;
     try{
-      const ok=await renderPage(new URL(location.href),{push:false,restoreState:event.state||null,seq});
-      if(!ok&&seq===navigationSeq) location.reload();
+      if(targetPath===renderedPath){
+        await restorePosition(target,event.state||null);
+        renderChrome();
+      }else{
+        const ok=await renderPage(target,{push:false,restoreState:event.state||null,seq});
+        if(!ok&&seq===navigationSeq) location.reload();
+      }
     }catch(_e){
       if(seq===navigationSeq) location.reload();
     }finally{
