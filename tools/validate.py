@@ -135,6 +135,12 @@ for html in html_files:
     if '高水平科研与代表成果' in text:
         errors.append(f'{rel}: deprecated heading "高水平科研与代表成果"; use "代表性成果"')
 
+# Team portraits are tiny and critical; embed them so Safari/SW/network state cannot leave broken cards.
+for rel in ('team.html','en/team.html'):
+    text=(ROOT/rel).read_text(encoding='utf-8')
+    if text.count('src="data:image/jpeg;base64,') != 6:
+        errors.append(f'{rel}: team faculty portraits must be embedded as 6 JPEG data URLs')
+
 # Research identity/title contracts: homepage and detail page must share canonical markup and text.
 research_specs=[('01','PNL','Positioning &amp;<br>Localization'),('02','IoT-NG','Internet of Things<br>Next Generation'),('03','AIBI','Artificial Intelligence &amp;<br>Blockchain Intelligence')]
 for prefix in ('','en/'):
