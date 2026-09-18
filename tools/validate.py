@@ -230,8 +230,8 @@ for required in ('assets/css/refine-base.css','assets/css/app-core.css'):
         errors.append(f'{required}: missing shared style layer')
 
 sw=(ROOT/'sw.js').read_text(encoding='utf-8')
-if "const isImage=request.destination==='image'" not in sw or "fetch(request,{cache:'reload'})" not in sw:
-    errors.append('sw.js: image requests must be network-first so stale/broken cached portraits cannot shadow valid files')
+if "const cached=await cache.match(request,{ignoreSearch:true});" not in sw:
+    errors.append('sw.js: precached navigation/assets must remain cache-first for network-free repeat browsing')
 if 'skipWaiting(' in sw:
     errors.append('sw.js: skipWaiting must not be used; it can mix old JS with a new cached bundle')
 for cached in ('./assets/css/refine.css','./assets/css/refine-base.css','./assets/css/app-core.css'):
