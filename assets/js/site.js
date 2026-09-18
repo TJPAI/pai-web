@@ -4,87 +4,16 @@
   const previewHost='tjpai.github.io';
   const isPreview=location.hostname===previewHost;
   const prefix=isPreview?'/pai-web':'';
-  const root=p=>`${prefix}${p}`;
-  const absolute=p=>new URL(root(p),location.origin).href;
+  const root=path=>`${prefix}${path}`;
+  const absolute=path=>new URL(root(path),location.origin).href;
 
   const normalizedPath=()=>{
-    let p=location.pathname;
-    if(prefix&&p.startsWith(prefix)) p=p.slice(prefix.length)||'/';
-    if(p==='/index.html') p='/';
-    if(p==='/en/index.html') p='/en/';
-    return p;
+    let path=location.pathname;
+    if(prefix&&path.startsWith(prefix)) path=path.slice(prefix.length)||'/';
+    if(path==='/index.html') return '/';
+    if(path==='/en/index.html') return '/en/';
+    return path;
   };
-
-  const initialPath=normalizedPath();
-
-  const installSharedStyles=()=>{
-    if(document.getElementById('pai-shared-runtime-style')) return;
-    const style=document.createElement('style');
-    style.id='pai-shared-runtime-style';
-    style.textContent=`
-@media(max-width:768px){
-  .research-grid .research .research-code{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;column-gap:10px;row-gap:0;margin-bottom:22px;line-height:1}
-  .research-grid .research .research-code-main{display:contents}
-  .research-grid .research .research-index{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap}
-  .research-grid .research .research-code-main>span{font-size:17px;line-height:1.05;letter-spacing:.09em;font-weight:700;color:var(--ink);white-space:nowrap}
-  .research-grid .research .research-expansion{font-size:9px;line-height:1.12;letter-spacing:.055em;font-weight:500;text-transform:uppercase;color:var(--muted);white-space:normal;text-wrap:balance;display:block;max-width:none}
-  .research-grid .research:nth-child(1) .research-expansion{width:112px}
-  .research-grid .research:nth-child(2) .research-expansion{width:146px}
-  .research-grid .research:nth-child(3) .research-expansion{width:166px}
-  .menu-btn{position:relative!important;width:50px!important;height:50px!important;padding:0!important;margin-right:-7px!important;font-size:0!important;line-height:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;-webkit-appearance:none!important;appearance:none!important;-webkit-tap-highlight-color:transparent!important;color:#318AF5!important;touch-action:manipulation!important}
-  .menu-btn:hover,.menu-btn:active,.menu-btn:focus,.menu-btn:focus-visible{background:transparent!important;box-shadow:none!important;outline:none!important}
-  .menu-btn::before,.menu-btn::after{content:"";position:absolute;left:8px;width:34px;height:3px;border-radius:2px;background:currentColor;transform-origin:center;transition:top .18s ease,transform .18s ease,opacity .12s ease,box-shadow .18s ease;pointer-events:none}
-  .menu-btn::before{top:13px;box-shadow:0 10px 0 currentColor,0 20px 0 currentColor}
-  .menu-btn::after{top:23px;opacity:0}
-  .menu-btn[aria-expanded="true"]::before{top:23px;box-shadow:none;transform:rotate(45deg)}
-  .menu-btn[aria-expanded="true"]::after{top:23px;opacity:1;transform:rotate(-45deg)}
-}
-.pub-year-row{justify-content:flex-start!important;align-items:baseline!important;gap:12px!important}
-.pub-year-row span{padding-bottom:0!important}
-.publication-years{display:flex;flex-wrap:wrap;gap:8px 18px;margin:-20px 0 42px;padding:0 0 20px;border-bottom:1px solid var(--line)}
-.publication-year-link{appearance:none;border:0;background:transparent;padding:0;color:var(--muted);font:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.publication-year-link:hover{color:var(--ink)}
-.pub.is-collapsed{display:none}
-.pub-toggle{appearance:none;border:0;background:transparent;padding:10px 0 0;color:var(--ink);font:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.pub-toggle:hover{text-decoration:underline}
-.pub-back-top{position:fixed;right:22px;bottom:28px;z-index:45;border:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-radius:999px;padding:9px 13px;color:var(--ink);font-size:12px;font-weight:600;box-shadow:0 6px 22px rgba(17,24,39,.08);opacity:0;pointer-events:none;transform:translateY(8px);transition:.18s ease;-webkit-tap-highlight-color:transparent}
-.pub-back-top.visible{opacity:1;pointer-events:auto;transform:none}
-@media(max-width:768px){
-  .publication-years{margin:-14px 0 34px;gap:7px 16px;padding-bottom:17px}
-  .publication-year-link{font-size:12px}
-  .pub-toggle{font-size:12px;padding-top:8px}
-  .pub-back-top{right:18px;bottom:92px}
-}
-`;
-    document.head.appendChild(style);
-  };
-
-  const ensureStylesheet=href=>new Promise(resolve=>{
-    const target=new URL(href,location.href).href;
-    const existing=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>new URL(link.href,location.href).href===target);
-    if(existing){ resolve(); return; }
-    const link=document.createElement('link');
-    link.rel='stylesheet';
-    link.href=target;
-    link.onload=()=>resolve();
-    link.onerror=()=>resolve();
-    document.head.appendChild(link);
-    setTimeout(resolve,1200);
-  });
-
-  installSharedStyles();
-  ensureStylesheet(absolute('/assets/css/team.css'));
-
-  try{
-    const saved=localStorage.getItem('pai-lang');
-    const primary=(navigator.languages&&navigator.languages[0])||navigator.language||'en';
-    const preferred=saved||(String(primary).toLowerCase().startsWith('zh')?'zh':'en');
-    const isBot=/bot|crawler|spider|slurp/i.test(navigator.userAgent||'');
-    if(!isBot&&initialPath==='/'&&preferred==='en'){
-      location.replace(root('/en/'));
-      return;
-    }
-  }catch(_e){}
 
   const languageMap={
     '/':'/en/',
@@ -103,148 +32,157 @@
   };
   const reverseLanguageMap=Object.fromEntries(Object.entries(languageMap).map(([zh,en])=>[en,zh]));
 
-  const ensureLanguageLink=()=>{
-    const p=normalizedPath();
-    const isEn=p.startsWith('/en/');
-    const counterpart=isEn?(reverseLanguageMap[p]||'/'):(languageMap[p]||'/en/');
-    const label=isEn?'中文':'EN';
-    for(const container of document.querySelectorAll('.nav-links,.mobile-menu')){
-      const existing=[...container.querySelectorAll('a')].find(a=>/^(EN|中文)$/.test((a.textContent||'').trim()));
-      if(existing){ existing.href=root(counterpart); existing.textContent=label; }
-      else{
-        const a=document.createElement('a');
-        a.href=root(counterpart);
-        a.textContent=label;
-        container.appendChild(a);
-      }
+  const ensureAppStyles=()=>{
+    const href=absolute('/assets/css/app.css');
+    if([...document.querySelectorAll('link[rel="stylesheet"]')].some(link=>link.href===href)) return;
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href=href;
+    document.head.appendChild(link);
+  };
+  ensureAppStyles();
+
+  const initialPath=normalizedPath();
+  try{
+    const saved=localStorage.getItem('pai-lang');
+    const primary=(navigator.languages&&navigator.languages[0])||navigator.language||'en';
+    const preferred=saved||(String(primary).toLowerCase().startsWith('zh')?'zh':'en');
+    const isBot=/bot|crawler|spider|slurp/i.test(navigator.userAgent||'');
+    if(!isBot&&initialPath==='/'&&preferred==='en'){
+      location.replace(root('/en/'));
+      return;
     }
+  }catch(_e){}
+
+  const navItems=lang=>lang==='en'?
+    [
+      ['About','/en/about.html'],['People','/en/team.html'],['Research','/en/research.html'],
+      ['Publications','/en/publications.html'],['Join','/en/join.html'],['Contact','/en/contact.html']
+    ]:
+    [
+      ['关于我们','/about.html'],['研究团队','/team.html'],['研究方向','/research.html'],
+      ['研究成果','/publications.html'],['人才招聘','/join.html'],['联系我们','/contact.html']
+    ];
+
+  const sectionForPath=path=>{
+    if(path.includes('/people/')) return 'team';
+    if(path.endsWith('/about.html')||path==='/about.html') return 'about';
+    if(path.endsWith('/team.html')||path==='/team.html') return 'team';
+    if(path.endsWith('/research.html')||path==='/research.html') return 'research';
+    if(path.endsWith('/publications.html')||path==='/publications.html') return 'publications';
+    if(path.endsWith('/join.html')||path==='/join.html') return 'join';
+    if(path.endsWith('/contact.html')||path==='/contact.html') return 'contact';
+    return '';
   };
 
-  const ensureMobileMenu=()=>{
+  const counterpartFor=path=>{
+    const isEn=path.startsWith('/en/');
+    return isEn?(reverseLanguageMap[path]||'/'):(languageMap[path]||'/en/');
+  };
+
+  const renderChrome=()=>{
+    const path=normalizedPath();
+    const lang=path.startsWith('/en/')?'en':'zh';
+    const active=sectionForPath(path);
     const header=document.querySelector('.site-header');
-    const desktop=header?.querySelector('.nav-links');
-    if(!header||!desktop||header.querySelector('.mobile-menu')) return;
-    const mobile=document.createElement('nav');
-    mobile.className='mobile-menu';
-    mobile.innerHTML=desktop.innerHTML;
-    header.appendChild(mobile);
-  };
+    if(header){
+      const brand=header.querySelector('.brand');
+      if(brand) brand.href=root(lang==='en'?'/en/':'/');
 
-  const prepareMenuButton=()=>{
-    ensureMobileMenu();
-    const btn=document.querySelector('.menu-btn');
-    if(btn) btn.setAttribute('aria-expanded','false');
-  };
+      const nav=header.querySelector('.nav-links');
+      const items=navItems(lang);
+      const languageLabel=lang==='en'?'中文':'EN';
+      const languageHref=counterpartFor(path);
+      const markup=items.map(([label,href])=>{
+        const key=sectionForPath(href);
+        return `<a${key===active?' class="active"':''} href="${root(href)}">${label}</a>`;
+      }).join('')+`<a href="${root(languageHref)}">${languageLabel}</a>`;
+      if(nav) nav.innerHTML=markup;
 
-  const normalizeCopy=()=>{
-    if((document.documentElement.lang||'').toLowerCase().startsWith('zh')){
-      for(const h2 of document.querySelectorAll('h2')){
-        if((h2.textContent||'').trim()==='高水平科研与代表成果') h2.textContent='代表性成果';
+      let mobile=header.querySelector('.mobile-menu');
+      if(!mobile){
+        mobile=document.createElement('nav');
+        mobile.className='mobile-menu';
+        header.appendChild(mobile);
       }
+      mobile.innerHTML=markup;
+      mobile.classList.remove('open');
+
+      const button=header.querySelector('.menu-btn');
+      if(button){
+        button.type='button';
+        button.setAttribute('aria-expanded','false');
+        button.setAttribute('aria-label',lang==='en'?'Open menu':'打开菜单');
+      }
+    }
+
+    const footer=document.querySelector('.site-footer');
+    if(footer){
+      const items=navItems(lang);
+      const languageLabel=lang==='en'?'中文':'EN';
+      const links=items.map(([label,href])=>`<a href="${root(href)}">${label}</a>`).join('')+
+        `<a href="${root(counterpartFor(path))}">${languageLabel}</a>`;
+      const contact=lang==='en'?
+        `4800 Cao'an Highway, Jiading District, Shanghai<br>Tongji University Jiading Campus<br><a href="mailto:23666042@tongji.edu.cn">23666042@tongji.edu.cn</a>`:
+        `上海市嘉定区曹安公路4800号<br>同济大学嘉定校区智信馆<br><a href="mailto:23666042@tongji.edu.cn">23666042@tongji.edu.cn</a>`;
+      footer.classList.add('compact-footer');
+      footer.innerHTML=`<div class="container"><div class="footer-grid"><div><div class="brand"><strong>PAI</strong><span>PAI Research Center · Tongji University</span></div></div><div class="footer-links">${links}</div><div class="footer-contact">${contact}</div></div><div class="footer-meta"><span>© PAI Research Center</span></div></div>`;
     }
   };
 
-  const initializeChrome=()=>{
-    ensureLanguageLink();
-    prepareMenuButton();
-    normalizeCopy();
-  };
-  initializeChrome();
+  renderChrome();
 
   document.addEventListener('click',event=>{
-    const btn=event.target.closest&&event.target.closest('.menu-btn');
-    if(!btn) return;
+    const button=event.target.closest&&event.target.closest('.menu-btn');
+    if(!button) return;
     event.preventDefault();
-    event.stopImmediatePropagation();
-    ensureMobileMenu();
-    const menu=document.querySelector('.site-header .mobile-menu');
+    const header=button.closest('.site-header');
+    const menu=header&&header.querySelector('.mobile-menu');
     if(!menu) return;
-    const open=menu.classList.toggle('open');
-    btn.setAttribute('aria-expanded',open?'true':'false');
+    const open=!menu.classList.contains('open');
+    menu.classList.toggle('open',open);
+    button.setAttribute('aria-expanded',open?'true':'false');
   },true);
 
   document.addEventListener('click',event=>{
-    const a=event.target.closest&&event.target.closest('a');
-    if(!a) return;
-    const label=(a.textContent||'').trim();
+    const link=event.target.closest&&event.target.closest('a');
+    if(!link) return;
+    const label=(link.textContent||'').trim();
     try{
       if(label==='EN') localStorage.setItem('pai-lang','en');
       else if(label==='中文') localStorage.setItem('pai-lang','zh');
     }catch(_e){}
-  });
+  },true);
 
-  const addHead=(tag,attrs)=>{
-    const el=document.createElement(tag);
-    Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));
-    document.head.appendChild(el);
-    return el;
-  };
-
-  const updateMetadata=(doc,target)=>{
-    document.title=doc.title||document.title;
-    const nextDescription=doc.querySelector('meta[name="description"]')?.content;
-    let description=document.querySelector('meta[name="description"]');
-    if(nextDescription){
-      if(!description) description=addHead('meta',{name:'description',content:nextDescription});
-      else description.content=nextDescription;
-    }
-    let canonical=document.querySelector('link[rel="canonical"]');
-    if(!canonical) canonical=addHead('link',{rel:'canonical',href:target.href});
-    canonical.href=target.href.split('#')[0];
-  };
-
-  let siteCacheReady=Promise.resolve();
+  let siteReady=Promise.resolve();
   if('serviceWorker' in navigator){
-    siteCacheReady=(async()=>{
+    siteReady=(async()=>{
       try{
         const registration=await navigator.serviceWorker.register(root('/sw.js'),{updateViaCache:'none'});
         await navigator.serviceWorker.ready;
-        if(registration.waiting) registration.waiting.postMessage({type:'SKIP_WAITING'});
+        try{
+          if(sessionStorage.getItem('pai-sw-checked')!=='1'){
+            sessionStorage.setItem('pai-sw-checked','1');
+            registration.update().catch(()=>{});
+          }
+        }catch(_e){}
       }catch(_e){}
     })();
   }
 
-  const cacheVersion=name=>{
-    const m=String(name).match(/-(\d+)$/);
-    return m?Number(m[1]):0;
-  };
-
-  const cacheNames=async()=>{
-    if(!('caches' in window)) return [];
-    return (await caches.keys())
-      .filter(name=>name.startsWith('pai-site-'))
-      .sort((a,b)=>cacheVersion(b)-cacheVersion(a));
-  };
-
-  const cachedResponse=async url=>{
-    if(!('caches' in window)) return null;
-    for(const name of await cacheNames()){
-      const cache=await caches.open(name);
-      let hit=await cache.match(url.href,{ignoreSearch:true});
-      if(hit) return hit;
-      if(url.pathname.endsWith('/')){
-        const indexUrl=new URL(url.href);
-        indexUrl.pathname=url.pathname+'index.html';
-        hit=await cache.match(indexUrl.href,{ignoreSearch:true});
-        if(hit) return hit;
-      }
-    }
-    return null;
-  };
-
   const responseFor=async url=>{
-    const cached=await cachedResponse(url);
-    if(cached) return cached;
     try{
-      const response=await fetch(url.href,{cache:'force-cache',credentials:'same-origin'});
+      const response=await fetch(url.href,{credentials:'same-origin',cache:'no-store'});
       return response&&response.ok?response:null;
-    }catch(_e){ return null; }
+    }catch(_e){
+      return null;
+    }
   };
 
   let publicationDataPromise=null;
   const jsonFor=async path=>{
     const response=await responseFor(new URL(absolute(path)));
-    if(!response||!response.ok) throw new Error('resource unavailable');
+    if(!response) throw new Error('resource unavailable');
     return response.json();
   };
   const getPublicationData=()=>{
@@ -258,9 +196,17 @@
   };
   getPublicationData().catch(()=>{});
 
-  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[char]));
   const doiHref=doi=>'https://doi.org/'+String(doi).trim().split('/').map(encodeURIComponent).join('/');
-  const getExpandedYears=()=>[...document.querySelectorAll('.pub-group[data-expanded="true"]')].map(el=>el.dataset.year).filter(Boolean);
+  const getExpandedYears=()=>[...document.querySelectorAll('.pub-group[data-expanded="true"]')]
+    .map(element=>element.dataset.year).filter(Boolean);
+
+  const updateBackTopVisibility=()=>{
+    const button=document.querySelector('[data-pub-back-top]');
+    if(button) button.classList.toggle('visible',window.scrollY>700);
+  };
 
   const initPublications=async(expandedYears=[])=>{
     const host=document.querySelector('[data-publications]');
@@ -268,27 +214,27 @@
     try{
       const items=await getPublicationData();
       const byYear=new Map();
-      items.forEach(item=>{
+      for(const item of items){
         if(!byYear.has(item.year)) byYear.set(item.year,[]);
         byYear.get(item.year).push(item);
-      });
+      }
       const en=(document.documentElement.lang||'').toLowerCase().startsWith('en');
       const expanded=new Set((expandedYears||[]).map(String));
       const fragment=document.createDocumentFragment();
-      const years=[...byYear.keys()];
 
-      const nav=document.createElement('nav');
-      nav.className='publication-years';
-      nav.setAttribute('aria-label',en?'Publication years':'论文年份');
-      years.forEach(year=>{
+      const years=[...byYear.keys()];
+      const yearNav=document.createElement('nav');
+      yearNav.className='publication-years';
+      yearNav.setAttribute('aria-label',en?'Publication years':'论文年份');
+      for(const year of years){
         const button=document.createElement('button');
         button.type='button';
         button.className='publication-year-link';
         button.dataset.pubYearJump=String(year);
         button.textContent=String(year);
-        nav.appendChild(button);
-      });
-      fragment.appendChild(nav);
+        yearNav.appendChild(button);
+      }
+      fragment.appendChild(yearNav);
 
       for(const [year,pubs] of byYear){
         const section=document.createElement('section');
@@ -299,14 +245,17 @@
         section.dataset.expanded=isExpanded?'true':'false';
         const count=`${pubs.length} publication${pubs.length===1?'':'s'}`;
         section.innerHTML=`<div class="pub-year-row"><h2 class="pub-year">${year}</h2><span>${count}</span></div>`;
-        pubs.forEach((p,index)=>{
+
+        pubs.forEach((publication,index)=>{
           const article=document.createElement('article');
           article.className='pub'+(!isExpanded&&index>=4?' is-collapsed':'');
           article.dataset.pubExtra=index>=4?'1':'0';
-          const actions=p.doi?`<div class="pub-actions"><a href="${esc(doiHref(p.doi))}" target="_blank" rel="noopener">DOI ↗</a></div>`:'';
-          article.innerHTML=`<h3>${esc(p.title)}</h3><p class="pub-authors">${esc(p.authors)}</p><p class="pub-venue">${esc(p.venue)} · ${year}</p>${actions}`;
+          const actions=publication.doi?
+            `<div class="pub-actions"><a href="${esc(doiHref(publication.doi))}" target="_blank" rel="noopener">DOI ↗</a></div>`:'';
+          article.innerHTML=`<h3>${esc(publication.title)}</h3><p class="pub-authors">${esc(publication.authors)}</p><p class="pub-venue">${esc(publication.venue)} · ${year}</p>${actions}`;
           section.appendChild(article);
         });
+
         if(pubs.length>4){
           const toggle=document.createElement('button');
           toggle.type='button';
@@ -331,13 +280,8 @@
       updateBackTopVisibility();
     }catch(_e){
       const en=(document.documentElement.lang||'').toLowerCase().startsWith('en');
-      host.innerHTML=`<p class="muted">${en?'Publications are temporarily unavailable. Please refresh later.':'论文数据暂时无法载入，请稍后刷新。'}</p>`;
+      host.innerHTML=`<p class="muted">${en?'Publications are temporarily unavailable. Please try again later.':'论文数据暂时无法载入，请稍后再试。'}</p>`;
     }
-  };
-
-  const updateBackTopVisibility=()=>{
-    const button=document.querySelector('[data-pub-back-top]');
-    if(button) button.classList.toggle('visible',window.scrollY>700);
   };
 
   document.addEventListener('click',event=>{
@@ -347,6 +291,7 @@
       document.getElementById(`pub-year-${jump.dataset.pubYearJump}`)?.scrollIntoView({behavior:'smooth',block:'start'});
       return;
     }
+
     const toggle=event.target.closest&&event.target.closest('[data-pub-toggle]');
     if(toggle){
       event.preventDefault();
@@ -362,6 +307,7 @@
       saveScroll(true);
       return;
     }
+
     const top=event.target.closest&&event.target.closest('[data-pub-back-top]');
     if(top){
       event.preventDefault();
@@ -369,25 +315,30 @@
     }
   },true);
 
-  const syncHeadStyles=async(doc,targetUrl)=>{
-    const waits=[];
-    for(const link of doc.querySelectorAll('head link[rel="stylesheet"]')){
-      const raw=link.getAttribute('href');
-      if(raw) waits.push(ensureStylesheet(new URL(raw,targetUrl).href));
+  const addHead=(tag,attrs)=>{
+    const element=document.createElement(tag);
+    Object.entries(attrs).forEach(([key,value])=>element.setAttribute(key,value));
+    document.head.appendChild(element);
+    return element;
+  };
+
+  const updateMetadata=(doc,target)=>{
+    document.title=doc.title||document.title;
+    const nextDescription=doc.querySelector('meta[name="description"]')?.content;
+    let description=document.querySelector('meta[name="description"]');
+    if(nextDescription){
+      if(!description) description=addHead('meta',{name:'description',content:nextDescription});
+      else description.content=nextDescription;
     }
-    document.querySelectorAll('style[data-pai-page-head]').forEach(el=>el.remove());
-    for(const source of doc.querySelectorAll('head > style')){
-      const copy=document.createElement('style');
-      copy.dataset.paiPageHead='1';
-      copy.textContent=source.textContent||'';
-      document.head.appendChild(copy);
-    }
-    await Promise.all(waits);
+    let canonical=document.querySelector('link[rel="canonical"]');
+    if(!canonical) canonical=addHead('link',{rel:'canonical',href:target.href});
+    canonical.href=target.href.split('#')[0];
   };
 
   try{ history.scrollRestoration='manual'; }catch(_e){}
   let transitioning=false;
   let scrollTick=0;
+  let navigationSeq=0;
 
   const saveScroll=(force=false)=>{
     if(transitioning&&!force) return;
@@ -402,7 +353,9 @@
   };
 
   if(!history.state||history.state.paiRoute!==true){
-    try{ history.replaceState({paiRoute:true,scrollX:window.scrollX,scrollY:window.scrollY,pubExpanded:getExpandedYears()},'',location.href); }catch(_e){}
+    try{
+      history.replaceState({paiRoute:true,scrollX:window.scrollX,scrollY:window.scrollY,pubExpanded:getExpandedYears()},'',location.href);
+    }catch(_e){}
   }
 
   window.addEventListener('scroll',()=>{
@@ -430,46 +383,42 @@
     };
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
       apply();
-      setTimeout(apply,90);
-      setTimeout(()=>{ apply(); resolve(); },320);
+      setTimeout(()=>{apply();resolve();},140);
     }));
   });
 
-  const renderPage=async(target,{push=true,restoreState=null}={})=>{
+  const renderPage=async(target,{push=true,restoreState=null,seq=0}={})=>{
     const requestUrl=new URL(target.href);
     requestUrl.hash='';
     const response=await responseFor(requestUrl);
-    if(!response) return false;
-    const doc=new DOMParser().parseFromString(await response.text(),'text/html');
-    const nextHeader=doc.querySelector('.site-header');
-    const nextMain=doc.querySelector('main');
-    const nextFooter=doc.querySelector('.site-footer');
-    const currentHeader=document.querySelector('.site-header');
-    const currentMain=document.querySelector('main');
-    const currentFooter=document.querySelector('.site-footer');
-    if(!nextHeader||!nextMain||!nextFooter||!currentHeader||!currentMain||!currentFooter) return false;
+    if(!response||seq!==navigationSeq) return false;
 
-    await syncHeadStyles(doc,requestUrl);
-    currentHeader.replaceWith(document.importNode(nextHeader,true));
+    const doc=new DOMParser().parseFromString(await response.text(),'text/html');
+    const nextMain=doc.querySelector('main');
+    const currentMain=document.querySelector('main');
+    if(!nextMain||!currentMain||seq!==navigationSeq) return false;
+
     currentMain.replaceWith(document.importNode(nextMain,true));
-    currentFooter.replaceWith(document.importNode(nextFooter,true));
     document.documentElement.lang=doc.documentElement.lang||document.documentElement.lang;
     document.body.className=doc.body.className||'';
     updateMetadata(doc,target);
 
-    if(push) history.pushState({paiRoute:true,scrollX:0,scrollY:0,pubExpanded:[]},'',target.pathname+target.search+target.hash);
+    if(push){
+      history.pushState({paiRoute:true,scrollX:0,scrollY:0,pubExpanded:[]},'',target.pathname+target.search+target.hash);
+    }
 
-    initializeChrome();
+    renderChrome();
     await initPublications(restoreState?.pubExpanded||[]);
+    if(seq!==navigationSeq) return false;
     await restorePosition(target,restoreState);
     return true;
   };
 
-  const isRouteableInternal=a=>{
-    if(!a||a.target==='_blank'||a.hasAttribute('download')) return false;
-    const raw=a.getAttribute('href')||'';
+  const isRouteableInternal=link=>{
+    if(!link||link.target==='_blank'||link.hasAttribute('download')) return false;
+    const raw=link.getAttribute('href')||'';
     if(!raw||raw.startsWith('mailto:')||raw.startsWith('tel:')||raw.startsWith('javascript:')) return false;
-    const target=new URL(a.href,location.href);
+    const target=new URL(link.href,location.href);
     if(target.origin!==location.origin) return false;
     if(prefix&&!target.pathname.startsWith(prefix)) return false;
     return target.pathname.endsWith('/')||target.pathname.endsWith('.html');
@@ -478,21 +427,21 @@
   document.addEventListener('click',async event=>{
     if(event.defaultPrevented||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey) return;
     if(typeof event.button==='number'&&event.button!==0) return;
-    const a=event.target.closest&&event.target.closest('a');
-    if(!isRouteableInternal(a)) return;
+    const link=event.target.closest&&event.target.closest('a');
+    if(!isRouteableInternal(link)) return;
 
-    const target=new URL(a.href,location.href);
+    const target=new URL(link.href,location.href);
     event.preventDefault();
-    event.stopImmediatePropagation();
+
+    const menu=document.querySelector('.site-header .mobile-menu');
+    const button=document.querySelector('.site-header .menu-btn');
+    menu?.classList.remove('open');
+    button?.setAttribute('aria-expanded','false');
 
     const currentNoHash=location.origin+location.pathname+location.search;
     const targetNoHash=target.origin+target.pathname+target.search;
 
     if(currentNoHash===targetNoHash){
-      const menu=document.querySelector('.mobile-menu');
-      const btn=document.querySelector('.menu-btn');
-      menu?.classList.remove('open');
-      btn?.setAttribute('aria-expanded','false');
       if(target.hash&&target.hash!==location.hash){
         saveScroll(true);
         history.pushState({paiRoute:true,scrollX:0,scrollY:0,pubExpanded:getExpandedYears()},'',target.pathname+target.search+target.hash);
@@ -509,27 +458,36 @@
 
     saveScroll(true);
     transitioning=true;
+    const seq=++navigationSeq;
     try{
-      const ok=await renderPage(target,{push:true,restoreState:null});
-      if(!ok) throw new Error('route failed');
-    }catch(_e){}
-    finally{
-      transitioning=false;
-      saveScroll(true);
+      const ok=await renderPage(target,{push:true,restoreState:null,seq});
+      if(!ok&&seq===navigationSeq) location.assign(target.href);
+    }catch(_e){
+      if(seq===navigationSeq) location.assign(target.href);
+    }finally{
+      if(seq===navigationSeq){
+        transitioning=false;
+        saveScroll(true);
+      }
     }
   },true);
 
   window.addEventListener('popstate',async event=>{
     transitioning=true;
+    const seq=++navigationSeq;
     try{
-      await renderPage(new URL(location.href),{push:false,restoreState:event.state||null});
-    }catch(_e){}
-    finally{
-      transitioning=false;
-      saveScroll(true);
+      const ok=await renderPage(new URL(location.href),{push:false,restoreState:event.state||null,seq});
+      if(!ok&&seq===navigationSeq) location.reload();
+    }catch(_e){
+      if(seq===navigationSeq) location.reload();
+    }finally{
+      if(seq===navigationSeq){
+        transitioning=false;
+        saveScroll(true);
+      }
     }
   });
 
   initPublications(history.state?.pubExpanded||[]);
-  siteCacheReady.catch(()=>{});
+  siteReady.catch(()=>{});
 })();
