@@ -1,0 +1,73 @@
+name: One-off language switch scroll preservation fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-language-scroll.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Patch language-switch scroll preservation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/js/site.js')
+          t=p.read_text(encoding='utf-8')
+          old="const applyPage=async(url,{historyMode='push'}={})=>{"
+          new="const applyPage=async(url,{historyMode='push',preserveScrollY=null}={})=>{"
+          if old not in t:
+              raise SystemExit('applyPage signature not found')
+          t=t.replace(old,new,1)
+          old="""      if(url.hash){
+        requestAnimationFrame(()=>document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView());
+      }else{
+        scrollTo(0,0);
+      }
+"""
+          new="""      if(Number.isFinite(preserveScrollY)){
+        requestAnimationFrame(()=>{
+          const maxY=Math.max(0,document.documentElement.scrollHeight-innerHeight);
+          scrollTo(0,Math.min(preserveScrollY,maxY));
+        });
+      }else if(url.hash){
+        requestAnimationFrame(()=>document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView());
+      }else{
+        scrollTo(0,0);
+      }
+"""
+          if old not in t:
+              raise SystemExit('scroll behavior block not found')
+          t=t.replace(old,new,1)
+          old="""    event.preventDefault();
+    applyPage(url).catch(()=>{ location.href=url.href; });
+"""
+          new="""    event.preventDefault();
+    const label=(link.textContent||'').trim();
+    const isLanguageSwitch=label==='EN'||label==='中文';
+    const options=isLanguageSwitch?{preserveScrollY:window.scrollY}:undefined;
+    applyPage(url,options).catch(()=>{ location.href=url.href; });
+"""
+          if old not in t:
+              raise SystemExit('navigation click block not found')
+          t=t.replace(old,new,1)
+          p.write_text(t,encoding='utf-8')
+          PY
+          python tools/validate.py
+          node --check assets/js/site.js
+      - name: Commit focused fix and remove one-off workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/fix-language-scroll.yml
+          git add assets/js/site.js
+          git commit -m 'fix: preserve reading position across language switch'
+          git push origin HEAD:main
