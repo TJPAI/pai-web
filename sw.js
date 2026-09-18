@@ -1,6 +1,6 @@
-const CACHE='pai-site-v20260918-13';
+const CACHE='pai-site-v20260918-14';
 const CORE=[
-  './','./index.html','./about.html','./research.html','./team.html','./publications.html','./join.html','./contact.html',
+  './','./index.html','./about.html','./research.html','./team.html','./publications.html','./join.html','./contact.html','./news.html',
   './en/','./en/index.html','./en/about.html','./en/research.html','./en/team.html','./en/publications.html','./en/join.html','./en/contact.html',
   './people/erwu-liu.html','./people/rui-wang.html','./people/gang-shen.html','./people/dunhui-xiao.html','./people/shuyan-hu.html','./people/yan-liu.html',
   './en/people/erwu-liu.html','./en/people/rui-wang.html','./en/people/gang-shen.html','./en/people/dunhui-xiao.html','./en/people/shuyan-hu.html','./en/people/yan-liu.html',
