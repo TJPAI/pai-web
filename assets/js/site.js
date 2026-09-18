@@ -226,7 +226,7 @@
     const en=publicationLanguage()==='en';
     button.dataset.open=allOpen?'true':'false';
     button.setAttribute('aria-expanded',allOpen?'true':'false');
-    button.textContent=allOpen?(en?'Collapse all ↑':'收起全部年份 ↑'):(en?'Expand all ↓':'展开全部年份 ↓');
+    button.textContent=allOpen?(en?'Collapse':'收起'):(en?'All':'全部');
   };
 
   const updateBackTopVisibility=()=>{
@@ -263,22 +263,14 @@
         button.textContent=String(year);
         yearNav.appendChild(button);
       }
-      toolbar.appendChild(yearNav);
-
-      const controls=document.createElement('div');
-      controls.className='publication-controls';
-      const summary=document.createElement('span');
-      summary.className='publication-summary';
-      summary.textContent=en?`${items.length} publications · ${years.length} years · ${PUB_VISIBLE_DEFAULT} shown per year`:`${items.length} 篇论文 · ${years.length} 个年份 · 每年默认显示 ${PUB_VISIBLE_DEFAULT} 篇`;
-      controls.appendChild(summary);
       if([...byYear.values()].some(pubs=>pubs.length>PUB_VISIBLE_DEFAULT)){
         const allToggle=document.createElement('button');
         allToggle.type='button';
-        allToggle.className='pub-toggle-all';
+        allToggle.className='publication-year-link pub-toggle-all';
         allToggle.dataset.pubToggleAll='1';
-        controls.appendChild(allToggle);
+        yearNav.appendChild(allToggle);
       }
-      toolbar.appendChild(controls);
+      toolbar.appendChild(yearNav);
       fragment.appendChild(toolbar);
 
       for(const [year,pubs] of byYear){
