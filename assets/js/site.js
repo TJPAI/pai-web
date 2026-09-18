@@ -9,6 +9,7 @@
   if(path==='/en/index.html') path='/en/';
   const isEn=path.startsWith('/en/');
   const root=(p)=>`${prefix}${p}`;
+  let siteCacheReady=Promise.resolve();
 
   /* Homepage language selection: explicit user choice wins; otherwise use OS/browser language. */
   try{
@@ -55,9 +56,20 @@
     }
   });
 
+  const bindMenuToggle=()=>{
+    const menuBtn=document.querySelector('.menu-btn');
+    const mobileMenu=document.querySelector('.mobile-menu');
+    if(!menuBtn||!mobileMenu||menuBtn.dataset.bound==='1') return;
+    menuBtn.dataset.bound='1';
+    if(!menuBtn.hasAttribute('aria-expanded')) menuBtn.setAttribute('aria-expanded','false');
+    menuBtn.addEventListener('click',()=>{
+      const open=mobileMenu.classList.toggle('open');
+      menuBtn.setAttribute('aria-expanded',open?'true':'false');
+    });
+  };
+
   const nav=document.querySelector('.site-header .nav');
   const navLinks=document.querySelector('.nav-links');
-  const menuBtn=document.querySelector('.menu-btn');
   let mobileMenu=document.querySelector('.mobile-menu');
 
   const hasLanguageLink=(el)=>el&&[...el.querySelectorAll('a')].some(a=>/^(EN|中文)$/.test(a.textContent.trim()));
@@ -80,13 +92,7 @@
     mobileMenu.appendChild(lang);
   }
 
-  if(menuBtn&&mobileMenu){
-    if(!menuBtn.hasAttribute('aria-expanded')) menuBtn.setAttribute('aria-expanded','false');
-    menuBtn.addEventListener('click',()=>{
-      const open=mobileMenu.classList.toggle('open');
-      menuBtn.setAttribute('aria-expanded',open?'true':'false');
-    });
-  }
+  bindMenuToggle();
 
   if(isEn&&path.startsWith('/en/people/')){
     const footer=document.querySelector('.site-footer.compact-footer');
@@ -113,16 +119,106 @@
 
   /* Install/cache once, then let the browser check sw.js once per browsing session for updates. */
   if('serviceWorker' in navigator){
-    (async()=>{
+    siteCacheReady=(async()=>{
       try{
-        if(sessionStorage.getItem('pai-sw-checked')==='1') return;
-        const registration=await navigator.serviceWorker.register(root('/sw.js'),{updateViaCache:'none'});
-        sessionStorage.setItem('pai-sw-checked','1');
+        let registration;
+        if(sessionStorage.getItem('pai-sw-checked')==='1'){
+          registration=await navigator.serviceWorker.getRegistration(root('/'));
+        }else{
+          registration=await navigator.serviceWorker.register(root('/sw.js'),{updateViaCache:'none'});
+          sessionStorage.setItem('pai-sw-checked','1');
+        }
         await navigator.serviceWorker.ready;
-        // register/update of sw.js is the lightweight background update check.
-        // If sw.js changed, the new worker pre-caches the complete site before activation.
-        if(registration.waiting) registration.waiting.postMessage({type:'SKIP_WAITING'});
+        if(registration&&registration.waiting) registration.waiting.postMessage({type:'SKIP_WAITING'});
       }catch(_e){}
     })();
   }
+
+  /*
+   * App-like menu navigation.
+   * Header/footer navigation is rendered from the pre-cached HTML with History API,
+   * so Safari/Chrome does not perform a document navigation or show its loading bar.
+   */
+  const cachedResponseFor=async(url)=>{
+    await siteCacheReady;
+    if(!('caches' in window)) return null;
+    const names=(await caches.keys()).filter(name=>name.startsWith('pai-site-'));
+    for(let i=names.length-1;i>=0;i--){
+      const cache=await caches.open(names[i]);
+      const hit=await cache.match(url.href,{ignoreSearch:true});
+      if(hit) return hit;
+      if(url.pathname.endsWith('/')){
+        const indexUrl=new URL(url.href);
+        indexUrl.pathname=url.pathname+'index.html';
+        const indexHit=await cache.match(indexUrl.href,{ignoreSearch:true});
+        if(indexHit) return indexHit;
+      }
+    }
+    return null;
+  };
+
+  const renderCachedPage=async(target,push)=>{
+    const response=await cachedResponseFor(target);
+    if(!response) return false;
+    const html=await response.text();
+    const doc=new DOMParser().parseFromString(html,'text/html');
+    const nextHeader=doc.querySelector('.site-header');
+    const nextMain=doc.querySelector('main');
+    const nextFooter=doc.querySelector('.site-footer');
+    if(!nextHeader||!nextMain||!nextFooter) return false;
+
+    const currentHeader=document.querySelector('.site-header');
+    const currentMain=document.querySelector('main');
+    const currentFooter=document.querySelector('.site-footer');
+    if(!currentHeader||!currentMain||!currentFooter) return false;
+
+    currentHeader.replaceWith(document.importNode(nextHeader,true));
+    currentMain.replaceWith(document.importNode(nextMain,true));
+    currentFooter.replaceWith(document.importNode(nextFooter,true));
+    document.title=doc.title||document.title;
+    document.documentElement.lang=doc.documentElement.lang||document.documentElement.lang;
+    document.body.className=doc.body.className||'';
+
+    const nextDescription=doc.querySelector('meta[name="description"]')?.content;
+    const currentDescription=document.querySelector('meta[name="description"]');
+    if(nextDescription&&currentDescription) currentDescription.content=nextDescription;
+    const canonicalLink=document.querySelector('link[rel="canonical"]');
+    if(canonicalLink) canonicalLink.href=target.href;
+    const ogUrl=document.querySelector('meta[property="og:url"]');
+    if(ogUrl) ogUrl.content=target.href;
+    const ogTitle=document.querySelector('meta[property="og:title"]');
+    if(ogTitle) ogTitle.content=document.title;
+    if(push) history.pushState({paiCachedRoute:true},'',target.href);
+    bindMenuToggle();
+    window.scrollTo(0,0);
+    return true;
+  };
+
+  const isAppMenuLink=(a)=>!!a.closest('.site-header,.site-footer');
+  document.addEventListener('click',async(event)=>{
+    if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey) return;
+    const a=event.target.closest&&event.target.closest('a');
+    if(!a||!isAppMenuLink(a)||a.target==='_blank'||a.hasAttribute('download')) return;
+    const href=a.getAttribute('href')||'';
+    if(!href||href.startsWith('#')||href.startsWith('mailto:')||href.startsWith('tel:')||href.startsWith('javascript:')) return;
+    const target=new URL(a.href,location.href);
+    if(target.origin!==location.origin) return;
+    event.preventDefault();
+    try{
+      const rendered=await renderCachedPage(target,true);
+      if(!rendered) location.href=target.href;
+    }catch(_e){
+      location.href=target.href;
+    }
+  });
+
+  window.addEventListener('popstate',async()=>{
+    const target=new URL(location.href);
+    try{
+      const rendered=await renderCachedPage(target,false);
+      if(!rendered) location.reload();
+    }catch(_e){
+      location.reload();
+    }
+  });
 })();
