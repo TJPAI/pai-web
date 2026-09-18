@@ -436,143 +436,19 @@
     }));
   });
 
-  const renderPage=async(target,{push=true,restoreState=null,seq=0}={})=>{
-    const requestUrl=new URL(target.href);
-    requestUrl.hash='';
-    const response=await responseFor(requestUrl);
-    if(!response||seq!==navigationSeq) return false;
-
-    const doc=new DOMParser().parseFromString(await response.text(),'text/html');
-    const nextMain=doc.querySelector('main');
-    const currentMain=document.querySelector('main');
-    if(!nextMain||!currentMain||seq!==navigationSeq) return false;
-
-    currentMain.replaceWith(document.importNode(nextMain,true));
-    renderedPath=target.pathname+target.search;
-    document.documentElement.lang=doc.documentElement.lang||document.documentElement.lang;
-    document.body.className=doc.body.className||'';
-    updateMetadata(doc,target);
-
-    if(push){
-      history.pushState({paiRoute:true,scrollX:0,scrollY:0,pubExpanded:[]},'',target.pathname+target.search+target.hash);
-    }
-
-    renderChrome();
-    await initPublications(restoreState?.pubExpanded||[]);
-    if(seq!==navigationSeq) return false;
-    await restorePosition(target,restoreState);
-    return true;
-  };
-
-  const isRouteableInternal=link=>{
-    if(!link||link.target==='_blank'||link.hasAttribute('download')) return false;
-    const raw=link.getAttribute('href')||'';
-    if(!raw||raw.startsWith('mailto:')||raw.startsWith('tel:')||raw.startsWith('javascript:')) return false;
-    const target=new URL(link.href,location.href);
-    if(target.origin!==location.origin) return false;
-    if(prefix&&!target.pathname.startsWith(prefix)) return false;
-    return target.pathname.endsWith('/')||target.pathname.endsWith('.html');
-  };
-
-  document.addEventListener('click',async event=>{
-    if(event.defaultPrevented||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey) return;
-    if(typeof event.button==='number'&&event.button!==0) return;
+  /* Keep navigation deliberately browser-native. This site is small and static;
+     native navigation gives Safari authoritative history/back-forward behavior
+     and avoids DOM/history/cache races from a custom SPA router. */
+  document.addEventListener('click',event=>{
     const link=event.target.closest&&event.target.closest('a');
-    if(!isRouteableInternal(link)) return;
-
-    const target=new URL(link.href,location.href);
-    event.preventDefault();
-    document.querySelector('.site-header .mobile-menu')?.classList.remove('open');
-    document.querySelector('.site-header .menu-btn')?.setAttribute('aria-expanded','false');
-
-    const currentNoHash=location.origin+location.pathname+location.search;
-    const targetNoHash=target.origin+target.pathname+target.search;
-
-    if(currentNoHash===targetNoHash){
-      if(target.hash){
-        if(target.hash!==location.hash){
-          saveScroll(true);
-          history.pushState({paiRoute:true,scrollX:0,scrollY:0,pubExpanded:getExpandedYears()},'',target.pathname+target.search+target.hash);
-        }
-        transitioning=true;
-        await restorePosition(target,null);
-        transitioning=false;
-        renderChrome();
-        saveScroll(true);
-      }else{
-        if(location.hash){
-          saveScroll(true);
-          history.pushState({paiRoute:true,scrollX:0,scrollY:0,pubExpanded:getExpandedYears()},'',target.pathname+target.search);
-        }
-        transitioning=true;
-        jumpScroll(0,0);
-        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-        transitioning=false;
-        renderChrome();
-        saveScroll(true);
-      }
-      return;
-    }
-
-    saveScroll(true);
-    const fromHref=location.href;
-    const fromScrollX=window.scrollX;
-    const fromScrollY=window.scrollY;
-    const fromPubExpanded=getExpandedYears();
-    transitioning=true;
-    const seq=++navigationSeq;
+    if(!link) return;
+    const label=(link.textContent||'').trim();
     try{
-      const ok=await renderPage(target,{push:true,restoreState:null,seq});
-      if(!ok&&seq===navigationSeq){
-        /* renderPage may already have replaced <main> before a later async step
-           fails. Restore the source URL/state before falling back to a full
-           navigation, otherwise Safari can retain mismatched history entries. */
-        try{
-          history.replaceState({
-            paiRoute:true,scrollX:fromScrollX,scrollY:fromScrollY,pubExpanded:fromPubExpanded
-          },'',fromHref);
-        }catch(_e){}
-        location.assign(target.href);
-      }
-    }catch(_e){
-      if(seq===navigationSeq){
-        try{
-          history.replaceState({
-            paiRoute:true,scrollX:fromScrollX,scrollY:fromScrollY,pubExpanded:fromPubExpanded
-          },'',fromHref);
-        }catch(_restoreError){}
-        location.assign(target.href);
-      }
-    }finally{
-      if(seq===navigationSeq){
-        transitioning=false;
-        saveScroll(true);
-      }
-    }
+      if(label==='EN') localStorage.setItem('pai-lang','en');
+      else if(label==='中文') localStorage.setItem('pai-lang','zh');
+    }catch(_e){}
   },true);
 
-  window.addEventListener('popstate',async event=>{
-    const target=new URL(location.href);
-    const targetPath=target.pathname+target.search;
-    transitioning=true;
-    const seq=++navigationSeq;
-    try{
-      if(targetPath===renderedPath){
-        await restorePosition(target,event.state||null);
-        renderChrome();
-      }else{
-        const ok=await renderPage(target,{push:false,restoreState:event.state||null,seq});
-        if(!ok&&seq===navigationSeq) location.reload();
-      }
-    }catch(_e){
-      if(seq===navigationSeq) location.reload();
-    }finally{
-      if(seq===navigationSeq){
-        transitioning=false;
-        saveScroll(true);
-      }
-    }
-  });
 
   initPublications(history.state?.pubExpanded||[]);
   siteReady.catch(()=>{});
