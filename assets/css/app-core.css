@@ -6,24 +6,24 @@ html{scroll-behavior:auto!important}
 main [id]{scroll-margin-top:88px}
 @media(max-width:768px){main [id]{scroll-margin-top:74px}}
 
-/* Mobile research labels: keep the compact identifier visually left/top aligned. */
+/* Mobile research labels: compact, natural left-aligned flex layout. */
 @media(max-width:768px){
-  .research-grid .research .research-code{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:start;column-gap:10px;row-gap:0;margin-bottom:22px;line-height:1;text-align:left}
+  .research-grid .research .research-code{display:flex!important;align-items:flex-start!important;justify-content:flex-start!important;gap:10px!important;margin-bottom:22px;line-height:1;text-align:left!important;width:max-content;max-width:100%}
   .research-grid .research .research-code-main{display:contents}
-  .research-grid .research .research-index{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap}
-  .research-grid .research .research-code-main>span{font-size:17px;line-height:1.05;letter-spacing:.09em;font-weight:700;color:var(--ink);white-space:nowrap}
-  .research-grid .research .research-expansion{font-size:9px;line-height:1.12;letter-spacing:.055em;font-weight:500;text-transform:uppercase;color:var(--muted);white-space:normal;text-wrap:balance;display:block;max-width:none;text-align:left;margin:0}
+  .research-grid .research .research-index{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap;flex:0 0 auto}
+  .research-grid .research .research-code-main>span{font-size:17px;line-height:1.05;letter-spacing:.09em;font-weight:700;color:var(--ink);white-space:nowrap;flex:0 0 auto}
+  .research-grid .research .research-expansion{font-size:9px;line-height:1.12;letter-spacing:.055em;font-weight:500;text-transform:uppercase;color:var(--muted);white-space:normal;text-wrap:balance;display:block;max-width:none;text-align:left!important;margin:0!important;padding:0!important;align-self:flex-start!important;flex:0 0 auto}
   .research-grid .research:nth-child(1) .research-expansion{width:112px}
   .research-grid .research:nth-child(2) .research-expansion{width:146px}
   .research-grid .research:nth-child(3) .research-expansion{width:166px}
 }
 
-/* Mobile research labels: detail page. Top-align 01 / PNL / expansion instead of visually centering a two-line label. */
+/* Mobile research labels: detail page. Keep 01 / PNL / expansion as one left-aligned cluster. */
 @media(max-width:768px){
-  .research-direction .direction-id{display:grid!important;grid-template-columns:auto auto max-content;align-items:start!important;column-gap:10px!important;row-gap:0!important;margin-bottom:18px!important;line-height:1!important;text-align:left!important}
-  .research-direction .direction-id>span{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap}
-  .research-direction .direction-id>strong{font-size:17px!important;line-height:1.05!important;letter-spacing:.09em!important;font-weight:700!important;color:var(--ink)!important;white-space:nowrap}
-  .research-direction .direction-id>em{display:block!important;align-self:start!important;margin:0!important;font-size:9px!important;line-height:1.12!important;letter-spacing:.055em!important;font-style:normal!important;font-weight:500!important;text-transform:uppercase!important;color:var(--muted)!important;white-space:normal!important;text-align:left!important}
+  .research-direction .direction-id{display:flex!important;align-items:flex-start!important;justify-content:flex-start!important;gap:10px!important;margin-bottom:18px!important;line-height:1!important;text-align:left!important;width:max-content!important;max-width:100%!important}
+  .research-direction .direction-id>span{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap;flex:0 0 auto}
+  .research-direction .direction-id>strong{font-size:17px!important;line-height:1.05!important;letter-spacing:.09em!important;font-weight:700!important;color:var(--ink)!important;white-space:nowrap;flex:0 0 auto}
+  .research-direction .direction-id>em{display:block!important;align-self:flex-start!important;margin:0!important;padding:0!important;font-size:9px!important;line-height:1.12!important;letter-spacing:.055em!important;font-style:normal!important;font-weight:500!important;text-transform:uppercase!important;color:var(--muted)!important;white-space:normal!important;text-align:left!important;flex:0 0 auto}
   #pnl .direction-id>em{width:116px}
   #iotng .direction-id>em{width:148px}
   #aibi .direction-id>em{width:180px}
@@ -63,7 +63,7 @@ main [id]{scroll-margin-top:88px}
 .pub-year-row span{padding-bottom:0!important}
 .publication-toolbar{margin:-20px 0 42px;padding:0 0 20px;border-bottom:1px solid var(--line)}
 .publication-years{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0;padding:0}
-.publication-year-link{appearance:none;border:0;background:transparent;padding:0;color:var(--muted);font:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.publication-year-link{appearance:none;border:0;background:transparent;padding:0;color:var(--muted);font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .publication-year-link:hover,.publication-year-link:focus-visible{color:var(--ink)}
 .pub-toggle{appearance:none;border:0;background:transparent;color:var(--ink);font:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;padding:10px 0 0}
 .pub-toggle:hover{text-decoration:underline}
@@ -72,8 +72,8 @@ main [id]{scroll-margin-top:88px}
 .pub-back-top.visible{opacity:1;pointer-events:auto;transform:none}
 @media(max-width:768px){
   .publication-toolbar{margin:-14px 0 34px;padding-bottom:17px}
-  .publication-years{gap:7px 16px}
-  .publication-year-link{font-size:12px}
+  .publication-years{gap:8px 17px}
+  .publication-year-link{font-size:13.5px}
   .pub-toggle{font-size:12px;padding-top:8px}
   .pub-back-top{right:18px;bottom:92px}
 }
