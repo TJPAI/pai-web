@@ -1,4 +1,4 @@
-const CACHE='pai-site-v20260918-23';
+const CACHE='pai-site-v20260918-24';
 const CORE=[
   './','./index.html','./about.html','./research.html','./team.html','./publications.html','./join.html','./contact.html','./news.html',
   './en/','./en/index.html','./en/about.html','./en/research.html','./en/team.html','./en/publications.html','./en/join.html','./en/contact.html',
