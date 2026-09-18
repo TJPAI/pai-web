@@ -1,4 +1,4 @@
-const CACHE='pai-site-v20260918-10';
+const CACHE='pai-site-v20260918-11';
 const CORE=[
   './','./index.html','./about.html','./research.html','./team.html','./publications.html','./join.html','./contact.html',
   './en/','./en/index.html','./en/about.html','./en/research.html','./en/team.html','./en/publications.html','./en/join.html','./en/contact.html',
@@ -19,16 +19,23 @@ const HOME_RESEARCH_STYLE=`<style id="pai-home-research-mobile">@media(max-width
 .research-grid .research:nth-child(1) .research-expansion{width:112px}
 .research-grid .research:nth-child(2) .research-expansion{width:146px}
 .research-grid .research:nth-child(3) .research-expansion{width:166px}
+.menu-btn{position:relative!important;width:50px!important;height:50px!important;padding:0!important;margin-right:-7px!important;font-size:0!important;line-height:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;-webkit-appearance:none!important;appearance:none!important;-webkit-tap-highlight-color:transparent!important;color:#318AF5!important}
+.menu-btn:hover,.menu-btn:active,.menu-btn:focus,.menu-btn:focus-visible{background:transparent!important;box-shadow:none!important;outline:none!important}
+.menu-btn::before,.menu-btn::after{content:"";position:absolute;left:8px;width:34px;height:3px;border-radius:2px;background:currentColor;transform-origin:center;transition:top .18s ease,transform .18s ease,opacity .12s ease,box-shadow .18s ease}
+.menu-btn::before{top:13px;box-shadow:0 10px 0 currentColor,0 20px 0 currentColor}
+.menu-btn::after{top:23px;opacity:0}
+.menu-btn[aria-expanded="true"]::before{top:23px;box-shadow:none;transform:rotate(45deg)}
+.menu-btn[aria-expanded="true"]::after{top:23px;opacity:1;transform:rotate(-45deg)}
 }</style>`;
 
 const decorateHtml=async response=>{
   if(!response) return response;
   const type=response.headers.get('content-type')||'';
   if(!type.includes('text/html')) return response;
-  let text=await response.text();
-  text=text.replace(/<h2>高水平科研与代表成果<\/h2>/g,'<h2>代表性成果</h2>');
-  if(!text.includes('id="pai-home-research-mobile"')) text=text.replace('<main>','<main>'+HOME_RESEARCH_STYLE);
-  return new Response(text,{status:response.status,statusText:response.statusText,headers:response.headers});
+  const text=await response.text();
+  if(text.includes('id="pai-home-research-mobile"')) return new Response(text,{status:response.status,statusText:response.statusText,headers:response.headers});
+  const decorated=text.replace('<main>','<main>'+HOME_RESEARCH_STYLE);
+  return new Response(decorated,{status:response.status,statusText:response.statusText,headers:response.headers});
 };
 
 self.addEventListener('install',event=>{
