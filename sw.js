@@ -1,10 +1,10 @@
-const CACHE='pai-site-v20260918-24';
+const CACHE='pai-site-v20260918-25';
 const CORE=[
   './','./index.html','./about.html','./research.html','./team.html','./publications.html','./join.html','./contact.html','./news.html',
   './en/','./en/index.html','./en/about.html','./en/research.html','./en/team.html','./en/publications.html','./en/join.html','./en/contact.html',
   './people/erwu-liu.html','./people/rui-wang.html','./people/gang-shen.html','./people/dunhui-xiao.html','./people/shuyan-hu.html','./people/yan-liu.html',
   './en/people/erwu-liu.html','./en/people/rui-wang.html','./en/people/gang-shen.html','./en/people/dunhui-xiao.html','./en/people/shuyan-hu.html','./en/people/yan-liu.html',
-  './assets/css/site.css','./assets/css/refine.css','./assets/css/app.css','./assets/css/team.css','./assets/js/site.js',
+  './assets/css/site.css','./assets/css/refine.css','./assets/css/refine-base.css','./assets/css/app-core.css','./assets/css/app.css','./assets/css/team.css','./assets/js/site.js',
   './data/publications.json','./data/publications-archive.json',
   './assets/images/people/erwu-liu.jpg','./assets/images/people/rui-wang.jpg','./assets/images/people/gang-shen.jpg','./assets/images/people/dunhui-xiao.jpg','./assets/images/people/shuyan-hu.jpg','./assets/images/people/yan-liu.jpg'
 ];
