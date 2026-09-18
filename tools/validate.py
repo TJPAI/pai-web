@@ -50,9 +50,11 @@ for rel,i,item in all_pubs:
         else:
             dois[doi]=(rel,i)
 
-# Check common local href/src references in HTML.
+# Check local references and common page structure.
 for html in ROOT.rglob('*.html'):
     text=html.read_text(encoding='utf-8')
+    rel=str(html.relative_to(ROOT))
+
     for attr,target in re.findall(r'\b(href|src)=["\']([^"\']+)["\']',text):
         if target.startswith(('http://','https://','mailto:','tel:','#','data:','javascript:')):
             continue
@@ -61,10 +63,63 @@ for html in ROOT.rglob('*.html'):
         resolved=(html.parent/target).resolve()
         try: resolved.relative_to(ROOT.resolve())
         except ValueError:
-            errors.append(f'{html.relative_to(ROOT)}: path escapes site: {target}')
+            errors.append(f'{rel}: path escapes site: {target}')
             continue
         if not resolved.exists():
-            errors.append(f'{html.relative_to(ROOT)}: missing local {attr}: {target}')
+            errors.append(f'{rel}: missing local {attr}: {target}')
+
+    if 'class="site-header"' in text:
+        for token,name in [
+            ('class="nav-links"','desktop nav'),
+            ('class="menu-btn"','menu button'),
+            ('<main','main'),
+            ('class="site-footer','footer'),
+            ('assets/js/site.js','shared runtime')
+        ]:
+            if token not in text:
+                errors.append(f'{rel}: missing {name}')
+
+        ids=re.findall(r'\bid=["\']([^"\']+)["\']',text)
+        duplicates=sorted({value for value in ids if ids.count(value)>1})
+        if duplicates:
+            errors.append(f'{rel}: duplicate id(s): {", ".join(duplicates)}')
+
+        main_match=re.search(r'<main\b[^>]*>(.*?)</main>',text,re.I|re.S)
+        if main_match and re.search(r'<style\b',main_match.group(1),re.I):
+            errors.append(f'{rel}: page-local <style> inside <main>; move shared presentation to CSS')
+
+    if '高水平科研与代表成果' in text:
+        errors.append(f'{rel}: deprecated heading "高水平科研与代表成果"; use "代表性成果"')
+
+# Chinese/English page pairs should stay complete.
+paired=[
+    'index.html','about.html','research.html','team.html','publications.html','join.html','contact.html',
+    'people/erwu-liu.html','people/rui-wang.html','people/gang-shen.html','people/dunhui-xiao.html','people/shuyan-hu.html','people/yan-liu.html'
+]
+for rel in paired:
+    en_rel='en/'+rel
+    if not (ROOT/rel).exists(): errors.append(f'missing Chinese page: {rel}')
+    if not (ROOT/en_rel).exists(): errors.append(f'missing English page: {en_rel}')
+
+# Architectural guardrails: one shared behavior runtime, static presentation, no direct Cache API routing.
+site_js=(ROOT/'assets/js/site.js').read_text(encoding='utf-8')
+for banned,reason in [
+    ('stopImmediatePropagation','event handlers should not suppress unrelated handlers'),
+    ('caches.keys(','page runtime must not select Service Worker caches directly'),
+    ('installSharedStyles','runtime CSS injection is not allowed')
+]:
+    if banned in site_js:
+        errors.append(f'assets/js/site.js: {reason} ({banned})')
+
+app_css=ROOT/'assets/css/app.css'
+if not app_css.exists():
+    errors.append('assets/css/app.css: missing shared interactive presentation layer')
+
+sw=(ROOT/'sw.js').read_text(encoding='utf-8')
+if 'skipWaiting(' in sw:
+    errors.append('sw.js: skipWaiting must not be used; it can mix old JS with a new cached bundle')
+if './assets/css/app.css' not in sw:
+    errors.append('sw.js: app.css must be precached')
 
 if errors:
     print('\n'.join('ERROR: '+e for e in errors))
