@@ -31,9 +31,9 @@
   .research-grid .research:nth-child(1) .research-expansion{width:112px}
   .research-grid .research:nth-child(2) .research-expansion{width:146px}
   .research-grid .research:nth-child(3) .research-expansion{width:166px}
-  .menu-btn{position:relative!important;width:50px!important;height:50px!important;padding:0!important;margin-right:-7px!important;font-size:0!important;line-height:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;-webkit-appearance:none!important;appearance:none!important;-webkit-tap-highlight-color:transparent!important;color:#318AF5!important}
+  .menu-btn{position:relative!important;width:50px!important;height:50px!important;padding:0!important;margin-right:-7px!important;font-size:0!important;line-height:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;-webkit-appearance:none!important;appearance:none!important;-webkit-tap-highlight-color:transparent!important;color:#318AF5!important;touch-action:manipulation!important}
   .menu-btn:hover,.menu-btn:active,.menu-btn:focus,.menu-btn:focus-visible{background:transparent!important;box-shadow:none!important;outline:none!important}
-  .menu-btn::before,.menu-btn::after{content:"";position:absolute;left:8px;width:34px;height:3px;border-radius:2px;background:currentColor;transform-origin:center;transition:top .18s ease,transform .18s ease,opacity .12s ease,box-shadow .18s ease}
+  .menu-btn::before,.menu-btn::after{content:"";position:absolute;left:8px;width:34px;height:3px;border-radius:2px;background:currentColor;transform-origin:center;transition:top .18s ease,transform .18s ease,opacity .12s ease,box-shadow .18s ease;pointer-events:none}
   .menu-btn::before{top:13px;box-shadow:0 10px 0 currentColor,0 20px 0 currentColor}
   .menu-btn::after{top:23px;opacity:0}
   .menu-btn[aria-expanded="true"]::before{top:23px;box-shadow:none;transform:rotate(45deg)}
@@ -108,7 +108,7 @@
 
   const ensureMobileMenu=()=>{
     const header=document.querySelector('.site-header');
-    const desktop=document.querySelector('.nav-links');
+    const desktop=header?.querySelector('.nav-links');
     if(!header||!desktop||header.querySelector('.mobile-menu')) return;
     const mobile=document.createElement('nav');
     mobile.className='mobile-menu';
@@ -116,16 +116,10 @@
     header.appendChild(mobile);
   };
 
-  const bindMenuToggle=()=>{
-    const menuBtn=document.querySelector('.menu-btn');
-    const mobileMenu=document.querySelector('.mobile-menu');
-    if(!menuBtn||!mobileMenu||menuBtn.dataset.bound==='1') return;
-    menuBtn.dataset.bound='1';
-    menuBtn.setAttribute('aria-expanded','false');
-    menuBtn.addEventListener('click',()=>{
-      const open=mobileMenu.classList.toggle('open');
-      menuBtn.setAttribute('aria-expanded',open?'true':'false');
-    });
+  const prepareMenuButton=()=>{
+    ensureMobileMenu();
+    const btn=document.querySelector('.menu-btn');
+    if(btn) btn.setAttribute('aria-expanded','false');
   };
 
   const normalizeCopy=()=>{
@@ -138,11 +132,23 @@
 
   const initializeChrome=()=>{
     ensureLanguageLink();
-    ensureMobileMenu();
-    bindMenuToggle();
+    prepareMenuButton();
     normalizeCopy();
   };
   initializeChrome();
+
+  /* One delegated menu handler for the lifetime of the document. Header swaps do not require rebinding. */
+  document.addEventListener('click',event=>{
+    const btn=event.target.closest&&event.target.closest('.menu-btn');
+    if(!btn) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    ensureMobileMenu();
+    const menu=document.querySelector('.site-header .mobile-menu');
+    if(!menu) return;
+    const open=menu.classList.toggle('open');
+    btn.setAttribute('aria-expanded',open?'true':'false');
+  },true);
 
   document.addEventListener('click',event=>{
     const a=event.target.closest&&event.target.closest('a');
@@ -239,7 +245,7 @@
   };
   getPublicationData().catch(()=>{});
 
-  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
   const doiHref=doi=>'https://doi.org/'+String(doi).trim().split('/').map(encodeURIComponent).join('/');
 
   const initPublications=async()=>{
