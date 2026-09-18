@@ -280,7 +280,7 @@
         section.dataset.year=String(year);
         const isExpanded=expanded.has(String(year));
         section.dataset.expanded=isExpanded?'true':'false';
-        const count=`${pubs.length} publication${pubs.length===1?'':'s'}`;
+        const count=en?`${pubs.length} publication${pubs.length===1?'':'s'}`:`${pubs.length} 篇论文`;
         section.innerHTML=`<div class="pub-year-row"><h2 class="pub-year">${year}</h2><span>${count}</span></div>`;
 
         pubs.forEach((publication,index)=>{

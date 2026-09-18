@@ -6,38 +6,6 @@ html{scroll-behavior:auto!important}
 main [id]{scroll-margin-top:88px}
 @media(max-width:768px){main [id]{scroll-margin-top:74px}}
 
-/* Mobile research labels: homepage and detail page share the same visual system. */
-@media(max-width:768px){
-  .research-grid .research .research-code,
-  .research-direction .direction-id{display:flex!important;align-items:flex-start!important;justify-content:flex-start!important;gap:10px!important;line-height:1!important;text-align:left!important;width:max-content!important;max-width:100%!important}
-  .research-grid .research .research-code{margin-bottom:22px!important}
-  .research-direction .direction-id{margin-bottom:18px!important}
-  .research-grid .research .research-code-main{display:contents}
-
-  .research-grid .research .research-index,
-  .research-direction .direction-id>span{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap;flex:0 0 auto}
-
-  /* Homepage source contains “01 /”; render the same clean 01/02/03 labels used on the detail page. */
-  .research-grid .research .research-index{font-size:0!important;letter-spacing:0!important}
-  .research-grid .research .research-index::before{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important}
-  .research-grid .research:nth-child(1) .research-index::before{content:"01"}
-  .research-grid .research:nth-child(2) .research-index::before{content:"02"}
-  .research-grid .research:nth-child(3) .research-index::before{content:"03"}
-
-  .research-grid .research .research-code-main>span,
-  .research-direction .direction-id>strong{font-size:17px!important;line-height:1.05!important;letter-spacing:.09em!important;font-weight:700!important;color:var(--ink)!important;white-space:nowrap;flex:0 0 auto}
-
-  .research-grid .research .research-expansion,
-  .research-direction .direction-id>em{display:block!important;align-self:flex-start!important;margin:0!important;padding:0!important;font-size:9px!important;line-height:1.12!important;letter-spacing:.055em!important;font-style:normal!important;font-weight:500!important;text-transform:uppercase!important;color:var(--muted)!important;white-space:normal!important;text-align:left!important;flex:0 0 auto}
-
-  .research-grid .research:nth-child(1) .research-expansion,#pnl .direction-id>em{width:116px}
-  .research-grid .research:nth-child(2) .research-expansion,#iotng .direction-id>em{width:148px}
-  .research-grid .research:nth-child(3) .research-expansion,#aibi .direction-id>em{width:180px}
-
-  /* The direction-page titles use exactly the homepage research-card title typography. */
-  .research-direction h2{font-size:27px!important;line-height:1.2!important;letter-spacing:-.02em!important;font-weight:600!important;max-width:13em!important}
-}
-
 /* One menu button style everywhere */
 @media(max-width:768px){
   .menu-btn{position:relative!important;width:50px!important;height:50px!important;padding:0!important;margin-right:-7px!important;font-size:0!important;line-height:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;-webkit-appearance:none!important;appearance:none!important;-webkit-tap-highlight-color:transparent!important;color:#318AF5!important;touch-action:manipulation!important;cursor:pointer}
@@ -87,71 +55,12 @@ main [id]{scroll-margin-top:88px}
   .pub-back-top{right:18px;bottom:92px}
 }
 
-
-/* Research identity lock — the homepage cards and research-detail sections intentionally
-   use the exact same mobile typography, spacing and line wrapping. */
+/* Canonical research identity/title: homepage and Research page share one mobile definition. */
 @media(max-width:768px){
-  .research-grid .research .research-code,
-  .research-direction .direction-id{
-    display:grid!important;
-    grid-template-columns:54px max-content minmax(0,1fr)!important;
-    column-gap:10px!important;
-    align-items:start!important;
-    width:100%!important;
-    max-width:100%!important;
-    margin:0 0 26px!important;
-    padding:0!important;
-    line-height:1!important;
-  }
-  .research-grid .research .research-code-main{display:contents!important}
-  .research-grid .research .research-index,
-  .research-direction .direction-id>span{
-    grid-column:1!important;
-    margin:0!important;
-    padding:0!important;
-    font-size:16px!important;
-    line-height:1.05!important;
-    letter-spacing:.08em!important;
-    font-weight:500!important;
-    color:#A8AFB9!important;
-  }
-  .research-grid .research .research-code-main>span,
-  .research-direction .direction-id>strong{
-    grid-column:2!important;
-    margin:0!important;
-    padding:0!important;
-    font-size:17px!important;
-    line-height:1.05!important;
-    letter-spacing:.09em!important;
-    font-weight:700!important;
-    color:var(--ink)!important;
-  }
-  .research-grid .research .research-expansion,
-  .research-direction .direction-id>em{
-    grid-column:3!important;
-    width:auto!important;
-    max-width:180px!important;
-    margin:0!important;
-    padding:0!important;
-    font-size:9px!important;
-    line-height:1.12!important;
-    letter-spacing:.055em!important;
-    font-style:normal!important;
-    font-weight:500!important;
-    text-transform:uppercase!important;
-    color:var(--muted)!important;
-    white-space:normal!important;
-    text-align:left!important;
-  }
-  .research-grid .research h3,
-  .research-direction h2{
-    width:auto!important;
-    max-width:13em!important;
-    margin:0 0 20px!important;
-    padding:0!important;
-    font-size:27px!important;
-    line-height:1.2!important;
-    letter-spacing:-.02em!important;
-    font-weight:600!important;
-  }
+  .research-identity{display:grid!important;grid-template-columns:54px max-content minmax(0,1fr)!important;column-gap:10px!important;align-items:start!important;justify-content:start!important;width:100%!important;max-width:100%!important;margin:0 0 26px!important;padding:0!important;line-height:1!important;text-align:left!important}
+  .research-identity>.research-index{grid-column:1!important;margin:0!important;padding:0!important;font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap!important}
+  .research-identity>.research-code-main{display:contents!important}
+  .research-identity>.research-code-main>span{grid-column:2!important;margin:0!important;padding:0!important;font-size:17px!important;line-height:1.05!important;letter-spacing:.09em!important;font-weight:700!important;color:var(--ink)!important;white-space:nowrap!important}
+  .research-identity>.research-code-main>.research-expansion{grid-column:3!important;width:auto!important;max-width:180px!important;margin:0!important;padding:0!important;font-size:9px!important;line-height:1.12!important;letter-spacing:.055em!important;font-style:normal!important;font-weight:500!important;text-transform:uppercase!important;color:var(--muted)!important;white-space:normal!important;text-align:left!important}
+  .research-title{width:auto!important;max-width:13em!important;margin:0 0 20px!important;padding:0!important;font-size:27px!important;line-height:1.2!important;letter-spacing:-.02em!important;font-weight:600!important;color:var(--ink)!important}
 }

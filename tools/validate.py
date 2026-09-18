@@ -135,6 +135,18 @@ for html in html_files:
     if '高水平科研与代表成果' in text:
         errors.append(f'{rel}: deprecated heading "高水平科研与代表成果"; use "代表性成果"')
 
+# Research identity/title contracts: homepage and detail page must share canonical markup and text.
+research_specs=[('01','PNL','Positioning &amp;<br>Localization'),('02','IoT-NG','Internet of Things<br>Next Generation'),('03','AIBI','Artificial Intelligence &amp;<br>Blockchain Intelligence')]
+for prefix in ('','en/'):
+    home=(ROOT/f'{prefix}index.html').read_text(encoding='utf-8')
+    detail=(ROOT/f'{prefix}research.html').read_text(encoding='utf-8')
+    for number,code,expansion in research_specs:
+        inner=f'<span class="research-index">{number}</span><span class="research-code-main"><span>{code}</span><small class="research-expansion">{expansion}</small></span>'
+        if f'<div class="research-code research-identity">{inner}</div>' not in home: errors.append(f'{prefix}index.html: non-canonical research identity for {code}')
+        if f'<div class="direction-id research-identity">{inner}</div>' not in detail: errors.append(f'{prefix}research.html: non-canonical research identity for {code}')
+    if home.count('class="research-title"')!=3: errors.append(f'{prefix}index.html: expected exactly 3 canonical research-title elements')
+    if detail.count('class="research-title"')!=3: errors.append(f'{prefix}research.html: expected exactly 3 canonical research-title elements')
+
 # Critical detail-link contracts: these links must land on the matching content block, not just the top of a page.
 contracts={
     'index.html':[
