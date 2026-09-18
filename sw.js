@@ -1,4 +1,4 @@
-const CACHE='pai-site-v20260918-35';
+const CACHE='pai-site-v20260918-36';
 const CORE=[
   './','./index.html','./about.html','./research.html','./team.html','./publications.html','./join.html','./contact.html','./news.html',
   './en/','./en/index.html','./en/about.html','./en/research.html','./en/team.html','./en/publications.html','./en/join.html','./en/contact.html',
@@ -42,6 +42,20 @@ self.addEventListener('fetch',event=>{
 
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE);
+    const isImage=request.destination==='image'||/\/assets\/images\//.test(url.pathname);
+    if(isImage){
+      try{
+        const response=await fetch(request,{cache:'reload'});
+        if(response&&response.ok){
+          await cache.put(request,response.clone());
+          return response;
+        }
+      }catch(_e){}
+      const imageFallback=await cache.match(request,{ignoreSearch:true});
+      if(imageFallback) return imageFallback;
+      return new Response('',{status:503,statusText:'Image unavailable'});
+    }
+
     const cached=await cache.match(request,{ignoreSearch:true});
     if(cached) return cached;
 
