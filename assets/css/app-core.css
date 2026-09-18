@@ -57,10 +57,15 @@ main [id]{scroll-margin-top:88px}
 
 /* Canonical research identity/title: homepage and Research page share one mobile definition. */
 @media(max-width:768px){
-  .research-identity{display:grid!important;grid-template-columns:40px max-content minmax(0,1fr)!important;column-gap:9px!important;align-items:start!important;justify-content:start!important;width:100%!important;max-width:100%!important;margin:0 0 26px!important;padding:0!important;line-height:1!important;text-align:left!important}
+  .research-identity{display:grid!important;grid-template-columns:30px max-content minmax(0,1fr)!important;column-gap:7px!important;align-items:start!important;justify-content:start!important;width:100%!important;max-width:100%!important;margin:0 0 26px!important;padding:0!important;line-height:1!important;text-align:left!important}
   .research-identity>.research-index{grid-column:1!important;margin:0!important;padding:0!important;font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap!important}
   .research-identity>.research-code-main{display:contents!important}
   .research-identity>.research-code-main>span{grid-column:2!important;margin:0!important;padding:0!important;font-size:17px!important;line-height:1.05!important;letter-spacing:.09em!important;font-weight:700!important;color:var(--ink)!important;white-space:nowrap!important}
   .research-identity>.research-code-main>.research-expansion{grid-column:3!important;width:auto!important;max-width:180px!important;margin:0!important;padding:0!important;font-size:9px!important;line-height:1.12!important;letter-spacing:.055em!important;font-style:normal!important;font-weight:500!important;text-transform:uppercase!important;color:var(--muted)!important;white-space:normal!important;text-align:left!important}
   .research-title{width:auto!important;max-width:13em!important;margin:0 0 20px!important;padding:0!important;font-size:29px!important;line-height:1.18!important;letter-spacing:-.02em!important;font-weight:600!important;color:var(--ink)!important}
+}
+
+/* Mobile homepage research section hierarchy. */
+@media(max-width:768px){
+  .section:has(.research-grid)>.container>.section-head h2{font-size:36px!important;line-height:1.12!important;letter-spacing:-.025em!important}
 }
