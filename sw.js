@@ -1,4 +1,4 @@
-const CACHE='pai-site-v20260918-11';
+const CACHE='pai-site-v20260918-12';
 const CORE=[
   './','./index.html','./about.html','./research.html','./team.html','./publications.html','./join.html','./contact.html',
   './en/','./en/index.html','./en/about.html','./en/research.html','./en/team.html','./en/publications.html','./en/join.html','./en/contact.html',
@@ -10,7 +10,7 @@ const CORE=[
   './assets/images/people/erwu-liu.jpg','./assets/images/people/rui-wang.jpg','./assets/images/people/gang-shen.jpg','./assets/images/people/dunhui-xiao.jpg','./assets/images/people/shuyan-hu.jpg','./assets/images/people/yan-liu.jpg'
 ];
 
-const HOME_RESEARCH_STYLE=`<style id="pai-home-research-mobile">@media(max-width:768px){
+const SHARED_UI_STYLE=`<style id="pai-home-research-mobile">@media(max-width:768px){
 .research-grid .research .research-code{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;column-gap:10px;row-gap:0;margin-bottom:22px;line-height:1}
 .research-grid .research .research-code-main{display:contents}
 .research-grid .research .research-index{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap}
@@ -34,16 +34,22 @@ const decorateHtml=async response=>{
   if(!type.includes('text/html')) return response;
   const text=await response.text();
   if(text.includes('id="pai-home-research-mobile"')) return new Response(text,{status:response.status,statusText:response.statusText,headers:response.headers});
-  const decorated=text.replace('<main>','<main>'+HOME_RESEARCH_STYLE);
+  const decorated=text.replace('<main>','<main>'+SHARED_UI_STYLE);
   return new Response(decorated,{status:response.status,statusText:response.statusText,headers:response.headers});
 };
 
+const precache=async()=>{
+  const cache=await caches.open(CACHE);
+  await Promise.all(CORE.map(async path=>{
+    const request=new Request(path,{cache:'reload'});
+    const response=await fetch(request);
+    if(!response.ok) throw new Error(`precache failed: ${path}`);
+    await cache.put(request,await decorateHtml(response));
+  }));
+};
+
 self.addEventListener('install',event=>{
-  event.waitUntil(
-    caches.open(CACHE)
-      .then(cache=>cache.addAll(CORE))
-      .then(()=>self.skipWaiting())
-  );
+  event.waitUntil(precache().then(()=>self.skipWaiting()));
 });
 
 self.addEventListener('activate',event=>{
@@ -67,16 +73,20 @@ self.addEventListener('fetch',event=>{
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE);
     const cached=await cache.match(request,{ignoreSearch:true});
-    if(cached) return decorateHtml(cached);
+    if(cached) return cached;
 
     try{
       const response=await fetch(request);
-      if(response&&response.ok) await cache.put(request,response.clone());
-      return decorateHtml(response);
+      if(response&&response.ok){
+        const stored=await decorateHtml(response.clone());
+        await cache.put(request,stored.clone());
+        return stored;
+      }
+      return response;
     }catch(_e){
       if(request.mode==='navigate'){
         const fallback=await cache.match('./index.html');
-        if(fallback) return decorateHtml(fallback);
+        if(fallback) return fallback;
       }
       return new Response('Offline',{status:503,statusText:'Offline'});
     }
