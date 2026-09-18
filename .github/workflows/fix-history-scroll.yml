@@ -1,0 +1,55 @@
+name: One-off history scroll restoration fix
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-history-scroll.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch history scroll restoration
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('assets/js/site.js')
+          s = p.read_text()
+
+          old = """  const pageCache=new Map([[location.href.split('#')[0],document.documentElement.outerHTML]]);\n  let navigating=false;\n"""
+          new = """  const pageCache=new Map([[location.href.split('#')[0],document.documentElement.outerHTML]]);\n  let navigating=false;\n  let scrollSaveTimer=null;\n\n  try{ history.scrollRestoration='manual'; }catch(_e){}\n  const historyStateWithScroll=scrollY=>Object.assign({},history.state||{},{pai:true,scrollY});\n  const saveCurrentScroll=()=>{\n    if(navigating) return;\n    try{ history.replaceState(historyStateWithScroll(window.scrollY),'',location.href); }catch(_e){}\n  };\n  saveCurrentScroll();\n  addEventListener('scroll',()=>{\n    if(scrollSaveTimer!==null) return;\n    scrollSaveTimer=setTimeout(()=>{\n      scrollSaveTimer=null;\n      saveCurrentScroll();\n    },120);\n  },{passive:true});\n"""
+          if old not in s:
+              raise SystemExit('navigation state anchor not found')
+          s = s.replace(old, new, 1)
+
+          old = """      if(historyMode==='push') history.pushState({pai:true},'',url.href);\n      else if(historyMode==='replace') history.replaceState({pai:true},'',url.href);\n"""
+          new = """      const destinationScroll=Number.isFinite(preserveScrollY)?preserveScrollY:0;\n      if(historyMode==='push') history.pushState({pai:true,scrollY:destinationScroll},'',url.href);\n      else if(historyMode==='replace') history.replaceState({pai:true,scrollY:destinationScroll},'',url.href);\n"""
+          if old not in s:
+              raise SystemExit('history push anchor not found')
+          s = s.replace(old, new, 1)
+
+          old = """    event.preventDefault();\n    const label=(link.textContent||'').trim();\n    const isLanguageSwitch=label==='EN'||label==='中文';\n    const options=isLanguageSwitch?{preserveScrollY:window.scrollY}:undefined;\n    applyPage(url,options).catch(()=>{ location.href=url.href; });\n"""
+          new = """    event.preventDefault();\n    saveCurrentScroll();\n    const label=(link.textContent||'').trim();\n    const isLanguageSwitch=label==='EN'||label==='中文';\n    const options=isLanguageSwitch?{preserveScrollY:window.scrollY}:undefined;\n    applyPage(url,options).catch(()=>{ location.href=url.href; });\n"""
+          if old not in s:
+              raise SystemExit('click navigation anchor not found')
+          s = s.replace(old, new, 1)
+
+          old = """  addEventListener('popstate',()=>{\n    applyPage(new URL(location.href),{historyMode:'none'}).catch(()=>location.reload());\n  });\n"""
+          new = """  addEventListener('popstate',event=>{\n    const restoredY=Number.isFinite(event.state?.scrollY)?event.state.scrollY:0;\n    applyPage(new URL(location.href),{historyMode:'none',preserveScrollY:restoredY}).catch(()=>location.reload());\n  });\n"""
+          if old not in s:
+              raise SystemExit('popstate anchor not found')
+          s = s.replace(old, new, 1)
+
+          p.write_text(s)
+          PY
+          node --check assets/js/site.js
+          python tools/validate.py
+      - name: Commit focused fix and remove one-off workflow
+        run: |
+          rm .github/workflows/fix-history-scroll.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/js/site.js .github/workflows/fix-history-scroll.yml
+          git commit -m 'fix: restore previous scroll position on history navigation'
+          git push
