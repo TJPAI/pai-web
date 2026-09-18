@@ -1,0 +1,67 @@
+name: One-off English language sync fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-en-lang-sync.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Patch language synchronization and validator
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/js/site.js')
+          t=p.read_text(encoding='utf-8')
+          old="""      document.title=next.title||document.title;
+      document.body.className=next.body.className;
+"""
+          new="""      document.title=next.title||document.title;
+      document.documentElement.lang=next.documentElement.lang||document.documentElement.lang;
+      document.body.className=next.body.className;
+"""
+          if old not in t:
+              raise SystemExit('site.js language sync insertion point not found')
+          p.write_text(t.replace(old,new,1),encoding='utf-8')
+
+          p=Path('tools/validate.py')
+          t=p.read_text(encoding='utf-8')
+          marker='# Architectural guardrails: one behavior runtime and one deterministic presentation entry point.\n'
+          block="""# English pages must not contain Chinese copy except the intentional language-switch label.
+for html in (ROOT/'en').rglob('*.html'):
+    text=html.read_text(encoding='utf-8')
+    checked=text.replace('>中文<','><')
+    if re.search(r'[\\u4e00-\\u9fff]',checked):
+        errors.append(f'{html.relative_to(ROOT)}: unexpected Chinese text in English page')
+
+"""
+          if marker not in t:
+              raise SystemExit('validate.py insertion point not found')
+          if block not in t:
+              t=t.replace(marker,block+marker,1)
+          nav_guard="if 'counterpartWithContext' not in site_js:\n    errors.append('assets/js/site.js: bilingual navigation must preserve supported detail context')\n"
+          lang_guard="if 'document.documentElement.lang=next.documentElement.lang' not in site_js:\n    errors.append('assets/js/site.js: lightweight navigation must synchronize document language')\n"
+          if lang_guard not in t:
+              t=t.replace(nav_guard,nav_guard+lang_guard,1)
+          p.write_text(t,encoding='utf-8')
+          PY
+
+          python tools/validate.py
+          node --check assets/js/site.js
+      - name: Commit focused fix and remove one-off workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/fix-en-lang-sync.yml
+          git add assets/js/site.js tools/validate.py
+          git commit -m 'fix: keep English UI language consistent during in-page navigation'
+          git push origin HEAD:main
