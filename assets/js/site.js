@@ -41,6 +41,20 @@
 }
 .pub-year-row{justify-content:flex-start!important;align-items:baseline!important;gap:12px!important}
 .pub-year-row span{padding-bottom:0!important}
+.publication-years{display:flex;flex-wrap:wrap;gap:8px 18px;margin:-20px 0 42px;padding:0 0 20px;border-bottom:1px solid var(--line)}
+.publication-year-link{appearance:none;border:0;background:transparent;padding:0;color:var(--muted);font:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.publication-year-link:hover{color:var(--ink)}
+.pub.is-collapsed{display:none}
+.pub-toggle{appearance:none;border:0;background:transparent;padding:10px 0 0;color:var(--ink);font:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pub-toggle:hover{text-decoration:underline}
+.pub-back-top{position:fixed;right:22px;bottom:28px;z-index:45;border:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-radius:999px;padding:9px 13px;color:var(--ink);font-size:12px;font-weight:600;box-shadow:0 6px 22px rgba(17,24,39,.08);opacity:0;pointer-events:none;transform:translateY(8px);transition:.18s ease;-webkit-tap-highlight-color:transparent}
+.pub-back-top.visible{opacity:1;pointer-events:auto;transform:none}
+@media(max-width:768px){
+  .publication-years{margin:-14px 0 34px;gap:7px 16px;padding-bottom:17px}
+  .publication-year-link{font-size:12px}
+  .pub-toggle{font-size:12px;padding-top:8px}
+  .pub-back-top{right:18px;bottom:92px}
+}
 `;
     document.head.appendChild(style);
   };
@@ -137,7 +151,6 @@
   };
   initializeChrome();
 
-  /* One delegated menu handler for the lifetime of the document. Header swaps do not require rebinding. */
   document.addEventListener('click',event=>{
     const btn=event.target.closest&&event.target.closest('.menu-btn');
     if(!btn) return;
@@ -245,10 +258,11 @@
   };
   getPublicationData().catch(()=>{});
 
-  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const doiHref=doi=>'https://doi.org/'+String(doi).trim().split('/').map(encodeURIComponent).join('/');
+  const getExpandedYears=()=>[...document.querySelectorAll('.pub-group[data-expanded="true"]')].map(el=>el.dataset.year).filter(Boolean);
 
-  const initPublications=async()=>{
+  const initPublications=async(expandedYears=[])=>{
     const host=document.querySelector('[data-publications]');
     if(!host) return;
     try{
@@ -258,29 +272,102 @@
         if(!byYear.has(item.year)) byYear.set(item.year,[]);
         byYear.get(item.year).push(item);
       });
+      const en=(document.documentElement.lang||'').toLowerCase().startsWith('en');
+      const expanded=new Set((expandedYears||[]).map(String));
       const fragment=document.createDocumentFragment();
+      const years=[...byYear.keys()];
+
+      const nav=document.createElement('nav');
+      nav.className='publication-years';
+      nav.setAttribute('aria-label',en?'Publication years':'论文年份');
+      years.forEach(year=>{
+        const button=document.createElement('button');
+        button.type='button';
+        button.className='publication-year-link';
+        button.dataset.pubYearJump=String(year);
+        button.textContent=String(year);
+        nav.appendChild(button);
+      });
+      fragment.appendChild(nav);
+
       for(const [year,pubs] of byYear){
         const section=document.createElement('section');
         section.className='pub-group';
+        section.id=`pub-year-${year}`;
+        section.dataset.year=String(year);
+        const isExpanded=expanded.has(String(year));
+        section.dataset.expanded=isExpanded?'true':'false';
         const count=`${pubs.length} publication${pubs.length===1?'':'s'}`;
         section.innerHTML=`<div class="pub-year-row"><h2 class="pub-year">${year}</h2><span>${count}</span></div>`;
-        pubs.forEach(p=>{
+        pubs.forEach((p,index)=>{
           const article=document.createElement('article');
-          article.className='pub';
+          article.className='pub'+(!isExpanded&&index>=4?' is-collapsed':'');
+          article.dataset.pubExtra=index>=4?'1':'0';
           const actions=p.doi?`<div class="pub-actions"><a href="${esc(doiHref(p.doi))}" target="_blank" rel="noopener">DOI ↗</a></div>`:'';
           article.innerHTML=`<h3>${esc(p.title)}</h3><p class="pub-authors">${esc(p.authors)}</p><p class="pub-venue">${esc(p.venue)} · ${year}</p>${actions}`;
           section.appendChild(article);
         });
+        if(pubs.length>4){
+          const toggle=document.createElement('button');
+          toggle.type='button';
+          toggle.className='pub-toggle';
+          toggle.dataset.pubToggle=String(year);
+          toggle.setAttribute('aria-expanded',isExpanded?'true':'false');
+          toggle.textContent=isExpanded?(en?'Show less ↑':'收起 ↑'):(en?`View all ${pubs.length} ↓`:`展开全部 ${pubs.length} 篇 ↓`);
+          section.appendChild(toggle);
+        }
         fragment.appendChild(section);
       }
+
+      const top=document.createElement('button');
+      top.type='button';
+      top.className='pub-back-top';
+      top.dataset.pubBackTop='1';
+      top.textContent=en?'↑ Top':'↑ 顶部';
+      fragment.appendChild(top);
+
       host.replaceChildren(fragment);
       host.dataset.paiInitialized='1';
+      updateBackTopVisibility();
     }catch(_e){
       const en=(document.documentElement.lang||'').toLowerCase().startsWith('en');
       host.innerHTML=`<p class="muted">${en?'Publications are temporarily unavailable. Please refresh later.':'论文数据暂时无法载入，请稍后刷新。'}</p>`;
     }
   };
-  initPublications();
+
+  const updateBackTopVisibility=()=>{
+    const button=document.querySelector('[data-pub-back-top]');
+    if(button) button.classList.toggle('visible',window.scrollY>700);
+  };
+
+  document.addEventListener('click',event=>{
+    const jump=event.target.closest&&event.target.closest('[data-pub-year-jump]');
+    if(jump){
+      event.preventDefault();
+      document.getElementById(`pub-year-${jump.dataset.pubYearJump}`)?.scrollIntoView({behavior:'smooth',block:'start'});
+      return;
+    }
+    const toggle=event.target.closest&&event.target.closest('[data-pub-toggle]');
+    if(toggle){
+      event.preventDefault();
+      const section=toggle.closest('.pub-group');
+      if(!section) return;
+      const open=section.dataset.expanded!=='true';
+      section.dataset.expanded=open?'true':'false';
+      section.querySelectorAll('.pub[data-pub-extra="1"]').forEach(article=>article.classList.toggle('is-collapsed',!open));
+      const count=section.querySelectorAll('.pub').length;
+      const en=(document.documentElement.lang||'').toLowerCase().startsWith('en');
+      toggle.setAttribute('aria-expanded',open?'true':'false');
+      toggle.textContent=open?(en?'Show less ↑':'收起 ↑'):(en?`View all ${count} ↓`:`展开全部 ${count} 篇 ↓`);
+      saveScroll(true);
+      return;
+    }
+    const top=event.target.closest&&event.target.closest('[data-pub-back-top]');
+    if(top){
+      event.preventDefault();
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+  },true);
 
   const syncHeadStyles=async(doc,targetUrl)=>{
     const waits=[];
@@ -305,15 +392,21 @@
   const saveScroll=(force=false)=>{
     if(transitioning&&!force) return;
     try{
-      history.replaceState(Object.assign({},history.state||{},{paiRoute:true,scrollX:window.scrollX,scrollY:window.scrollY}),'',location.href);
+      history.replaceState(Object.assign({},history.state||{},{
+        paiRoute:true,
+        scrollX:window.scrollX,
+        scrollY:window.scrollY,
+        pubExpanded:getExpandedYears()
+      }),'',location.href);
     }catch(_e){}
   };
 
   if(!history.state||history.state.paiRoute!==true){
-    try{ history.replaceState({paiRoute:true,scrollX:window.scrollX,scrollY:window.scrollY},'',location.href); }catch(_e){}
+    try{ history.replaceState({paiRoute:true,scrollX:window.scrollX,scrollY:window.scrollY,pubExpanded:getExpandedYears()},'',location.href); }catch(_e){}
   }
 
   window.addEventListener('scroll',()=>{
+    updateBackTopVisibility();
     if(transitioning||scrollTick) return;
     scrollTick=requestAnimationFrame(()=>{
       scrollTick=0;
@@ -337,7 +430,8 @@
     };
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
       apply();
-      setTimeout(()=>{ apply(); resolve(); },100);
+      setTimeout(apply,90);
+      setTimeout(()=>{ apply(); resolve(); },320);
     }));
   });
 
@@ -363,10 +457,10 @@
     document.body.className=doc.body.className||'';
     updateMetadata(doc,target);
 
-    if(push) history.pushState({paiRoute:true,scrollX:0,scrollY:0},'',target.pathname+target.search+target.hash);
+    if(push) history.pushState({paiRoute:true,scrollX:0,scrollY:0,pubExpanded:[]},'',target.pathname+target.search+target.hash);
 
     initializeChrome();
-    await initPublications();
+    await initPublications(restoreState?.pubExpanded||[]);
     await restorePosition(target,restoreState);
     return true;
   };
@@ -401,7 +495,7 @@
       btn?.setAttribute('aria-expanded','false');
       if(target.hash&&target.hash!==location.hash){
         saveScroll(true);
-        history.pushState({paiRoute:true,scrollX:0,scrollY:0},'',target.pathname+target.search+target.hash);
+        history.pushState({paiRoute:true,scrollX:0,scrollY:0,pubExpanded:getExpandedYears()},'',target.pathname+target.search+target.hash);
         transitioning=true;
         await restorePosition(target,null);
         transitioning=false;
@@ -436,5 +530,6 @@
     }
   });
 
+  initPublications(history.state?.pubExpanded||[]);
   siteCacheReady.catch(()=>{});
 })();
