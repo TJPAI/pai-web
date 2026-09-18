@@ -6,27 +6,36 @@ html{scroll-behavior:auto!important}
 main [id]{scroll-margin-top:88px}
 @media(max-width:768px){main [id]{scroll-margin-top:74px}}
 
-/* Mobile research labels: compact, natural left-aligned flex layout. */
+/* Mobile research labels: homepage and detail page share the same visual system. */
 @media(max-width:768px){
-  .research-grid .research .research-code{display:flex!important;align-items:flex-start!important;justify-content:flex-start!important;gap:10px!important;margin-bottom:22px;line-height:1;text-align:left!important;width:max-content;max-width:100%}
+  .research-grid .research .research-code,
+  .research-direction .direction-id{display:flex!important;align-items:flex-start!important;justify-content:flex-start!important;gap:10px!important;line-height:1!important;text-align:left!important;width:max-content!important;max-width:100%!important}
+  .research-grid .research .research-code{margin-bottom:22px!important}
+  .research-direction .direction-id{margin-bottom:18px!important}
   .research-grid .research .research-code-main{display:contents}
-  .research-grid .research .research-index{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap;flex:0 0 auto}
-  .research-grid .research .research-code-main>span{font-size:17px;line-height:1.05;letter-spacing:.09em;font-weight:700;color:var(--ink);white-space:nowrap;flex:0 0 auto}
-  .research-grid .research .research-expansion{font-size:9px;line-height:1.12;letter-spacing:.055em;font-weight:500;text-transform:uppercase;color:var(--muted);white-space:normal;text-wrap:balance;display:block;max-width:none;text-align:left!important;margin:0!important;padding:0!important;align-self:flex-start!important;flex:0 0 auto}
-  .research-grid .research:nth-child(1) .research-expansion{width:112px}
-  .research-grid .research:nth-child(2) .research-expansion{width:146px}
-  .research-grid .research:nth-child(3) .research-expansion{width:166px}
-}
 
-/* Mobile research labels: detail page. Keep 01 / PNL / expansion as one left-aligned cluster. */
-@media(max-width:768px){
-  .research-direction .direction-id{display:flex!important;align-items:flex-start!important;justify-content:flex-start!important;gap:10px!important;margin-bottom:18px!important;line-height:1!important;text-align:left!important;width:max-content!important;max-width:100%!important}
+  .research-grid .research .research-index,
   .research-direction .direction-id>span{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap;flex:0 0 auto}
+
+  /* Homepage source contains “01 /”; render the same clean 01/02/03 labels used on the detail page. */
+  .research-grid .research .research-index{font-size:0!important;letter-spacing:0!important}
+  .research-grid .research .research-index::before{font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important}
+  .research-grid .research:nth-child(1) .research-index::before{content:"01"}
+  .research-grid .research:nth-child(2) .research-index::before{content:"02"}
+  .research-grid .research:nth-child(3) .research-index::before{content:"03"}
+
+  .research-grid .research .research-code-main>span,
   .research-direction .direction-id>strong{font-size:17px!important;line-height:1.05!important;letter-spacing:.09em!important;font-weight:700!important;color:var(--ink)!important;white-space:nowrap;flex:0 0 auto}
+
+  .research-grid .research .research-expansion,
   .research-direction .direction-id>em{display:block!important;align-self:flex-start!important;margin:0!important;padding:0!important;font-size:9px!important;line-height:1.12!important;letter-spacing:.055em!important;font-style:normal!important;font-weight:500!important;text-transform:uppercase!important;color:var(--muted)!important;white-space:normal!important;text-align:left!important;flex:0 0 auto}
-  #pnl .direction-id>em{width:116px}
-  #iotng .direction-id>em{width:148px}
-  #aibi .direction-id>em{width:180px}
+
+  .research-grid .research:nth-child(1) .research-expansion,#pnl .direction-id>em{width:116px}
+  .research-grid .research:nth-child(2) .research-expansion,#iotng .direction-id>em{width:148px}
+  .research-grid .research:nth-child(3) .research-expansion,#aibi .direction-id>em{width:180px}
+
+  /* The direction-page titles use exactly the homepage research-card title typography. */
+  .research-direction h2{font-size:27px!important;line-height:1.2!important;letter-spacing:-.02em!important;font-weight:600!important;max-width:13em!important}
 }
 
 /* One menu button style everywhere */
