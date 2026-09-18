@@ -134,6 +134,23 @@ for rel,targets in contracts.items():
         if f'href="{target}"' not in text and f"href='{target}'" not in text:
             errors.append(f'{rel}: expected detail link missing: {target}')
 
+# Anchors intentionally preserved by the language switch must exist in both languages.
+shared_context_anchors={
+    'about.html':['about','overview','collaboration','achievements','international-impact'],
+    'research.html':['pnl','iotng','aibi'],
+    'contact.html':['cooperation','recruitment']
+}
+for rel,anchors in shared_context_anchors.items():
+    zh=(ROOT/rel).resolve()
+    en=(ROOT/'en'/rel).resolve()
+    zh_ids=html_ids.get(zh,set())
+    en_ids=html_ids.get(en,set())
+    for anchor in anchors:
+        if anchor not in zh_ids:
+            errors.append(f'{rel}: missing bilingual context anchor id="{anchor}"')
+        if anchor not in en_ids:
+            errors.append(f'en/{rel}: missing bilingual context anchor id="{anchor}"')
+
 # Chinese/English page pairs should stay complete.
 paired=[
     'index.html','about.html','research.html','team.html','publications.html','join.html','contact.html',
@@ -153,6 +170,8 @@ for banned,reason in [
 ]:
     if banned in site_js:
         errors.append(f'assets/js/site.js: {reason} ({banned})')
+if 'counterpartWithContext' not in site_js:
+    errors.append('assets/js/site.js: bilingual navigation must preserve supported detail context')
 
 app_css=ROOT/'assets/css/app.css'
 if not app_css.exists():
