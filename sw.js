@@ -1,4 +1,4 @@
-const CACHE='pai-site-v20260918-9';
+const CACHE='pai-site-v20260918-10';
 const CORE=[
   './','./index.html','./about.html','./research.html','./team.html','./publications.html','./join.html','./contact.html',
   './en/','./en/index.html','./en/about.html','./en/research.html','./en/team.html','./en/publications.html','./en/join.html','./en/contact.html',
@@ -25,10 +25,10 @@ const decorateHtml=async response=>{
   if(!response) return response;
   const type=response.headers.get('content-type')||'';
   if(!type.includes('text/html')) return response;
-  const text=await response.text();
-  if(text.includes('id="pai-home-research-mobile"')) return new Response(text,{status:response.status,statusText:response.statusText,headers:response.headers});
-  const decorated=text.replace('<main>','<main>'+HOME_RESEARCH_STYLE);
-  return new Response(decorated,{status:response.status,statusText:response.statusText,headers:response.headers});
+  let text=await response.text();
+  text=text.replace(/<h2>高水平科研与代表成果<\/h2>/g,'<h2>代表性成果</h2>');
+  if(!text.includes('id="pai-home-research-mobile"')) text=text.replace('<main>','<main>'+HOME_RESEARCH_STYLE);
+  return new Response(text,{status:response.status,statusText:response.statusText,headers:response.headers});
 };
 
 self.addEventListener('install',event=>{
