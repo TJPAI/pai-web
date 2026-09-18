@@ -104,10 +104,15 @@ for html in html_files:
             ('class="menu-btn"','menu button'),
             ('<main','main'),
             ('class="site-footer','footer'),
-            ('assets/js/site.js','shared runtime')
+            ('assets/js/site.js','shared runtime'),
+            ('assets/css/refine.css','shared presentation entry point')
         ]:
             if token not in text:
                 errors.append(f'{rel}: missing {name}')
+
+        # Internal implementation styles must only be reached through refine.css.
+        if 'assets/css/refine-base.css' in text or 'assets/css/app-core.css' in text:
+            errors.append(f'{rel}: internal CSS bundle linked directly; use refine.css only')
 
         ids=re.findall(r'\bid=["\']([^"\']+)["\']',text)
         duplicates=sorted({value for value in ids if ids.count(value)>1})
@@ -119,7 +124,6 @@ for html in html_files:
             errors.append(f'{rel}: page-local <style> inside <main>; move shared presentation to CSS')
 
         # All navigation surfaces on a page must lead to the same destinations.
-        # Order/labels may differ in legacy source, but target sets may not diverge.
         desktop=hrefs_in_class(text,'nav-links')
         mobile=hrefs_in_class(text,'mobile-menu')
         footer=hrefs_in_class(text,'footer-links')
@@ -177,7 +181,7 @@ for rel in paired:
     if not (ROOT/rel).exists(): errors.append(f'missing Chinese page: {rel}')
     if not (ROOT/en_rel).exists(): errors.append(f'missing English page: {en_rel}')
 
-# Architectural guardrails: one shared behavior runtime, static presentation, no direct Cache API routing.
+# Architectural guardrails: one behavior runtime and one deterministic presentation entry point.
 site_js=(ROOT/'assets/js/site.js').read_text(encoding='utf-8')
 for banned,reason in [
     ('stopImmediatePropagation','event handlers should not suppress unrelated handlers'),
@@ -189,15 +193,30 @@ for banned,reason in [
 if 'counterpartWithContext' not in site_js:
     errors.append('assets/js/site.js: bilingual navigation must preserve supported detail context')
 
-app_css=ROOT/'assets/css/app.css'
-if not app_css.exists():
-    errors.append('assets/css/app.css: missing shared interactive presentation layer')
+refine_css=(ROOT/'assets/css/refine.css').read_text(encoding='utf-8')
+for import_name in ('./refine-base.css','./app-core.css'):
+    if import_name not in refine_css:
+        errors.append(f'assets/css/refine.css: missing shared import {import_name}')
+if any(token in refine_css for token in ('.menu-btn{','.research-direction .direction-id{','.team-grid img.person-photo{')):
+    errors.append('assets/css/refine.css: entry point should only compose shared style layers, not duplicate component rules')
+
+for shim in ('assets/css/app.css','assets/css/team.css'):
+    p=ROOT/shim
+    if not p.exists():
+        errors.append(f'{shim}: missing compatibility shim')
+    elif 'Compatibility shim' not in p.read_text(encoding='utf-8'):
+        errors.append(f'{shim}: must remain a compatibility shim; shared rules belong in app-core.css')
+
+for required in ('assets/css/refine-base.css','assets/css/app-core.css'):
+    if not (ROOT/required).exists():
+        errors.append(f'{required}: missing shared style layer')
 
 sw=(ROOT/'sw.js').read_text(encoding='utf-8')
 if 'skipWaiting(' in sw:
     errors.append('sw.js: skipWaiting must not be used; it can mix old JS with a new cached bundle')
-if './assets/css/app.css' not in sw:
-    errors.append('sw.js: app.css must be precached')
+for cached in ('./assets/css/refine.css','./assets/css/refine-base.css','./assets/css/app-core.css'):
+    if cached not in sw:
+        errors.append(f'sw.js: {cached} must be precached')
 
 if errors:
     print('\n'.join('ERROR: '+e for e in errors))
