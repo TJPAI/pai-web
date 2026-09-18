@@ -1,0 +1,74 @@
+name: One-off detail navigation asset fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-detail-nav-assets.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Patch lightweight navigation and portrait validator
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('assets/js/site.js')
+          text = p.read_text(encoding='utf-8')
+          old = """      currentMain.replaceWith(document.importNode(nextMain,true));
+      document.title=next.title||document.title;
+      document.body.className=next.body.className;
+      if(historyMode==='push') history.pushState({pai:true},'',url.href);
+      else if(historyMode==='replace') history.replaceState({pai:true},'',url.href);
+"""
+          new = """      /* Move the URL before attaching fetched markup so relative assets resolve
+         against the destination page immediately (important on iPhone Safari). */
+      if(historyMode==='push') history.pushState({pai:true},'',url.href);
+      else if(historyMode==='replace') history.replaceState({pai:true},'',url.href);
+
+      currentMain.replaceWith(document.importNode(nextMain,true));
+      document.title=next.title||document.title;
+      document.body.className=next.body.className;
+"""
+          if old not in text:
+              raise SystemExit('site.js expected navigation block not found')
+          p.write_text(text.replace(old,new,1), encoding='utf-8')
+
+          p = Path('tools/validate.py')
+          text = p.read_text(encoding='utf-8')
+          old = """# Faculty portraits are ordinary static files.
+for name in ('erwu-liu','rui-wang','gang-shen','dunhui-xiao','shuyan-hu','yan-liu'):
+    if not (ROOT/'assets/images/people'/f'{name}.jpg').is_file(): errors.append(f'assets/images/people/{name}.jpg: missing portrait')
+"""
+          new = """# Faculty portraits are ordinary static files. Gang Shen intentionally uses PNG
+# because the previous JPEG was unreliable in iPhone Safari.
+portrait_ext={'gang-shen':'png'}
+for name in ('erwu-liu','rui-wang','gang-shen','dunhui-xiao','shuyan-hu','yan-liu'):
+    ext=portrait_ext.get(name,'jpg')
+    rel=f'assets/images/people/{name}.{ext}'
+    if not (ROOT/rel).is_file(): errors.append(f'{rel}: missing portrait')
+"""
+          if old not in text:
+              raise SystemExit('validate.py expected portrait block not found')
+          p.write_text(text.replace(old,new,1), encoding='utf-8')
+          PY
+
+          python tools/validate.py
+          node --check assets/js/site.js
+
+      - name: Commit focused fix and remove one-off workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/fix-detail-nav-assets.yml
+          git add assets/js/site.js tools/validate.py
+          git commit -m 'fix: resolve detail page assets after in-page navigation'
+          git push origin HEAD:main
