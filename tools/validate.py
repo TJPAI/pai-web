@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
+from urllib.parse import unquote
 import json, re, sys
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -50,23 +51,46 @@ for rel,i,item in all_pubs:
         else:
             dois[doi]=(rel,i)
 
-# Check local references and common page structure.
-for html in ROOT.rglob('*.html'):
-    text=html.read_text(encoding='utf-8')
+html_files=list(ROOT.rglob('*.html'))
+html_text={p.resolve():p.read_text(encoding='utf-8') for p in html_files}
+html_ids={p:{*re.findall(r'\bid=["\']([^"\']+)["\']',text)} for p,text in html_text.items()}
+
+# Check local references, fragment targets and common page structure.
+for html in html_files:
+    text=html_text[html.resolve()]
     rel=str(html.relative_to(ROOT))
 
     for attr,target in re.findall(r'\b(href|src)=["\']([^"\']+)["\']',text):
-        if target.startswith(('http://','https://','mailto:','tel:','#','data:','javascript:')):
+        if target.startswith(('http://','https://','mailto:','tel:','data:','javascript:')):
             continue
-        target=target.split('#',1)[0].split('?',1)[0]
-        if not target: continue
-        resolved=(html.parent/target).resolve()
-        try: resolved.relative_to(ROOT.resolve())
+
+        raw_path,sep,raw_fragment=target.partition('#')
+        path_part=raw_path.split('?',1)[0]
+        fragment=unquote(raw_fragment) if sep else ''
+
+        if not path_part:
+            resolved=html.resolve()
+        else:
+            resolved=(html.parent/path_part).resolve()
+
+        try:
+            resolved.relative_to(ROOT.resolve())
         except ValueError:
             errors.append(f'{rel}: path escapes site: {target}')
             continue
-        if not resolved.exists():
-            errors.append(f'{rel}: missing local {attr}: {target}')
+
+        if path_part and not resolved.exists():
+            errors.append(f'{rel}: missing local {attr}: {path_part}')
+            continue
+
+        if fragment:
+            target_html=resolved/'index.html' if resolved.is_dir() else resolved
+            if target_html.suffix.lower()=='.html':
+                target_html=target_html.resolve()
+                if target_html not in html_ids:
+                    errors.append(f'{rel}: fragment target is not a readable HTML page: {target}')
+                elif fragment not in html_ids[target_html]:
+                    errors.append(f'{rel}: broken fragment {target}; missing id="{fragment}"')
 
     if 'class="site-header"' in text:
         for token,name in [
@@ -90,6 +114,25 @@ for html in ROOT.rglob('*.html'):
 
     if '高水平科研与代表成果' in text:
         errors.append(f'{rel}: deprecated heading "高水平科研与代表成果"; use "代表性成果"')
+
+# Critical detail-link contracts: these links must land on the matching content block, not just the top of a page.
+contracts={
+    'index.html':[
+        'research.html#pnl','research.html#iotng','research.html#aibi',
+        'about.html#achievements','contact.html#cooperation'
+    ],
+    'en/index.html':[
+        'research.html#pnl','research.html#iotng','research.html#aibi',
+        'about.html#achievements'
+    ],
+    'join.html':['contact.html#recruitment'],
+    'en/join.html':['contact.html#recruitment']
+}
+for rel,targets in contracts.items():
+    text=(ROOT/rel).read_text(encoding='utf-8')
+    for target in targets:
+        if f'href="{target}"' not in text and f"href='{target}'" not in text:
+            errors.append(f'{rel}: expected detail link missing: {target}')
 
 # Chinese/English page pairs should stay complete.
 paired=[
