@@ -1,4 +1,4 @@
-const CACHE='pai-site-v20260918-2';
+const CACHE='pai-site-v20260918-3';
 const CORE=[
   './','./index.html','./about.html','./research.html','./team.html','./publications.html','./join.html','./contact.html',
   './en/','./en/index.html','./en/about.html','./en/research.html','./en/team.html','./en/publications.html','./en/join.html','./en/contact.html',
@@ -9,7 +9,11 @@ const CORE=[
 ];
 
 self.addEventListener('install',event=>{
-  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
+  event.waitUntil(
+    caches.open(CACHE)
+      .then(cache=>cache.addAll(CORE))
+      .then(()=>self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate',event=>{
@@ -23,29 +27,28 @@ self.addEventListener('activate',event=>{
 self.addEventListener('fetch',event=>{
   const request=event.request;
   if(request.method!=='GET') return;
+
   const url=new URL(request.url);
   if(url.origin!==self.location.origin) return;
 
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE);
     const cached=await cache.match(request,{ignoreSearch:true});
-    const networkPromise=fetch(request).then(response=>{
-      if(response&&response.ok) cache.put(request,response.clone());
+
+    // Core site pages/assets are served from local cache only after the first visit.
+    if(cached) return cached;
+
+    // Only uncached/new resources need the network; cache them for later use.
+    try{
+      const response=await fetch(request);
+      if(response&&response.ok) await cache.put(request,response.clone());
       return response;
-    }).catch(()=>null);
-
-    if(cached){
-      event.waitUntil(networkPromise);
-      return cached;
+    }catch(_e){
+      if(request.mode==='navigate'){
+        const fallback=await cache.match('./index.html');
+        if(fallback) return fallback;
+      }
+      return new Response('Offline',{status:503,statusText:'Offline'});
     }
-
-    const network=await networkPromise;
-    if(network) return network;
-
-    if(request.mode==='navigate'){
-      const fallback=await cache.match('./index.html');
-      if(fallback) return fallback;
-    }
-    return new Response('Offline',{status:503,statusText:'Offline'});
   })());
 });
