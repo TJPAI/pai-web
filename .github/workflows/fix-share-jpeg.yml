@@ -1,0 +1,48 @@
+name: One-time share image fix
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix-share-image:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build JPEG share image and update metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          if command -v magick >/dev/null 2>&1; then
+            IMG=magick
+          else
+            IMG=convert
+          fi
+          SRC=assets/images/social/pai-share-v2.png
+          OUT=assets/images/social/pai-share-v3.jpg
+          "$IMG" "$SRC" -resize 700x368 -background '#f8fbff' -gravity center -extent 1200x630 -strip -colorspace sRGB -sampling-factor 4:2:0 -quality 88 "$OUT"
+          python - <<'PY'
+          from pathlib import Path
+          old='https://tjpai.github.io/pai-web/assets/images/social/pai-share-v2.png'
+          new='https://tjpai.github.io/pai-web/assets/images/social/pai-share-v3.jpg'
+          for p in Path('.').rglob('*.html'):
+              text=p.read_text(encoding='utf-8')
+              if old in text:
+                  p.write_text(text.replace(old,new),encoding='utf-8')
+          p=Path('tools/validate_share_metadata.py')
+          text=p.read_text(encoding='utf-8')
+          p.write_text(text.replace(old,new),encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/images/social/pai-share-v3.jpg tools/validate_share_metadata.py '*.html' 'en/*.html' 'people/*.html' 'en/people/*.html'
+          if git diff --cached --quiet; then
+            echo 'No changes needed'
+            exit 0
+          fi
+          git commit -m 'fix: use square-safe JPEG social preview'
+          git push
