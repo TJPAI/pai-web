@@ -469,6 +469,7 @@
     const header=document.querySelector('.site-header');
     const mainDocumentTop=Math.max(0,header?.getBoundingClientRect().bottom||currentMain?.getBoundingClientRect().top||0);
     const targetPath=normalizedPath(url.pathname);
+    const targetScroll=rememberedPageScroll(targetPath);
     Object.assign(previewMain.style,{
       position:'absolute',top:`${mainDocumentTop}px`,left:'0',width:'100%',minHeight:'100vh',
       margin:'0',willChange:'transform',pointerEvents:'none',
@@ -477,10 +478,13 @@
     });
     shell.appendChild(previewMain);
     document.body.appendChild(shell);
-    /* Swipe navigation always previews and lands at the destination page top.
-       Browser history may still restore its own saved position separately. */
-    previewMain.style.top=`${mainDocumentTop}px`;
-    swipePreview={shell,main:previewMain,url,direction,targetScroll:0};
+    /* Use the same remembered page position as direct/menu navigation.
+       A rendered snapshot is cached when leaving a page, so revisits can preview
+       the real vertical position without clamping the final destination value. */
+    const previewMaxScroll=Math.max(0,mainDocumentTop+previewMain.scrollHeight-innerHeight);
+    const previewScroll=Math.min(targetScroll,previewMaxScroll);
+    previewMain.style.top=`${mainDocumentTop-previewScroll}px`;
+    swipePreview={shell,main:previewMain,url,direction,targetScroll,previewScroll};
     return swipePreview;
   };
 
@@ -554,7 +558,7 @@
     const currentFrom=current.style.transform||'translate3d(0,0,0)';
     const incomingFrom=preview.main.style.transform||`translate3d(${direction>0?width:-width}px,0,0)`;
     const targetUrl=preview.url;
-    const targetScroll=0;
+    const targetScroll=rememberedPageScroll(normalizedPath(targetUrl.pathname));
     await Promise.all([
       animateElementTransform(current,currentFrom,`translate3d(${direction>0?-width:width}px,0,0)`,330),
       animateElementTransform(preview.main,incomingFrom,'translate3d(0,0,0)',330)
@@ -647,6 +651,9 @@
     }
     event.preventDefault();
     saveCurrentScroll();
+    /* Cache the fully rendered page before leaving it. This keeps dynamic pages
+       such as Publications accurate when they later appear as a swipe preview. */
+    cacheCurrentPageSnapshot();
     commitSwipe(direction).finally(()=>{ pageSwipeStart=null; });
   },{passive:false});
 
