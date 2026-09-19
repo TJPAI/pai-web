@@ -1,0 +1,29 @@
+name: Footer page swipe v45
+on:
+  push:
+    paths:
+      - 'tools/footer_moves_with_swipe_v45.py'
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Apply patch
+        run: python tools/footer_moves_with_swipe_v45.py
+      - name: Validate
+        run: |
+          python tools/validate.py
+          node --check assets/js/site.js
+      - name: Commit and self-clean
+        run: |
+          rm tools/footer_moves_with_swipe_v45.py .github/workflows/footer-page-swipe-v45.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: move visible footer with page swipe'
+          git push
