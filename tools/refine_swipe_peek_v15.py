@@ -279,3 +279,4 @@ for pattern in ('*.html','en/*.html','people/*.html','en/people/*.html'):
 if changed==0:
     raise SystemExit('no HTML site.js v14 references updated')
 print(f'updated swipe pager and {changed} HTML files')
+# trigger after workflow creation
