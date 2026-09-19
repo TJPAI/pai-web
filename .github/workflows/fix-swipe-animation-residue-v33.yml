@@ -1,0 +1,31 @@
+name: Fix swipe animation residue v33
+on:
+  push:
+    paths:
+      - 'tools/fix_swipe_animation_residue_v33.py'
+      - '.github/workflows/fix-swipe-animation-residue-v33.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Apply fix
+        run: python tools/fix_swipe_animation_residue_v33.py
+      - name: Validate
+        run: |
+          python tools/validate.py
+          node --check assets/js/site.js
+      - name: Commit and self-clean
+        run: |
+          rm tools/fix_swipe_animation_residue_v33.py
+          rm .github/workflows/fix-swipe-animation-residue-v33.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: clear completed swipe animations before next gesture'
+          git push
