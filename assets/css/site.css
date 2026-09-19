@@ -67,3 +67,6 @@ button{font:inherit}
 @media(max-width:480px){.hero h1{}.team-grid{grid-template-columns:1fr}.news-row{grid-template-columns:70px 1fr}.news-row .label{display:none}.btn{width:auto;justify-content:center}.actions{width:100%}}
 @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 @media print{.site-header,.site-footer,.btn,.menu-btn{display:none!important}.page-hero,.content-section{padding:24px 0}body{color:#000}.container{width:100%;max-width:none}}
+
+/* TEMP v36: hide footer for swipe visual test */
+.site-footer{display:none!important}
