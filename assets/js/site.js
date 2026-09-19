@@ -94,7 +94,7 @@
     const languageHref=counterpartWithContext(path);
     const markup=items.map(([label,href])=>{
       const key=sectionForPath(href);
-      return `<a${key===active?' class="active"':''} href="${root(href)}">${label}</a>`;
+      return `<a${key===active?' class="active" aria-current="page"':''} href="${root(href)}">${label}</a>`;
     }).join('')+`<a href="${root(languageHref)}">${languageLabel}</a>`;
 
     const header=document.querySelector('.site-header');
@@ -102,19 +102,22 @@
       const brand=header.querySelector('.brand');
       if(brand) brand.href=root(lang==='en'?'/en/':'/');
       const nav=header.querySelector('.nav-links');
-      if(nav) nav.innerHTML=markup;
+      if(nav){ nav.setAttribute('aria-label',lang==='en'?'Main navigation':'主导航'); nav.innerHTML=markup; }
       let mobile=header.querySelector('.mobile-menu');
       if(!mobile){
         mobile=document.createElement('nav');
         mobile.className='mobile-menu';
         header.appendChild(mobile);
       }
+      mobile.id='mobile-navigation';
+      mobile.setAttribute('aria-label',lang==='en'?'Mobile navigation':'移动导航');
       mobile.innerHTML=markup;
       mobile.classList.remove('open');
       const button=header.querySelector('.menu-btn');
       if(button){
         button.type='button';
         button.setAttribute('aria-expanded','false');
+        button.setAttribute('aria-controls','mobile-navigation');
         button.setAttribute('aria-label',lang==='en'?'Open menu':'打开菜单');
       }
     }
@@ -142,6 +145,16 @@
     menu.classList.toggle('open',open);
     button.setAttribute('aria-expanded',open?'true':'false');
   },true);
+
+  document.addEventListener('keydown',event=>{
+    if(event.key!=='Escape') return;
+    const header=document.querySelector('.site-header');
+    const menu=header?.querySelector('.mobile-menu');
+    const button=header?.querySelector('.menu-btn');
+    if(!menu?.classList.contains('open')) return;
+    menu.classList.remove('open');
+    if(button){ button.setAttribute('aria-expanded','false'); button.focus(); }
+  });
 
   document.addEventListener('click',event=>{
     const link=event.target.closest&&event.target.closest('a');

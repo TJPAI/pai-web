@@ -341,6 +341,43 @@ for html in html_files:
             errors.append(f'{rel}:{line}: h{m.group(1)} must declare a semantic title class')
 
 # Validation must fail the build when any contract is violated.
+
+
+# PAI terminology / completeness guardrails.
+_deprecated_pai_terms=[
+    '通信–定位–感知融合','通信-定位-感知融合','通信—定位—感知融合',
+    'integrated communication, localization and sensing'
+]
+for html,text in html_text.items():
+    rel=str(Path(html).relative_to(ROOT))
+    lower=text.lower()
+    for term in _deprecated_pai_terms:
+        if term.lower() in lower:
+            errors.append(f'{rel}: deprecated PAI integration terminology: {term}')
+for rel,required in [
+    ('index.html','通信–感知–计算–智能融合'),
+    ('about.html','通信–感知–计算–智能融合'),
+    ('en/index.html','integrated sensing, communication, computing, and intelligence'),
+    ('en/about.html','integrated sensing, communication, computing, and intelligence')
+]:
+    if required not in (ROOT/rel).read_text(encoding='utf-8'):
+        errors.append(f'{rel}: missing canonical PAI integration terminology')
+
+# Public pages need a stable social card, app icon metadata and a keyboard skip link.
+for rel in paired:
+    for candidate in (rel,'en/'+rel):
+        p=ROOT/candidate
+        if not p.exists(): continue
+        text=p.read_text(encoding='utf-8')
+        for token,label in [
+            ('og:image','Open Graph image'),('apple-touch-icon','Apple touch icon'),
+            ('site.webmanifest','web manifest'),('class="skip-link"','skip link'),('id="main-content"','main landmark target')
+        ]:
+            if token not in text: errors.append(f'{candidate}: missing {label}')
+if not (ROOT/'assets/images/social/pai-share.png').exists(): errors.append('missing social share image')
+for rel in ('assets/icons/favicon.svg','assets/icons/favicon-32.png','assets/icons/apple-touch-icon.png','assets/icons/icon-192.png','assets/icons/icon-512.png','site.webmanifest'):
+    if not (ROOT/rel).exists(): errors.append(f'missing brand asset: {rel}')
+
 if errors:
     print('Validation failed:')
     for error in errors:
