@@ -430,11 +430,11 @@
   const destroySwipePreview=()=>{
     if(swipePreview?.shell?.isConnected) swipePreview.shell.remove();
     swipePreview=null;
-    const main=document.querySelector('main');
-    if(main){
-      main.style.transform='';
-      main.style.willChange='';
-    }
+    [document.querySelector('main'),document.querySelector('.site-footer')].forEach(node=>{
+      if(!node) return;
+      node.style.transform='';
+      node.style.willChange='';
+    });
   };
 
   const buildSwipePreview=(url,direction,html)=>{
@@ -449,6 +449,7 @@
       position:'fixed',inset:'0',overflow:'hidden',pointerEvents:'none',
       zIndex:'12',contain:'layout paint',background:'transparent'
     });
+    const previewPage=document.createElement('div');
     const previewMain=document.importNode(nextMain,true);
     previewMain.removeAttribute('id');
     previewMain.querySelectorAll('[id]').forEach(node=>node.removeAttribute('id'));
@@ -470,21 +471,30 @@
     const mainDocumentTop=Math.max(0,header?.getBoundingClientRect().bottom||currentMain?.getBoundingClientRect().top||0);
     const targetPath=normalizedPath(url.pathname);
     const targetScroll=rememberedPageScroll(targetPath);
-    Object.assign(previewMain.style,{
+    previewMain.style.margin='0';
+    previewMain.style.pointerEvents='none';
+    previewMain.style.background=getComputedStyle(document.body).backgroundColor||'#fff';
+    previewPage.appendChild(previewMain);
+    const liveFooter=document.querySelector('.site-footer');
+    if(liveFooter){
+      const previewFooter=liveFooter.cloneNode(true);
+      previewFooter.querySelectorAll('[id]').forEach(node=>node.removeAttribute('id'));
+      previewPage.appendChild(previewFooter);
+    }
+    Object.assign(previewPage.style,{
       position:'absolute',top:`${mainDocumentTop}px`,left:'0',width:'100%',minHeight:'100vh',
       margin:'0',willChange:'transform',pointerEvents:'none',
-      background:getComputedStyle(document.body).backgroundColor||'#fff',
       transform:`translate3d(${direction>0?'100%':'-100%'},0,0)`
     });
-    shell.appendChild(previewMain);
+    shell.appendChild(previewPage);
     document.body.appendChild(shell);
-    /* Use the same remembered page position as direct/menu navigation.
-       A rendered snapshot is cached when leaving a page, so revisits can preview
-       the real vertical position without clamping the final destination value. */
-    const previewMaxScroll=Math.max(0,mainDocumentTop+previewMain.scrollHeight-innerHeight);
+    /* Preview the complete page body (main + footer), using the same remembered
+       document scroll position as the final navigation. This keeps the dark footer
+       present during the drag and prevents a footer flash at handoff. */
+    const previewMaxScroll=Math.max(0,mainDocumentTop+previewPage.scrollHeight-innerHeight);
     const previewScroll=Math.min(targetScroll,previewMaxScroll);
-    previewMain.style.top=`${mainDocumentTop-previewScroll}px`;
-    swipePreview={shell,main:previewMain,url,direction,targetScroll,previewScroll};
+    previewPage.style.top=`${mainDocumentTop-previewScroll}px`;
+    swipePreview={shell,page:previewPage,main:previewMain,url,direction,targetScroll,previewScroll};
     return swipePreview;
   };
 
@@ -508,13 +518,13 @@
     const bounded=Math.max(-width,Math.min(width,dx));
     const direction=preview.direction;
     if((direction>0&&bounded>0)||(direction<0&&bounded<0)) return;
-    const current=document.querySelector('main');
-    if(current){
+    [document.querySelector('main'),document.querySelector('.site-footer')].forEach(current=>{
+      if(!current) return;
       current.style.willChange='transform';
       current.style.transform=`translate3d(${bounded}px,0,0)`;
-    }
+    });
     const incoming=bounded+(direction>0?width:-width);
-    preview.main.style.transform=`translate3d(${incoming}px,0,0)`;
+    preview.page.style.transform=`translate3d(${incoming}px,0,0)`;
   };
 
   const animateElementTransform=(node,from,to,duration=SWIPE_SETTLE_MS)=>new Promise(resolve=>{
@@ -537,31 +547,37 @@
 
   const settleSwipeBack=async()=>{
     const current=document.querySelector('main');
+    const footer=document.querySelector('.site-footer');
     const preview=swipePreview;
     if(!current||!preview){ destroySwipePreview(); return; }
     const width=Math.max(1,innerWidth);
     const currentFrom=current.style.transform||'translate3d(0,0,0)';
-    const incomingFrom=preview.main.style.transform||`translate3d(${preview.direction>0?width:-width}px,0,0)`;
+    const footerFrom=footer?.style.transform||currentFrom;
+    const incomingFrom=preview.page.style.transform||`translate3d(${preview.direction>0?width:-width}px,0,0)`;
     await Promise.all([
       animateElementTransform(current,currentFrom,'translate3d(0,0,0)',253),
-      animateElementTransform(preview.main,incomingFrom,`translate3d(${preview.direction>0?width:-width}px,0,0)`,253)
+      animateElementTransform(footer,footerFrom,'translate3d(0,0,0)',253),
+      animateElementTransform(preview.page,incomingFrom,`translate3d(${preview.direction>0?width:-width}px,0,0)`,253)
     ]);
     destroySwipePreview();
   };
 
   const commitSwipe=async(direction)=>{
     const current=document.querySelector('main');
+    const footer=document.querySelector('.site-footer');
     const preview=swipePreview;
     const start=pageSwipeStart;
     if(!current||!preview||!start){ destroySwipePreview(); return; }
     const width=Math.max(1,innerWidth);
     const currentFrom=current.style.transform||'translate3d(0,0,0)';
-    const incomingFrom=preview.main.style.transform||`translate3d(${direction>0?width:-width}px,0,0)`;
+    const footerFrom=footer?.style.transform||currentFrom;
+    const incomingFrom=preview.page.style.transform||`translate3d(${direction>0?width:-width}px,0,0)`;
     const targetUrl=preview.url;
     const targetScroll=rememberedPageScroll(normalizedPath(targetUrl.pathname));
     await Promise.all([
       animateElementTransform(current,currentFrom,`translate3d(${direction>0?-width:width}px,0,0)`,330),
-      animateElementTransform(preview.main,incomingFrom,'translate3d(0,0,0)',330)
+      animateElementTransform(footer,footerFrom,`translate3d(${direction>0?-width:width}px,0,0)`,330),
+      animateElementTransform(preview.page,incomingFrom,'translate3d(0,0,0)',330)
     ]);
     try{
       await applyPage(targetUrl,{transitionDirection:0,preserveScrollY:targetScroll});
