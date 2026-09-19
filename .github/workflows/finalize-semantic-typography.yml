@@ -1,0 +1,20 @@
+name: Finalize semantic typography
+on:
+  push:
+    paths:
+      - 'tools/finalize_semantic_typography.py'
+      - '.github/workflows/finalize-semantic-typography.yml'
+permissions:
+  contents: write
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python tools/finalize_semantic_typography.py
