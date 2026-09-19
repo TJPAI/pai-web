@@ -22,6 +22,6 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git rm .github/workflows/english-mobile-polish.yml tools/english_mobile_polish.py
-          git add assets/css/app-core.css assets/css/refine.css en
+          git add assets/css/app-core.css assets/css/typography.css assets/css/refine.css en
           git commit -m 'style: refine English mobile reading rhythm'
           git push
