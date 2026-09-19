@@ -519,7 +519,9 @@
     const previewMain=document.importNode(nextMain,true);
     const previewFooter=nextFooter?document.importNode(nextFooter,true):null;
     previewMain.removeAttribute('id');
-    previewMain.querySelectorAll('[id]').forEach(node=>node.removeAttribute('id'));
+    /* Preserve descendant section IDs in the swipe preview. About page mobile
+       layout depends on #overview/#collaboration/#achievements/#international-impact;
+       stripping them changes vertical geometry and causes a handoff jump. */
     previewMain.querySelectorAll('img[src]').forEach(img=>{
       try{ img.src=new URL(img.getAttribute('src'),url.href).href; }catch(_e){}
     });
