@@ -9,7 +9,6 @@ def replace_once(old,new,label):
         raise SystemExit(f'{label} not found')
     text=text.replace(old,new,1)
 
-# Softer page transition: less opacity change, slightly more horizontal continuity.
 replace_once(
 """      const shift=transitionDirection>0?-18:18;
       await animateMain(currentMain,[
@@ -43,7 +42,6 @@ replace_once(
 """,
 'incoming transition')
 
-# Add tuned gesture constants.
 replace_once(
 """  const SWIPE_EDGE_GUARD=32;
   const SWIPE_MIN_X=56;
@@ -89,8 +87,8 @@ replace_once(
 """,
 'touchstart state')
 
-# Replace touchmove body after lock with follow-finger behavior and velocity tracking.
-old_move="""    event.preventDefault();
+replace_once(
+"""    event.preventDefault();
     const direction=dx<0?1:-1;
     if(direction!==start.warmedDirection){
       start.warmedDirection=direction;
@@ -101,8 +99,8 @@ old_move="""    event.preventDefault();
         fetchPage(new URL(root(targetPath),location.origin)).catch(()=>{});
       }
     }
-"""
-new_move="""    event.preventDefault();
+""",
+"""    event.preventDefault();
     const now=performance.now();
     const dt=Math.max(1,now-start.lastTime);
     start.velocityX=(touch.clientX-start.lastX)/dt;
@@ -126,10 +124,9 @@ new_move="""    event.preventDefault();
         fetchPage(new URL(root(targetPath),location.origin)).catch(()=>{});
       }
     }
-"""
-replace_once(old_move,new_move,'touchmove follow')
+""",
+'touchmove follow')
 
-# Touch cancel should also settle visual state.
 replace_once(
 """  document.addEventListener('touchcancel',()=>{ pageSwipeStart=null; },{passive:true});
 """,
@@ -140,13 +137,13 @@ replace_once(
 """,
 'touchcancel')
 
-# Replace touchend qualification with distance + velocity and rebound on failure.
-old_end="""    const elapsed=performance.now()-start.time;
+replace_once(
+"""    const elapsed=performance.now()-start.time;
     if(elapsed>SWIPE_MAX_MS||Math.abs(dx)<SWIPE_MIN_X||Math.abs(dx)<Math.abs(dy)*1.15) return;
 
     const current=normalizedPath();
-"""
-new_end="""    const elapsed=performance.now()-start.time;
+""",
+"""    const elapsed=performance.now()-start.time;
     const horizontalEnough=Math.abs(dx)>=SWIPE_MIN_X;
     const fastEnough=Math.abs(dx)>=SWIPE_FAST_MIN_X&&Math.abs(start.velocityX)>=SWIPE_FAST_VELOCITY;
     if(elapsed>SWIPE_MAX_MS||Math.abs(dx)<Math.abs(dy)*1.15||(!horizontalEnough&&!fastEnough)){
@@ -155,27 +152,16 @@ new_end="""    const elapsed=performance.now()-start.time;
     }
 
     const current=normalizedPath();
-"""
-replace_once(old_end,new_end,'touchend qualification')
+""",
+'touchend qualification')
 
-# If state changed unexpectedly, restore visual.
-replace_once(
-"""    if(current!==start.path) return;
-""",
-"""    if(current!==start.path){ clearSwipeVisual(true); return; }
-""",
-'touchend path guard')
-replace_once(
-"""    if(index<0) return;
-""",
-"""    if(index<0){ clearSwipeVisual(true); return; }
-""",
-'touchend index guard')
+replace_once("    if(current!==start.path) return;\n","    if(current!==start.path){ clearSwipeVisual(true); return; }\n",'path guard')
+replace_once("    if(index<0) return;\n","    if(index<0){ clearSwipeVisual(true); return; }\n",'index guard')
 
-# Add neighbor prefetch after swipe helpers, and initial invocation.
-needle="""  document.addEventListener('touchend',event=>{
-"""
-insert="""  const warmSwipeNeighbors=()=>{
+replace_once(
+"""  document.addEventListener('touchend',event=>{
+""",
+"""  const warmSwipeNeighbors=()=>{
     if(navigator.connection&&navigator.connection.saveData) return;
     const path=normalizedPath();
     const lang=path.startsWith('/en/')?'en':'zh';
@@ -190,10 +176,9 @@ insert="""  const warmSwipeNeighbors=()=>{
   setTimeout(warmSwipeNeighbors,160);
 
   document.addEventListener('touchend',event=>{
-"""
-replace_once(needle,insert,'neighbor prefetch insertion')
+""",
+'neighbor prefetch')
 
-# Warm new neighbors after every successful page swap.
 replace_once(
 """      setTimeout(()=>warmNavigation(),80);
 """,
@@ -217,3 +202,4 @@ for pattern in ('*.html','en/*.html','people/*.html','en/people/*.html'):
 if changed==0:
     raise SystemExit('no HTML site.js version references updated')
 print(f'updated site.js and {changed} HTML files')
+# retry after concurrent main update
