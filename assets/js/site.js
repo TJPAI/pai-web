@@ -454,7 +454,6 @@
     const currentMain=document.querySelector('main');
     const mainDocumentTop=currentMain?Math.max(0,currentMain.getBoundingClientRect().top+window.scrollY):0;
     const targetPath=normalizedPath(url.pathname);
-    const rememberedScroll=rememberedPageScroll(targetPath);
     Object.assign(previewMain.style,{
       position:'absolute',top:`${mainDocumentTop}px`,left:'0',width:'100%',minHeight:'100vh',
       margin:'0',willChange:'transform',pointerEvents:'none',
@@ -463,11 +462,10 @@
     });
     shell.appendChild(previewMain);
     document.body.appendChild(shell);
-    const previewMaxScroll=Math.max(0,mainDocumentTop+previewMain.scrollHeight-innerHeight);
-    const previewScroll=Math.min(rememberedScroll,previewMaxScroll);
-    previewMain.style.top=`${mainDocumentTop-previewScroll}px`;
-    /* Never let an unrendered/short preview clamp the real destination position. */
-    swipePreview={shell,main:previewMain,url,direction,targetScroll:rememberedScroll,previewScroll};
+    /* Swipe navigation always previews and lands at the destination page top.
+       Browser history may still restore its own saved position separately. */
+    previewMain.style.top=`${mainDocumentTop}px`;
+    swipePreview={shell,main:previewMain,url,direction,targetScroll:0};
     return swipePreview;
   };
 
@@ -541,7 +539,7 @@
     const currentFrom=current.style.transform||'translate3d(0,0,0)';
     const incomingFrom=preview.main.style.transform||`translate3d(${direction>0?width:-width}px,0,0)`;
     const targetUrl=preview.url;
-    const targetScroll=Math.max(0,Number(preview.targetScroll)||0);
+    const targetScroll=0;
     await Promise.all([
       animateElementTransform(current,currentFrom,`translate3d(${direction>0?-width:width}px,0,0)`,300),
       animateElementTransform(preview.main,incomingFrom,'translate3d(0,0,0)',300)
@@ -634,7 +632,6 @@
     }
     event.preventDefault();
     saveCurrentScroll();
-    cacheCurrentPageSnapshot();
     commitSwipe(direction).finally(()=>{ pageSwipeStart=null; });
   },{passive:false});
 
