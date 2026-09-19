@@ -322,8 +322,8 @@
     en:['/en/','/en/about.html','/en/team.html','/en/research.html','/en/publications.html','/en/join.html','/en/contact.html']
   };
   const SWIPE_EDGE_GUARD=32;
-  const SWIPE_MIN_X=72;
-  const SWIPE_MAX_MS=700;
+  const SWIPE_MIN_X=56;
+  const SWIPE_MAX_MS=1200;
   let pageSwipeStart=null;
 
   const swipeBlockedTarget=target=>!!(target?.closest&&target.closest(
@@ -351,7 +351,7 @@
     const dx=touch.clientX-start.x;
     const dy=touch.clientY-start.y;
     const elapsed=performance.now()-start.time;
-    if(elapsed>SWIPE_MAX_MS||Math.abs(dx)<SWIPE_MIN_X||Math.abs(dx)<Math.abs(dy)*1.35) return;
+    if(elapsed>SWIPE_MAX_MS||Math.abs(dx)<SWIPE_MIN_X||Math.abs(dx)<Math.abs(dy)*1.15) return;
 
     const current=normalizedPath();
     if(current!==start.path) return;
