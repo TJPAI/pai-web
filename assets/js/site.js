@@ -977,4 +977,75 @@
 
   initPublications([]);
   siteReady.catch(()=>{});
+
+  /* Orbit quick menu — inspired by radial portfolio navigation, adapted to PAI.
+     It is deliberately independent of <main>, so lightweight page swaps never recreate it. */
+  const initOrbitMenu=()=>{
+    if(document.querySelector('.pai-orbit')) return;
+    const orbit=document.createElement('div');
+    orbit.className='pai-orbit';
+    orbit.innerHTML='<div class="pai-orbit-backdrop" aria-hidden="true"></div><div class="pai-orbit-wheel" role="navigation"></div><button class="pai-orbit-toggle" type="button" aria-expanded="false" aria-label="打开快捷菜单"><span aria-hidden="true"></span></button>';
+    document.body.appendChild(orbit);
+    const wheel=orbit.querySelector('.pai-orbit-wheel');
+    const toggle=orbit.querySelector('.pai-orbit-toggle');
+    const backdrop=orbit.querySelector('.pai-orbit-backdrop');
+    let rotation=0,startAngle=0,startRotation=0,dragging=false,moved=false;
+
+    const menuData=()=>normalizedPath().startsWith('/en/')?[
+      ['About','/en/about.html'],['People','/en/team.html'],['Research','/en/research.html'],
+      ['Publications','/en/publications.html'],['Join','/en/join.html'],['Contact','/en/contact.html'],['中文',counterpartWithContext(normalizedPath())]
+    ]:[
+      ['关于','/about.html'],['团队','/team.html'],['研究','/research.html'],
+      ['成果','/publications.html'],['加入','/join.html'],['联系','/contact.html'],['EN',counterpartWithContext(normalizedPath())]
+    ];
+
+    const sync=()=>{
+      const en=normalizedPath().startsWith('/en/');
+      const data=menuData();
+      wheel.innerHTML=data.map(([label,href],i)=>'<a href="'+root(href)+'" style="--orbit-i:'+i+'"><span>'+label+'</span></a>').join('');
+      wheel.setAttribute('aria-label',en?'Quick navigation':'快捷导航');
+      toggle.setAttribute('aria-label',orbit.classList.contains('open')?(en?'Close quick menu':'关闭快捷菜单'):(en?'Open quick menu':'打开快捷菜单'));
+    };
+    const setOpen=open=>{
+      orbit.classList.toggle('open',open);
+      toggle.setAttribute('aria-expanded',open?'true':'false');
+      sync();
+    };
+    const pointAngle=e=>{
+      const r=wheel.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+      const p=e.touches?e.touches[0]:e;
+      return Math.atan2(p.clientY-cy,p.clientX-cx)*180/Math.PI;
+    };
+    const paint=()=>{
+      wheel.style.setProperty('--orbit-rotation',rotation+'deg');
+      wheel.querySelectorAll('a>span').forEach(span=>span.style.transform='rotate('+(-rotation)+'deg)');
+    };
+    toggle.addEventListener('click',e=>{e.preventDefault();setOpen(!orbit.classList.contains('open'));});
+    backdrop.addEventListener('click',()=>setOpen(false));
+    wheel.addEventListener('pointerdown',e=>{
+      if(!orbit.classList.contains('open')) return;
+      dragging=true;moved=false;startAngle=pointAngle(e);startRotation=rotation;
+      wheel.setPointerCapture?.(e.pointerId);
+    });
+    wheel.addEventListener('pointermove',e=>{
+      if(!dragging) return;
+      const delta=pointAngle(e)-startAngle;
+      if(Math.abs(delta)>3) moved=true;
+      rotation=startRotation+delta;paint();
+    });
+    const endDrag=()=>{dragging=false;};
+    wheel.addEventListener('pointerup',endDrag);
+    wheel.addEventListener('pointercancel',endDrag);
+    wheel.addEventListener('click',e=>{
+      const link=e.target.closest('a');
+      if(!link) return;
+      if(moved){e.preventDefault();moved=false;return;}
+      setOpen(false);
+    },true);
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&orbit.classList.contains('open')) setOpen(false);});
+    new MutationObserver(()=>{if(orbit.classList.contains('open')) sync();}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+    sync();paint();
+  };
+  initOrbitMenu();
+
 })();
