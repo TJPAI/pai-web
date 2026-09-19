@@ -1,0 +1,36 @@
+name: Migrate footer into page surface v29
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/make_footer_page_surface_v29.py'
+      - 'tools/prepare_footer_surface_v29.py'
+      - '.github/workflows/migrate-footer-page-surface-v29.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Align migration script
+        run: python tools/prepare_footer_surface_v29.py
+      - name: Apply migration
+        run: python tools/make_footer_page_surface_v29.py
+      - name: Validate
+        run: |
+          python tools/validate.py
+          node --check assets/js/site.js
+      - name: Commit and self-clean
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f tools/make_footer_page_surface_v29.py tools/prepare_footer_surface_v29.py .github/workflows/migrate-footer-page-surface-v29.yml
+          git add -A
+          git commit -m 'refactor: make footer part of each page surface'
+          git push origin main
