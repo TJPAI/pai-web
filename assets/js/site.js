@@ -420,9 +420,10 @@
   };
   setTimeout(warmSwipeNeighbors,260);
 
-  const destroySwipePreview=()=>{
+  const destroySwipePreview=(resetCurrent=true)=>{
     if(swipePreview?.shell?.isConnected) swipePreview.shell.remove();
     swipePreview=null;
+    if(!resetCurrent) return;
     const surface=document.querySelector('.page-surface');
     if(surface){
       surface.style.transform='';
@@ -486,7 +487,8 @@
     const start=pageSwipeStart;
     if(!start) return Promise.resolve(null);
     if(swipePreview&&swipePreview.direction===direction) return Promise.resolve(swipePreview);
-    if(swipePreview) destroySwipePreview();
+    /* Switching neighbor direction must not snap the current page back to zero. */
+    if(swipePreview) destroySwipePreview(false);
     start.direction=direction;
     const targetPath=swipeTargetFor(start.path,start.lang,direction);
     if(!targetPath) return Promise.resolve(null);
