@@ -527,9 +527,10 @@
       node.setAttribute('srcset',resolved);
     });
     const currentMain=document.querySelector('main');
-    const header=document.querySelector('.site-header');
     const footer=document.querySelector('.site-footer');
-    const mainDocumentTop=Math.max(0,header?.getBoundingClientRect().bottom||currentMain?.getBoundingClientRect().top||0);
+    /* Anchor the preview to the real main's document-space origin. This stays exact
+       whether the mobile header is fixed or desktop header is sticky. */
+    const mainDocumentTop=Math.max(0,(currentMain?.getBoundingClientRect().top||0)+window.scrollY);
     const footerRect=footer?.getBoundingClientRect();
     const footerVisible=!!(footerRect&&footerRect.top>mainDocumentTop&&footerRect.top<innerHeight&&footerRect.bottom>0);
     const previewBottom=footerVisible?Math.max(mainDocumentTop,Math.min(innerHeight,footerRect.top)):innerHeight;
@@ -539,7 +540,7 @@
     const targetPath=normalizedPath(url.pathname);
     const targetScroll=rememberedPageScroll(targetPath);
     Object.assign(previewMain.style,{
-      position:'absolute',top:`${mainDocumentTop}px`,left:'0',width:'100%',minHeight:'100vh',
+      position:'absolute',top:`${mainDocumentTop}px`,left:'0',width:'100%',
       margin:'0',willChange:'transform',pointerEvents:'none',
       background:getComputedStyle(document.body).backgroundColor||'#fff',
       transform:`translate3d(${direction>0?'100%':'-100%'},0,0)`
@@ -639,7 +640,9 @@
     const currentFrom=current.style.transform||'translate3d(0,0,0)';
     const incomingFrom=preview.main.style.transform||`translate3d(${direction>0?width:-width}px,0,0)`;
     const targetUrl=preview.url;
-    const targetScroll=rememberedPageScroll(normalizedPath(targetUrl.pathname));
+    /* Handoff at exactly the vertical position the user already sees in the preview.
+       Re-reading an unclamped remembered value here can cause a visible correction jump. */
+    const targetScroll=Number.isFinite(preview.previewScroll)?preview.previewScroll:rememberedPageScroll(normalizedPath(targetUrl.pathname));
     await Promise.all([
       animateElementTransform(current,currentFrom,`translate3d(${direction>0?-width:width}px,0,0)`,330),
       animateElementTransform(preview.main,incomingFrom,'translate3d(0,0,0)',330)
