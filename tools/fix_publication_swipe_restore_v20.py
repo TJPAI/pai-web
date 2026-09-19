@@ -92,3 +92,4 @@ for pattern in ('*.html','en/*.html','people/*.html','en/people/*.html'):
 if changed==0:
     raise SystemExit('no v19 site.js references updated')
 print(f'patched publication swipe restoration and {changed} HTML files')
+# trigger after workflow creation
