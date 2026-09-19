@@ -531,7 +531,15 @@
       const animation=node.animate([{transform:from},{transform:to}],{
         duration,easing:'cubic-bezier(.22,.72,.22,1)',fill:'forwards'
       });
-      animation.finished.catch(()=>{}).finally(resolve);
+      animation.finished.then(()=>{
+        /* Persist the final value in inline style, then remove the WAAPI effect.
+           A finished fill:forwards animation otherwise keeps overriding the next swipe. */
+        node.style.transform=to;
+        animation.cancel();
+      }).catch(()=>{
+        node.style.transform=to;
+        try{ animation.cancel(); }catch(_e){}
+      }).finally(resolve);
     }catch(_e){
       node.style.transform=to;
       resolve();
