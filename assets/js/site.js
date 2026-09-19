@@ -102,16 +102,47 @@
       const brand=header.querySelector('.brand');
       if(brand) brand.href=root(lang==='en'?'/en/':'/');
       const nav=header.querySelector('.nav-links');
-      if(nav){ nav.setAttribute('aria-label',lang==='en'?'Main navigation':'主导航'); nav.innerHTML=markup; }
       let mobile=header.querySelector('.mobile-menu');
       if(!mobile){
         mobile=document.createElement('nav');
         mobile.className='mobile-menu';
         header.appendChild(mobile);
       }
+
+      const needsRebuild=header.dataset.paiLang!==lang||!nav||!nav.querySelector('a')||!mobile.querySelector('a');
+      if(needsRebuild){
+        if(nav) nav.innerHTML=markup;
+        mobile.innerHTML=markup;
+        header.dataset.paiLang=lang;
+      }else{
+        /* Same-language navigation keeps the permanent header DOM intact.
+           Only state/hrefs change, avoiding a Safari header repaint on every page swap. */
+        const syncLinks=container=>{
+          if(!container) return;
+          [...container.querySelectorAll('a')].forEach(link=>{
+            const label=(link.textContent||'').trim();
+            const isLanguage=label==='EN'||label==='中文';
+            if(isLanguage){
+              link.href=root(languageHref);
+              link.classList.remove('active');
+              link.removeAttribute('aria-current');
+              return;
+            }
+            let key='';
+            try{ key=sectionForPath(normalizedPath(new URL(link.href,location.href).pathname)); }catch(_e){}
+            const isActive=!!active&&key===active;
+            link.classList.toggle('active',isActive);
+            if(isActive) link.setAttribute('aria-current','page');
+            else link.removeAttribute('aria-current');
+          });
+        };
+        syncLinks(nav);
+        syncLinks(mobile);
+      }
+
+      if(nav) nav.setAttribute('aria-label',lang==='en'?'Main navigation':'主导航');
       mobile.id='mobile-navigation';
       mobile.setAttribute('aria-label',lang==='en'?'Mobile navigation':'移动导航');
-      mobile.innerHTML=markup;
       mobile.classList.remove('open');
       const button=header.querySelector('.menu-btn');
       if(button){
