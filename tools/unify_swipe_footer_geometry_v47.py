@@ -18,5 +18,5 @@ js_path.write_text(js)
 
 for path in Path('.').rglob('*.html'):
     text=path.read_text()
-    text=re.sub(r'(assets/js/site\\.js)(?:\\?v=[^\\"\\']+)?', r'\\1?v=20260920-48', text)
+    text=re.sub(r"(assets/js/site\.js)(?:\?v=[^\"']+)?", r"\1?v=20260920-48", text)
     path.write_text(text)
