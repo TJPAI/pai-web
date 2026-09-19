@@ -72,6 +72,12 @@
   color:#8A93A2!important;
 }
 
+/* Achievement index and title start on the same top line. */
+#achievements .highlight .num{
+  margin:0!important;
+  align-self:start!important;
+}
+
 /* Level 5 — minor detail title */
 .person-detail .detail-block h3{
   font-size:var(--title-minor-size)!important;
