@@ -1,0 +1,32 @@
+name: Fix duplicate footer v31
+on:
+  push:
+    paths:
+      - 'tools/fix_duplicate_footer_v31.py'
+      - '.github/workflows/fix-duplicate-footer-v31.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Apply fix
+        run: python tools/fix_duplicate_footer_v31.py
+      - name: Validate
+        run: |
+          python tools/validate.py
+          node --check assets/js/site.js
+      - name: Commit and self-clean
+        run: |
+          rm -f tools/fix_duplicate_footer_v31.py .github/workflows/fix-duplicate-footer-v31.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: prevent duplicate footer after swipe transitions'
+          git push
