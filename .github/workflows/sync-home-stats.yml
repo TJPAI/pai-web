@@ -1,0 +1,38 @@
+name: One-off sync home stats
+on:
+  push:
+    paths:
+      - '.github/workflows/sync-home-stats.yml'
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Sync homepage monograph count
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          replacements = {
+              Path('index.html'): ('<strong>1</strong><span>学术专著</span><small>Cambridge University Press, 2024</small>', '<strong>2</strong><span>学术专著</span>'),
+              Path('en/index.html'): ('<strong>1</strong><span>Academic monograph</span><small>Cambridge University Press, 2024</small>', '<strong>2</strong><span>Academic monographs</span>'),
+          }
+          for path, (old, new) in replacements.items():
+              text = path.read_text(encoding='utf-8')
+              if old not in text:
+                  raise SystemExit(f'expected homepage stats not found in {path}')
+              path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+          python tools/validate.py
+          node --check assets/js/site.js
+      - name: Commit and remove one-off workflow
+        run: |
+          rm .github/workflows/sync-home-stats.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html en/index.html .github/workflows/sync-home-stats.yml
+          git commit -m 'fix: sync homepage monograph count'
+          git push origin HEAD:main
