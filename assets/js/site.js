@@ -558,9 +558,10 @@
     document.body.appendChild(shell);
     /* Menu and swipe use the same saved target scroll. Preview geometry merely
        reproduces that document position; it never becomes an independent source. */
-    const previewDocumentHeight=mainDocumentTop+previewMain.scrollHeight+(previewFooter?.scrollHeight||0);
-    const previewMaxScroll=Math.max(0,previewDocumentHeight-innerHeight);
-    const previewScroll=Math.min(targetScroll,previewMaxScroll);
+    /* The preview must show the exact same saved Y that menu navigation requests.
+       Do not independently clamp against preview geometry: applyPage is the single
+       authority that clamps against the real destination document after handoff. */
+    const previewScroll=targetScroll;
     previewMain.style.top=`${mainDocumentTop-previewScroll}px`;
     if(previewFooter) previewFooter.style.top=`${mainDocumentTop+previewMain.scrollHeight-previewScroll}px`;
     swipePreview={shell,main:previewMain,footer:previewFooter,url,direction,targetScroll,previewScroll};
