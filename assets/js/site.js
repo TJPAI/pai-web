@@ -180,6 +180,13 @@
 
   try{ history.scrollRestoration='manual'; }catch(_e){}
   const historyStateWithScroll=scrollY=>Object.assign({},history.state||{},{pai:true,scrollY});
+  const scrollToInstant=y=>{
+    const rootStyle=document.documentElement.style;
+    const previous=rootStyle.scrollBehavior;
+    rootStyle.scrollBehavior='auto';
+    window.scrollTo(0,Math.max(0,Number(y)||0));
+    requestAnimationFrame(()=>{ rootStyle.scrollBehavior=previous; });
+  };
   const PAGE_SCROLL_KEY='pai-page-scroll-v1';
   let pageScrollPositions={};
   try{ pageScrollPositions=JSON.parse(sessionStorage.getItem(PAGE_SCROLL_KEY)||'{}')||{}; }catch(_e){}
@@ -270,7 +277,7 @@
       if(Number.isFinite(preserveScrollY)){
         const maxY=Math.max(0,document.documentElement.scrollHeight-innerHeight);
         const restoredY=Math.min(Math.max(0,preserveScrollY),maxY);
-        scrollTo(0,restoredY);
+        scrollToInstant(restoredY);
         rememberPageScroll(normalizedPath(url.pathname),restoredY);
         try{ history.replaceState(historyStateWithScroll(restoredY),'',location.href); }catch(_e){}
       }else if(url.hash){
@@ -278,7 +285,7 @@
         const y=rememberPageScroll(normalizedPath(url.pathname),window.scrollY);
         try{ history.replaceState(historyStateWithScroll(y),'',location.href); }catch(_e){}
       }else{
-        scrollTo(0,0);
+        scrollToInstant(0);
         rememberPageScroll(normalizedPath(url.pathname),0);
         try{ history.replaceState(historyStateWithScroll(0),'',location.href); }catch(_e){}
       }
@@ -452,7 +459,8 @@
       node.setAttribute('srcset',resolved);
     });
     const currentMain=document.querySelector('main');
-    const mainDocumentTop=currentMain?Math.max(0,currentMain.getBoundingClientRect().top+window.scrollY):0;
+    const header=document.querySelector('.site-header');
+    const mainDocumentTop=Math.max(0,header?.getBoundingClientRect().bottom||currentMain?.getBoundingClientRect().top||0);
     const targetPath=normalizedPath(url.pathname);
     Object.assign(previewMain.style,{
       position:'absolute',top:`${mainDocumentTop}px`,left:'0',width:'100%',minHeight:'100vh',
