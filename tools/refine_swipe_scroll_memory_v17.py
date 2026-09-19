@@ -95,7 +95,6 @@ replace_once(
 """,
 'commit duration and restored position')
 
-# Remember destination after successful navigation too, after clamping to the actual page height.
 replace_once(
 """      if(Number.isFinite(preserveScrollY)){
         const maxY=Math.max(0,document.documentElement.scrollHeight-innerHeight);
@@ -122,3 +121,4 @@ for pattern in ('*.html','en/*.html','people/*.html','en/people/*.html'):
 if changed==0:
     raise SystemExit('no HTML site.js v16 references updated')
 print(f'updated swipe timing/scroll memory and {changed} HTML files')
+# trigger after workflow creation
