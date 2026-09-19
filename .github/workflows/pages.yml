@@ -25,6 +25,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Validate site content
         run: python tools/validate.py
+      - name: Validate share metadata
+        run: python tools/validate_share_metadata.py
       - name: Validate site runtime syntax
         run: node --check assets/js/site.js && node --check sw.js
       - name: Configure Pages

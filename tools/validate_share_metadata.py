@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import re, sys
+
+ROOT = Path(__file__).resolve().parents[1]
+SHARE_IMAGE = 'https://tjpai.github.io/pai-web/assets/images/social/pai-share-v2.png'
+errors = []
+checked = []
+
+
+def attr_value(text, tag, attr, value_attr='content'):
+    pattern = rf'<{tag}\b(?=[^>]*\b{attr}=["\']([^"\']+)["\'])[^>]*\b{value_attr}=["\']([^"\']*)["\'][^>]*>'
+    m = re.search(pattern, text, re.I)
+    if m:
+        return m.group(2)
+    # Attribute order may be reversed.
+    pattern = rf'<{tag}\b(?=[^>]*\b{value_attr}=["\']([^"\']*)["\'])[^>]*\b{attr}=["\']([^"\']+)["\'][^>]*>'
+    m = re.search(pattern, text, re.I)
+    return m.group(1) if m else None
+
+
+def link_href(text, rel):
+    for m in re.finditer(r'<link\b[^>]*>', text, re.I):
+        tag = m.group(0)
+        rel_m = re.search(r'\brel=["\']([^"\']+)["\']', tag, re.I)
+        href_m = re.search(r'\bhref=["\']([^"\']+)["\']', tag, re.I)
+        if rel_m and href_m and rel in rel_m.group(1).split():
+            return href_m.group(1)
+    return None
+
+for html in sorted(ROOT.rglob('*.html')):
+    text = html.read_text(encoding='utf-8')
+    rel = str(html.relative_to(ROOT))
+    # 404 is an error document, not a shareable content page.
+    if rel == '404.html' or 'class="site-header"' not in text:
+        continue
+    checked.append(rel)
+
+    title = re.search(r'<title>(.*?)</title>', text, re.I | re.S)
+    if not title or not title.group(1).strip():
+        errors.append(f'{rel}: missing <title>')
+
+    description = attr_value(text, 'meta', 'name', 'content') if False else None
+    m = re.search(r'<meta\b(?=[^>]*\bname=["\']description["\'])[^>]*\bcontent=["\']([^"\']+)["\'][^>]*>', text, re.I)
+    if not m:
+        m = re.search(r'<meta\b(?=[^>]*\bcontent=["\']([^"\']+)["\'])[^>]*\bname=["\']description["\'][^>]*>', text, re.I)
+    if not m:
+        errors.append(f'{rel}: missing meta description')
+
+    canonical = link_href(text, 'canonical')
+    if not canonical or not canonical.startswith('https://tjpai.github.io/pai-web/'):
+        errors.append(f'{rel}: missing/invalid canonical')
+
+    required_meta = {
+        ('property', 'og:type'): 'website',
+        ('property', 'og:title'): None,
+        ('property', 'og:description'): None,
+        ('property', 'og:url'): None,
+        ('property', 'og:image'): SHARE_IMAGE,
+        ('property', 'og:image:width'): '1200',
+        ('property', 'og:image:height'): '630',
+        ('property', 'og:image:alt'): None,
+        ('name', 'twitter:card'): 'summary_large_image',
+        ('name', 'twitter:title'): None,
+        ('name', 'twitter:description'): None,
+        ('name', 'twitter:image'): SHARE_IMAGE,
+    }
+    for (kind, key), expected in required_meta.items():
+        found = None
+        for tag in re.findall(r'<meta\b[^>]*>', text, re.I):
+            km = re.search(rf'\b{kind}=["\']{re.escape(key)}["\']', tag, re.I)
+            cm = re.search(r'\bcontent=["\']([^"\']*)["\']', tag, re.I)
+            if km and cm:
+                found = cm.group(1)
+                break
+        if found is None or not found.strip():
+            errors.append(f'{rel}: missing {key}')
+        elif expected is not None and found != expected:
+            errors.append(f'{rel}: {key} should be {expected}, got {found}')
+
+    for lang in ('zh-CN', 'en', 'x-default'):
+        ok = False
+        for tag in re.findall(r'<link\b[^>]*>', text, re.I):
+            if re.search(r'\brel=["\']alternate["\']', tag, re.I) and re.search(rf'\bhreflang=["\']{re.escape(lang)}["\']', tag, re.I) and re.search(r'\bhref=["\']https://tjpai\.github\.io/pai-web/', tag, re.I):
+                ok = True
+                break
+        if not ok:
+            errors.append(f'{rel}: missing hreflang {lang}')
+
+if errors:
+    print('Share metadata validation failed:')
+    for e in errors:
+        print(' -', e)
+    sys.exit(1)
+
+print(f'Share metadata OK: {len(checked)} content pages; image={SHARE_IMAGE}')
