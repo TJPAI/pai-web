@@ -190,6 +190,9 @@
     return value;
   };
   const rememberedPageScroll=path=>Math.max(0,Number(pageScrollPositions[path])||0);
+  const cacheCurrentPageSnapshot=()=>{
+    try{ pageCache.set(location.href.split('#')[0],document.documentElement.outerHTML); }catch(_e){}
+  };
   const saveCurrentScroll=()=>{
     if(navigating) return;
     const y=rememberPageScroll(normalizedPath(),window.scrollY);
@@ -256,9 +259,12 @@
       document.body.className=next.body.className;
 
       renderChrome();
+      /* Preserve publication expansion state when a rendered snapshot is reused. */
+      const preservedPublicationYears=[...next.querySelectorAll('.pub-group[data-expanded="true"]')]
+        .map(section=>section.dataset.year).filter(Boolean);
       /* Dynamic page content must settle before restoring a remembered position.
          Publications can substantially change document height after JSON rendering. */
-      await initPublications([]);
+      await initPublications(preservedPublicationYears);
       setTimeout(()=>warmNavigation(),80);
       await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
       if(Number.isFinite(preserveScrollY)){
@@ -309,6 +315,7 @@
     if(!url) return;
     event.preventDefault();
     saveCurrentScroll();
+    cacheCurrentPageSnapshot();
     const label=(link.textContent||'').trim();
     const isLanguageSwitch=label==='EN'||label==='中文';
     const options=isLanguageSwitch?{preserveScrollY:window.scrollY}:undefined;
@@ -457,9 +464,10 @@
     shell.appendChild(previewMain);
     document.body.appendChild(shell);
     const previewMaxScroll=Math.max(0,mainDocumentTop+previewMain.scrollHeight-innerHeight);
-    const targetScroll=Math.min(rememberedScroll,previewMaxScroll);
-    previewMain.style.top=`${mainDocumentTop-targetScroll}px`;
-    swipePreview={shell,main:previewMain,url,direction,targetScroll};
+    const previewScroll=Math.min(rememberedScroll,previewMaxScroll);
+    previewMain.style.top=`${mainDocumentTop-previewScroll}px`;
+    /* Never let an unrendered/short preview clamp the real destination position. */
+    swipePreview={shell,main:previewMain,url,direction,targetScroll:rememberedScroll,previewScroll};
     return swipePreview;
   };
 
@@ -626,6 +634,7 @@
     }
     event.preventDefault();
     saveCurrentScroll();
+    cacheCurrentPageSnapshot();
     commitSwipe(direction).finally(()=>{ pageSwipeStart=null; });
   },{passive:false});
 
