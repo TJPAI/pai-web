@@ -502,17 +502,17 @@
 
   const positionSwipePages=dx=>{
     const start=pageSwipeStart;
-    const preview=swipePreview;
-    if(!start||!preview) return;
+    if(!start) return;
     const width=Math.max(1,innerWidth);
     const bounded=Math.max(-width,Math.min(width,dx));
-    const direction=preview.direction;
-    if((direction>0&&bounded>0)||(direction<0&&bounded<0)) return;
+    const direction=bounded<0?1:-1;
     const current=document.querySelector('main');
     if(current){
       current.style.willChange='transform';
       current.style.transform=`translate3d(${bounded}px,0,0)`;
     }
+    const preview=swipePreview;
+    if(!preview||preview.direction!==direction) return;
     const incoming=bounded+(direction>0?width:-width);
     preview.main.style.transform=`translate3d(${incoming}px,0,0)`;
   };
@@ -538,9 +538,14 @@
   const settleSwipeBack=async()=>{
     const current=document.querySelector('main');
     const preview=swipePreview;
-    if(!current||!preview){ destroySwipePreview(); return; }
-    const width=Math.max(1,innerWidth);
+    if(!current){ destroySwipePreview(); return; }
     const currentFrom=current.style.transform||'translate3d(0,0,0)';
+    if(!preview){
+      await animateElementTransform(current,currentFrom,'translate3d(0,0,0)',253);
+      destroySwipePreview();
+      return;
+    }
+    const width=Math.max(1,innerWidth);
     const incomingFrom=preview.main.style.transform||`translate3d(${preview.direction>0?width:-width}px,0,0)`;
     await Promise.all([
       animateElementTransform(current,currentFrom,'translate3d(0,0,0)',253),
@@ -603,12 +608,13 @@
     event.preventDefault();
     start.lastDx=dx;
     const direction=dx<0?1:-1;
+    /* The current page always follows the finger immediately. Neighbor HTML may
+       arrive later, but it must not change the gesture model. */
+    positionSwipePages(dx);
     if(direction!==start.direction){
       ensureSwipePreview(direction).then(()=>{
         if(pageSwipeStart===start) positionSwipePages(start.lastDx);
       });
-    }else{
-      positionSwipePages(dx);
     }
   },{passive:false});
 
