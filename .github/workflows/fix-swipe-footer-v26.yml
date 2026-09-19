@@ -17,6 +17,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
+      - name: Align patch with current v25 code
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tools/fix_swipe_footer_v26.py')
+          s=p.read_text()
+          s=s.replace("const targetScroll=Math.max(0,Number(preview.targetScroll)||0);","const targetScroll=rememberedPageScroll(normalizedPath(targetUrl.pathname));")
+          p.write_text(s)
+          PY
       - name: Apply patch
         run: python tools/fix_swipe_footer_v26.py
       - name: Validate
