@@ -1,0 +1,43 @@
+name: Unify site.js cache version v38
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/unify-site-js-v38.yml']
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Unify site.js version
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          changed=[]
+          for p in Path('.').rglob('*.html'):
+              s=p.read_text(encoding='utf-8')
+              n=re.sub(r'assets/js/site\.js\?v=20260919-\d+', 'assets/js/site.js?v=20260919-38', s)
+              n=re.sub(r'\.\./assets/js/site\.js\?v=20260919-\d+', '../assets/js/site.js?v=20260919-38', n)
+              n=re.sub(r'\.\./\.\./assets/js/site\.js\?v=20260919-\d+', '../../assets/js/site.js?v=20260919-38', n)
+              if n!=s:
+                  p.write_text(n,encoding='utf-8')
+                  changed.append(str(p))
+          print('changed', len(changed))
+          print('\n'.join(changed))
+          PY
+      - name: Validate
+        run: |
+          python tools/validate.py
+          node --check assets/js/site.js
+      - name: Commit and self-clean
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/workflows/unify-site-js-v38.yml
+          git add -A
+          git commit -m "chore: unify site.js cache version across pages"
+          git push
