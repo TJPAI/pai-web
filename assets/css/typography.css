@@ -1,5 +1,5 @@
-/* Global title hierarchy — single source of truth for title typography.
-   Layout belongs in site.css/refine-base.css/app-core.css. Title size/weight/color belong here. */
+/* Global typography hierarchy — single source of truth for title and body text typography.
+   Layout belongs in site.css/refine-base.css/app-core.css. Type size/weight/color belong here. */
 
 :root{
   --title-display-size:clamp(42px,5vw,68px);
@@ -16,6 +16,16 @@
   --title-item-weight:650;
   --title-minor-weight:650;
   --title-index-weight:450;
+
+  /* Shared prose hierarchy */
+  --text-lead-size:18px;
+  --text-body-size:16px;
+  --text-support-size:14px;
+  --text-meta-size:13px;
+  --text-lead-line:1.75;
+  --text-body-line:1.70;
+  --text-support-line:1.60;
+  --text-meta-line:1.50;
 }
 
 /* Level 0 — homepage display title */
@@ -93,6 +103,24 @@
   text-transform:uppercase!important;
 }
 
+/* Shared prose levels */
+.text-lead{
+  font-size:var(--text-lead-size)!important;
+  line-height:var(--text-lead-line)!important;
+}
+.text-body{
+  font-size:var(--text-body-size)!important;
+  line-height:var(--text-body-line)!important;
+}
+.text-support{
+  font-size:var(--text-support-size)!important;
+  line-height:var(--text-support-line)!important;
+}
+.text-meta{
+  font-size:var(--text-meta-size)!important;
+  line-height:var(--text-meta-line)!important;
+}
+
 @media(max-width:768px){
   :root{
     --title-display-size:38px;
@@ -102,5 +130,9 @@
     --title-item-size:20px;
     --title-minor-size:17px;
     --title-eyebrow-size:10px;
+    --text-lead-size:17px;
+    --text-body-size:16px;
+    --text-support-size:14px;
+    --text-meta-size:12px;
   }
 }
