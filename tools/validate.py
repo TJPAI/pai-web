@@ -248,3 +248,31 @@ for name in ('erwu-liu','rui-wang','gang-shen','dunhui-xiao','shuyan-hu','yan-li
     ext=portrait_ext.get(name,'jpg')
     rel=f'assets/images/people/{name}.{ext}'
     if not (ROOT/rel).is_file(): errors.append(f'{rel}: missing portrait')
+
+
+# Canonical typography ownership guardrail.
+# Title visual properties belong only in assets/css/typography.css; component layers may keep layout properties.
+_typography_owned_selectors=[
+    '.eyebrow','.hero h1','.home-hero h1','.page-hero h1',
+    '.section-head h2','.content-section h2','.prose h2','.join h2',
+    '.challenge h3','.research h3','.research-title','.impact h3','.partner h3','.highlight h3','.news-row h3',
+    '.person h3','.team-grid .person h3','.pub h3','.contact-card h3','.join-item h3',
+    '.person-detail h2','.detail-block h3','.person-detail .detail-block h3','.research-direction h2',
+    '.challenge .num','.highlight .num','.join-item .num'
+]
+_typography_owned_props={'font-size','font-weight','color','line-height','letter-spacing','text-transform'}
+for rel in ('assets/css/site.css','assets/css/refine-base.css','assets/css/app-core.css'):
+    css=(ROOT/rel).read_text(encoding='utf-8')
+    for match in re.finditer(r'([^{}]+)\{([^{}]*)\}',css):
+        selector=match.group(1).strip()
+        if not any(token in selector for token in _typography_owned_selectors):
+            continue
+        props={part.split(':',1)[0].strip().lower() for part in match.group(2).split(';') if ':' in part}
+        bad=sorted(props&_typography_owned_props)
+        if bad:
+            errors.append(f'{rel}: canonical title typography leaked into "{selector}" ({", ".join(bad)}); use typography.css')
+
+_typography=(ROOT/'assets/css/typography.css').read_text(encoding='utf-8')
+for required in ('--title-display-size','--title-page-size','--title-section-size','--title-feature-size','--title-item-size','--title-minor-size','.research-title'):
+    if required not in _typography:
+        errors.append(f'assets/css/typography.css: missing canonical title contract {required}')

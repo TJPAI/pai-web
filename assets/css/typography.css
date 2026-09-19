@@ -46,7 +46,7 @@
 }
 
 /* Level 3 — featured subsection / research title */
-.prose h2,.research-direction h2,.research h3,.impact h3,.person-detail h2{
+.prose h2,.research-direction h2,.research h3,.research-title,.impact h3,.person-detail h2{
   font-size:var(--title-feature-size)!important;
   line-height:1.24!important;
   letter-spacing:-.025em!important;
