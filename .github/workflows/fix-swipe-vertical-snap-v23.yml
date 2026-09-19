@@ -1,0 +1,34 @@
+name: Fix swipe vertical snap v23
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/fix_swipe_vertical_snap_v23.py'
+      - '.github/workflows/fix-swipe-vertical-snap-v23.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Apply patch
+        run: python tools/fix_swipe_vertical_snap_v23.py
+      - name: Validate
+        run: |
+          python tools/validate.py
+          node --check assets/js/site.js
+      - name: Commit and self-clean
+        run: |
+          rm tools/fix_swipe_vertical_snap_v23.py .github/workflows/fix-swipe-vertical-snap-v23.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: eliminate vertical drift after swipe transition'
+          git push
