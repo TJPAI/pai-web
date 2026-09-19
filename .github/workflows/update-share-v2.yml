@@ -1,0 +1,29 @@
+name: Update compact social preview
+on:
+  push:
+    paths:
+      - '.github/workflows/update-share-v2.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Pillow
+        run: pip install pillow
+      - name: Generate compact share card and update metadata
+        run: python tools/update_share_v2.py
+      - name: Validate
+        run: python tools/validate.py
+      - name: Commit and self-clean
+        run: |
+          rm -f tools/update_share_v2.py .github/workflows/update-share-v2.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: optimize social preview for compact thumbnails'
+          git push
