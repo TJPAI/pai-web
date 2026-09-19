@@ -1,6 +1,7 @@
 from pathlib import Path
 import re
 
+# v40 trigger: detach mobile header from page flow and close overlay before navigation.
 css_path=Path('assets/css/site.css')
 css=css_path.read_text()
 old="""  /* Keep the sticky mobile chrome on a stable Safari compositing layer.\n     Opaque paint avoids intermittent backdrop-filter disappearance during horizontal swipes. */\n  .site-header{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;isolation:isolate;z-index:80;transform:translateZ(0);-webkit-transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden}\n  .container{width:min(calc(100% - 36px),var(--max))}\n  .nav{height:62px}.nav-links{display:none}.menu-btn{display:block}.brand strong{font-size:22px}\n"""
