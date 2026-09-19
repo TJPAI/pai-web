@@ -1,0 +1,34 @@
+name: Strengthen typography validation
+on:
+  push:
+    paths:
+      - tools/strengthen_typography_guard.py
+      - .github/workflows/strengthen-typography-validation.yml
+permissions:
+  contents: write
+jobs:
+  strengthen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply validation guard
+        run: python tools/strengthen_typography_guard.py
+      - name: Validate site
+        run: |
+          python tools/validate.py
+          node --check assets/js/site.js
+          node --check sw.js
+      - name: Commit guard and self-clean
+        run: |
+          rm tools/strengthen_typography_guard.py .github/workflows/strengthen-typography-validation.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "test: enforce semantic typography contracts"
+          git push
