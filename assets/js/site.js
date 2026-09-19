@@ -467,7 +467,14 @@
     });
     const currentMain=document.querySelector('main');
     const header=document.querySelector('.site-header');
+    const footer=document.querySelector('.site-footer');
     const mainDocumentTop=Math.max(0,header?.getBoundingClientRect().bottom||currentMain?.getBoundingClientRect().top||0);
+    const footerRect=footer?.getBoundingClientRect();
+    const footerVisible=!!(footerRect&&footerRect.top>mainDocumentTop&&footerRect.top<innerHeight&&footerRect.bottom>0);
+    const previewBottom=footerVisible?Math.max(mainDocumentTop,Math.min(innerHeight,footerRect.top)):innerHeight;
+    /* When the shared footer is visible, keep it stationary and clip the incoming
+       page to the portion of the viewport currently occupied by main content. */
+    shell.style.bottom=`${Math.max(0,innerHeight-previewBottom)}px`;
     const targetPath=normalizedPath(url.pathname);
     const targetScroll=rememberedPageScroll(targetPath);
     Object.assign(previewMain.style,{
@@ -492,9 +499,7 @@
     const start=pageSwipeStart;
     if(!start) return Promise.resolve(null);
     if(swipePreview&&swipePreview.direction===direction) return Promise.resolve(swipePreview);
-    /* Direction changes during the same gesture must never snap the current page
-       back to zero. Remove only the obsolete neighbor preview here. */
-    if(swipePreview) destroySwipePreview(false);
+    if(swipePreview) destroySwipePreview();
     start.direction=direction;
     const targetPath=swipeTargetFor(start.path,start.lang,direction);
     if(!targetPath) return Promise.resolve(null);
