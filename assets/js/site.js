@@ -427,10 +427,9 @@
   };
   setTimeout(warmSwipeNeighbors,260);
 
-  const destroySwipePreview=(resetCurrent=true)=>{
+  const destroySwipePreview=()=>{
     if(swipePreview?.shell?.isConnected) swipePreview.shell.remove();
     swipePreview=null;
-    if(!resetCurrent) return;
     const main=document.querySelector('main');
     if(main){
       main.style.transform='';
