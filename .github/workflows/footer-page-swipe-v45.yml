@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - 'tools/footer_moves_with_swipe_v45.py'
+      - '.github/workflows/footer-page-swipe-v45.yml'
 jobs:
   apply:
     runs-on: ubuntu-latest
