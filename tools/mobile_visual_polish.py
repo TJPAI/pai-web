@@ -1,0 +1,63 @@
+from pathlib import Path
+
+p = Path('assets/css/app-core.css')
+s = p.read_text()
+marker = '/* Mobile visual polish — 2026-09-19 */'
+block = '''
+
+/* Mobile visual polish — 2026-09-19 */
+@media(max-width:768px){
+  /* Shared inner-page rhythm, using Join as the reference pace. */
+  main>.page-hero{padding:80px 0 56px}
+  main>.content-section:not(.join-opportunities){padding-top:68px;padding-bottom:68px}
+  #overview.section,#collaboration.section,#achievements.section,#international-impact.section{padding-top:76px;padding-bottom:76px}
+  #collaboration .section-head,#achievements .section-head,#international-impact .section-head{margin-bottom:32px}
+
+  /* Contact: lighter information hierarchy without shrinking readable body copy. */
+  .contact-grid{gap:26px}
+  .contact-card{padding:24px 0}
+  .contact-card h3{margin-bottom:14px}
+  .contact-card p{line-height:1.72}
+  .contact-card p+p{margin-top:20px}
+  .contact-card p strong{font-weight:600}
+  .contact-card p a{font-weight:400}
+
+  /* Research: keep the editorial scale, but reduce dead space between directions. */
+  .research-direction{padding-top:52px!important;padding-bottom:54px!important}
+  .research-direction .research-identity{margin-bottom:22px!important}
+  .research-direction .direction-keywords{margin-top:20px!important}
+
+  /* About: differentiate international-impact entries from the preceding ruled lists. */
+  #international-impact .detail-block{border-top:0;padding:0 0 26px}
+  #international-impact .detail-block+.detail-block{margin-top:2px}
+  #international-impact .detail-block h3{margin-bottom:7px}
+  #international-impact .detail-block p{margin:0;color:var(--muted)}
+
+  /* Publications: optimize scan order — year -> title -> supporting metadata. */
+  .pub{padding-top:21px;padding-bottom:23px}
+  .pub h3{margin-bottom:8px}
+  .pub-authors{color:var(--muted)!important;line-height:1.55!important}
+  .pub-venue{color:#8A93A2!important;line-height:1.5!important}
+  .pub-actions{color:#6F7785}
+
+  /* Footer: quieter ending, especially on short pages. */
+  .site-footer.compact-footer{padding:24px 0 10px}
+  .compact-footer .footer-grid{gap:14px}
+  .compact-footer .footer-links{gap:5px 15px}
+  .compact-footer .footer-meta{margin-top:12px;padding-top:9px}
+}
+'''
+if marker not in s:
+    p.write_text(s.rstrip() + block + '\n')
+
+# Bump the shared cache chain from v6 to v7.
+r = Path('assets/css/refine.css')
+rs = r.read_text().replace('20260919-6', '20260919-7')
+r.write_text(rs)
+
+for f in Path('.').rglob('*.html'):
+    t = f.read_text()
+    t2 = t.replace('site.css?v=20260919-6', 'site.css?v=20260919-7')
+    t2 = t2.replace('refine.css?v=20260919-6', 'refine.css?v=20260919-7')
+    if t2 != t:
+        f.write_text(t2)
