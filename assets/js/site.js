@@ -180,9 +180,20 @@
 
   try{ history.scrollRestoration='manual'; }catch(_e){}
   const historyStateWithScroll=scrollY=>Object.assign({},history.state||{},{pai:true,scrollY});
+  const PAGE_SCROLL_KEY='pai-page-scroll-v1';
+  let pageScrollPositions={};
+  try{ pageScrollPositions=JSON.parse(sessionStorage.getItem(PAGE_SCROLL_KEY)||'{}')||{}; }catch(_e){}
+  const rememberPageScroll=(path,y)=>{
+    const value=Math.max(0,Math.round(Number(y)||0));
+    pageScrollPositions[path]=value;
+    try{ sessionStorage.setItem(PAGE_SCROLL_KEY,JSON.stringify(pageScrollPositions)); }catch(_e){}
+    return value;
+  };
+  const rememberedPageScroll=path=>Math.max(0,Number(pageScrollPositions[path])||0);
   const saveCurrentScroll=()=>{
     if(navigating) return;
-    try{ history.replaceState(historyStateWithScroll(window.scrollY),'',location.href); }catch(_e){}
+    const y=rememberPageScroll(normalizedPath(),window.scrollY);
+    try{ history.replaceState(historyStateWithScroll(y),'',location.href); }catch(_e){}
   };
   saveCurrentScroll();
   addEventListener('scroll',()=>{
@@ -245,7 +256,9 @@
       setTimeout(()=>warmNavigation(),80);
       if(Number.isFinite(preserveScrollY)){
         const maxY=Math.max(0,document.documentElement.scrollHeight-innerHeight);
-        scrollTo(0,Math.min(preserveScrollY,maxY));
+        const restoredY=Math.min(preserveScrollY,maxY);
+        scrollTo(0,restoredY);
+        rememberPageScroll(normalizedPath(url.pathname),restoredY);
       }else if(url.hash){
         document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView();
       }else{
@@ -355,7 +368,7 @@
   const SWIPE_FLICK_MAX_MS=420;
   const SWIPE_FLICK_MIN_VX=.30;
   const SWIPE_MAX_MS=1200;
-  const SWIPE_SETTLE_MS=220;
+  const SWIPE_SETTLE_MS=300;
   let pageSwipeStart=null;
   let swipePreview=null;
 
@@ -421,15 +434,18 @@
     });
     const currentMain=document.querySelector('main');
     const mainDocumentTop=currentMain?Math.max(0,currentMain.getBoundingClientRect().top+window.scrollY):0;
+    const targetPath=normalizedPath(url.pathname);
+    const targetScroll=rememberedPageScroll(targetPath);
+    const previewTop=mainDocumentTop-targetScroll;
     Object.assign(previewMain.style,{
-      position:'absolute',top:`${mainDocumentTop}px`,left:'0',width:'100%',minHeight:`calc(100vh - ${mainDocumentTop}px)`,
+      position:'absolute',top:`${previewTop}px`,left:'0',width:'100%',minHeight:'100vh',
       margin:'0',willChange:'transform',pointerEvents:'none',
       background:getComputedStyle(document.body).backgroundColor||'#fff',
       transform:`translate3d(${direction>0?'100%':'-100%'},0,0)`
     });
     shell.appendChild(previewMain);
     document.body.appendChild(shell);
-    swipePreview={shell,main:previewMain,url,direction};
+    swipePreview={shell,main:previewMain,url,direction,targetScroll};
     return swipePreview;
   };
 
@@ -488,8 +504,8 @@
     const currentFrom=current.style.transform||'translate3d(0,0,0)';
     const incomingFrom=preview.main.style.transform||`translate3d(${preview.direction>0?width:-width}px,0,0)`;
     await Promise.all([
-      animateElementTransform(current,currentFrom,'translate3d(0,0,0)',165),
-      animateElementTransform(preview.main,incomingFrom,`translate3d(${preview.direction>0?width:-width}px,0,0)`,165)
+      animateElementTransform(current,currentFrom,'translate3d(0,0,0)',230),
+      animateElementTransform(preview.main,incomingFrom,`translate3d(${preview.direction>0?width:-width}px,0,0)`,230)
     ]);
     destroySwipePreview();
   };
@@ -503,13 +519,13 @@
     const currentFrom=current.style.transform||'translate3d(0,0,0)';
     const incomingFrom=preview.main.style.transform||`translate3d(${direction>0?width:-width}px,0,0)`;
     const targetUrl=preview.url;
+    const targetScroll=Math.max(0,Number(preview.targetScroll)||0);
     await Promise.all([
-      animateElementTransform(current,currentFrom,`translate3d(${direction>0?-width:width}px,0,0)`,205),
-      animateElementTransform(preview.main,incomingFrom,'translate3d(0,0,0)',205)
+      animateElementTransform(current,currentFrom,`translate3d(${direction>0?-width:width}px,0,0)`,300),
+      animateElementTransform(preview.main,incomingFrom,'translate3d(0,0,0)',300)
     ]);
     try{
-      scrollTo(0,0);
-      await applyPage(targetUrl,{transitionDirection:0,preserveScrollY:0});
+      await applyPage(targetUrl,{transitionDirection:0,preserveScrollY:targetScroll});
     }finally{
       destroySwipePreview();
       setTimeout(warmSwipeNeighbors,60);
