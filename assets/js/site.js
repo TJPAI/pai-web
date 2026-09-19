@@ -122,16 +122,6 @@
       }
     }
 
-    const footer=document.querySelector('.site-footer');
-    if(footer){
-      const links=items.map(([label,href])=>`<a href="${root(href)}">${label}</a>`).join('')+
-        `<a href="${root(languageHref)}">${languageLabel}</a>`;
-      const contact=lang==='en'?
-        `4800 Cao'an Highway, Jiading District, Shanghai<br>Tongji University Jiading Campus<br><a href="mailto:23666042@tongji.edu.cn">23666042@tongji.edu.cn</a>`:
-        `上海市嘉定区曹安公路4800号<br>同济大学嘉定校区智信馆<br><a href="mailto:23666042@tongji.edu.cn">23666042@tongji.edu.cn</a>`;
-      footer.classList.add('compact-footer');
-      footer.innerHTML=`<div class="container"><div class="footer-grid"><div><div class="brand"><strong>PAI</strong><span>PAI Research Center · Tongji University</span></div></div><div class="footer-links">${links}</div><div class="footer-contact">${contact}</div></div><div class="footer-meta"><span>© PAI Research Center</span></div></div>`;
-    }
   };
   renderChrome();
 
@@ -234,9 +224,11 @@
     try{
       const html=await fetchPage(url);
       const next=new DOMParser().parseFromString(html,'text/html');
-      const currentMain=document.querySelector('main');
-      const nextMain=next.querySelector('main');
-      if(!currentMain||!nextMain) throw new Error('page shell unavailable');
+      const currentSurface=document.querySelector('.page-surface');
+      const nextSurface=next.querySelector('.page-surface');
+      const currentMain=currentSurface?.querySelector('main');
+      const nextMain=nextSurface?.querySelector('main');
+      if(!currentSurface||!nextSurface||!currentMain||!nextMain) throw new Error('page shell unavailable');
 
       const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
       const animateMain=async(node,keyframes,options)=>{
@@ -248,8 +240,8 @@
       };
       const shift=transitionDirection>0?-18:18;
       const startShift=transitionDirection?Math.max(-18,Math.min(18,Number(gestureOffset)||0)):0;
-      currentMain.style.willChange='transform, opacity';
-      await animateMain(currentMain,[
+      currentSurface.style.willChange='transform, opacity';
+      await animateMain(currentSurface,[
         {transform:`translate3d(${startShift}px,0,0)`,opacity:1},
         {transform:`translate3d(${shift}px,0,0)`,opacity:.9}
       ],{duration:105,easing:'cubic-bezier(.4,0,1,1)',fill:'forwards'});
@@ -259,8 +251,9 @@
       if(historyMode==='push') history.pushState({pai:true,scrollY:destinationScroll},'',url.href);
       else if(historyMode==='replace') history.replaceState({pai:true,scrollY:destinationScroll},'',url.href);
 
-      const incomingMain=document.importNode(nextMain,true);
-      currentMain.replaceWith(incomingMain);
+      const incomingSurface=document.importNode(nextSurface,true);
+      const incomingMain=incomingSurface.querySelector('main');
+      currentSurface.replaceWith(incomingSurface);
       document.title=next.title||document.title;
       document.documentElement.lang=next.documentElement.lang||document.documentElement.lang;
       document.body.className=next.body.className;
@@ -293,12 +286,12 @@
       if(transitionDirection&&!reduceMotion){
         const incomingShift=transitionDirection>0?18:-18;
         await new Promise(resolve=>requestAnimationFrame(resolve));
-        await animateMain(incomingMain,[
+        await animateMain(incomingSurface,[
           {transform:`translate3d(${incomingShift}px,0,0)`,opacity:.9},
           {transform:'translate3d(0,0,0)',opacity:1}
         ],{duration:175,easing:'cubic-bezier(.2,.72,.22,1)',fill:'both'});
       }
-      incomingMain.style.willChange='';
+      incomingSurface.style.willChange='';
       setTimeout(()=>warmSwipeNeighbors(),40);
     }finally{
       navigating=false;
@@ -430,18 +423,19 @@
   const destroySwipePreview=()=>{
     if(swipePreview?.shell?.isConnected) swipePreview.shell.remove();
     swipePreview=null;
-    const main=document.querySelector('main');
-    if(main){
-      main.style.transform='';
-      main.style.willChange='';
+    const surface=document.querySelector('.page-surface');
+    if(surface){
+      surface.style.transform='';
+      surface.style.willChange='';
     }
   };
 
   const buildSwipePreview=(url,direction,html)=>{
     if(!pageSwipeStart||pageSwipeStart.direction!==direction) return null;
     const next=new DOMParser().parseFromString(html,'text/html');
-    const nextMain=next.querySelector('main');
-    if(!nextMain) return null;
+    const nextSurface=next.querySelector('.page-surface');
+    const nextMain=nextSurface?.querySelector('main');
+    if(!nextSurface||!nextMain) return null;
 
     const shell=document.createElement('div');
     shell.setAttribute('aria-hidden','true');
@@ -449,13 +443,13 @@
       position:'fixed',inset:'0',overflow:'hidden',pointerEvents:'none',
       zIndex:'12',contain:'layout paint',background:'transparent'
     });
-    const previewMain=document.importNode(nextMain,true);
-    previewMain.removeAttribute('id');
-    previewMain.querySelectorAll('[id]').forEach(node=>node.removeAttribute('id'));
-    previewMain.querySelectorAll('img[src]').forEach(img=>{
+    const previewSurface=document.importNode(nextSurface,true);
+    const previewMain=previewSurface.querySelector('main');
+    previewSurface.querySelectorAll('[id]').forEach(node=>node.removeAttribute('id'));
+    previewSurface.querySelectorAll('img[src]').forEach(img=>{
       try{ img.src=new URL(img.getAttribute('src'),url.href).href; }catch(_e){}
     });
-    previewMain.querySelectorAll('source[srcset],img[srcset]').forEach(node=>{
+    previewSurface.querySelectorAll('source[srcset],img[srcset]').forEach(node=>{
       const raw=node.getAttribute('srcset');
       if(!raw) return;
       const resolved=raw.split(',').map(part=>{
@@ -470,21 +464,21 @@
     const mainDocumentTop=Math.max(0,header?.getBoundingClientRect().bottom||currentMain?.getBoundingClientRect().top||0);
     const targetPath=normalizedPath(url.pathname);
     const targetScroll=rememberedPageScroll(targetPath);
-    Object.assign(previewMain.style,{
+    Object.assign(previewSurface.style,{
       position:'absolute',top:`${mainDocumentTop}px`,left:'0',width:'100%',minHeight:'100vh',
       margin:'0',willChange:'transform',pointerEvents:'none',
       background:getComputedStyle(document.body).backgroundColor||'#fff',
       transform:`translate3d(${direction>0?'100%':'-100%'},0,0)`
     });
-    shell.appendChild(previewMain);
+    shell.appendChild(previewSurface);
     document.body.appendChild(shell);
     /* Use the same remembered page position as direct/menu navigation.
        A rendered snapshot is cached when leaving a page, so revisits can preview
        the real vertical position without clamping the final destination value. */
-    const previewMaxScroll=Math.max(0,mainDocumentTop+previewMain.scrollHeight-innerHeight);
+    const previewMaxScroll=Math.max(0,mainDocumentTop+previewSurface.scrollHeight-innerHeight);
     const previewScroll=Math.min(targetScroll,previewMaxScroll);
-    previewMain.style.top=`${mainDocumentTop-previewScroll}px`;
-    swipePreview={shell,main:previewMain,url,direction,targetScroll,previewScroll};
+    previewSurface.style.top=`${mainDocumentTop-previewScroll}px`;
+    swipePreview={shell,surface:previewSurface,main:previewMain,url,direction,targetScroll,previewScroll};
     return swipePreview;
   };
 
@@ -506,7 +500,7 @@
     const width=Math.max(1,innerWidth);
     const bounded=Math.max(-width,Math.min(width,dx));
     const direction=bounded<0?1:-1;
-    const current=document.querySelector('main');
+    const current=document.querySelector('.page-surface');
     if(current){
       current.style.willChange='transform';
       current.style.transform=`translate3d(${bounded}px,0,0)`;
@@ -514,7 +508,7 @@
     const preview=swipePreview;
     if(!preview||preview.direction!==direction) return;
     const incoming=bounded+(direction>0?width:-width);
-    preview.main.style.transform=`translate3d(${incoming}px,0,0)`;
+    preview.surface.style.transform=`translate3d(${incoming}px,0,0)`;
   };
 
   const animateElementTransform=(node,from,to,duration=SWIPE_SETTLE_MS)=>new Promise(resolve=>{
@@ -536,7 +530,7 @@
   });
 
   const settleSwipeBack=async()=>{
-    const current=document.querySelector('main');
+    const current=document.querySelector('.page-surface');
     const preview=swipePreview;
     if(!current){ destroySwipePreview(); return; }
     const currentFrom=current.style.transform||'translate3d(0,0,0)';
@@ -546,27 +540,27 @@
       return;
     }
     const width=Math.max(1,innerWidth);
-    const incomingFrom=preview.main.style.transform||`translate3d(${preview.direction>0?width:-width}px,0,0)`;
+    const incomingFrom=preview.surface.style.transform||`translate3d(${preview.direction>0?width:-width}px,0,0)`;
     await Promise.all([
       animateElementTransform(current,currentFrom,'translate3d(0,0,0)',253),
-      animateElementTransform(preview.main,incomingFrom,`translate3d(${preview.direction>0?width:-width}px,0,0)`,253)
+      animateElementTransform(preview.surface,incomingFrom,`translate3d(${preview.direction>0?width:-width}px,0,0)`,253)
     ]);
     destroySwipePreview();
   };
 
   const commitSwipe=async(direction)=>{
-    const current=document.querySelector('main');
+    const current=document.querySelector('.page-surface');
     const preview=swipePreview;
     const start=pageSwipeStart;
     if(!current||!preview||!start){ destroySwipePreview(); return; }
     const width=Math.max(1,innerWidth);
     const currentFrom=current.style.transform||'translate3d(0,0,0)';
-    const incomingFrom=preview.main.style.transform||`translate3d(${direction>0?width:-width}px,0,0)`;
+    const incomingFrom=preview.surface.style.transform||`translate3d(${direction>0?width:-width}px,0,0)`;
     const targetUrl=preview.url;
     const targetScroll=rememberedPageScroll(normalizedPath(targetUrl.pathname));
     await Promise.all([
       animateElementTransform(current,currentFrom,`translate3d(${direction>0?-width:width}px,0,0)`,330),
-      animateElementTransform(preview.main,incomingFrom,'translate3d(0,0,0)',330)
+      animateElementTransform(preview.surface,incomingFrom,'translate3d(0,0,0)',330)
     ]);
     try{
       await applyPage(targetUrl,{transitionDirection:0,preserveScrollY:targetScroll});

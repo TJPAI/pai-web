@@ -236,7 +236,7 @@ for required in ('assets/css/refine-base.css','assets/css/app-core.css'):
 
 # Lightweight-navigation reliability guardrail.
 site_js=(ROOT/'assets/js/site.js').read_text(encoding='utf-8')
-for required in ('history.pushState','popstate','DOMParser','currentMain.replaceWith','eligiblePageLink'):
+for required in ('history.pushState','popstate','DOMParser','currentSurface.replaceWith','eligiblePageLink'):
     if required not in site_js:
         errors.append(f'assets/js/site.js: lightweight navigation contract missing ({required})')
 if "fetch(key,{credentials:'same-origin'})" not in site_js:
