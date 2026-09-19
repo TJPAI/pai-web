@@ -378,6 +378,16 @@ if not (ROOT/'assets/images/social/pai-share.png').exists(): errors.append('miss
 for rel in ('assets/icons/favicon.svg','assets/icons/favicon-32.png','assets/icons/apple-touch-icon.png','assets/icons/icon-192.png','assets/icons/icon-512.png','site.webmanifest'):
     if not (ROOT/rel).exists(): errors.append(f'missing brand asset: {rel}')
 
+
+
+# Social preview guardrail.
+for html,text in html_text.items():
+    rel=str(Path(html).relative_to(ROOT))
+    if 'pai-share.png' in text:
+        errors.append(f'{rel}: legacy social preview image reference remains; use pai-share-v2.png')
+    if 'property="og:image"' in text and 'pai-share-v2.png' not in text:
+        errors.append(f'{rel}: og:image must use the compact social preview image')
+
 if errors:
     print('Validation failed:')
     for error in errors:
