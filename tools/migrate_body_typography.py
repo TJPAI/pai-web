@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 
+# One-off migration: route stable prose levels through shared typography tokens.
 p=Path('assets/css/refine-base.css')
 text=p.read_text(encoding='utf-8')
 replacements={
