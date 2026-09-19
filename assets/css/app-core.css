@@ -71,9 +71,9 @@ main [id]{scroll-margin-top:88px}
 }
 
 
-/* International impact platform titles */
-#international-impact .detail-block h3{font-size:18px;line-height:1.35;font-weight:650;letter-spacing:-.01em}
+/* About page item-title hierarchy */
+#collaboration .partner h3,#achievements .highlight h3,#international-impact .detail-block h3{font-size:18px;line-height:1.35;font-weight:650;letter-spacing:-.01em}
 #international-impact .impact-link{color:inherit;text-decoration:none}
 #international-impact .impact-link:hover,#international-impact .impact-link:focus-visible{text-decoration:underline;text-underline-offset:3px}
-@media(max-width:768px){#international-impact .detail-block h3{font-size:21px;line-height:1.34}}
+@media(max-width:768px){#collaboration .partner h3,#achievements .highlight h3,#international-impact .detail-block h3{font-size:21px!important;line-height:1.34!important;font-weight:650}}
 
