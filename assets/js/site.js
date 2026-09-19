@@ -401,14 +401,23 @@
   let pageSwipeStart=null;
   let swipePreview=null;
 
+  const restoreLiveSwipeSurface=()=>{
+    const surface=document.querySelector('.page-surface');
+    if(surface){
+      surface.style.visibility='';
+      surface.style.transform='';
+      surface.style.willChange='';
+    }
+  };
   const cleanupStaleSwipePreviews=()=>{
     document.querySelectorAll('[data-pai-swipe-preview]').forEach(node=>node.remove());
+    restoreLiveSwipeSurface();
   };
   const enforceSinglePageFooter=()=>{
     const surface=document.querySelector('.page-surface');
     if(!surface) return;
     document.querySelectorAll('.site-footer').forEach(footer=>{
-      if(!surface.contains(footer)) footer.remove();
+      if(!surface.contains(footer)&&!footer.closest('[data-pai-swipe-preview]')) footer.remove();
     });
     const footers=[...surface.querySelectorAll('.site-footer')];
     footers.slice(1).forEach(footer=>footer.remove());
@@ -438,25 +447,19 @@
   };
   setTimeout(warmSwipeNeighbors,260);
 
-  const destroySwipePreview=(resetCurrent=true)=>{
-    if(swipePreview?.shell?.isConnected) swipePreview.shell.remove();
-    cleanupStaleSwipePreviews();
-    swipePreview=null;
-    if(!resetCurrent) return;
-    const surface=document.querySelector('.page-surface');
-    if(surface){
-      surface.style.transform='';
-      surface.style.willChange='';
-    }
+  const stripPreviewIds=node=>{
+    if(!node) return;
+    node.removeAttribute?.('id');
+    node.querySelectorAll?.('[id]').forEach(child=>child.removeAttribute('id'));
   };
 
-  const buildSwipePreview=(url,direction,html)=>{
-    if(!pageSwipeStart||pageSwipeStart.direction!==direction) return null;
-    const next=new DOMParser().parseFromString(html,'text/html');
-    const nextSurface=next.querySelector('.page-surface');
-    const nextMain=nextSurface?.querySelector('main');
-    if(!nextSurface||!nextMain) return null;
-
+  /* Keep both pages in one fixed compositing stage. Safari no longer has to animate
+     a document-flow page and a promoted fixed preview in separate render layers. */
+  const ensureSwipeStage=()=>{
+    if(swipePreview?.shell?.isConnected&&swipePreview.current) return swipePreview;
+    document.querySelectorAll('[data-pai-swipe-preview]').forEach(node=>node.remove());
+    const live=document.querySelector('.page-surface');
+    if(!live) return null;
     const shell=document.createElement('div');
     shell.setAttribute('aria-hidden','true');
     shell.setAttribute('data-pai-swipe-preview','');
@@ -464,9 +467,42 @@
       position:'fixed',inset:'0',overflow:'hidden',pointerEvents:'none',
       zIndex:'12',contain:'layout paint',background:'transparent'
     });
+    const current=document.importNode(live,true);
+    stripPreviewIds(current);
+    const rect=live.getBoundingClientRect();
+    Object.assign(current.style,{
+      position:'absolute',top:`${rect.top}px`,left:'0',width:'100%',minHeight:`${Math.max(rect.height,innerHeight)}px`,
+      margin:'0',willChange:'transform',pointerEvents:'none',
+      background:getComputedStyle(document.body).backgroundColor||'#fff',
+      transform:'translate3d(0,0,0)'
+    });
+    shell.appendChild(current);
+    document.body.appendChild(shell);
+    live.style.visibility='hidden';
+    swipePreview={shell,current,surface:null,main:null,url:null,direction:0,targetScroll:0,previewScroll:0};
+    return swipePreview;
+  };
+
+  const destroySwipePreview=(resetCurrent=true)=>{
+    if(swipePreview?.shell?.isConnected) swipePreview.shell.remove();
+    document.querySelectorAll('[data-pai-swipe-preview]').forEach(node=>node.remove());
+    swipePreview=null;
+    if(resetCurrent) restoreLiveSwipeSurface();
+  };
+
+  const buildSwipePreview=(url,direction,html)=>{
+    if(!pageSwipeStart||pageSwipeStart.direction!==direction) return null;
+    const stage=ensureSwipeStage();
+    if(!stage||!stage.shell.isConnected) return null;
+    const next=new DOMParser().parseFromString(html,'text/html');
+    const nextSurface=next.querySelector('.page-surface');
+    const nextMain=nextSurface?.querySelector('main');
+    if(!nextSurface||!nextMain) return null;
+
+    if(stage.surface?.isConnected) stage.surface.remove();
     const previewSurface=document.importNode(nextSurface,true);
     const previewMain=previewSurface.querySelector('main');
-    previewSurface.querySelectorAll('[id]').forEach(node=>node.removeAttribute('id'));
+    stripPreviewIds(previewSurface);
     previewSurface.querySelectorAll('img[src]').forEach(img=>{
       try{ img.src=new URL(img.getAttribute('src'),url.href).href; }catch(_e){}
     });
@@ -480,9 +516,8 @@
       }).join(', ');
       node.setAttribute('srcset',resolved);
     });
-    const currentMain=document.querySelector('main');
     const header=document.querySelector('.site-header');
-    const mainDocumentTop=Math.max(0,header?.getBoundingClientRect().bottom||currentMain?.getBoundingClientRect().top||0);
+    const mainDocumentTop=Math.max(0,header?.getBoundingClientRect().bottom||0);
     const targetPath=normalizedPath(url.pathname);
     const targetScroll=rememberedPageScroll(targetPath);
     Object.assign(previewSurface.style,{
@@ -491,25 +526,26 @@
       background:getComputedStyle(document.body).backgroundColor||'#fff',
       transform:`translate3d(${direction>0?'100%':'-100%'},0,0)`
     });
-    shell.appendChild(previewSurface);
-    document.body.appendChild(shell);
-    /* Use the same remembered page position as direct/menu navigation.
-       A rendered snapshot is cached when leaving a page, so revisits can preview
-       the real vertical position without clamping the final destination value. */
+    stage.shell.appendChild(previewSurface);
     const previewMaxScroll=Math.max(0,mainDocumentTop+previewSurface.scrollHeight-innerHeight);
     const previewScroll=Math.min(targetScroll,previewMaxScroll);
     previewSurface.style.top=`${mainDocumentTop-previewScroll}px`;
-    swipePreview={shell,surface:previewSurface,main:previewMain,url,direction,targetScroll,previewScroll};
-    return swipePreview;
+    Object.assign(stage,{surface:previewSurface,main:previewMain,url,direction,targetScroll,previewScroll});
+    return stage;
   };
 
   const ensureSwipePreview=(direction)=>{
     const start=pageSwipeStart;
     if(!start) return Promise.resolve(null);
-    if(swipePreview&&swipePreview.direction===direction) return Promise.resolve(swipePreview);
-    /* Switching neighbor direction must not snap the current page back to zero. */
-    if(swipePreview) destroySwipePreview(false);
+    const stage=ensureSwipeStage();
+    if(!stage) return Promise.resolve(null);
+    if(stage.surface&&stage.direction===direction) return Promise.resolve(stage);
+    if(stage.surface?.isConnected) stage.surface.remove();
+    stage.surface=null;
+    stage.main=null;
+    stage.url=null;
     start.direction=direction;
+    stage.direction=direction;
     const targetPath=swipeTargetFor(start.path,start.lang,direction);
     if(!targetPath) return Promise.resolve(null);
     const url=new URL(root(targetPath),location.origin);
@@ -519,18 +555,15 @@
   const positionSwipePages=dx=>{
     const start=pageSwipeStart;
     if(!start) return;
+    const stage=ensureSwipeStage();
+    if(!stage) return;
     const width=Math.max(1,innerWidth);
     const bounded=Math.max(-width,Math.min(width,dx));
     const direction=bounded<0?1:-1;
-    const current=document.querySelector('.page-surface');
-    if(current){
-      current.style.willChange='transform';
-      current.style.transform=`translate3d(${bounded}px,0,0)`;
-    }
-    const preview=swipePreview;
-    if(!preview||preview.direction!==direction) return;
+    stage.current.style.transform=`translate3d(${bounded}px,0,0)`;
+    if(!stage.surface||stage.direction!==direction) return;
     const incoming=bounded+(direction>0?width:-width);
-    preview.surface.style.transform=`translate3d(${incoming}px,0,0)`;
+    stage.surface.style.transform=`translate3d(${incoming}px,0,0)`;
   };
 
   const animateElementTransform=(node,from,to,duration=SWIPE_SETTLE_MS)=>new Promise(resolve=>{
@@ -552,8 +585,8 @@
   });
 
   const settleSwipeBack=async()=>{
-    const current=document.querySelector('.page-surface');
     const preview=swipePreview;
+    const current=preview?.current;
     if(!current){ destroySwipePreview(); return; }
     const currentFrom=current.style.transform||'translate3d(0,0,0)';
     if(!preview){
@@ -571,10 +604,10 @@
   };
 
   const commitSwipe=async(direction)=>{
-    const current=document.querySelector('.page-surface');
     const preview=swipePreview;
+    const current=preview?.current;
     const start=pageSwipeStart;
-    if(!current||!preview||!start){ destroySwipePreview(); return; }
+    if(!current||!preview?.surface||!start){ destroySwipePreview(); return; }
     const width=Math.max(1,innerWidth);
     const currentFrom=current.style.transform||'translate3d(0,0,0)';
     const incomingFrom=preview.surface.style.transform||`translate3d(${direction>0?width:-width}px,0,0)`;
