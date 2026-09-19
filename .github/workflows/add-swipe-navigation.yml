@@ -1,0 +1,30 @@
+name: Add swipe navigation
+on:
+  push:
+    paths:
+      - '.github/workflows/add-swipe-navigation.yml'
+      - 'tools/add-swipe-navigation.py'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Apply swipe navigation patch
+        run: python tools/add-swipe-navigation.py
+      - name: Validate
+        run: |
+          python tools/validate.py
+          node --check assets/js/site.js
+      - name: Commit and self-clean
+        run: |
+          rm tools/add-swipe-navigation.py .github/workflows/add-swipe-navigation.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/js/site.js tools/add-swipe-navigation.py .github/workflows/add-swipe-navigation.yml
+          git commit -m 'feat: add circular swipe page navigation'
+          git push
