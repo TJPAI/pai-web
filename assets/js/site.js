@@ -466,6 +466,11 @@
   let pageSwipeStart=null;
   let swipePreview=null;
 
+  const setSwipeFooterHidden=hidden=>{
+    const footer=document.querySelector('.site-footer');
+    if(footer) footer.classList.toggle('swipe-footer-hidden',!!hidden);
+  };
+
   const swipeBlockedTarget=target=>!!(target?.closest&&target.closest(
     'a,button,input,textarea,select,option,label,[contenteditable="true"],[role="button"],[data-no-swipe]'
   ));
@@ -488,7 +493,7 @@
   };
   setTimeout(warmSwipeNeighbors,260);
 
-  const destroySwipePreview=()=>{
+  const destroySwipePreview=(restoreFooter=true)=>{
     if(swipePreview?.shell?.isConnected) swipePreview.shell.remove();
     swipePreview=null;
     const main=document.querySelector('main');
@@ -496,6 +501,7 @@
       main.style.transform='';
       main.style.willChange='';
     }
+    if(restoreFooter) setSwipeFooterHidden(false);
   };
 
   const buildSwipePreview=(url,direction,html)=>{
@@ -527,16 +533,9 @@
       node.setAttribute('srcset',resolved);
     });
     const currentMain=document.querySelector('main');
-    const footer=document.querySelector('.site-footer');
     /* Anchor the preview to the real main's document-space origin. This stays exact
        whether the mobile header is fixed or desktop header is sticky. */
     const mainDocumentTop=Math.max(0,(currentMain?.getBoundingClientRect().top||0)+window.scrollY);
-    const footerRect=footer?.getBoundingClientRect();
-    const footerVisible=!!(footerRect&&footerRect.top>mainDocumentTop&&footerRect.top<innerHeight&&footerRect.bottom>0);
-    const previewBottom=footerVisible?Math.max(mainDocumentTop,Math.min(innerHeight,footerRect.top)):innerHeight;
-    /* When the shared footer is visible, keep it stationary and clip the incoming
-       page to the portion of the viewport currently occupied by main content. */
-    shell.style.bottom=`${Math.max(0,innerHeight-previewBottom)}px`;
     const targetPath=normalizedPath(url.pathname);
     const targetScroll=destinationScrollForPath(targetPath);
     Object.assign(previewMain.style,{
@@ -561,7 +560,7 @@
     const start=pageSwipeStart;
     if(!start) return Promise.resolve(null);
     if(swipePreview&&swipePreview.direction===direction) return Promise.resolve(swipePreview);
-    if(swipePreview) destroySwipePreview();
+    if(swipePreview) destroySwipePreview(false);
     start.direction=direction;
     const targetPath=swipeTargetFor(start.path,start.lang,direction);
     if(!targetPath) return Promise.resolve(null);
@@ -682,7 +681,12 @@
     if(!start.locked){
       if(ax<8&&ay<8) return;
       if(ay>ax*1.08){ pageSwipeStart=null; return; }
-      if(ax>=8&&ax>ay*1.18) start.locked=true;
+      if(ax>=8&&ax>ay*1.18){
+        start.locked=true;
+        /* Hide footer only after the gesture is confirmed horizontal.
+           visibility preserves document height, so saved scroll geometry does not move. */
+        setSwipeFooterHidden(true);
+      }
     }
     if(!start.locked) return;
 

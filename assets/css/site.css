@@ -69,5 +69,6 @@ button{font:inherit}
 @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 @media print{.site-header,.site-footer,.btn,.menu-btn{display:none!important}.page-hero,.content-section{padding:24px 0}body{color:#000}.container{width:100%;max-width:none}}
 
-/* TEMP v36: hide footer for swipe visual test */
-.site-footer{display:none!important}
+
+/* During an active horizontal page gesture, hide footer paint but preserve its layout height. */
+.site-footer.swipe-footer-hidden{visibility:hidden!important;pointer-events:none!important}
