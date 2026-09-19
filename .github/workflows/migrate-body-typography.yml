@@ -1,0 +1,33 @@
+name: Migrate body typography
+on:
+  push:
+    paths:
+      - tools/migrate_body_typography.py
+permissions:
+  contents: write
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply migration
+        run: python tools/migrate_body_typography.py
+      - name: Validate site
+        run: |
+          python tools/validate.py
+          node --check assets/js/site.js
+          node --check sw.js
+      - name: Commit migration and self-clean
+        run: |
+          rm tools/migrate_body_typography.py .github/workflows/migrate-body-typography.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "refactor: route core prose through typography tokens"
+          git push
