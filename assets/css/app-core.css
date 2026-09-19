@@ -119,3 +119,30 @@ main [id]{scroll-margin-top:88px}
   .compact-footer .footer-meta{margin-top:12px;padding-top:9px}
 }
 
+/* Final mobile micro-polish — 2026-09-19 */
+@media(max-width:768px){
+  /* Contact: trim only the remaining excess vertical air. */
+  .contact-grid{gap:18px;margin-top:-10px}
+  .contact-card{padding:20px 0}
+
+  /* Research: one more small reduction between directions, without touching type scale. */
+  .research-direction{padding-top:48px!important;padding-bottom:49px!important}
+
+  /* About international impact: editorial list, quieter descriptions and clearer grouping. */
+  #international-impact .detail-block{padding-bottom:30px}
+  #international-impact .detail-block+.detail-block{margin-top:4px}
+  #international-impact .detail-block h3{margin-bottom:5px}
+  #international-impact .detail-block p{color:#7B8492}
+
+  /* Publications: preserve title prominence and separate metadata layers. */
+  .pub{border-top-color:#EEF0F3}
+  .pub-authors{color:#78808D!important}
+  .pub-venue{margin-top:5px!important;color:#9299A5!important}
+  .pub-actions{margin-top:13px;color:#747C89}
+
+  /* Footer: keep size, reduce visual weight. */
+  .compact-footer .brand span{opacity:.48}
+  .compact-footer .footer-contact{color:rgba(255,255,255,.40)}
+  .compact-footer .footer-meta{margin-top:10px;padding-top:8px;color:rgba(255,255,255,.34)}
+}
+
