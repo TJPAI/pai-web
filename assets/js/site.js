@@ -8,8 +8,8 @@
   const absolute=path=>new URL(root(path),location.origin).href;
   const PUB_VISIBLE_DEFAULT=3;
 
-  const normalizedPath=()=>{
-    let path=location.pathname;
+  const normalizedPath=(pathname=location.pathname)=>{
+    let path=pathname||'/';
     if(prefix&&path.startsWith(prefix)) path=path.slice(prefix.length)||'/';
     if(path==='/index.html') return '/';
     if(path==='/en/index.html') return '/en/';
@@ -255,10 +255,12 @@
       initPublications([]);
       setTimeout(()=>warmNavigation(),80);
       if(Number.isFinite(preserveScrollY)){
+        await new Promise(resolve=>requestAnimationFrame(resolve));
         const maxY=Math.max(0,document.documentElement.scrollHeight-innerHeight);
-        const restoredY=Math.min(preserveScrollY,maxY);
+        const restoredY=Math.min(Math.max(0,preserveScrollY),maxY);
         scrollTo(0,restoredY);
         rememberPageScroll(normalizedPath(url.pathname),restoredY);
+        try{ history.replaceState(historyStateWithScroll(restoredY),'',location.href); }catch(_e){}
       }else if(url.hash){
         document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView();
       }else{
@@ -435,16 +437,18 @@
     const currentMain=document.querySelector('main');
     const mainDocumentTop=currentMain?Math.max(0,currentMain.getBoundingClientRect().top+window.scrollY):0;
     const targetPath=normalizedPath(url.pathname);
-    const targetScroll=rememberedPageScroll(targetPath);
-    const previewTop=mainDocumentTop-targetScroll;
+    const rememberedScroll=rememberedPageScroll(targetPath);
     Object.assign(previewMain.style,{
-      position:'absolute',top:`${previewTop}px`,left:'0',width:'100%',minHeight:'100vh',
+      position:'absolute',top:`${mainDocumentTop}px`,left:'0',width:'100%',minHeight:'100vh',
       margin:'0',willChange:'transform',pointerEvents:'none',
       background:getComputedStyle(document.body).backgroundColor||'#fff',
       transform:`translate3d(${direction>0?'100%':'-100%'},0,0)`
     });
     shell.appendChild(previewMain);
     document.body.appendChild(shell);
+    const previewMaxScroll=Math.max(0,mainDocumentTop+previewMain.scrollHeight-innerHeight);
+    const targetScroll=Math.min(rememberedScroll,previewMaxScroll);
+    previewMain.style.top=`${mainDocumentTop-targetScroll}px`;
     swipePreview={shell,main:previewMain,url,direction,targetScroll};
     return swipePreview;
   };
