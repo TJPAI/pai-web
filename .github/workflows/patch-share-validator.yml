@@ -1,0 +1,31 @@
+name: One-time share validator patch
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  patch-validator:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update validator to v3 social image
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tools/validate.py')
+          text=p.read_text(encoding='utf-8')
+          text=text.replace("if not (ROOT/'assets/images/social/pai-share.png').exists(): errors.append('missing social share image')", "if not (ROOT/'assets/images/social/pai-share-v3.jpg').exists(): errors.append('missing social share image')")
+          text=text.replace("errors.append(f'{rel}: legacy social preview image reference remains; use pai-share-v2.png')", "errors.append(f'{rel}: legacy social preview image reference remains; use pai-share-v3.jpg')")
+          text=text.replace("if 'property=\"og:image\"' in text and 'pai-share-v2.png' not in text:", "if 'property=\"og:image\"' in text and 'pai-share-v3.jpg' not in text:")
+          p.write_text(text,encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/validate.py
+          git commit -m 'fix: validate v3 social preview image'
+          git push
