@@ -374,6 +374,14 @@
     const url=eligiblePageLink(link);
     if(!url) return;
     event.preventDefault();
+    /* Close the mobile overlay before navigation begins. Because the menu is fixed
+       outside page flow, this never shifts the destination main or its scroll geometry. */
+    const mobileMenu=link.closest('.mobile-menu');
+    if(mobileMenu){
+      mobileMenu.classList.remove('open');
+      const button=mobileMenu.closest('.site-header')?.querySelector('.menu-btn');
+      if(button) button.setAttribute('aria-expanded','false');
+    }
     saveCurrentScroll();
     cacheCurrentPageSnapshot();
     const label=(link.textContent||'').trim();
