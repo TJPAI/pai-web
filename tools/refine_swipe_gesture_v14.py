@@ -178,7 +178,6 @@ new_end="""  document.addEventListener('touchend',event=>{
 """
 one(old_end,new_end,'touchend block')
 
-# Add proactive adjacent-page warming after swipe order is defined.
 needle="""  const swipePageOrder={
     zh:['/','/about.html','/team.html','/research.html','/publications.html','/join.html','/contact.html'],
     en:['/en/','/en/about.html','/en/team.html','/en/research.html','/en/publications.html','/en/join.html','/en/contact.html']
@@ -214,3 +213,4 @@ for pattern in ('*.html','en/*.html','people/*.html','en/people/*.html'):
 if not changed:
     raise SystemExit('no site.js v13 refs found')
 print('updated gesture refinement and',changed,'html files')
+# trigger after workflow creation
