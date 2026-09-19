@@ -216,6 +216,10 @@
 
   const applyPage=async(url,{historyMode='push',preserveScrollY=null,transitionDirection=0,gestureOffset=0}={})=>{
     if(navigating) return;
+    if(scrollSaveTimer!==null){
+      clearTimeout(scrollSaveTimer);
+      scrollSaveTimer=null;
+    }
     navigating=true;
     try{
       const html=await fetchPage(url);
@@ -252,10 +256,12 @@
       document.body.className=next.body.className;
 
       renderChrome();
-      initPublications([]);
+      /* Dynamic page content must settle before restoring a remembered position.
+         Publications can substantially change document height after JSON rendering. */
+      await initPublications([]);
       setTimeout(()=>warmNavigation(),80);
+      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
       if(Number.isFinite(preserveScrollY)){
-        await new Promise(resolve=>requestAnimationFrame(resolve));
         const maxY=Math.max(0,document.documentElement.scrollHeight-innerHeight);
         const restoredY=Math.min(Math.max(0,preserveScrollY),maxY);
         scrollTo(0,restoredY);
@@ -263,8 +269,12 @@
         try{ history.replaceState(historyStateWithScroll(restoredY),'',location.href); }catch(_e){}
       }else if(url.hash){
         document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView();
+        const y=rememberPageScroll(normalizedPath(url.pathname),window.scrollY);
+        try{ history.replaceState(historyStateWithScroll(y),'',location.href); }catch(_e){}
       }else{
         scrollTo(0,0);
+        rememberPageScroll(normalizedPath(url.pathname),0);
+        try{ history.replaceState(historyStateWithScroll(0),'',location.href); }catch(_e){}
       }
 
       if(transitionDirection&&!reduceMotion){
