@@ -70,10 +70,6 @@
   font-weight:var(--title-index-weight)!important;
   letter-spacing:0!important;
   color:#8A93A2!important;
-}
-
-/* Achievement index and title start on the same top line. */
-#achievements .highlight .num{
   margin:0!important;
   align-self:start!important;
 }
