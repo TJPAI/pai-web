@@ -228,6 +228,7 @@
     return value;
   };
   const rememberedPageScroll=path=>Math.max(0,Number(pageScrollPositions[path])||0);
+  const destinationScrollForPath=path=>rememberedPageScroll(path);
   const cacheCurrentPageSnapshot=()=>{
     try{
       /* Never persist transient swipe/compositing state into the page cache.
@@ -390,9 +391,8 @@
     if(isLanguageSwitch){
       options={preserveScrollY:window.scrollY};
     }else if(!url.hash){
-      /* Direct link/menu navigation restores the target page's last position.
-         Swipe navigation remains intentionally top-aligned via preserveScrollY: 0. */
-      options={preserveScrollY:rememberedPageScroll(normalizedPath(url.pathname))};
+      /* Direct/menu navigation and swipe navigation share one saved position source. */
+      options={preserveScrollY:destinationScrollForPath(normalizedPath(url.pathname))};
     }
     applyPage(url,options).catch(()=>{ location.href=url.href; });
   });
@@ -538,7 +538,7 @@
        page to the portion of the viewport currently occupied by main content. */
     shell.style.bottom=`${Math.max(0,innerHeight-previewBottom)}px`;
     const targetPath=normalizedPath(url.pathname);
-    const targetScroll=rememberedPageScroll(targetPath);
+    const targetScroll=destinationScrollForPath(targetPath);
     Object.assign(previewMain.style,{
       position:'absolute',top:`${mainDocumentTop}px`,left:'0',width:'100%',
       margin:'0',willChange:'transform',pointerEvents:'none',
@@ -640,9 +640,11 @@
     const currentFrom=current.style.transform||'translate3d(0,0,0)';
     const incomingFrom=preview.main.style.transform||`translate3d(${direction>0?width:-width}px,0,0)`;
     const targetUrl=preview.url;
-    /* Handoff at exactly the vertical position the user already sees in the preview.
-       Re-reading an unclamped remembered value here can cause a visible correction jump. */
-    const targetScroll=Number.isFinite(preview.previewScroll)?preview.previewScroll:rememberedPageScroll(normalizedPath(targetUrl.pathname));
+    /* Menu and swipe must land from the exact same saved position source.
+       applyPage performs the same final clamp against the real document in both cases. */
+    const targetScroll=Number.isFinite(preview.targetScroll)
+      ?preview.targetScroll
+      :destinationScrollForPath(normalizedPath(targetUrl.pathname));
     await Promise.all([
       animateElementTransform(current,currentFrom,`translate3d(${direction>0?-width:width}px,0,0)`,330),
       animateElementTransform(preview.main,incomingFrom,'translate3d(0,0,0)',330)
