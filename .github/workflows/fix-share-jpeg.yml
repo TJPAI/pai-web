@@ -13,18 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install ImageMagick
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
       - name: Build JPEG share image and update metadata
         shell: bash
         run: |
           set -euo pipefail
-          if command -v magick >/dev/null 2>&1; then
-            IMG=magick
-          else
-            IMG=convert
-          fi
           SRC=assets/images/social/pai-share-v2.png
           OUT=assets/images/social/pai-share-v3.jpg
-          "$IMG" "$SRC" -resize 700x368 -background '#f8fbff' -gravity center -extent 1200x630 -strip -colorspace sRGB -sampling-factor 4:2:0 -quality 88 "$OUT"
+          convert "$SRC" -resize 700x368 -background '#f8fbff' -gravity center -extent 1200x630 -strip -colorspace sRGB -sampling-factor 4:2:0 -quality 88 "$OUT"
           python - <<'PY'
           from pathlib import Path
           old='https://tjpai.github.io/pai-web/assets/images/social/pai-share-v2.png'
