@@ -17,4 +17,12 @@ if old3 not in s:
     raise SystemExit('migration wrapper regex not found')
 s=s.replace(old3,new3,1)
 p.write_text(s)
-print('aligned migration script with v28 swipe and page whitespace')
+
+v=Path('tools/validate.py')
+vs=v.read_text()
+oldv="for required in ('history.pushState','popstate','DOMParser','currentMain.replaceWith','eligiblePageLink'):"
+newv="for required in ('history.pushState','popstate','DOMParser','currentSurface.replaceWith','eligiblePageLink'):"
+if oldv not in vs:
+    raise SystemExit('validator lightweight navigation contract not found')
+v.write_text(vs.replace(oldv,newv,1))
+print('aligned migration and validator with per-page surfaces')
