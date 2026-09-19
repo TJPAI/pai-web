@@ -277,6 +277,23 @@ for required in ('--title-display-size','--title-page-size','--title-section-siz
     if required not in _typography:
         errors.append(f'assets/css/typography.css: missing canonical title contract {required}')
 
+# Semantic title classes are the canonical presentation contract; typography.css must not depend on page structure.
+for required in ('.title-display{','.title-page{','.title-section{','.title-feature{','.title-item{','.title-minor{','.item-index{'):
+    if required not in _typography:
+        errors.append(f'assets/css/typography.css: missing semantic rule {required}')
+for banned in ('.home-hero h1','.page-hero h1','.section-head h2','.research h3','.partner h3','.highlight h3','.person-detail .detail-block h3'):
+    if banned in _typography:
+        errors.append(f'assets/css/typography.css: structural fallback remains ({banned}); use semantic title classes')
+
+# Faculty detail minor headings must declare their semantic level explicitly.
+for base in (ROOT/'people',ROOT/'en'/'people'):
+    for html in base.glob('*.html'):
+        text=html.read_text(encoding='utf-8')
+        for attrs,inner in re.findall(r'<section\b([^>]*)class=["\'][^"\']*\bdetail-block\b[^"\']*["\'][^>]*>(.*?)</section>',text,re.I|re.S):
+            m=re.search(r'<h3\b([^>]*)>',inner,re.I)
+            if m and 'title-minor' not in m.group(1):
+                errors.append(f'{html.relative_to(ROOT)}: detail-block h3 must use title-minor')
+
 
 # Semantic title hierarchy guardrail.
 # Structural selectors remain compatibility aliases, but canonical content must declare its title level explicitly.
