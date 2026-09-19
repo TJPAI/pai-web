@@ -3,21 +3,23 @@ from pathlib import Path
 js_path = Path('assets/js/site.js')
 text = js_path.read_text()
 
-old_sig = "const applyPage=async(url,{historyMode='push',preserveScrollY=null}={})=>{"
-new_sig = "const applyPage=async(url,{historyMode='push',preserveScrollY=null,transitionDirection=0}={})=>{"
-if old_sig not in text:
-    raise SystemExit('applyPage signature not found')
-text = text.replace(old_sig, new_sig, 1)
+def replace_once(old, new, label):
+    global text
+    if old not in text:
+        raise SystemExit(f'{label} not found')
+    text = text.replace(old, new, 1)
 
-old_replace = """      /* Move the URL before attaching fetched markup so relative assets resolve\n         against the destination page immediately (important on iPhone Safari). */
-      const destinationScroll=Number.isFinite(preserveScrollY)?preserveScrollY:0;
-      if(historyMode==='push') history.pushState({pai:true,scrollY:destinationScroll},'',url.href);
-      else if(historyMode==='replace') history.replaceState({pai:true,scrollY:destinationScroll},'',url.href);
+replace_once(
+    "const applyPage=async(url,{historyMode='push',preserveScrollY=null}={})=>{",
+    "const applyPage=async(url,{historyMode='push',preserveScrollY=null,transitionDirection=0}={})=>{",
+    'applyPage signature'
+)
 
-      currentMain.replaceWith(document.importNode(nextMain,true));
-      document.title=next.title||document.title;
-"""
-new_replace = """      const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+replace_once(
+    "      if(!currentMain||!nextMain) throw new Error('page shell unavailable');\n",
+    """      if(!currentMain||!nextMain) throw new Error('page shell unavailable');
+
+      const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
       const animateMain=async(node,keyframes,options)=>{
         if(!node||reduceMotion||!transitionDirection||typeof node.animate!=='function') return;
         try{
@@ -30,19 +32,15 @@ new_replace = """      const reduceMotion=matchMedia('(prefers-reduced-motion: r
         {transform:'translate3d(0,0,0)',opacity:1},
         {transform:`translate3d(${shift}px,0,0)`,opacity:.72}
       ],{duration:115,easing:'cubic-bezier(.4,0,1,1)',fill:'forwards'});
+""",
+    'animation insertion point'
+)
 
-      /* Move the URL before attaching fetched markup so relative assets resolve\n         against the destination page immediately (important on iPhone Safari). */
-      const destinationScroll=Number.isFinite(preserveScrollY)?preserveScrollY:0;
-      if(historyMode==='push') history.pushState({pai:true,scrollY:destinationScroll},'',url.href);
-      else if(historyMode==='replace') history.replaceState({pai:true,scrollY:destinationScroll},'',url.href);
-
-      const incomingMain=document.importNode(nextMain,true);
-      currentMain.replaceWith(incomingMain);
-      document.title=next.title||document.title;
-"""
-if old_replace not in text:
-    raise SystemExit('applyPage replacement block not found')
-text = text.replace(old_replace, new_replace, 1)
+replace_once(
+    "      currentMain.replaceWith(document.importNode(nextMain,true));\n",
+    "      const incomingMain=document.importNode(nextMain,true);\n      currentMain.replaceWith(incomingMain);\n",
+    'main replacement'
+)
 
 old_scroll = """      if(Number.isFinite(preserveScrollY)){
         requestAnimationFrame(()=>{
@@ -73,9 +71,7 @@ new_scroll = """      if(Number.isFinite(preserveScrollY)){
         ],{duration:190,easing:'cubic-bezier(.2,.72,.22,1)',fill:'both'});
       }
 """
-if old_scroll not in text:
-    raise SystemExit('scroll block not found')
-text = text.replace(old_scroll, new_scroll, 1)
+replace_once(old_scroll, new_scroll, 'scroll block')
 
 old_touchstart_tail = """    pageSwipeStart={x:touch.clientX,y:touch.clientY,time:performance.now(),path,lang};
   },{passive:true});
@@ -119,37 +115,29 @@ new_touchstart_tail = """    pageSwipeStart={x:touch.clientX,y:touch.clientY,tim
 
   document.addEventListener('touchend',event=>{
 """
-if old_touchstart_tail not in text:
-    raise SystemExit('touchstart tail not found')
-text = text.replace(old_touchstart_tail, new_touchstart_tail, 1)
+replace_once(old_touchstart_tail, new_touchstart_tail, 'touchstart tail')
 
-old_end_check = """    if(!start||event.changedTouches.length!==1||navigating) return;
-    const touch=event.changedTouches[0];
-    const dx=touch.clientX-start.x;
-    const dy=touch.clientY-start.y;
-    const elapsed=performance.now()-start.time;
-    if(elapsed>SWIPE_MAX_MS||Math.abs(dx)<SWIPE_MIN_X||Math.abs(dx)<Math.abs(dy)*1.15) return;
-"""
-new_end_check = """    if(!start||!start.locked||event.changedTouches.length!==1||navigating) return;
-    const touch=event.changedTouches[0];
-    const dx=touch.clientX-start.x;
-    const dy=touch.clientY-start.y;
-    const elapsed=performance.now()-start.time;
-    if(elapsed>SWIPE_MAX_MS||Math.abs(dx)<SWIPE_MIN_X||Math.abs(dx)<Math.abs(dy)*1.15) return;
-"""
-if old_end_check not in text:
-    raise SystemExit('touchend check not found')
-text = text.replace(old_end_check, new_end_check, 1)
+replace_once(
+    "    if(!start||event.changedTouches.length!==1||navigating) return;\n",
+    "    if(!start||!start.locked||event.changedTouches.length!==1||navigating) return;\n",
+    'touchend lock check'
+)
 
-old_apply = """    applyPage(url).catch(()=>{ location.href=url.href; });
+old_swipe_apply = """    event.preventDefault();
+    saveCurrentScroll();
+    applyPage(url).catch(()=>{ location.href=url.href; });
   },{passive:false});
 """
-new_apply = """    applyPage(url,{transitionDirection:direction}).catch(()=>{ location.href=url.href; });
+new_swipe_apply = """    event.preventDefault();
+    saveCurrentScroll();
+    applyPage(url,{transitionDirection:direction}).catch(()=>{ location.href=url.href; });
   },{passive:false});
 """
-if old_apply not in text:
-    raise SystemExit('swipe applyPage call not found')
-text = text.replace(old_apply, new_apply, 1)
+# Use the last occurrence so normal click navigation remains unchanged.
+pos = text.rfind(old_swipe_apply)
+if pos < 0:
+    raise SystemExit('swipe applyPage block not found')
+text = text[:pos] + new_swipe_apply + text[pos+len(old_swipe_apply):]
 
 js_path.write_text(text)
 
@@ -164,4 +152,3 @@ for pattern in ('*.html','en/*.html','people/*.html','en/people/*.html'):
 if changed == 0:
     raise SystemExit('no HTML site.js version references updated')
 print(f'updated site.js and {changed} HTML files')
-# trigger workflow after workflow definition exists
