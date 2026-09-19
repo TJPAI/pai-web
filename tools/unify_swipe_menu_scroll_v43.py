@@ -43,3 +43,5 @@ for path in Path('.').rglob('*.html'):
     text=re.sub(r'(assets/css/site\.css)(?:\?v=[^\"\']+)?', r'\1?v=20260920-43', text)
     text=re.sub(r'(assets/js/site\.js)(?:\?v=[^\"\']+)?', r'\1?v=20260920-43', text)
     path.write_text(text)
+
+# trigger workflow
