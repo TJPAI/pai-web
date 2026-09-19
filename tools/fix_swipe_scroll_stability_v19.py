@@ -73,3 +73,4 @@ for pattern in ('*.html','en/*.html','people/*.html','en/people/*.html'):
 if changed==0:
     raise SystemExit('no v18 site.js references updated')
 print(f'patched site.js and {changed} HTML files')
+# trigger
