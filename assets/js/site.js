@@ -292,8 +292,11 @@
         ],{duration:175,easing:'cubic-bezier(.2,.72,.22,1)',fill:'both'});
       }
       incomingSurface.style.willChange='';
+      enforceSinglePageFooter();
       setTimeout(()=>warmSwipeNeighbors(),40);
     }finally{
+      cleanupStaleSwipePreviews();
+      enforceSinglePageFooter();
       navigating=false;
     }
   };
@@ -398,6 +401,21 @@
   let pageSwipeStart=null;
   let swipePreview=null;
 
+  const cleanupStaleSwipePreviews=()=>{
+    document.querySelectorAll('[data-pai-swipe-preview]').forEach(node=>node.remove());
+  };
+  const enforceSinglePageFooter=()=>{
+    const surface=document.querySelector('.page-surface');
+    if(!surface) return;
+    document.querySelectorAll('.site-footer').forEach(footer=>{
+      if(!surface.contains(footer)) footer.remove();
+    });
+    const footers=[...surface.querySelectorAll('.site-footer')];
+    footers.slice(1).forEach(footer=>footer.remove());
+  };
+  cleanupStaleSwipePreviews();
+  enforceSinglePageFooter();
+
   const swipeBlockedTarget=target=>!!(target?.closest&&target.closest(
     'a,button,input,textarea,select,option,label,[contenteditable="true"],[role="button"],[data-no-swipe]'
   ));
@@ -422,6 +440,7 @@
 
   const destroySwipePreview=(resetCurrent=true)=>{
     if(swipePreview?.shell?.isConnected) swipePreview.shell.remove();
+    cleanupStaleSwipePreviews();
     swipePreview=null;
     if(!resetCurrent) return;
     const surface=document.querySelector('.page-surface');
@@ -440,6 +459,7 @@
 
     const shell=document.createElement('div');
     shell.setAttribute('aria-hidden','true');
+    shell.setAttribute('data-pai-swipe-preview','');
     Object.assign(shell.style,{
       position:'fixed',inset:'0',overflow:'hidden',pointerEvents:'none',
       zIndex:'12',contain:'layout paint',background:'transparent'
@@ -573,6 +593,10 @@
   };
 
   document.addEventListener('touchstart',event=>{
+    if(!pageSwipeStart){
+      cleanupStaleSwipePreviews();
+      enforceSinglePageFooter();
+    }
     if(event.touches.length!==1){ pageSwipeStart=null; return; }
     const touch=event.touches[0];
     if(touch.clientX<=SWIPE_EDGE_GUARD||touch.clientX>=innerWidth-SWIPE_EDGE_GUARD||swipeBlockedTarget(event.target)){
