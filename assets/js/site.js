@@ -419,8 +419,10 @@
       }).join(', ');
       node.setAttribute('srcset',resolved);
     });
+    const currentMain=document.querySelector('main');
+    const mainDocumentTop=currentMain?Math.max(0,currentMain.getBoundingClientRect().top+window.scrollY):0;
     Object.assign(previewMain.style,{
-      position:'absolute',top:'0',left:'0',width:'100%',minHeight:'100vh',
+      position:'absolute',top:`${mainDocumentTop}px`,left:'0',width:'100%',minHeight:`calc(100vh - ${mainDocumentTop}px)`,
       margin:'0',willChange:'transform',pointerEvents:'none',
       background:getComputedStyle(document.body).backgroundColor||'#fff',
       transform:`translate3d(${direction>0?'100%':'-100%'},0,0)`
@@ -506,7 +508,8 @@
       animateElementTransform(preview.main,incomingFrom,'translate3d(0,0,0)',205)
     ]);
     try{
-      await applyPage(targetUrl,{transitionDirection:0});
+      scrollTo(0,0);
+      await applyPage(targetUrl,{transitionDirection:0,preserveScrollY:0});
     }finally{
       destroySwipePreview();
       setTimeout(warmSwipeNeighbors,60);
