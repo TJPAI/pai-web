@@ -32,3 +32,4 @@ for html in root.rglob('*.html'):
 if changed == 0:
     raise SystemExit('no HTML site.js references updated')
 print(f'updated site.js gesture thresholds and cache-busted {changed} HTML files')
+# workflow trigger: 2026-09-19
