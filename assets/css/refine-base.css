@@ -5,14 +5,14 @@
 .research-code{display:flex;align-items:baseline;gap:9px;font-weight:700}.research-index{display:inline!important;color:var(--muted);font-weight:450;letter-spacing:.06em}
 .partner h3{}.partner-inline{font-weight:520}
 .highlight p{max-width:34em}
-.impact .tag{margin-top:0}.impact-capabilities{margin-top:14px;color:var(--ink);font-size:14px;font-weight:600;letter-spacing:.005em}
+.impact .tag{margin-top:0}.impact-capabilities{margin-top:14px;color:var(--ink);font-size:var(--text-support-size);font-weight:600;letter-spacing:.005em}
 .home-news-meta{display:none}
 
 /* Shared inner-page system */
 .page-hero{padding:112px 0 82px}.page-hero .container{max-width:1120px}.page-hero .eyebrow{margin-bottom:14px}.page-hero h1{margin:0 0 22px}.page-hero p{max-width:760px;font-size:var(--text-lead-size);line-height:var(--text-lead-line);margin:0;color:var(--muted)}
 .content-section{padding:96px 0}.content-section h2{margin:10px 0 24px}.content-section p{font-size:var(--text-body-size);line-height:1.85}.prose h2+ p{margin-top:0}.prose h2:not(:first-child){margin-top:64px}.muted{color:var(--muted)}
 .inner-section{padding:104px 0}.inner-section.soft{background:var(--soft)}
-.research-detail{max-width:920px}.research-detail h2{max-width:18em}.research-detail .muted{font-size:14px;line-height:1.8;margin-top:26px}
+.research-detail{max-width:920px}.research-detail h2{max-width:18em}.research-detail .muted{font-size:var(--text-support-size);line-height:1.8;margin-top:26px}
 .direction-id{display:flex;align-items:baseline;gap:10px;margin-bottom:22px;font-size:11px;letter-spacing:.11em}.direction-id span{color:#9AA1AC;font-weight:500}.direction-id strong{color:var(--ink);font-size:12px;letter-spacing:.12em}.direction-id em{font-style:normal;color:var(--muted);letter-spacing:.035em;text-transform:uppercase;font-size:9px}.direction-keywords{letter-spacing:.005em}
 .join-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.join-item{padding:30px 24px 34px}.join-item+.join-item{border-left:1px solid var(--line)}.join-item .num{margin-bottom:26px}.join-item h3{margin:0 0 12px}.join-item p{margin:0;color:var(--muted);font-size:var(--text-support-size);line-height:1.7}.join-context{border-top:1px solid var(--line)}
 
@@ -20,7 +20,7 @@
 .site-footer.compact-footer{padding:38px 0 18px}.compact-footer .footer-grid{grid-template-columns:1.2fr 1.2fr 1fr;gap:42px;align-items:start}.compact-footer .brand strong{letter-spacing:-.025em}.compact-footer .brand span{opacity:.58}.compact-footer .footer-links{display:flex;flex-wrap:wrap;gap:8px 22px;align-content:flex-start;opacity:.88}.compact-footer .footer-contact{font-size:13px;line-height:1.65;color:rgba(255,255,255,.48)}.compact-footer .footer-meta{margin-top:24px;color:rgba(255,255,255,.42)}.compact-footer .footer-meta a{color:inherit}
 
 /* Publications */
-.publication-note{display:flex;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:52px;color:var(--muted);font-size:13px}.publication-note strong{color:var(--ink);font-size:14px}.pub-group+.pub-group{margin-top:72px}.pub-year-row{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:10px}.pub-year-row span{font-size:12px;color:var(--muted);padding-bottom:8px}.pub-year{font-size:36px;line-height:1;margin:0;letter-spacing:-.04em}.pub{padding:26px 0 28px}.pub h3{margin-bottom:9px}.pub-authors{color:#3f4652!important;font-size:14px!important;line-height:1.6}.pub-venue{font-size:var(--text-meta-size)!important;line-height:1.55;margin-top:3px!important}.pub-actions a{display:inline-block}.pub-actions a+a{margin-left:16px}
+.publication-note{display:flex;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:52px;color:var(--muted);font-size:13px}.publication-note strong{color:var(--ink);font-size:var(--text-support-size)}.pub-group+.pub-group{margin-top:72px}.pub-year-row{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:10px}.pub-year-row span{font-size:12px;color:var(--muted);padding-bottom:8px}.pub-year{font-size:36px;line-height:1;margin:0;letter-spacing:-.04em}.pub{padding:26px 0 28px}.pub h3{margin-bottom:9px}.pub-authors{color:#3f4652!important;font-size:var(--text-support-size)!important;line-height:1.6}.pub-venue{font-size:var(--text-meta-size)!important;line-height:1.55;margin-top:3px!important}.pub-actions a{display:inline-block}.pub-actions a+a{margin-left:16px}
 
 /* Team overview */
 .team-grid .person{min-width:0}.team-grid .person-photo{overflow:hidden}.team-grid .person-photo img{width:100%;height:100%;object-fit:cover}.person .research-line{font-size:var(--text-support-size);color:#3d4551;min-height:46px}.person .bio-short{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.person .person-link{display:inline-block;margin-top:10px;font-size:13px;font-weight:600}
