@@ -136,3 +136,10 @@
     --text-meta-size:12px;
   }
 }
+
+/* English title refinements — 2026-09-19 */
+@media(max-width:768px){
+  html[lang="en"] .research-title{font-size:26px!important;line-height:1.17!important;letter-spacing:-.022em!important}
+  html[lang="en"] .contact-card .title-item{letter-spacing:-.018em!important}
+}
+
