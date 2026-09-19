@@ -11,5 +11,10 @@ new2="""'''    const direction=bounded<0?1:-1;\\n    const current=document.quer
 if old2 not in s:
     raise SystemExit('migration position destination block not found')
 s=s.replace(old2,new2,1)
+old3="re.subn(r'(<main\\b.*?</main>)(<footer\\b.*?</footer>)'"
+new3="re.subn(r'(<main\\b.*?</main>)\\s*(<footer\\b.*?</footer>)'"
+if old3 not in s:
+    raise SystemExit('migration wrapper regex not found')
+s=s.replace(old3,new3,1)
 p.write_text(s)
-print('aligned migration script with v28 deterministic swipe')
+print('aligned migration script with v28 swipe and page whitespace')
