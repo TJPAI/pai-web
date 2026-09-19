@@ -1,0 +1,59 @@
+name: One-off international impact polish
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/polish-international-impact.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add external links and enlarge impact titles
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          replacements = {
+              'about.html': {
+                  '<h3>IET Blockchain</h3>': '<h3><a class="impact-link" href="https://ietresearch.onlinelibrary.wiley.com/journal/26341573" target="_blank" rel="noopener noreferrer">IET Blockchain</a></h3>',
+                  '<h3>IEEE BCTC</h3>': '<h3><a class="impact-link" href="https://blockchain.ieee.org" target="_blank" rel="noopener noreferrer">IEEE BCTC</a></h3>',
+                  '<h3>上海区块链应用服务工程技术研究中心</h3>': '<h3><a class="impact-link" href="https://www.sercbaas.cn" target="_blank" rel="noopener noreferrer">上海区块链应用服务工程技术研究中心</a></h3>',
+              },
+              'en/about.html': {
+                  '<h3>IET Blockchain</h3>': '<h3><a class="impact-link" href="https://ietresearch.onlinelibrary.wiley.com/journal/26341573" target="_blank" rel="noopener noreferrer">IET Blockchain</a></h3>',
+                  '<h3>IEEE Blockchain Technical Community</h3>': '<h3><a class="impact-link" href="https://blockchain.ieee.org" target="_blank" rel="noopener noreferrer">IEEE Blockchain Technical Community</a></h3>',
+                  '<h3>Shanghai Engineering Research Center</h3>': '<h3><a class="impact-link" href="https://www.sercbaas.cn" target="_blank" rel="noopener noreferrer">Shanghai Engineering Research Center</a></h3>',
+              },
+          }
+
+          for rel, mapping in replacements.items():
+              p = Path(rel)
+              s = p.read_text(encoding='utf-8')
+              for old, new in mapping.items():
+                  if old not in s:
+                      raise SystemExit(f'{rel}: expected text not found: {old}')
+                  s = s.replace(old, new, 1)
+              p.write_text(s, encoding='utf-8')
+
+          css = Path('assets/css/app-core.css')
+          s = css.read_text(encoding='utf-8')
+          marker = '/* International impact platform titles */'
+          if marker not in s:
+              s += '''\n\n/* International impact platform titles */\n#international-impact .detail-block h3{font-size:18px;line-height:1.35;font-weight:650;letter-spacing:-.01em}\n#international-impact .impact-link{color:inherit;text-decoration:none}\n#international-impact .impact-link:hover,#international-impact .impact-link:focus-visible{text-decoration:underline;text-underline-offset:3px}\n@media(max-width:768px){#international-impact .detail-block h3{font-size:21px;line-height:1.34}}\n'''
+              css.write_text(s, encoding='utf-8')
+          PY
+      - name: Validate
+        run: |
+          python tools/validate.py
+          node --check assets/js/site.js
+      - name: Commit focused change and remove one-off workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm .github/workflows/polish-international-impact.yml
+          git add about.html en/about.html assets/css/app-core.css .github/workflows/polish-international-impact.yml
+          git commit -m 'style: strengthen international impact links'
+          git push
