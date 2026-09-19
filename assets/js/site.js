@@ -387,7 +387,7 @@
   const SWIPE_FLICK_MAX_MS=420;
   const SWIPE_FLICK_MIN_VX=.30;
   const SWIPE_MAX_MS=1200;
-  const SWIPE_SETTLE_MS=300;
+  const SWIPE_SETTLE_MS=330;
   let pageSwipeStart=null;
   let swipePreview=null;
 
@@ -524,8 +524,8 @@
     const currentFrom=current.style.transform||'translate3d(0,0,0)';
     const incomingFrom=preview.main.style.transform||`translate3d(${preview.direction>0?width:-width}px,0,0)`;
     await Promise.all([
-      animateElementTransform(current,currentFrom,'translate3d(0,0,0)',230),
-      animateElementTransform(preview.main,incomingFrom,`translate3d(${preview.direction>0?width:-width}px,0,0)`,230)
+      animateElementTransform(current,currentFrom,'translate3d(0,0,0)',253),
+      animateElementTransform(preview.main,incomingFrom,`translate3d(${preview.direction>0?width:-width}px,0,0)`,253)
     ]);
     destroySwipePreview();
   };
@@ -541,8 +541,8 @@
     const targetUrl=preview.url;
     const targetScroll=0;
     await Promise.all([
-      animateElementTransform(current,currentFrom,`translate3d(${direction>0?-width:width}px,0,0)`,300),
-      animateElementTransform(preview.main,incomingFrom,'translate3d(0,0,0)',300)
+      animateElementTransform(current,currentFrom,`translate3d(${direction>0?-width:width}px,0,0)`,330),
+      animateElementTransform(preview.main,incomingFrom,'translate3d(0,0,0)',330)
     ]);
     try{
       await applyPage(targetUrl,{transitionDirection:0,preserveScrollY:targetScroll});
