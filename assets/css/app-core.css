@@ -178,3 +178,27 @@ a:focus-visible,button:focus-visible{outline:2px solid #318AF5;outline-offset:3p
   .update-meta{margin-bottom:12px}
   .update-item p{margin-bottom:14px}
 }
+
+
+/* PAI orbit quick menu — compact trigger, tactile radial navigation */
+.pai-orbit{position:fixed;inset:0;z-index:1200;pointer-events:none}
+.pai-orbit-backdrop{position:absolute;inset:0;background:rgba(15,18,24,.12);backdrop-filter:blur(2px);opacity:0;transition:opacity .24s ease;pointer-events:none}
+.pai-orbit-toggle{position:absolute;left:50%;bottom:max(24px,env(safe-area-inset-bottom));width:62px;height:62px;transform:translateX(-50%);border:1px solid rgba(23,26,31,.12);border-radius:50%;background:rgba(255,255,255,.96);box-shadow:0 10px 30px rgba(20,24,32,.14);pointer-events:auto;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .24s cubic-bezier(.2,.8,.2,1),box-shadow .2s ease}
+.pai-orbit-toggle span,.pai-orbit-toggle span:after{position:absolute;content:"";left:50%;top:50%;width:22px;height:1.5px;background:#171A1F;border-radius:2px;transform:translate(-50%,-50%);transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.pai-orbit-toggle span:after{transform:translate(-50%,-50%) rotate(90deg)}
+.pai-orbit-wheel{position:absolute;left:50%;bottom:max(15px,calc(env(safe-area-inset-bottom) - 1px));width:250px;height:250px;margin-left:-125px;border-radius:50%;background:rgba(255,255,255,.98);box-shadow:0 18px 60px rgba(20,24,32,.18);opacity:0;transform:scale(.28) rotate(var(--orbit-rotation,0deg));transform-origin:50% 50%;transition:opacity .2s ease,transform .34s cubic-bezier(.2,.82,.2,1);pointer-events:none;touch-action:none}
+.pai-orbit-wheel:before{content:"";position:absolute;inset:63px;border:1px solid rgba(23,26,31,.08);border-radius:50%}
+.pai-orbit-wheel a{position:absolute;left:50%;top:50%;width:84px;height:34px;margin:-17px 0 0 -42px;display:flex;align-items:center;justify-content:center;color:#171A1F;text-decoration:none;font-size:12px;font-weight:600;letter-spacing:.01em;transform:rotate(calc(var(--orbit-i)*51.428deg)) translateY(-101px) rotate(calc(var(--orbit-i)*-51.428deg));transform-origin:50% 50%;-webkit-tap-highlight-color:transparent}
+.pai-orbit-wheel a span{display:block;white-space:nowrap}
+.pai-orbit.open{pointer-events:auto}
+.pai-orbit.open .pai-orbit-backdrop{opacity:1;pointer-events:auto}
+.pai-orbit.open .pai-orbit-wheel{opacity:1;transform:scale(1) rotate(var(--orbit-rotation,0deg));pointer-events:auto}
+.pai-orbit.open .pai-orbit-toggle{transform:translateX(-50%) scale(.92);box-shadow:0 6px 18px rgba(20,24,32,.1)}
+.pai-orbit.open .pai-orbit-toggle span{transform:translate(-50%,-50%) rotate(45deg)}
+.pai-orbit.open .pai-orbit-toggle span:after{transform:translate(-50%,-50%) rotate(90deg)}
+@media(min-width:769px){
+  .pai-orbit-toggle{width:68px;height:68px;bottom:30px}
+  .pai-orbit-wheel{width:278px;height:278px;margin-left:-139px;bottom:20px}
+  .pai-orbit-wheel a{transform:rotate(calc(var(--orbit-i)*51.428deg)) translateY(-114px) rotate(calc(var(--orbit-i)*-51.428deg))}
+}
+@media(prefers-reduced-motion:reduce){.pai-orbit *{transition:none!important}}
