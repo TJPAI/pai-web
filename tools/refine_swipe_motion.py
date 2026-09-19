@@ -164,3 +164,4 @@ for pattern in ('*.html','en/*.html','people/*.html','en/people/*.html'):
 if changed == 0:
     raise SystemExit('no HTML site.js version references updated')
 print(f'updated site.js and {changed} HTML files')
+# trigger workflow after workflow definition exists
