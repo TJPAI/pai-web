@@ -69,3 +69,10 @@ main [id]{scroll-margin-top:88px}
 @media(max-width:768px){
   .section-head h2{font-size:32px!important;line-height:1.14!important;letter-spacing:-.025em!important}
 }
+
+
+/* International impact platform titles */
+#international-impact .detail-block h3{font-size:18px;line-height:1.35;font-weight:650;letter-spacing:-.01em}
+#international-impact .impact-link{color:inherit;text-decoration:none}
+#international-impact .impact-link:hover,#international-impact .impact-link:focus-visible{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:768px){#international-impact .detail-block h3{font-size:21px;line-height:1.34}}
