@@ -27,3 +27,4 @@ for pattern in ('*.html','en/*.html','people/*.html','en/people/*.html'):
 if changed==0:
     raise SystemExit('no v21 references updated')
 print(f'updated swipe timing and {changed} HTML files')
+# trigger after workflow exists
