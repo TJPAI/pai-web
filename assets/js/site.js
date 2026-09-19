@@ -423,7 +423,7 @@
           article.dataset.pubExtra=extra?'1':'0';
           const actions=publication.doi?
             `<div class="pub-actions"><a href="${esc(doiHref(publication.doi))}" target="_blank" rel="noopener">DOI ↗</a></div>`:'';
-          article.innerHTML=`<h3>${esc(publication.title)}</h3><p class="pub-authors">${esc(publication.authors)}</p><p class="pub-venue">${esc(publication.venue)} · ${year}</p>${actions}`;
+          article.innerHTML=`<h3 class="title-item">${esc(publication.title)}</h3><p class="pub-authors">${esc(publication.authors)}</p><p class="pub-venue">${esc(publication.venue)} · ${year}</p>${actions}`;
           section.appendChild(article);
         });
 

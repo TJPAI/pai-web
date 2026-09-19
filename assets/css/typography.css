@@ -19,7 +19,7 @@
 }
 
 /* Level 0 — homepage display title */
-.home-hero h1{
+.title-display,.home-hero h1{
   font-size:var(--title-display-size)!important;
   line-height:1.10!important;
   letter-spacing:-.045em!important;
@@ -28,7 +28,7 @@
 }
 
 /* Level 1 — page title */
-.page-hero h1{
+.title-page,.page-hero h1{
   font-size:var(--title-page-size)!important;
   line-height:1.10!important;
   letter-spacing:-.04em!important;
@@ -37,7 +37,7 @@
 }
 
 /* Level 2 — major section title */
-.section-head h2,.join h2{
+.title-section,.section-head h2,.join h2{
   font-size:var(--title-section-size)!important;
   line-height:1.16!important;
   letter-spacing:-.03em!important;
@@ -46,7 +46,7 @@
 }
 
 /* Level 3 — featured subsection / research title */
-.prose h2,.research-direction h2,.research h3,.research-title,.impact h3,.person-detail h2{
+.title-feature,.prose h2,.research-direction h2,.research h3,.research-title,.impact h3,.person-detail h2{
   font-size:var(--title-feature-size)!important;
   line-height:1.24!important;
   letter-spacing:-.025em!important;
@@ -55,7 +55,7 @@
 }
 
 /* Level 4 — item/card/list title */
-.challenge h3,#collaboration .partner h3,#achievements .highlight h3,#international-impact .detail-block h3,.join-item h3,.team-grid .person h3,.pub h3,.news-row h3,.contact-card h3{
+.title-item,.challenge h3,#collaboration .partner h3,#achievements .highlight h3,#international-impact .detail-block h3,.join-item h3,.team-grid .person h3,.pub h3,.news-row h3,.contact-card h3{
   font-size:var(--title-item-size)!important;
   line-height:1.34!important;
   letter-spacing:-.01em!important;
@@ -64,7 +64,7 @@
 }
 
 /* Indexed items: number shares the title's size/line-height, but is visually de-emphasized. */
-#achievements .highlight .num,.challenge .num,.join-item .num{
+.item-index,#achievements .highlight .num,.challenge .num,.join-item .num{
   font-size:var(--title-item-size)!important;
   line-height:1.34!important;
   font-weight:var(--title-index-weight)!important;
@@ -79,7 +79,7 @@
 }
 
 /* Level 5 — minor detail title */
-.person-detail .detail-block h3{
+.title-minor,.person-detail .detail-block h3{
   font-size:var(--title-minor-size)!important;
   line-height:1.35!important;
   letter-spacing:0!important;

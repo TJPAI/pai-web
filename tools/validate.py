@@ -145,8 +145,8 @@ for prefix in ('','en/'):
         inner=f'<span class="research-index">{number}</span><span class="research-code-main"><span>{code}</span><small class="research-expansion">{expansion}</small></span>'
         if f'<div class="research-code research-identity">{inner}</div>' not in home: errors.append(f'{prefix}index.html: non-canonical research identity for {code}')
         if f'<div class="direction-id research-identity">{inner}</div>' not in detail: errors.append(f'{prefix}research.html: non-canonical research identity for {code}')
-    if home.count('class="research-title"')!=3: errors.append(f'{prefix}index.html: expected exactly 3 canonical research-title elements')
-    if detail.count('class="research-title"')!=3: errors.append(f'{prefix}research.html: expected exactly 3 canonical research-title elements')
+    if len(re.findall(r'class="[^"]*\bresearch-title\b[^"]*"',home))!=3: errors.append(f'{prefix}index.html: expected exactly 3 canonical research-title elements')
+    if len(re.findall(r'class="[^"]*\bresearch-title\b[^"]*"',detail))!=3: errors.append(f'{prefix}research.html: expected exactly 3 canonical research-title elements')
 
 # Critical detail-link contracts: these links must land on the matching content block, not just the top of a page.
 contracts={
@@ -276,3 +276,29 @@ _typography=(ROOT/'assets/css/typography.css').read_text(encoding='utf-8')
 for required in ('--title-display-size','--title-page-size','--title-section-size','--title-feature-size','--title-item-size','--title-minor-size','.research-title'):
     if required not in _typography:
         errors.append(f'assets/css/typography.css: missing canonical title contract {required}')
+
+
+# Semantic title hierarchy guardrail.
+# Structural selectors remain compatibility aliases, but canonical content must declare its title level explicitly.
+for html in html_files:
+    rel=str(html.relative_to(ROOT))
+    if rel=='404.html':
+        continue
+    text=html_text[html.resolve()]
+    for block in re.findall(r'<section\b[^>]*class=["\'][^"\']*\bpage-hero\b[^"\']*["\'][^>]*>.*?</section>',text,re.I|re.S):
+        m=re.search(r'<h1\b([^>]*)>',block,re.I)
+        if m and not re.search(r'\btitle-page\b',m.group(1)):
+            errors.append(f'{rel}: page-hero h1 must declare title-page')
+    for block in re.findall(r'<div\b[^>]*class=["\'][^"\']*\bsection-head\b[^"\']*["\'][^>]*>.*?</div>',text,re.I|re.S):
+        m=re.search(r'<h2\b([^>]*)>',block,re.I)
+        if m and not re.search(r'\btitle-section\b',m.group(1)):
+            errors.append(f'{rel}: section-head h2 must declare title-section')
+    for m in re.finditer(r'<h3\b([^>]*)class=["\'][^"\']*\bresearch-title\b[^"\']*["\'][^>]*>',text,re.I):
+        if 'title-feature' not in m.group(0):
+            errors.append(f'{rel}: research-title must also declare title-feature')
+
+for required in ('.title-display','.title-page','.title-section','.title-feature','.title-item','.title-minor','.item-index'):
+    if required not in _typography:
+        errors.append(f'assets/css/typography.css: missing semantic title class {required}')
+if '<h3 class="title-item">${esc(publication.title)}</h3>' not in site_js:
+    errors.append('assets/js/site.js: publication titles must use semantic title-item class')
