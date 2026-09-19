@@ -984,6 +984,7 @@
     if(document.querySelector('.pai-orbit')) return;
     const orbit=document.createElement('div');
     orbit.className='pai-orbit';
+    orbit.style.setProperty('--orbit-count','7');
     orbit.innerHTML='<div class="pai-orbit-backdrop" aria-hidden="true"></div><div class="pai-orbit-wheel" role="navigation"></div><button class="pai-orbit-toggle" type="button" aria-expanded="false" aria-label="打开快捷菜单"><span aria-hidden="true"></span></button>';
     document.body.appendChild(orbit);
     const wheel=orbit.querySelector('.pai-orbit-wheel');
@@ -1018,7 +1019,6 @@
     };
     const paint=()=>{
       wheel.style.setProperty('--orbit-rotation',rotation+'deg');
-      wheel.querySelectorAll('a>span').forEach(span=>span.style.transform='rotate('+(-rotation)+'deg)');
     };
     toggle.addEventListener('click',e=>{e.preventDefault();setOpen(!orbit.classList.contains('open'));});
     backdrop.addEventListener('click',()=>setOpen(false));
