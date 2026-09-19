@@ -1,5 +1,6 @@
 from pathlib import Path
 
+# Layout / prose refinements stay in app-core.css.
 p=Path('assets/css/app-core.css')
 s=p.read_text()
 marker='/* English mobile reading polish — 2026-09-19 */'
@@ -7,7 +8,7 @@ block=r'''
 
 /* English mobile reading polish — 2026-09-19 */
 @media(max-width:768px){
-  html[lang="en"] .research-title{font-size:26px!important;line-height:1.17!important;letter-spacing:-.022em!important;max-width:15.5em!important}
+  html[lang="en"] .research-title{max-width:15.5em!important}
   html[lang="en"] .research-detail>p:not(.direction-keywords),
   html[lang="en"] .contact-card>p,
   html[lang="en"] .prose>p{max-width:34em}
@@ -18,15 +19,27 @@ block=r'''
   html[lang="en"] .team-grid .person>a:last-child{display:inline-block;margin-top:3px}
 
   html[lang="en"] .prose h2+p{margin-top:16px}
-
-  html[lang="en"] .contact-card .title-item{letter-spacing:-.018em!important}
 }
 '''
 if marker not in s:
     p.write_text(s.rstrip()+block+'\n')
 
-# Publish an English-only cache entry. The shared entry file changes its nested imports,
-# while Chinese HTML keeps requesting its already-cached v8 entry and is visually unchanged.
+# Title-specific English overrides belong in the canonical typography layer.
+tp=Path('assets/css/typography.css')
+ts=tp.read_text()
+tmarker='/* English title refinements — 2026-09-19 */'
+tblock=r'''
+
+/* English title refinements — 2026-09-19 */
+@media(max-width:768px){
+  html[lang="en"] .research-title{font-size:26px!important;line-height:1.17!important;letter-spacing:-.022em!important}
+  html[lang="en"] .contact-card .title-item{letter-spacing:-.018em!important}
+}
+'''
+if tmarker not in ts:
+    tp.write_text(ts.rstrip()+tblock+'\n')
+
+# Publish an English-only cache entry. Chinese HTML remains on its existing entry version.
 r=Path('assets/css/refine.css')
 rs=r.read_text().replace('20260919-8','20260919-9')
 r.write_text(rs)
