@@ -198,7 +198,18 @@
   };
   const rememberedPageScroll=path=>Math.max(0,Number(pageScrollPositions[path])||0);
   const cacheCurrentPageSnapshot=()=>{
-    try{ pageCache.set(location.href.split('#')[0],document.documentElement.outerHTML); }catch(_e){}
+    try{
+      /* Never persist transient swipe/compositing state into the page cache.
+         A snapshot may be taken while the live main is still horizontally translated. */
+      const snapshot=document.documentElement.cloneNode(true);
+      const snapshotMain=snapshot.querySelector('main');
+      if(snapshotMain){
+        snapshotMain.style.removeProperty('transform');
+        snapshotMain.style.removeProperty('will-change');
+        snapshotMain.style.removeProperty('opacity');
+      }
+      pageCache.set(location.href.split('#')[0],snapshot.outerHTML);
+    }catch(_e){}
   };
   const saveCurrentScroll=()=>{
     if(navigating) return;
