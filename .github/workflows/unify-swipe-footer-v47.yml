@@ -1,0 +1,29 @@
+name: Unify swipe footer geometry v47
+on:
+  push:
+    paths:
+      - 'tools/unify_swipe_footer_geometry_v47.py'
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Apply patch
+        run: python tools/unify_swipe_footer_geometry_v47.py
+      - name: Validate
+        run: |
+          python tools/validate.py
+          node --check assets/js/site.js
+      - name: Commit and self-clean
+        run: |
+          rm tools/unify_swipe_footer_geometry_v47.py .github/workflows/unify-swipe-footer-v47.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: match swipe preview footer to live page geometry'
+          git push
