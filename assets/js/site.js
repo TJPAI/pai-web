@@ -342,57 +342,176 @@
   },{capture:true,passive:true});
 
   /* Touch page navigation for the seven top-level pages.
-     Middle-screen horizontal swipes navigate; edge swipes stay reserved for Safari history gestures. */
+     Horizontal drags behave like a native pager: the adjacent page is already visible
+     underneath the finger, while edge swipes stay reserved for Safari history gestures. */
   const swipePageOrder={
     zh:['/','/about.html','/team.html','/research.html','/publications.html','/join.html','/contact.html'],
     en:['/en/','/en/about.html','/en/team.html','/en/research.html','/en/publications.html','/en/join.html','/en/contact.html']
+  };
+
+  const SWIPE_EDGE_GUARD=32;
+  const SWIPE_MIN_X=58;
+  const SWIPE_FLICK_MIN_X=28;
+  const SWIPE_FLICK_MAX_MS=420;
+  const SWIPE_FLICK_MIN_VX=.30;
+  const SWIPE_MAX_MS=1200;
+  const SWIPE_SETTLE_MS=220;
+  let pageSwipeStart=null;
+  let swipePreview=null;
+
+  const swipeBlockedTarget=target=>!!(target?.closest&&target.closest(
+    'a,button,input,textarea,select,option,label,[contenteditable="true"],[role="button"],[data-no-swipe]'
+  ));
+
+  const swipeTargetFor=(path,lang,direction)=>{
+    const pages=swipePageOrder[lang];
+    const index=pages.indexOf(path);
+    if(index<0) return null;
+    return pages[(index+direction+pages.length)%pages.length];
   };
 
   const warmSwipeNeighbors=()=>{
     if(navigator.connection&&navigator.connection.saveData) return;
     const path=normalizedPath();
     const lang=path.startsWith('/en/')?'en':'zh';
-    const pages=swipePageOrder[lang];
-    const index=pages.indexOf(path);
-    if(index<0) return;
-    [-1,1].forEach(offset=>{
-      const target=pages[(index+offset+pages.length)%pages.length];
-      fetchPage(new URL(root(target),location.origin)).catch(()=>{});
+    [-1,1].forEach(direction=>{
+      const targetPath=swipeTargetFor(path,lang,direction);
+      if(targetPath) fetchPage(new URL(root(targetPath),location.origin)).catch(()=>{});
     });
   };
-  setTimeout(warmSwipeNeighbors,420);
-  const SWIPE_EDGE_GUARD=32;
-  const SWIPE_MIN_X=56;
-  const SWIPE_FLICK_MIN_X=26;
-  const SWIPE_FLICK_MAX_MS=420;
-  const SWIPE_FLICK_MIN_VX=.28;
-  const SWIPE_MAX_MS=1200;
-  const SWIPE_FOLLOW_MAX=18;
-  const SWIPE_FOLLOW_FACTOR=.28;
-  let pageSwipeStart=null;
+  setTimeout(warmSwipeNeighbors,260);
 
-  const resetSwipeVisual=(animate=true)=>{
+  const destroySwipePreview=()=>{
+    if(swipePreview?.shell?.isConnected) swipePreview.shell.remove();
+    swipePreview=null;
     const main=document.querySelector('main');
-    if(!main) return;
-    if(!animate||typeof main.animate!=='function'){
+    if(main){
       main.style.transform='';
       main.style.willChange='';
-      return;
     }
-    const computed=main.style.transform||'translate3d(0,0,0)';
-    main.style.transform='';
-    main.style.willChange='';
-    try{
-      main.animate([
-        {transform:computed},
-        {transform:'translate3d(0,0,0)'}
-      ],{duration:145,easing:'cubic-bezier(.2,.75,.25,1)'});
-    }catch(_e){}
   };
 
-  const swipeBlockedTarget=target=>!!(target?.closest&&target.closest(
-    'a,button,input,textarea,select,option,label,[contenteditable="true"],[role="button"],[data-no-swipe]'
-  ));
+  const buildSwipePreview=(url,direction,html)=>{
+    if(!pageSwipeStart||pageSwipeStart.direction!==direction) return null;
+    const next=new DOMParser().parseFromString(html,'text/html');
+    const nextMain=next.querySelector('main');
+    if(!nextMain) return null;
+
+    const shell=document.createElement('div');
+    shell.setAttribute('aria-hidden','true');
+    Object.assign(shell.style,{
+      position:'fixed',inset:'0',overflow:'hidden',pointerEvents:'none',
+      zIndex:'12',contain:'layout paint',background:'transparent'
+    });
+    const previewMain=document.importNode(nextMain,true);
+    previewMain.removeAttribute('id');
+    previewMain.querySelectorAll('[id]').forEach(node=>node.removeAttribute('id'));
+    previewMain.querySelectorAll('img[src]').forEach(img=>{
+      try{ img.src=new URL(img.getAttribute('src'),url.href).href; }catch(_e){}
+    });
+    previewMain.querySelectorAll('source[srcset],img[srcset]').forEach(node=>{
+      const raw=node.getAttribute('srcset');
+      if(!raw) return;
+      const resolved=raw.split(',').map(part=>{
+        const bits=part.trim().split(/\s+/);
+        try{ bits[0]=new URL(bits[0],url.href).href; }catch(_e){}
+        return bits.join(' ');
+      }).join(', ');
+      node.setAttribute('srcset',resolved);
+    });
+    Object.assign(previewMain.style,{
+      position:'absolute',top:'0',left:'0',width:'100%',minHeight:'100vh',
+      margin:'0',willChange:'transform',pointerEvents:'none',
+      background:getComputedStyle(document.body).backgroundColor||'#fff',
+      transform:`translate3d(${direction>0?'100%':'-100%'},0,0)`
+    });
+    shell.appendChild(previewMain);
+    document.body.appendChild(shell);
+    swipePreview={shell,main:previewMain,url,direction};
+    return swipePreview;
+  };
+
+  const ensureSwipePreview=(direction)=>{
+    const start=pageSwipeStart;
+    if(!start) return Promise.resolve(null);
+    if(swipePreview&&swipePreview.direction===direction) return Promise.resolve(swipePreview);
+    if(swipePreview) destroySwipePreview();
+    start.direction=direction;
+    const targetPath=swipeTargetFor(start.path,start.lang,direction);
+    if(!targetPath) return Promise.resolve(null);
+    const url=new URL(root(targetPath),location.origin);
+    return fetchPage(url).then(html=>buildSwipePreview(url,direction,html)).catch(()=>null);
+  };
+
+  const positionSwipePages=dx=>{
+    const start=pageSwipeStart;
+    const preview=swipePreview;
+    if(!start||!preview) return;
+    const width=Math.max(1,innerWidth);
+    const bounded=Math.max(-width,Math.min(width,dx));
+    const direction=preview.direction;
+    if((direction>0&&bounded>0)||(direction<0&&bounded<0)) return;
+    const current=document.querySelector('main');
+    if(current){
+      current.style.willChange='transform';
+      current.style.transform=`translate3d(${bounded}px,0,0)`;
+    }
+    const incoming=bounded+(direction>0?width:-width);
+    preview.main.style.transform=`translate3d(${incoming}px,0,0)`;
+  };
+
+  const animateElementTransform=(node,from,to,duration=SWIPE_SETTLE_MS)=>new Promise(resolve=>{
+    if(!node){ resolve(); return; }
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches||typeof node.animate!=='function'){
+      node.style.transform=to;
+      resolve();
+      return;
+    }
+    try{
+      const animation=node.animate([{transform:from},{transform:to}],{
+        duration,easing:'cubic-bezier(.22,.72,.22,1)',fill:'forwards'
+      });
+      animation.finished.catch(()=>{}).finally(resolve);
+    }catch(_e){
+      node.style.transform=to;
+      resolve();
+    }
+  });
+
+  const settleSwipeBack=async()=>{
+    const current=document.querySelector('main');
+    const preview=swipePreview;
+    if(!current||!preview){ destroySwipePreview(); return; }
+    const width=Math.max(1,innerWidth);
+    const currentFrom=current.style.transform||'translate3d(0,0,0)';
+    const incomingFrom=preview.main.style.transform||`translate3d(${preview.direction>0?width:-width}px,0,0)`;
+    await Promise.all([
+      animateElementTransform(current,currentFrom,'translate3d(0,0,0)',165),
+      animateElementTransform(preview.main,incomingFrom,`translate3d(${preview.direction>0?width:-width}px,0,0)`,165)
+    ]);
+    destroySwipePreview();
+  };
+
+  const commitSwipe=async(direction)=>{
+    const current=document.querySelector('main');
+    const preview=swipePreview;
+    const start=pageSwipeStart;
+    if(!current||!preview||!start){ destroySwipePreview(); return; }
+    const width=Math.max(1,innerWidth);
+    const currentFrom=current.style.transform||'translate3d(0,0,0)';
+    const incomingFrom=preview.main.style.transform||`translate3d(${direction>0?width:-width}px,0,0)`;
+    const targetUrl=preview.url;
+    await Promise.all([
+      animateElementTransform(current,currentFrom,`translate3d(${direction>0?-width:width}px,0,0)`,205),
+      animateElementTransform(preview.main,incomingFrom,'translate3d(0,0,0)',205)
+    ]);
+    try{
+      await applyPage(targetUrl,{transitionDirection:0});
+    }finally{
+      destroySwipePreview();
+      setTimeout(warmSwipeNeighbors,60);
+    }
+  };
 
   document.addEventListener('touchstart',event=>{
     if(event.touches.length!==1){ pageSwipeStart=null; return; }
@@ -404,10 +523,9 @@
     const path=normalizedPath();
     const lang=path.startsWith('/en/')?'en':'zh';
     if(!swipePageOrder[lang].includes(path)){ pageSwipeStart=null; return; }
-    pageSwipeStart={x:touch.clientX,y:touch.clientY,time:performance.now(),path,lang,locked:false,warmedDirection:0,followOffset:0};
+    pageSwipeStart={x:touch.clientX,y:touch.clientY,time:performance.now(),path,lang,locked:false,direction:0,lastDx:0};
   },{passive:true});
 
-  /* Once horizontal intent is clear, own that gesture so Safari cannot add vertical drift. */
   document.addEventListener('touchmove',event=>{
     const start=pageSwipeStart;
     if(!start||event.touches.length!==1) return;
@@ -425,36 +543,30 @@
     if(!start.locked) return;
 
     event.preventDefault();
-    const follow=Math.max(-SWIPE_FOLLOW_MAX,Math.min(SWIPE_FOLLOW_MAX,dx*SWIPE_FOLLOW_FACTOR));
-    start.followOffset=follow;
-    const main=document.querySelector('main');
-    if(main){
-      main.style.willChange='transform';
-      main.style.transform=`translate3d(${follow}px,0,0)`;
-    }
-
+    start.lastDx=dx;
     const direction=dx<0?1:-1;
-    if(direction!==start.warmedDirection){
-      start.warmedDirection=direction;
-      const pages=swipePageOrder[start.lang];
-      const index=pages.indexOf(start.path);
-      if(index>=0){
-        const targetPath=pages[(index+direction+pages.length)%pages.length];
-        fetchPage(new URL(root(targetPath),location.origin)).catch(()=>{});
-      }
+    if(direction!==start.direction){
+      ensureSwipePreview(direction).then(()=>{
+        if(pageSwipeStart===start) positionSwipePages(start.lastDx);
+      });
+    }else{
+      positionSwipePages(dx);
     }
   },{passive:false});
 
   document.addEventListener('touchcancel',()=>{
-    if(pageSwipeStart?.locked) resetSwipeVisual(true);
+    const hadLocked=pageSwipeStart?.locked;
     pageSwipeStart=null;
+    if(hadLocked) settleSwipeBack();
+    else destroySwipePreview();
   },{passive:true});
 
   document.addEventListener('touchend',event=>{
     const start=pageSwipeStart;
-    pageSwipeStart=null;
     if(!start||!start.locked||event.changedTouches.length!==1||navigating){
-      if(start?.locked) resetSwipeVisual(true);
+      pageSwipeStart=null;
+      if(start?.locked) settleSwipeBack();
+      else destroySwipePreview();
       return;
     }
     const touch=event.changedTouches[0];
@@ -465,22 +577,23 @@
     const horizontal=Math.abs(dx)>=Math.abs(dy)*1.15;
     const distanceCommit=Math.abs(dx)>=SWIPE_MIN_X;
     const flickCommit=Math.abs(dx)>=SWIPE_FLICK_MIN_X&&elapsed<=SWIPE_FLICK_MAX_MS&&Math.abs(vx)>=SWIPE_FLICK_MIN_VX;
-    if(elapsed>SWIPE_MAX_MS||!horizontal||(!distanceCommit&&!flickCommit)){
-      resetSwipeVisual(true);
+    const direction=dx<0?1:-1;
+
+    if(elapsed>SWIPE_MAX_MS||!horizontal||(!distanceCommit&&!flickCommit)||!swipePreview||swipePreview.direction!==direction){
+      pageSwipeStart=null;
+      settleSwipeBack();
       return;
     }
 
     const current=normalizedPath();
-    if(current!==start.path){ resetSwipeVisual(false); return; }
-    const pages=swipePageOrder[start.lang];
-    const index=pages.indexOf(current);
-    if(index<0){ resetSwipeVisual(true); return; }
-    const direction=dx<0?1:-1;
-    const targetPath=pages[(index+direction+pages.length)%pages.length];
-    const url=new URL(root(targetPath),location.origin);
+    if(current!==start.path){
+      pageSwipeStart=null;
+      settleSwipeBack();
+      return;
+    }
     event.preventDefault();
     saveCurrentScroll();
-    applyPage(url,{transitionDirection:direction,gestureOffset:start.followOffset}).catch(()=>{ location.href=url.href; });
+    commitSwipe(direction).finally(()=>{ pageSwipeStart=null; });
   },{passive:false});
 
   const responseFor=async url=>{
