@@ -325,7 +325,14 @@
     cacheCurrentPageSnapshot();
     const label=(link.textContent||'').trim();
     const isLanguageSwitch=label==='EN'||label==='中文';
-    const options=isLanguageSwitch?{preserveScrollY:window.scrollY}:undefined;
+    let options;
+    if(isLanguageSwitch){
+      options={preserveScrollY:window.scrollY};
+    }else if(!url.hash){
+      /* Direct link/menu navigation restores the target page's last position.
+         Swipe navigation remains intentionally top-aligned via preserveScrollY: 0. */
+      options={preserveScrollY:rememberedPageScroll(normalizedPath(url.pathname))};
+    }
     applyPage(url,options).catch(()=>{ location.href=url.href; });
   });
 
