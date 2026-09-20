@@ -38,14 +38,14 @@
     video.autoplay=true;
     video.src=mediaUrl();
 
-    const fadeAway=()=>{
+    const exitAway=()=>{
       window.setTimeout(()=>{
-        host.classList.add('pai-logo-motion-fade');
-        window.setTimeout(()=>host.classList.add('pai-logo-motion-hidden'),650);
-      },800);
+        host.classList.add('pai-logo-motion-exit');
+        window.setTimeout(()=>host.classList.add('pai-logo-motion-hidden'),760);
+      },450);
     };
 
-    video.addEventListener('ended',fadeAway,{once:true});
+    video.addEventListener('ended',exitAway,{once:true});
     video.addEventListener('canplay',()=>{
       host.replaceChildren(video);
       video.play().catch(()=>{});
