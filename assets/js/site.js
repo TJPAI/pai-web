@@ -1050,9 +1050,21 @@
       const en=normalizedPath().startsWith('/en/');
       const data=menuData();
       const step=360/data.length;
-      wheel.innerHTML=data.map(([label,href],i)=>
-        `<a class="pai-orbit-item" href="${root(href)}" style="--item-angle:${i*step}deg"><span>${label}</span></a>`
-      ).join('');
+      const markup=[];
+      data.forEach(([label,href],i)=>{
+        const center=i*step;
+        const chars=Array.from(label);
+        const ascii=chars.every(ch=>/[\x00-\x7F]/.test(ch));
+        const charStep=ascii
+          ? (chars.length<=4?4.2:Math.min(3,22/Math.max(1,chars.length-1)))
+          : 5.4;
+        markup.push(`<a class="pai-orbit-item" aria-label="${label}" href="${root(href)}" style="--item-angle:${center}deg"><span class="pai-orbit-sr">${label}</span></a>`);
+        chars.forEach((ch,j)=>{
+          const offset=(j-(chars.length-1)/2)*charStep;
+          markup.push(`<span class="pai-orbit-char" aria-hidden="true" style="--char-angle:${center+offset}deg">${ch}</span>`);
+        });
+      });
+      wheel.innerHTML=markup.join('');
       wheel.setAttribute('aria-label',en?'Quick navigation':'快捷导航');
       toggle.setAttribute('aria-label',orbit.classList.contains('open')?(en?'Close quick menu':'关闭快捷菜单'):(en?'Open quick menu':'打开快捷菜单'));
     };
