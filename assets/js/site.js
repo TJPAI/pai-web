@@ -467,7 +467,7 @@
   let swipePreview=null;
 
   const swipeBlockedTarget=target=>!!(target?.closest&&target.closest(
-    'a,button,input,textarea,select,option,label,[contenteditable="true"],[role="button"],[data-no-swipe]'
+    '.pai-orbit,a,button,input,textarea,select,option,label,[contenteditable="true"],[role="button"],[data-no-swipe]'
   ));
 
   const swipeTargetFor=(path,lang,direction)=>{
@@ -1017,13 +1017,17 @@ const initOrbitMenu=()=>{
   };
   const setOpen=open=>{orbit.classList.toggle('open',open);toggle.setAttribute('aria-expanded',open?'true':'false');sync();};
   const pointAngle=e=>{const r=wheel.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;const p=e.touches?e.touches[0]:e;return Math.atan2(p.clientY-cy,p.clientX-cx)*180/Math.PI;};
-  const paint=()=>{wheel.querySelectorAll('defs path').forEach((path,i)=>path.setAttribute('d',arcPath(i*45+rotation,i)));};
+  const paint=()=>{wheel.style.setProperty('--orbit-rotation',rotation+'deg');};
   toggle.addEventListener('click',e=>{e.preventDefault();setOpen(!orbit.classList.contains('open'));});
   backdrop.addEventListener('click',()=>setOpen(false));
   wheel.addEventListener('pointerdown',e=>{if(!orbit.classList.contains('open')) return;dragging=true;moved=false;startAngle=pointAngle(e);startRotation=rotation;wheel.setPointerCapture?.(e.pointerId);});
   wheel.addEventListener('pointermove',e=>{if(!dragging) return;const delta=pointAngle(e)-startAngle;if(Math.abs(delta)>3)moved=true;rotation=startRotation+delta;paint();});
   wheel.addEventListener('pointerup',()=>{dragging=false;});
   wheel.addEventListener('pointercancel',()=>{dragging=false;});
+  wheel.addEventListener('touchstart',e=>{if(!orbit.classList.contains('open')||e.touches.length!==1)return;e.stopPropagation();dragging=true;moved=false;startAngle=pointAngle(e);startRotation=rotation;},{passive:true});
+  wheel.addEventListener('touchmove',e=>{if(!dragging||e.touches.length!==1)return;e.preventDefault();e.stopPropagation();const delta=pointAngle(e)-startAngle;if(Math.abs(delta)>3)moved=true;rotation=startRotation+delta;paint();},{passive:false});
+  wheel.addEventListener('touchend',e=>{if(dragging)e.stopPropagation();dragging=false;},{passive:true});
+  wheel.addEventListener('touchcancel',e=>{if(dragging)e.stopPropagation();dragging=false;},{passive:true});
   wheel.addEventListener('click',e=>{const link=e.target.closest&&e.target.closest('a');if(!link)return;if(moved){e.preventDefault();moved=false;return;}setOpen(false);},true);
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&orbit.classList.contains('open'))setOpen(false);});
   new MutationObserver(()=>{if(orbit.classList.contains('open'))sync();}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
