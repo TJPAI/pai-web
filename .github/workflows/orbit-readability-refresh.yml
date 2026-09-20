@@ -1,0 +1,78 @@
+name: One-time orbit readability refresh
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  refresh:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Normalize orbit geometry and label orientation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          js=Path('assets/js/site.js')
+          text=js.read_text(encoding='utf-8')
+          old=r'''  const sync=()=>{
+    const en=normalizedPath().startsWith('/en/');
+    const data=menuData();
+    const defs=data.map((_,i)=>`<path id="orbit-arc-${i}" d="${arcPath(i*45,i)}"/>`).join('');
+    const labels=data.map(([label,href],i)=>`<a href="${root(href)}" class="pai-orbit-link"><text><textPath href="#orbit-arc-${i}" startOffset="50%">${label}</textPath></text></a>`).join('');
+    wheel.innerHTML=`<svg class="pai-orbit-svg" viewBox="0 0 220 220" aria-label="${en?'Quick navigation':'快捷导航'}"><defs>${defs}</defs><g class="pai-orbit-labels">${labels}</g></svg>`;
+    toggle.setAttribute('aria-label',orbit.classList.contains('open')?(en?'Close quick menu':'关闭快捷菜单'):(en?'Open quick menu':'打开快捷菜单'));
+  };
+  const setOpen=open=>{orbit.classList.toggle('open',open);toggle.setAttribute('aria-expanded',open?'true':'false');sync();paint();};
+  const pointAngle=e=>{const r=wheel.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;const p=e.touches?e.touches[0]:e;return Math.atan2(p.clientY-cy,p.clientX-cx)*180/Math.PI;};
+  const paint=()=>{wheel.style.setProperty('--orbit-rotation',rotation+'deg');};'''
+          new=r'''  const sync=()=>{
+    const en=normalizedPath().startsWith('/en/');
+    const data=menuData();
+    const defs=data.map((_,i)=>`<path id="orbit-arc-${i}" d="${arcPath(i*45+rotation,i)}"/>`).join('');
+    const labels=data.map(([label,href],i)=>`<a href="${root(href)}" class="pai-orbit-link"><text><textPath href="#orbit-arc-${i}" startOffset="50%">${label}</textPath></text></a>`).join('');
+    wheel.innerHTML=`<svg class="pai-orbit-svg" viewBox="0 0 220 220" aria-label="${en?'Quick navigation':'快捷导航'}"><defs>${defs}</defs><g class="pai-orbit-labels">${labels}</g></svg>`;
+    toggle.setAttribute('aria-label',orbit.classList.contains('open')?(en?'Close quick menu':'关闭快捷菜单'):(en?'Open quick menu':'打开快捷菜单'));
+  };
+  const setOpen=open=>{orbit.classList.toggle('open',open);toggle.setAttribute('aria-expanded',open?'true':'false');sync();};
+  const pointAngle=e=>{const r=wheel.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;const p=e.touches?e.touches[0]:e;return Math.atan2(p.clientY-cy,p.clientX-cx)*180/Math.PI;};
+  const paint=()=>{
+    const paths=wheel.querySelectorAll('defs path');
+    paths.forEach((path,i)=>path.setAttribute('d',arcPath(i*45+rotation,i)));
+  };'''
+          if old not in text: raise SystemExit('expected orbit sync/paint block not found')
+          text=text.replace(old,new,1)
+          js.write_text(text,encoding='utf-8')
+
+          css=Path('assets/css/app-core.css')
+          c=css.read_text(encoding='utf-8')
+          c=c.replace('--orbit-size:min(52vw,220px);--orbit-x:50%;--orbit-y:73%', '--orbit-size:min(52vw,220px);--orbit-x:50%;--orbit-y:calc(100dvh - 122px)')
+          c=c.replace('scale(.22) rotate(var(--orbit-rotation,0deg))', 'scale(.22)')
+          c=c.replace('scale(1) rotate(var(--orbit-rotation,0deg))', 'scale(1)')
+          c=c.replace('@media(max-width:390px){.pai-orbit{--orbit-size:min(54vw,210px);--orbit-y:74%}', '@media(max-width:390px){.pai-orbit{--orbit-size:min(54vw,210px);--orbit-y:calc(100dvh - 117px)}')
+          c=c.replace('@media(min-width:769px){.pai-orbit{--orbit-size:240px;--orbit-y:70%}', '@media(min-width:769px){.pai-orbit{--orbit-size:240px;--orbit-y:calc(100dvh - 136px)}')
+          css.write_text(c,encoding='utf-8')
+
+          refine=Path('assets/css/refine.css')
+          r=refine.read_text(encoding='utf-8').replace('./app-core.css?v=20260920-16','./app-core.css?v=20260920-17')
+          refine.write_text(r,encoding='utf-8')
+
+          for p in Path('.').rglob('*.html'):
+              s=p.read_text(encoding='utf-8')
+              s=re.sub(r'assets/css/refine\.css\?v=[^"\']+', 'assets/css/refine.css?v=20260920-17', s)
+              s=re.sub(r'assets/js/site\.js\?v=[^"\']+', 'assets/js/site.js?v=20260920-53', s)
+              p.write_text(s,encoding='utf-8')
+          PY
+          node --check assets/js/site.js
+          python tools/validate.py
+          python tools/validate_share_metadata.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet || git commit -m 'fix: lower orbit and keep labels readable while rotating'
+          git rm .github/workflows/orbit-readability-refresh.yml
+          git commit -m 'chore: remove one-time orbit readability workflow'
+          git push
