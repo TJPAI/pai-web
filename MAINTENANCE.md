@@ -17,6 +17,7 @@ This site is a static bilingual website. Keep changes small, reviewable, and fac
 - English faculty detail pages: `en/people/*.html`
 - Use lowercase English filenames and stable slugs.
 - Only publish verified titles, bios, honors and contact details.
+- For books and other formal publications, use the publisher's full official title and preserve authorship accurately; do not present a co-authored work as a sole-authored work.
 - The six core-faculty photos are already local production assets under `/assets/images/people/`; do not reintroduce temporary-site image URLs.
 
 ## Bilingual pages
