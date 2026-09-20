@@ -3,7 +3,7 @@
 @import url("./app-core.css?v=20260920-25");
 @import url("./typography.css?v=20260919-11");
 
-/* Header brand: keep the accessible PAI text in the DOM, render the final static mark visually. */
+/* Header brand: keep the accessible PAI text in the DOM, render the canonical static SVG mark visually. */
 .site-header .brand strong{
   display:block;
   width:70px;
@@ -13,7 +13,7 @@
   background-repeat:no-repeat;
   background-position:left center;
   background-size:contain;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='95 325 790 365'%3E%3Cg fill='none' stroke='%23171A1F' stroke-width='16' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M127 358H345C391 358 426 394 426 444C426 494 391 531 348 531H207C160 531 127 567 127 612V666'/%3E%3Cpath d='M332 666L509 490C532 467 568 467 591 490L744 648C773 678 817 684 848 663C863 653 870 632 870 608V348'/%3E%3C/g%3E%3C/svg%3E");
+  background-image:url("../images/brand/pai-logo.svg");
 }
 .site-header .brand span{margin-top:4px}
 @media(max-width:768px){
