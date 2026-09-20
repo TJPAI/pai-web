@@ -12,11 +12,13 @@
   display:flex;
   align-items:center;
   justify-content:center;
-  transform:translateX(-50%);
+  transform:translateX(-50%) translateY(0) scale(1);
+  transform-origin:center center;
   opacity:1;
   pointer-events:none;
   z-index:1;
-  transition:opacity .6s ease;
+  transition:opacity .7s ease, transform .7s cubic-bezier(.22,.61,.36,1);
+  will-change:opacity,transform;
 }
 .home-hero .pai-logo-motion{
   display:block;
@@ -27,7 +29,10 @@
   background:transparent;
   mix-blend-mode:multiply;
 }
-.home-hero .hero-art.pai-logo-motion-host.pai-logo-motion-fade{opacity:0}
+.home-hero .hero-art.pai-logo-motion-host.pai-logo-motion-exit{
+  opacity:0;
+  transform:translateX(-50%) translateY(-20px) scale(.85);
+}
 .home-hero .hero-art.pai-logo-motion-host.pai-logo-motion-hidden{visibility:hidden}
 @media(min-width:769px){
   .home-hero .hero-art.pai-logo-motion-host{top:54px;width:210px;height:210px}
