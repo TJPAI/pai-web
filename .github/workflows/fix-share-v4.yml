@@ -1,0 +1,36 @@
+name: Fix share image v4
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Decode corrected share image
+        run: |
+          base64 -d tmp/pai-share-v4-q50.base64 > assets/images/social/pai-share-v4.jpg
+          file assets/images/social/pai-share-v4.jpg
+          python - <<'PY'
+          from PIL import Image
+          p='assets/images/social/pai-share-v4.jpg'
+          im=Image.open(p)
+          assert im.size==(1200,630), im.size
+          assert im.mode=='RGB', im.mode
+          print(im.size, im.mode)
+          PY
+      - name: Validate site
+        run: |
+          python tools/validate.py
+          python tools/validate_share_metadata.py
+          node --check assets/js/site.js
+      - name: Commit corrected image
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add assets/images/social/pai-share-v4.jpg
+          git diff --cached --quiet || git commit -m "fix: restore correct PAI share image v4"
+          git push
