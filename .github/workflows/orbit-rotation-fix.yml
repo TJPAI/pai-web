@@ -1,16 +1,16 @@
-name: One-time orbit rotation fix
+name: Orbit rotation migration
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 permissions:
   contents: write
 jobs:
   fix:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Fix orbit drag rotation on iPhone
+      - name: Patch orbit rotation
         shell: bash
         run: |
           python <<'PY'
@@ -19,40 +19,23 @@ jobs:
 
           js=Path('assets/js/site.js')
           s=js.read_text(encoding='utf-8')
-
-          s=s.replace(
-            "'a,button,input,textarea,select,option,label,[contenteditable=\"true\"],[role=\"button\"],[data-no-swipe]'",
-            "'.pai-orbit,a,button,input,textarea,select,option,label,[contenteditable=\"true\"],[role=\"button\"],[data-no-swipe]'",
-            1
-          )
-
-          s=s.replace(
-            "const paint=()=>{wheel.querySelectorAll('defs path').forEach((path,i)=>path.setAttribute('d',arcPath(i*45+rotation,i)));};",
-            "const paint=()=>{wheel.style.setProperty('--orbit-rotation',rotation+'deg');};",
-            1
-          )
-
-          old="""  wheel.addEventListener('pointerdown',e=>{if(!orbit.classList.contains('open')) return;dragging=true;moved=false;startAngle=pointAngle(e);startRotation=rotation;wheel.setPointerCapture?.(e.pointerId);});
-  wheel.addEventListener('pointermove',e=>{if(!dragging) return;const delta=pointAngle(e)-startAngle;if(Math.abs(delta)>3)moved=true;rotation=startRotation+delta;paint();});
-  wheel.addEventListener('pointerup',()=>{dragging=false;});
-  wheel.addEventListener('pointercancel',()=>{dragging=false;});"""
-          new="""  wheel.addEventListener('pointerdown',e=>{if(!orbit.classList.contains('open')) return;dragging=true;moved=false;startAngle=pointAngle(e);startRotation=rotation;wheel.setPointerCapture?.(e.pointerId);});
-  wheel.addEventListener('pointermove',e=>{if(!dragging) return;const delta=pointAngle(e)-startAngle;if(Math.abs(delta)>3)moved=true;rotation=startRotation+delta;paint();});
-  wheel.addEventListener('pointerup',()=>{dragging=false;});
-  wheel.addEventListener('pointercancel',()=>{dragging=false;});
+          s=s.replace("'a,button,input,textarea,select,option,label,[contenteditable=\"true\"],[role=\"button\"],[data-no-swipe]'", "'.pai-orbit,a,button,input,textarea,select,option,label,[contenteditable=\"true\"],[role=\"button\"],[data-no-swipe]'", 1)
+          s=s.replace("const paint=()=>{wheel.querySelectorAll('defs path').forEach((path,i)=>path.setAttribute('d',arcPath(i*45+rotation,i)));};", "const paint=()=>{wheel.style.setProperty('--orbit-rotation',rotation+'deg');};", 1)
+          marker="  wheel.addEventListener('pointercancel',()=>{dragging=false;});"
+          extra="""  wheel.addEventListener('pointercancel',()=>{dragging=false;});
   wheel.addEventListener('touchstart',e=>{if(!orbit.classList.contains('open')||e.touches.length!==1)return;e.stopPropagation();dragging=true;moved=false;startAngle=pointAngle(e);startRotation=rotation;},{passive:true});
   wheel.addEventListener('touchmove',e=>{if(!dragging||e.touches.length!==1)return;e.preventDefault();e.stopPropagation();const delta=pointAngle(e)-startAngle;if(Math.abs(delta)>3)moved=true;rotation=startRotation+delta;paint();},{passive:false});
   wheel.addEventListener('touchend',e=>{if(dragging)e.stopPropagation();dragging=false;},{passive:true});
   wheel.addEventListener('touchcancel',e=>{if(dragging)e.stopPropagation();dragging=false;},{passive:true});"""
-          if old not in s:
-              raise SystemExit('orbit pointer block not found')
-          s=s.replace(old,new,1)
+          if "touchstart',e=>{if(!orbit.classList.contains('open')" not in s:
+              if marker not in s: raise SystemExit('pointer marker not found')
+              s=s.replace(marker,extra,1)
           js.write_text(s,encoding='utf-8')
 
           css=Path('assets/css/app-core.css')
           c=css.read_text(encoding='utf-8')
-          c=c.replace('transform:translate(-50%,-50%) scale(.22);', "transform:translate(-50%,-50%) scale(.22) rotate(var(--orbit-rotation,0deg));",1)
-          c=c.replace('transform:translate(-50%,-50%) scale(1);pointer-events:auto', "transform:translate(-50%,-50%) scale(1) rotate(var(--orbit-rotation,0deg));pointer-events:auto",1)
+          c=c.replace('transform:translate(-50%,-50%) scale(.22);', 'transform:translate(-50%,-50%) scale(.22) rotate(var(--orbit-rotation,0deg));', 1)
+          c=c.replace('transform:translate(-50%,-50%) scale(1);pointer-events:auto', 'transform:translate(-50%,-50%) scale(1) rotate(var(--orbit-rotation,0deg));pointer-events:auto', 1)
           css.write_text(c,encoding='utf-8')
 
           refine=Path('assets/css/refine.css')
