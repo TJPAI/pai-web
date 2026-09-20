@@ -1056,8 +1056,8 @@
         const chars=Array.from(label);
         const ascii=chars.every(ch=>/[\x00-\x7F]/.test(ch));
         const charStep=ascii
-          ? (chars.length<=4?5.4:Math.min(4.2,36/Math.max(1,chars.length-1)))
-          : (chars.length<=2?8.2:8.8);
+          ? (chars.length<=4?5.0:Math.min(3.6,32/Math.max(1,chars.length-1)))
+          : (chars.length<=2?7.8:7.6);
         markup.push(`<a class="pai-orbit-item" aria-label="${label}" href="${root(href)}" style="--item-angle:${center}deg"><span class="pai-orbit-sr">${label}</span></a>`);
         chars.forEach((ch,j)=>{
           const offset=(j-(chars.length-1)/2)*charStep;
@@ -1099,7 +1099,6 @@
     const end=()=>{ dragging=false; };
 
     toggle.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();setOpen(!orbit.classList.contains('open'));});
-    backdrop.addEventListener('click',()=>setOpen(false));
 
     if(window.PointerEvent){
       wheel.addEventListener('pointerdown',e=>{e.stopPropagation();begin(e);});
@@ -1125,10 +1124,9 @@
         moved=false;
         return;
       }
-      setOpen(false);
+      /* Navigation uses the site's normal delegated handler. Keep the orbit open. */
     },true);
 
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&orbit.classList.contains('open'))setOpen(false);});
     new MutationObserver(()=>{if(orbit.classList.contains('open'))sync();}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
     sync();
     paint();
