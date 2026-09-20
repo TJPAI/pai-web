@@ -1040,7 +1040,7 @@
     let autoRaf=0;
     let autoLastTs=0;
     let autoTimer=0;
-    const AUTO_DEG_PER_SECOND=3;
+    const AUTO_DEG_PER_SECOND=6;
 
     const menuData=()=>{
       const en=normalizedPath().startsWith('/en/');
