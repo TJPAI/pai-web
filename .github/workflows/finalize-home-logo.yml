@@ -1,0 +1,134 @@
+name: Finalize homepage logo animation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/finalize-home-logo.yml
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore final MP4 and wire homepage
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/media
+          cat tmp/logo-motion-00.b64 tmp/logo-motion-01.b64 tmp/logo-motion-02.b64 | tr -d '\r\n ' | base64 -d > assets/media/pai-logo-motion.mp4
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/media/pai-logo-motion.mp4')
+          data=p.read_bytes()
+          if len(data) < 10000 or b'ftyp' not in data[:64]:
+              raise SystemExit('invalid reconstructed MP4')
+          print(f'validated MP4: {len(data)} bytes')
+          PY
+
+          cat > assets/css/home-logo.css <<'CSS'
+          /* Homepage PAI logo motion. Kept isolated from the stable site CSS. */
+          .home-hero .hero-art.pai-logo-motion-host{display:flex;align-items:center;justify-content:center}
+          .pai-logo-motion{display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:transparent}
+          @media(max-width:768px){
+            .home-hero .hero-art.pai-logo-motion-host{opacity:.58}
+          }
+          CSS
+
+          cat > assets/js/home-logo.js <<'JS'
+          (function(){
+            'use strict';
+
+            const normalizedPath=()=>{
+              let path=location.pathname||'/';
+              if(location.hostname==='tjpai.github.io'&&path.startsWith('/pai-web')) path=path.slice('/pai-web'.length)||'/';
+              return path;
+            };
+            const isHome=()=>['/','/index.html','/en/','/en/index.html'].includes(normalizedPath());
+            const mediaUrl=()=>{
+              const prefix=location.hostname==='tjpai.github.io'?'/pai-web':'';
+              return `${prefix}/assets/media/pai-logo-motion.mp4`;
+            };
+
+            let scheduled=false;
+            const init=()=>{
+              scheduled=false;
+              if(!isHome()) return;
+              const host=document.querySelector('.home-hero .hero-art');
+              if(!host||host.dataset.paiLogoMotion==='1') return;
+              host.dataset.paiLogoMotion='1';
+              host.classList.add('pai-logo-motion-host');
+
+              const video=document.createElement('video');
+              video.className='pai-logo-motion';
+              video.muted=true;
+              video.defaultMuted=true;
+              video.playsInline=true;
+              video.setAttribute('playsinline','');
+              video.setAttribute('webkit-playsinline','');
+              video.preload='auto';
+              video.setAttribute('aria-hidden','true');
+              video.src=mediaUrl();
+
+              const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+              if(reduced){
+                video.autoplay=false;
+                video.addEventListener('loadedmetadata',()=>{
+                  try{ video.currentTime=Math.max(0,(video.duration||5)-0.06); }catch(_e){}
+                },{once:true});
+              }else{
+                video.autoplay=true;
+                video.addEventListener('canplay',()=>{ video.play().catch(()=>{}); },{once:true});
+              }
+
+              host.replaceChildren(video);
+            };
+            const schedule=()=>{
+              if(scheduled) return;
+              scheduled=true;
+              requestAnimationFrame(init);
+            };
+
+            if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',schedule,{once:true});
+            else schedule();
+            new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});
+            addEventListener('popstate',schedule);
+          })();
+          JS
+
+          python - <<'PY'
+          from pathlib import Path
+
+          targets=[
+              (Path('index.html'),'assets/css/home-logo.css?v=20260920-01','assets/js/home-logo.js?v=20260920-01'),
+              (Path('en/index.html'),'../assets/css/home-logo.css?v=20260920-01','../assets/js/home-logo.js?v=20260920-01'),
+          ]
+          for path,css,js in targets:
+              text=path.read_text()
+              if css not in text:
+                  marker='<link rel="icon" type="image/svg+xml"'
+                  text=text.replace(marker,f'<link rel="stylesheet" href="{css}">'+marker,1)
+              if js not in text:
+                  text=text.replace('</body>',f'<script src="{js}"></script></body>',1)
+              path.write_text(text)
+          PY
+
+          rm -rf tmp
+          rm -f .github/workflows/finalize-home-logo.yml
+
+      - name: Commit finalized homepage logo
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'feat: add homepage PAI logo animation'
+          git push origin HEAD:main
