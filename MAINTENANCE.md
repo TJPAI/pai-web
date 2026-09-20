@@ -32,8 +32,9 @@ Faculty photos currently referenced from the temporary Tongji site must be copie
 
 ### Homepage logo motion
 - The verified 5-second homepage logo animation is `assets/media/pai-logo-motion.mp4`.
-- `assets/js/home-logo.js` mounts it only into the homepage `.hero-art` region on Chinese and English pages.
-- Keep it muted, `playsinline`, non-looping, and preserve the existing static hero artwork as the fallback until the video is ready.
+- `assets/js/home-logo.js` mounts it into the centered intro whitespace below the Header on Chinese and English homepages.
+- Keep it muted, `playsinline`, non-looping; after completion it holds briefly and then fades away without shifting the page layout.
+- The Header uses the final static PAI mark while retaining `Tongji University` beneath it.
 - Do not move the animation into the shared navigation/page-swipe code unless there is a concrete integration need.
 
 ## Validation
