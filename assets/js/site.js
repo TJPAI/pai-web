@@ -1003,7 +1003,8 @@
     const sync=()=>{
       const en=normalizedPath().startsWith('/en/');
       const data=menuData();
-      wheel.innerHTML=data.map(([label,href],i)=>'<a href="'+root(href)+'" style="--orbit-i:'+i+'"><span>'+label+'</span></a>').join('');
+      orbit.style.setProperty('--orbit-count',String(data.length));
+      wheel.innerHTML=data.map(([label,href],i)=>'<a href="'+root(href)+'" style="--orbit-i:'+i+'"><span>'+Array.from(label).map((ch,j)=>'<i style="--char-i:'+j+';--char-n:'+label.length+'">'+ch+'</i>').join('')+'</span></a>').join('');
       wheel.setAttribute('aria-label',en?'Quick navigation':'快捷导航');
       toggle.setAttribute('aria-label',orbit.classList.contains('open')?(en?'Close quick menu':'关闭快捷菜单'):(en?'Open quick menu':'打开快捷菜单'));
     };
