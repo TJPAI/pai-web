@@ -1,4 +1,39 @@
 /* Homepage PAI logo motion; isolated from stable navigation/page-swipe CSS. */
-.home-hero .hero-art.pai-logo-motion-host{display:flex;align-items:center;justify-content:center}
-.home-hero .pai-logo-motion{display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:transparent}
-@media(max-width:768px){.home-hero .hero-art.pai-logo-motion-host{opacity:.72}}
+.home-hero{position:relative}
+.home-hero .hero-grid{position:static}
+.home-hero .hero-art.pai-logo-motion-host{
+  position:absolute;
+  left:50%;
+  top:74px;
+  right:auto;
+  bottom:auto;
+  width:220px;
+  height:220px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transform:translateX(-50%);
+  opacity:1;
+  pointer-events:none;
+  z-index:2;
+  transition:opacity .6s ease;
+}
+.home-hero .pai-logo-motion{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  background:transparent;
+}
+.home-hero .hero-art.pai-logo-motion-host.pai-logo-motion-fade{opacity:0}
+.home-hero .hero-art.pai-logo-motion-host.pai-logo-motion-hidden{visibility:hidden}
+@media(min-width:769px){
+  .home-hero .hero-art.pai-logo-motion-host{top:58px;width:240px;height:240px}
+}
+@media(max-width:768px){
+  .home-hero .hero-art.pai-logo-motion-host{top:52px;width:min(52vw,210px);height:min(52vw,210px)}
+}
+@media(max-width:390px){
+  .home-hero .hero-art.pai-logo-motion-host{top:46px;width:min(54vw,196px);height:min(54vw,196px)}
+}
