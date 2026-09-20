@@ -12,9 +12,17 @@ jobs:
       - uses: actions/checkout@v4
       - name: Decode corrected share image
         run: |
-          cat tmp/share-q50-00.b64 tmp/share-q50-01.b64 tmp/share-q50-02.b64 tmp/share-q50-03.b64 tmp/share-q50-04.b64 tmp/share-q50-05.b64 tmp/share-q50-06.b64 | base64 -d > assets/images/social/pai-share-v4.jpg
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          parts=[Path(f'tmp/share-q50-{i:02d}.b64').read_text() for i in range(7)]
+          raw=base64.b64decode(''.join(parts), validate=False)
+          Path('assets/images/social/pai-share-v4.jpg').write_bytes(raw)
+          print('decoded bytes:', len(raw))
+          assert len(raw)==36626, len(raw)
+          assert raw[:2]==b'\xff\xd8' and raw[-2:]==b'\xff\xd9'
+          PY
           file assets/images/social/pai-share-v4.jpg
-          test "$(wc -c < assets/images/social/pai-share-v4.jpg)" -eq 36626
       - name: Validate site
         run: |
           python tools/validate.py
