@@ -16,9 +16,9 @@ jobs:
           from pathlib import Path
           import base64
           paths = [
-              'tools/sharechunks/0b.txt', 'tools/sharechunks/1.txt',
-              'tools/sharechunks/2b.txt', 'tools/sharechunks/3.txt',
-              'tools/sharechunks/4.txt'
+              'tools/sharechunks/0b.txt', 'tools/sharechunks/0c.txt',
+              'tools/sharechunks/1.txt', 'tools/sharechunks/2b.txt',
+              'tools/sharechunks/3.txt', 'tools/sharechunks/4.txt'
           ]
           text = ''.join(Path(p).read_text(encoding='utf-8') for p in paths)
           alphabet = set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=')
