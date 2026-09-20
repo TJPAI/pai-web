@@ -35,7 +35,7 @@
 }
 .home-hero .hero-art.pai-logo-motion-host.pai-logo-motion-hidden{visibility:hidden}
 @media(min-width:769px){
-  .home-hero .hero-art.pai-logo-motion-host{top:54px;width:210px;height:210px}
+  .home-hero .hero-art.pai-logo-motion-host{left:70%;top:54px;width:200px;height:200px}
 }
 @media(max-width:768px){
   .home-hero .hero-art.pai-logo-motion-host{top:34px;width:160px;height:160px}
