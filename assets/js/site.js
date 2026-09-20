@@ -1040,20 +1040,17 @@
 
     const menuData=()=>{
       const en=normalizedPath().startsWith('/en/');
-      return en?[
-        ['Home','/en/'],['About','/en/about.html'],['People','/en/team.html'],['Research','/en/research.html'],
-        ['Publications','/en/publications.html'],['Join','/en/join.html'],['Contact','/en/contact.html'],['中文',counterpartWithContext(normalizedPath())]
-      ]:[
-        ['首页','/'],['关于','/about.html'],['团队','/team.html'],['研究','/research.html'],
-        ['成果','/publications.html'],['加入','/join.html'],['联系','/contact.html'],['EN',counterpartWithContext(normalizedPath())]
-      ];
+      const lang=en?'en':'zh';
+      const languageLabel=en?'中文':'EN';
+      return [...navItems(lang),[languageLabel,counterpartWithContext(normalizedPath())]];
     };
 
     const sync=()=>{
       const en=normalizedPath().startsWith('/en/');
       const data=menuData();
+      const step=360/data.length;
       wheel.innerHTML=data.map(([label,href],i)=>
-        `<a class="pai-orbit-item" href="${root(href)}" style="--item-angle:${i*45}deg"><span>${label}</span></a>`
+        `<a class="pai-orbit-item" href="${root(href)}" style="--item-angle:${i*step}deg"><span>${label}</span></a>`
       ).join('');
       wheel.setAttribute('aria-label',en?'Quick navigation':'快捷导航');
       toggle.setAttribute('aria-label',orbit.classList.contains('open')?(en?'Close quick menu':'关闭快捷菜单'):(en?'Open quick menu':'打开快捷菜单'));
