@@ -16,7 +16,7 @@ jobs:
           from pathlib import Path
           import base64
           paths = [
-              'tools/sharechunks/0.txt', 'tools/sharechunks/1.txt',
+              'tools/sharechunks/0b.txt', 'tools/sharechunks/1.txt',
               'tools/sharechunks/2b.txt', 'tools/sharechunks/3.txt',
               'tools/sharechunks/4.txt'
           ]
