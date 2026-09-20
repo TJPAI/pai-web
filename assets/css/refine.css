@@ -6,8 +6,8 @@
 /* Header brand: keep the accessible PAI text in the DOM, render the final static mark visually. */
 .site-header .brand strong{
   display:block;
-  width:74px;
-  height:34px;
+  width:70px;
+  height:32px;
   font-size:0;
   color:transparent;
   background-repeat:no-repeat;
@@ -17,7 +17,7 @@
 }
 .site-header .brand span{margin-top:4px}
 @media(max-width:768px){
-  .site-header .brand strong{width:76px;height:35px}
+  .site-header .brand strong{width:70px;height:32px}
   .site-header .brand span{margin-top:3px}
 }
 
