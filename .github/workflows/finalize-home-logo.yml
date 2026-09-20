@@ -23,11 +23,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p assets/media
-          cat tmp/logo-motion-00.b64 tmp/logo-motion-01.b64 tmp/logo-motion-02.b64 | tr -d '\r\n ' | base64 -d > assets/media/pai-logo-motion.mp4
           python - <<'PY'
           from pathlib import Path
+          import base64
+          alphabet=set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=')
+          text=''.join(Path(p).read_text() for p in [
+              'tmp/logo-motion-00.b64','tmp/logo-motion-01.b64','tmp/logo-motion-02.b64'
+          ])
+          clean=''.join(ch for ch in text if ch in alphabet)
+          clean += '=' * (-len(clean) % 4)
+          data=base64.b64decode(clean, validate=False)
           p=Path('assets/media/pai-logo-motion.mp4')
-          data=p.read_bytes()
+          p.write_bytes(data)
           if len(data) < 10000 or b'ftyp' not in data[:64]:
               raise SystemExit('invalid reconstructed MP4')
           print(f'validated MP4: {len(data)} bytes')
