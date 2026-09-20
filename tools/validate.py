@@ -374,7 +374,7 @@ for rel in paired:
             ('site.webmanifest','web manifest'),('class="skip-link"','skip link'),('id="main-content"','main landmark target')
         ]:
             if token not in text: errors.append(f'{candidate}: missing {label}')
-if not (ROOT/'assets/images/social/pai-share-v3.jpg').exists(): errors.append('missing social share image')
+if not (ROOT/'assets/images/social/pai-share-v4.jpg').exists(): errors.append('missing social share image')
 for rel in ('assets/icons/favicon.svg','assets/icons/favicon-32.png','assets/icons/apple-touch-icon.png','assets/icons/icon-192.png','assets/icons/icon-512.png','site.webmanifest'):
     if not (ROOT/rel).exists(): errors.append(f'missing brand asset: {rel}')
 
@@ -384,8 +384,8 @@ for rel in ('assets/icons/favicon.svg','assets/icons/favicon-32.png','assets/ico
 for html,text in html_text.items():
     rel=str(Path(html).relative_to(ROOT))
     if 'pai-share.png' in text:
-        errors.append(f'{rel}: legacy social preview image reference remains; use pai-share-v3.jpg')
-    if 'property="og:image"' in text and 'pai-share-v3.jpg' not in text:
+        errors.append(f'{rel}: legacy social preview image reference remains; use pai-share-v4.jpg')
+    if 'property="og:image"' in text and 'pai-share-v4.jpg' not in text:
         errors.append(f'{rel}: og:image must use the compact social preview image')
 
 if errors:
