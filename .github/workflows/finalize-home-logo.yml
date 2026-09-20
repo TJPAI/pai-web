@@ -18,69 +18,102 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Restore final MP4 and wire homepage
+      - name: Restore verified MP4 and wire homepage
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p assets/media
+          git fetch origin tmp/home-logo-complete-upload:refs/remotes/origin/tmp/home-logo-complete-upload
+          mkdir -p assets/media assets/css assets/js
+
           python - <<'PY'
           from pathlib import Path
-          import base64
+          import base64, hashlib, subprocess
 
-          alphabet=set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=')
-          text=''.join(Path(p).read_text() for p in [
-              'tmp/logo-motion-00.b64','tmp/logo-motion-01.b64','tmp/logo-motion-02.b64'
-          ])
-          clean=''.join(ch for ch in text if ch in alphabet)
-          if len(clean) % 4 == 1:
-              clean=clean[:-1]
-          clean += '=' * (-len(clean) % 4)
-          data=base64.b64decode(clean, validate=False)
+          ref='origin/tmp/home-logo-complete-upload'
+          def show(path):
+              return subprocess.check_output(['git','show',f'{ref}:{path}'], text=True).strip()
+          def git_blob_sha(text):
+              b=text.encode('ascii')
+              return hashlib.sha1(f'blob {len(b)}\0'.encode()+b).hexdigest()
 
-          def atoms(buf):
-              out=[]
-              pos=0
-              total=len(buf)
-              while pos+8 <= total:
-                  size=int.from_bytes(buf[pos:pos+4],'big')
-                  typ=buf[pos+4:pos+8].decode('latin1')
-                  header=8
-                  if size==1:
-                      if pos+16>total: raise ValueError('truncated extended atom')
-                      size=int.from_bytes(buf[pos+8:pos+16],'big')
-                      header=16
-                  elif size==0:
-                      size=total-pos
-                  if size<header or pos+size>total:
-                      raise ValueError(f'invalid atom {typ!r} at {pos} size={size}')
-                  out.append((typ,size))
-                  pos+=size
-              if pos != total:
-                  raise ValueError(f'trailing bytes: {total-pos}')
-              return out
+          # Six staged segments are exact. Segment 02 is known to be exactly one
+          # base64 character short; repair it by matching immutable Git blob SHAs
+          # for its eight 2 KB source slices.
+          seg0=show('tmp/final-logo-00.b64')
+          seg1=show('tmp/final-logo-01.b64')
+          broken=show('tmp/final-logo-02.b64')
+          seg3=show('tmp/final-logo-03.b64')
+          seg4=show('tmp/final-logo-04.b64')
+          seg5=show('tmp/final-logo-05.b64')
+          seg6=show('tmp/final-logo-06.b64')
 
-          atom_list=atoms(data)
-          types=[t for t,_ in atom_list]
-          if len(data)<10000 or not types or types[0]!='ftyp' or 'moov' not in types or 'mdat' not in types:
-              raise SystemExit(f'invalid reconstructed MP4 atoms: {atom_list}')
-          p=Path('assets/media/pai-logo-motion.mp4')
-          p.write_bytes(data)
-          print(f'validated MP4: {len(data)} bytes; atoms={atom_list}')
+          expected_chunks=[
+              '70a461fa12121aee524aef9b5927c76ed4f53825',
+              '7e356fd7fd0492eed1611b59e878e1c6f8db5d60',
+              'a7eb42ef7f3932498a915f84f573ecb1258acac4',
+              'b9d06fa30f15f5ee982f63f743b6df5dea303616',
+              '8ca929c76c3800ee9c67e88c8820c4068cb0a2ab',
+              'da1561c27866d4e293bcc3cc0f4787886216e9b7',
+              '1231f6398dd2064d90fab5d7777179bc29287ec2',
+              '8d94dadb2be8a380d20131b7e57f830ec35500a8',
+          ]
+          if len(broken)!=15999:
+              raise SystemExit(f'unexpected broken segment length: {len(broken)}')
+
+          bad_index=None
+          for i,sha in enumerate(expected_chunks):
+              start=i*2000
+              if len(broken)>=start+2000 and git_blob_sha(broken[start:start+2000])==sha:
+                  continue
+              bad_index=i
+              break
+          if bad_index is None:
+              raise SystemExit('could not locate missing character')
+
+          start=bad_index*2000
+          prefix=broken[:start]
+          damaged=broken[start:start+1999]
+          suffix=broken[start+1999:]
+          alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+          repaired_chunk=None
+          for pos in range(2000):
+              left=damaged[:pos]
+              right=damaged[pos:]
+              for ch in alphabet:
+                  candidate=left+ch+right
+                  if git_blob_sha(candidate)==expected_chunks[bad_index]:
+                      repaired_chunk=candidate
+                      break
+              if repaired_chunk is not None:
+                  break
+          if repaired_chunk is None:
+              raise SystemExit('unable to repair missing base64 character')
+
+          seg2=prefix+repaired_chunk+suffix
+          if len(seg2)!=16000 or git_blob_sha(seg2)!='828ca1d98674a876b23fd152e0e25a465c93b8d4':
+              raise SystemExit('repaired segment failed full Git blob verification')
+
+          encoded=seg0+seg1+seg2+seg3+seg4+seg5+seg6
+          data=base64.b64decode(encoded, validate=True)
+          digest=hashlib.sha256(data).hexdigest()
+          if digest!='4a6686f46ce83314dd65a7a6caa7e32f7d4d77dd07447dfb7789cb0e68589707':
+              raise SystemExit(f'final MP4 SHA256 mismatch: {digest}')
+          if len(data)!=68343 or b'ftyp' not in data[:64] or b'moov' not in data[:4096] or b'mdat' not in data:
+              raise SystemExit('final MP4 structural verification failed')
+          Path('assets/media/pai-logo-motion.mp4').write_bytes(data)
+          print(f'Verified homepage MP4: {len(data)} bytes sha256={digest}')
           PY
 
           cat > assets/css/home-logo.css <<'CSS'
-          /* Homepage PAI logo motion. Kept isolated from the stable site CSS. */
+          /* Homepage PAI logo motion; isolated from stable navigation/page-swipe CSS. */
           .home-hero .hero-art.pai-logo-motion-host{display:flex;align-items:center;justify-content:center}
-          .pai-logo-motion{display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:transparent}
-          @media(max-width:768px){
-            .home-hero .hero-art.pai-logo-motion-host{opacity:.72}
-          }
+          .home-hero .pai-logo-motion{display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:transparent}
+          @media(max-width:768px){.home-hero .hero-art.pai-logo-motion-host{opacity:.72}}
           CSS
 
           cat > assets/js/home-logo.js <<'JS'
           (function(){
             'use strict';
-
             const normalizedPath=()=>{
               let path=location.pathname||'/';
               if(location.hostname==='tjpai.github.io'&&path.startsWith('/pai-web')) path=path.slice('/pai-web'.length)||'/';
@@ -89,9 +122,8 @@ jobs:
             const isHome=()=>['/','/index.html','/en/','/en/index.html'].includes(normalizedPath());
             const mediaUrl=()=>{
               const prefix=location.hostname==='tjpai.github.io'?'/pai-web':'';
-              return `${prefix}/assets/media/pai-logo-motion.mp4`;
+              return `${prefix}/assets/media/pai-logo-motion.mp4?v=20260920-01`;
             };
-
             let scheduled=false;
             const init=()=>{
               scheduled=false;
@@ -114,23 +146,23 @@ jobs:
 
               const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
               if(reduced){
-                video.autoplay=false;
                 video.addEventListener('loadedmetadata',()=>{
-                  try{ video.currentTime=Math.max(0,(video.duration||5)-0.06); }catch(_e){}
+                  try{video.currentTime=Math.max(0,(video.duration||5)-0.04);}catch(_e){}
                 },{once:true});
+                video.addEventListener('seeked',()=>{host.replaceChildren(video);},{once:true});
               }else{
                 video.autoplay=true;
-                video.addEventListener('canplay',()=>{ video.play().catch(()=>{}); },{once:true});
+                video.addEventListener('canplay',()=>{
+                  host.replaceChildren(video);
+                  video.play().catch(()=>{});
+                },{once:true});
               }
-
-              host.replaceChildren(video);
             };
             const schedule=()=>{
               if(scheduled) return;
               scheduled=true;
               requestAnimationFrame(init);
             };
-
             if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',schedule,{once:true});
             else schedule();
             new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});
@@ -140,7 +172,6 @@ jobs:
 
           python - <<'PY'
           from pathlib import Path
-
           targets=[
               (Path('index.html'),'assets/css/home-logo.css?v=20260920-01','assets/js/home-logo.js?v=20260920-01'),
               (Path('en/index.html'),'../assets/css/home-logo.css?v=20260920-01','../assets/js/home-logo.js?v=20260920-01'),
@@ -149,14 +180,21 @@ jobs:
               text=path.read_text()
               if css not in text:
                   marker='<link rel="icon" type="image/svg+xml"'
+                  if marker not in text: raise SystemExit(f'CSS insertion marker missing in {path}')
                   text=text.replace(marker,f'<link rel="stylesheet" href="{css}">'+marker,1)
               if js not in text:
+                  if '</body>' not in text: raise SystemExit(f'JS insertion marker missing in {path}')
                   text=text.replace('</body>',f'<script src="{js}"></script></body>',1)
               path.write_text(text)
           PY
 
           rm -rf tmp
           rm -f .github/workflows/finalize-home-logo.yml
+
+          python tools/validate.py
+          python tools/validate_share_metadata.py
+          node --check assets/js/site.js
+          node --check assets/js/home-logo.js
 
       - name: Commit finalized homepage logo
         shell: bash
@@ -167,3 +205,4 @@ jobs:
           git add -A
           git commit -m 'feat: add homepage PAI logo animation'
           git push origin HEAD:main
+          git push origin --delete tmp/home-logo-complete-upload || true
