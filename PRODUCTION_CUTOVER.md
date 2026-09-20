@@ -4,6 +4,32 @@ Target production domain: `https://ai.tongji.edu.cn/`
 
 This runbook is intentionally split into three phases. Do not apply production-only SEO changes while the GitHub Pages site is still being used as Preview.
 
+## Current production-site observations — verified 2026-09-21
+
+The public `https://ai.tongji.edu.cn/` site is still serving the legacy PAI website.
+
+Observed from the public site:
+
+- the site is effectively organized as a long single-page presentation of About / Research Team / research content rather than the new bilingual multi-page structure;
+- legacy content still exposes image resources under the older `/new_web/image/` path family;
+- the page still shows the José Luis Cordeiro lecture announcement for 2026-09-14, so the production copy has not yet been replaced by the new frozen candidate;
+- the public page still reports `1 部学术专著（剑桥大学出版社，2024）`, while the new site uses the newer verified core-team aggregate of two academic monographs;
+- the current public site can therefore be treated as the rollback source until the new release is fully verified.
+
+These observations do **not** reveal the server-side deployment mechanism. Do not assume Nginx, Apache, FTP/SFTP, a CMS, or a reverse proxy solely from the public page.
+
+### Five deployment facts to obtain from the Tongji-side administrator
+
+Only these five answers are needed before the cutover can be executed safely:
+
+1. **Deployment target** — what exact server path, site root, CMS slot, or publishing mechanism currently serves `ai.tongji.edu.cn`?
+2. **Write method** — should the release be uploaded by SFTP/SSH, a school publishing console/CMS, a Git pull, or handed to an administrator for deployment?
+3. **Web-server routing** — who can configure the real 404 document and any required legacy redirects?
+4. **TLS / domain ownership** — who controls the HTTPS certificate and DNS / reverse-proxy binding for `ai.tongji.edu.cn`?
+5. **Rollback method** — what exact operation restores the current legacy site, and where is its last known-good copy kept?
+
+Do not change DNS or production routing until these five items are answered and the rollback operation is known.
+
 ## Phase A — Safe to complete before the cutover window
 
 - [x] Core faculty images are local under `assets/images/people/`.
@@ -12,10 +38,11 @@ This runbook is intentionally split into three phases. Do not apply production-o
 - [x] Publication data is local and validated.
 - [x] Preview blocks indexing through `robots.txt` and runtime `noindex,nofollow` behavior.
 - [x] Normal Pages validation passes before deployment.
+- [x] Public production-site structure and migration unknowns were rechecked on 2026-09-21.
 - [ ] Recheck the final content freeze: homepage, About, People, Research, Publications, Join, Contact, and all faculty profiles in both languages.
 - [ ] Recheck all external links that are meant to remain on the production site.
 - [ ] Confirm official ICP / public-security filing values, if they are required and available. Do not add placeholders.
-- [ ] Confirm who controls the production web server / reverse proxy and who can configure `ai.tongji.edu.cn` during the cutover window.
+- [ ] Obtain the five Tongji-side deployment facts listed above.
 - [ ] Confirm the rollback path to the existing site before changing the production server.
 
 ## Phase B — Execute only in the actual production cutover window
@@ -64,12 +91,13 @@ Both must pass. Do not weaken the validators to force a pass.
 
 ### 5. Deploy the frozen production files to ai.tongji.edu.cn
 
-- [ ] Publish the exact frozen release content to the production server.
+- [ ] Publish the exact frozen release content using the confirmed Tongji-side deployment mechanism.
 - [ ] Preserve relative asset paths and directory structure.
 - [ ] Do not introduce a second copy of site CSS / JS outside the repository.
 - [ ] Configure `404.html` as the actual HTTP 404 error document.
 - [ ] Keep HTTPS enabled and confirm the certificate is valid for `ai.tongji.edu.cn`.
 - [ ] If important legacy URLs exist, configure only verified redirects that are actually needed.
+- [ ] Do not delete the legacy site backup until Phase C is complete.
 
 ## Phase C — Immediate post-cutover verification
 
@@ -110,6 +138,7 @@ Verify on a real iPhone, not only desktop responsive mode:
 - [ ] Three research directions use the approved wording.
 - [ ] Faculty titles and bios match the content freeze.
 - [ ] Publication / monograph titles use verified official wording and authorship.
+- [ ] The old 2026-09-14 lecture notice is no longer the production homepage content unless intentionally republished elsewhere.
 
 ## Release completion
 
