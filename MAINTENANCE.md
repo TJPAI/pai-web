@@ -35,6 +35,7 @@ Faculty photos currently referenced from the temporary Tongji site must be copie
 - `assets/js/home-logo.js` mounts it into the centered intro whitespace below the Header on Chinese and English homepages.
 - Keep it muted, `playsinline`, non-looping; after completion it holds briefly and then fades away without shifting the page layout.
 - The Header uses the final static PAI mark while retaining `Tongji University` beneath it.
+- Whenever `home-logo.css` or `home-logo.js` changes, bump the corresponding query-string cache key in both `index.html` and `en/index.html` so mobile Safari does not keep the previous motion behavior.
 - Do not move the animation into the shared navigation/page-swipe code unless there is a concrete integration need.
 
 ## Validation
