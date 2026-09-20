@@ -1056,8 +1056,8 @@
         const chars=Array.from(label);
         const ascii=chars.every(ch=>/[\x00-\x7F]/.test(ch));
         const charStep=ascii
-          ? (chars.length<=4?4.2:Math.min(3,22/Math.max(1,chars.length-1)))
-          : 5.4;
+          ? (chars.length<=4?5.4:Math.min(4.2,36/Math.max(1,chars.length-1)))
+          : (chars.length<=2?8.2:8.8);
         markup.push(`<a class="pai-orbit-item" aria-label="${label}" href="${root(href)}" style="--item-angle:${center}deg"><span class="pai-orbit-sr">${label}</span></a>`);
         chars.forEach((ch,j)=>{
           const offset=(j-(chars.length-1)/2)*charStep;
