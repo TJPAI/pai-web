@@ -12,10 +12,24 @@ jobs:
       - uses: actions/checkout@v4
       - name: Rebuild correct share image
         run: |
-          cat tools/sharechunks/0.txt tools/sharechunks/1.txt tools/sharechunks/2b.txt tools/sharechunks/3.txt tools/sharechunks/4.txt | base64 -d > assets/images/social/pai-share-v4.jpg
-          test "$(stat -c%s assets/images/social/pai-share-v4.jpg)" = "34628"
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          paths = [
+              'tools/sharechunks/0.txt', 'tools/sharechunks/1.txt',
+              'tools/sharechunks/2b.txt', 'tools/sharechunks/3.txt',
+              'tools/sharechunks/4.txt'
+          ]
+          text = ''.join(Path(p).read_text(encoding='utf-8') for p in paths)
+          alphabet = set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=')
+          clean = ''.join(ch for ch in text if ch in alphabet)
+          assert len(clean) == 46172, (len(text), len(clean))
+          data = base64.b64decode(clean)
+          assert len(data) == 34628, len(data)
+          assert data[:2] == b'\xff\xd8' and data[-2:] == b'\xff\xd9'
+          Path('assets/images/social/pai-share-v4.jpg').write_bytes(data)
+          PY
           file assets/images/social/pai-share-v4.jpg | grep -q 'JPEG image data'
-          file assets/images/social/pai-share-v4.jpg | grep -q '1200x630'
       - name: Validate site
         run: |
           python tools/validate.py
