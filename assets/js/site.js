@@ -1101,6 +1101,7 @@
       if(!orbit.classList.contains('open')) return;
       dragging=true;
       moved=false;
+      orbit.classList.add('dragging');
       startAngle=pointAngle(e);
       startRotation=rotation;
       if(e.pointerId!==undefined) wheel.setPointerCapture?.(e.pointerId);
@@ -1112,7 +1113,7 @@
       rotation=startRotation+delta;
       paint();
     };
-    const end=()=>{ dragging=false; };
+    const end=()=>{ dragging=false; orbit.classList.remove('dragging'); };
 
     toggle.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();setOpen(!orbit.classList.contains('open'));});
 
