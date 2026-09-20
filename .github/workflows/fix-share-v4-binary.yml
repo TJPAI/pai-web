@@ -1,0 +1,30 @@
+name: Fix share image v4 binary
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild correct share image
+        run: |
+          cat tools/sharechunks/0.txt tools/sharechunks/1.txt tools/sharechunks/2b.txt tools/sharechunks/3.txt tools/sharechunks/4.txt | base64 -d > assets/images/social/pai-share-v4.jpg
+          test "$(stat -c%s assets/images/social/pai-share-v4.jpg)" = "34628"
+          file assets/images/social/pai-share-v4.jpg | grep -q 'JPEG image data'
+          file assets/images/social/pai-share-v4.jpg | grep -q '1200x630'
+      - name: Validate site
+        run: |
+          python tools/validate.py
+          python tools/validate_share_metadata.py
+          node --check assets/js/site.js
+      - name: Commit corrected image
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add assets/images/social/pai-share-v4.jpg
+          git diff --cached --quiet || git commit -m "fix: replace PAI share image v4 with correct artwork"
+          git push
