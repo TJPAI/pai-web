@@ -18,19 +18,38 @@
     if(!host||host.dataset.paiLogoMotion==='1') return;
     host.dataset.paiLogoMotion='1';
     host.classList.add('pai-logo-motion-host');
-    const video=document.createElement('video');
-    video.className='pai-logo-motion';
-    video.muted=true; video.defaultMuted=true; video.playsInline=true;
-    video.setAttribute('playsinline',''); video.setAttribute('webkit-playsinline','');
-    video.preload='auto'; video.setAttribute('aria-hidden','true'); video.src=mediaUrl();
+
     const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(reduced){
-      video.addEventListener('loadedmetadata',()=>{try{video.currentTime=Math.max(0,(video.duration||5)-0.04);}catch(_e){}},{once:true});
-      video.addEventListener('seeked',()=>{host.replaceChildren(video);},{once:true});
-    }else{
-      video.autoplay=true;
-      video.addEventListener('canplay',()=>{host.replaceChildren(video);video.play().catch(()=>{});},{once:true});
+      host.replaceChildren();
+      host.classList.add('pai-logo-motion-hidden');
+      return;
     }
+
+    const video=document.createElement('video');
+    video.className='pai-logo-motion';
+    video.muted=true;
+    video.defaultMuted=true;
+    video.playsInline=true;
+    video.setAttribute('playsinline','');
+    video.setAttribute('webkit-playsinline','');
+    video.preload='auto';
+    video.setAttribute('aria-hidden','true');
+    video.autoplay=true;
+    video.src=mediaUrl();
+
+    const fadeAway=()=>{
+      window.setTimeout(()=>{
+        host.classList.add('pai-logo-motion-fade');
+        window.setTimeout(()=>host.classList.add('pai-logo-motion-hidden'),650);
+      },800);
+    };
+
+    video.addEventListener('ended',fadeAway,{once:true});
+    video.addEventListener('canplay',()=>{
+      host.replaceChildren(video);
+      video.play().catch(()=>{});
+    },{once:true});
   };
   const schedule=()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(init);};
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',schedule,{once:true}); else schedule();
