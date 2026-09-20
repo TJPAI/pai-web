@@ -181,7 +181,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #318AF5;outline-offset:3p
 
 
 /* PAI orbit quick menu — compact wheel grows from its fixed center; labels follow the rim */
-.pai-orbit{position:fixed;inset:0;z-index:1200;pointer-events:none;--orbit-count:7;--orbit-size:min(68vw,286px);--orbit-x:50%;--orbit-y:62%}
+.pai-orbit{position:fixed;inset:0;z-index:1200;pointer-events:none;--orbit-count:7;--orbit-size:min(56vw,238px);--orbit-x:50%;--orbit-y:70%}
 .pai-orbit-backdrop{position:absolute;inset:0;background:rgba(15,18,24,.09);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);opacity:0;transition:opacity .24s ease;pointer-events:none}
 .pai-orbit-wheel{position:absolute;left:var(--orbit-x);top:var(--orbit-y);width:var(--orbit-size);height:var(--orbit-size);border-radius:50%;background:rgba(255,255,255,.97);box-shadow:0 18px 54px rgba(20,24,32,.16);opacity:0;transform:translate(-50%,-50%) scale(.20) rotate(var(--orbit-rotation,0deg));transform-origin:50% 50%;transition:opacity .18s ease,transform .36s cubic-bezier(.16,.84,.2,1);pointer-events:none;touch-action:none;will-change:transform}
 .pai-orbit-wheel:before{content:"";position:absolute;inset:31%;border:1px solid rgba(23,26,31,.065);border-radius:50%}
@@ -197,6 +197,6 @@ a:focus-visible,button:focus-visible{outline:2px solid #318AF5;outline-offset:3p
 .pai-orbit.open .pai-orbit-toggle{box-shadow:0 4px 14px rgba(20,24,32,.08)}
 .pai-orbit.open .pai-orbit-toggle span{transform:translate(-50%,-50%) rotate(45deg)}
 .pai-orbit.open .pai-orbit-toggle span:after{transform:translate(-50%,-50%) rotate(90deg)}
-@media(min-width:769px){.pai-orbit{--orbit-size:300px;--orbit-y:58%}.pai-orbit-toggle{width:62px;height:62px}}
-@media(max-width:390px){.pai-orbit{--orbit-size:min(70vw,270px)}.pai-orbit-wheel a{font-size:11px}}
+@media(min-width:769px){.pai-orbit{--orbit-size:270px;--orbit-y:66%}.pai-orbit-toggle{width:62px;height:62px}}
+@media(max-width:390px){.pai-orbit{--orbit-size:min(58vw,232px)}.pai-orbit-wheel a{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.pai-orbit *{transition:none!important}}
