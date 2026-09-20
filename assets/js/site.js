@@ -1053,9 +1053,9 @@
       const layout=data.map(([label,href])=>{
         const chars=Array.from(label);
         const ascii=chars.every(ch=>/[\x00-\x7F]/.test(ch));
-        const charStep=ascii
-          ? (chars.length<=4?5.0:Math.min(3.6,32/Math.max(1,chars.length-1)))
-          : (chars.length<=2?7.8:7.6);
+        /* One fixed intra-label spacing rule per script. Menu length no longer
+           changes character spacing; only the label's total arc width changes. */
+        const charStep=ascii?3.6:7.6;
         /* Approximate the visible angular width of the end glyphs as well as
            the centre-to-centre character spacing. This lets us equalise the
            actual blank arc between neighbouring labels, not their centres. */
