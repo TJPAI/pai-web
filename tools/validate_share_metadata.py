@@ -3,7 +3,7 @@ from pathlib import Path
 import re, sys
 
 ROOT = Path(__file__).resolve().parents[1]
-SHARE_IMAGE = 'https://tjpai.github.io/pai-web/assets/images/social/pai-share-v3.jpg'
+SHARE_IMAGE = 'https://tjpai.github.io/pai-web/assets/images/social/pai-share-v4.jpg'
 errors = []
 checked = []
 
