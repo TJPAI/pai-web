@@ -1042,7 +1042,8 @@
       const en=normalizedPath().startsWith('/en/');
       const lang=en?'en':'zh';
       const languageLabel=en?'中文':'EN';
-      return [...navItems(lang),[languageLabel,counterpartWithContext(normalizedPath())]];
+      const home=[en?'Home':'首页',en?'/en/':'/'];
+      return [home,...navItems(lang),[languageLabel,counterpartWithContext(normalizedPath())]];
     };
 
     const sync=()=>{
