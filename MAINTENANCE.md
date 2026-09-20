@@ -34,11 +34,18 @@ The canonical static PAI mark is `assets/images/brand/pai-logo.svg`; Header bran
 
 ### Homepage logo motion
 - The verified 5-second homepage logo animation is `assets/media/pai-logo-motion.mp4`.
-- `assets/js/home-logo.js` mounts it into the centered intro whitespace below the Header on Chinese and English homepages.
+- `assets/js/home-logo.js` mounts it into the homepage intro area on Chinese and English homepages.
+- On mobile, keep the approved centered placement below the Header.
+- On desktop, keep the motion mark in the right-side whitespace so it never overlaps the hero headline.
 - Keep it muted, `playsinline`, non-looping; after completion it holds briefly and then fades away without shifting the page layout.
 - The Header uses the final static PAI mark while retaining `Tongji University` beneath it.
-- Whenever `home-logo.css` or `home-logo.js` changes, bump the corresponding query-string cache key in both `index.html` and `en/index.html` so mobile Safari does not keep the previous motion behavior.
+- Whenever `home-logo.css` or `home-logo.js` changes, bump the corresponding query-string cache key in both `index.html` and `en/index.html` so Safari does not keep the previous motion behavior.
 - Do not move the animation into the shared navigation/page-swipe code unless there is a concrete integration need.
+
+### Orbit navigation
+- The orbit / center-plus navigation is a mobile interaction aid and is hidden at desktop widths (`min-width: 769px`).
+- Desktop uses the full top navigation instead; do not show both navigation systems at the same time.
+- Keep the existing mobile orbit behavior and page-swipe blocking rules unchanged unless a concrete mobile bug is reproduced.
 
 ## Validation
 For normal development / Preview deployment, run:
