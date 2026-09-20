@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="95 325 790 365" role="img" aria-labelledby="pai-logo-title">
+  <title id="pai-logo-title">PAI</title>
+  <g fill="none" stroke="#171A1F" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M127 358H345C391 358 426 394 426 444C426 494 391 531 348 531H207C160 531 127 567 127 612V666"/>
+    <path d="M332 666L509 490C532 467 568 467 591 490L744 648C773 678 817 684 848 663C863 653 870 632 870 608V348"/>
+  </g>
+</svg>
