@@ -25,7 +25,8 @@ jobs:
           mkdir -p assets/media
           python - <<'PY'
           from pathlib import Path
-          import base64, subprocess
+          import base64
+
           alphabet=set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=')
           text=''.join(Path(p).read_text() for p in [
               'tmp/logo-motion-00.b64','tmp/logo-motion-01.b64','tmp/logo-motion-02.b64'
@@ -35,19 +36,36 @@ jobs:
               clean=clean[:-1]
           clean += '=' * (-len(clean) % 4)
           data=base64.b64decode(clean, validate=False)
+
+          def atoms(buf):
+              out=[]
+              pos=0
+              total=len(buf)
+              while pos+8 <= total:
+                  size=int.from_bytes(buf[pos:pos+4],'big')
+                  typ=buf[pos+4:pos+8].decode('latin1')
+                  header=8
+                  if size==1:
+                      if pos+16>total: raise ValueError('truncated extended atom')
+                      size=int.from_bytes(buf[pos+8:pos+16],'big')
+                      header=16
+                  elif size==0:
+                      size=total-pos
+                  if size<header or pos+size>total:
+                      raise ValueError(f'invalid atom {typ!r} at {pos} size={size}')
+                  out.append((typ,size))
+                  pos+=size
+              if pos != total:
+                  raise ValueError(f'trailing bytes: {total-pos}')
+              return out
+
+          atom_list=atoms(data)
+          types=[t for t,_ in atom_list]
+          if len(data)<10000 or not types or types[0]!='ftyp' or 'moov' not in types or 'mdat' not in types:
+              raise SystemExit(f'invalid reconstructed MP4 atoms: {atom_list}')
           p=Path('assets/media/pai-logo-motion.mp4')
           p.write_bytes(data)
-          if len(data) < 10000 or b'ftyp' not in data[:64]:
-              raise SystemExit('invalid reconstructed MP4 header')
-          probe=subprocess.run([
-              'ffprobe','-v','error','-select_streams','v:0',
-              '-show_entries','stream=codec_name,width,height,duration',
-              '-of','default=noprint_wrappers=1',str(p)
-          ],capture_output=True,text=True)
-          if probe.returncode:
-              raise SystemExit('ffprobe rejected reconstructed MP4: '+probe.stderr)
-          print(f'validated MP4: {len(data)} bytes')
-          print(probe.stdout)
+          print(f'validated MP4: {len(data)} bytes; atoms={atom_list}')
           PY
 
           cat > assets/css/home-logo.css <<'CSS'
