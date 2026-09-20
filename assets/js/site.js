@@ -1010,14 +1010,14 @@ const initOrbitMenu=()=>{
   const sync=()=>{
     const en=normalizedPath().startsWith('/en/');
     const data=menuData();
-    const defs=data.map((_,i)=>`<path id="orbit-arc-${i}" d="${arcPath(i*45,i)}"/>`).join('');
+    const defs=data.map((_,i)=>`<path id="orbit-arc-${i}" d="${arcPath(i*45+rotation,i)}"/>`).join('');
     const labels=data.map(([label,href],i)=>`<a href="${root(href)}" class="pai-orbit-link"><text><textPath href="#orbit-arc-${i}" startOffset="50%">${label}</textPath></text></a>`).join('');
     wheel.innerHTML=`<svg class="pai-orbit-svg" viewBox="0 0 220 220" aria-label="${en?'Quick navigation':'快捷导航'}"><defs>${defs}</defs><g class="pai-orbit-labels">${labels}</g></svg>`;
     toggle.setAttribute('aria-label',orbit.classList.contains('open')?(en?'Close quick menu':'关闭快捷菜单'):(en?'Open quick menu':'打开快捷菜单'));
   };
-  const setOpen=open=>{orbit.classList.toggle('open',open);toggle.setAttribute('aria-expanded',open?'true':'false');sync();paint();};
+  const setOpen=open=>{orbit.classList.toggle('open',open);toggle.setAttribute('aria-expanded',open?'true':'false');sync();};
   const pointAngle=e=>{const r=wheel.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;const p=e.touches?e.touches[0]:e;return Math.atan2(p.clientY-cy,p.clientX-cx)*180/Math.PI;};
-  const paint=()=>{wheel.style.setProperty('--orbit-rotation',rotation+'deg');};
+  const paint=()=>{wheel.querySelectorAll('defs path').forEach((path,i)=>path.setAttribute('d',arcPath(i*45+rotation,i)));};
   toggle.addEventListener('click',e=>{e.preventDefault();setOpen(!orbit.classList.contains('open'));});
   backdrop.addEventListener('click',()=>setOpen(false));
   wheel.addEventListener('pointerdown',e=>{if(!orbit.classList.contains('open')) return;dragging=true;moved=false;startAngle=pointAngle(e);startRotation=rotation;wheel.setPointerCapture?.(e.pointerId);});
