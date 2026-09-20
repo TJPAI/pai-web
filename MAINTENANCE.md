@@ -17,6 +17,7 @@ This site is a static bilingual website. Keep changes small, reviewable, and fac
 - English faculty detail pages: `en/people/*.html`
 - Use lowercase English filenames and stable slugs.
 - Only publish verified titles, bios, honors and contact details.
+- The six core-faculty photos are already local production assets under `/assets/images/people/`; do not reintroduce temporary-site image URLs.
 
 ## Bilingual pages
 Chinese pages live at repository root. English pages live under `/en/`.
@@ -28,7 +29,7 @@ Only completed or verified events should be published. If there are no suitable 
 
 ## Assets
 Prefer local files under `/assets/` for production. Avoid CDN fonts and nonessential third-party scripts.
-Faculty photos currently referenced from the temporary Tongji site must be copied into `/assets/images/people/` and all Team / profile image URLs changed to local relative paths before formal cutover.
+The canonical static PAI mark is `assets/images/brand/pai-logo.svg`; Header branding should reference this asset rather than duplicating the SVG path in CSS.
 
 ### Homepage logo motion
 - The verified 5-second homepage logo animation is `assets/media/pai-logo-motion.mp4`.
@@ -49,7 +50,7 @@ Immediately before production cutover, also run:
 
 `python tools/check_production_readiness.py`
 
-The production readiness check is intentionally expected to fail while the repository is still configured for GitHub Preview. It checks production robots/sitemap state, Preview-domain leakage, temporary-site faculty image dependencies and forbidden publication PDF fields.
+The production readiness check is intentionally expected to fail while the repository is still configured for GitHub Preview. It checks production robots/sitemap state, Preview-domain leakage, temporary-site image dependencies and forbidden publication PDF fields.
 
 ## Release flow
 1. Edit content/code.
@@ -65,11 +66,14 @@ Its `robots.txt` blocks indexing, and `site.js` adds `noindex,nofollow` on the G
 Do not change the Preview site into an indexable production copy.
 
 ## Production cutover
-Before replacing the temporary site at `https://ai.tongji.edu.cn/`:
-- copy the six core-faculty photos into local `/assets/images/people/` paths and update both Chinese and English Team / profile pages;
+Already completed before cutover:
+- six core-faculty photos are local under `/assets/images/people/` and Team pages use local relative paths;
+- canonical Header mark is local under `/assets/images/brand/pai-logo.svg`.
+
+Do only at the actual production cutover to `https://ai.tongji.edu.cn/`:
 - replace every Preview-domain URL in `sitemap.xml` with `https://ai.tongji.edu.cn/...` while preserving the symmetric `zh-CN` / `en` / `x-default` alternates;
 - replace Preview `robots.txt` with a production version that allows indexing and points to `https://ai.tongji.edu.cn/sitemap.xml`;
-- verify canonical / hreflang / Open Graph output on Chinese and English pages after the site is served from the production domain;
+- replace hard-coded Preview-domain canonical / hreflang / Open Graph URLs in Chinese and English HTML with the production domain, then verify the rendered output;
 - confirm `404.html` is configured as the server's real 404 error document and still returns HTTP 404;
 - add ICP / public-security filing information only when the official values are confirmed;
 - define redirects only for important legacy URLs that need continuity;
