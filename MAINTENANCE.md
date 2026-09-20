@@ -30,6 +30,12 @@ Only completed or verified events should be published. If there are no suitable 
 Prefer local files under `/assets/` for production. Avoid CDN fonts and nonessential third-party scripts.
 Faculty photos currently referenced from the temporary Tongji site must be copied into `/assets/images/people/` and all Team / profile image URLs changed to local relative paths before formal cutover.
 
+### Homepage logo motion
+- The verified 5-second homepage logo animation is `assets/media/pai-logo-motion.mp4`.
+- `assets/js/home-logo.js` mounts it only into the homepage `.hero-art` region on Chinese and English pages.
+- Keep it muted, `playsinline`, non-looping, and preserve the existing static hero artwork as the fallback until the video is ready.
+- Do not move the animation into the shared navigation/page-swipe code unless there is a concrete integration need.
+
 ## Validation
 For normal development / Preview deployment, run:
 
