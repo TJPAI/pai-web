@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Apply patch
         run: python tools/fix_orbit_uniform_rotation.py
       - name: Validate
