@@ -21,6 +21,11 @@
   .site-header .brand span{margin-top:3px}
 }
 
+/* Orbit navigation is a mobile interaction aid; desktop already has the full top navigation. */
+@media(min-width:769px){
+  .pai-orbit{display:none!important}
+}
+
 /* Homepage mobile rhythm — compact but still editorial */
 @media(max-width:768px){
   .home-hero~.section{padding-top:72px;padding-bottom:72px}
