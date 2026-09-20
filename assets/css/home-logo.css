@@ -4,18 +4,18 @@
 .home-hero .hero-art.pai-logo-motion-host{
   position:absolute;
   left:50%;
-  top:74px;
+  top:62px;
   right:auto;
   bottom:auto;
-  width:220px;
-  height:220px;
+  width:190px;
+  height:190px;
   display:flex;
   align-items:center;
   justify-content:center;
   transform:translateX(-50%);
   opacity:1;
   pointer-events:none;
-  z-index:2;
+  z-index:1;
   transition:opacity .6s ease;
 }
 .home-hero .pai-logo-motion{
@@ -25,15 +25,16 @@
   object-fit:contain;
   object-position:center;
   background:transparent;
+  mix-blend-mode:multiply;
 }
 .home-hero .hero-art.pai-logo-motion-host.pai-logo-motion-fade{opacity:0}
 .home-hero .hero-art.pai-logo-motion-host.pai-logo-motion-hidden{visibility:hidden}
 @media(min-width:769px){
-  .home-hero .hero-art.pai-logo-motion-host{top:58px;width:240px;height:240px}
+  .home-hero .hero-art.pai-logo-motion-host{top:54px;width:210px;height:210px}
 }
 @media(max-width:768px){
-  .home-hero .hero-art.pai-logo-motion-host{top:52px;width:min(52vw,210px);height:min(52vw,210px)}
+  .home-hero .hero-art.pai-logo-motion-host{top:34px;width:160px;height:160px}
 }
 @media(max-width:390px){
-  .home-hero .hero-art.pai-logo-motion-host{top:46px;width:min(54vw,196px);height:min(54vw,196px)}
+  .home-hero .hero-art.pai-logo-motion-host{top:30px;width:150px;height:150px}
 }
