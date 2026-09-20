@@ -193,7 +193,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #318AF5;outline-offset:3p
 .pai-orbit.open{pointer-events:none}
 .pai-orbit.open .pai-orbit-backdrop{opacity:0;pointer-events:none}
 .pai-orbit.open .pai-orbit-wheel{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(var(--orbit-rotation,0deg));pointer-events:auto;transition-duration:.30s,.52s;transition-timing-function:ease,cubic-bezier(.16,.84,.2,1)}
-.pai-orbit.dragging .pai-orbit-wheel{transition:none!important}
+.pai-orbit.dragging .pai-orbit-wheel,.pai-orbit.auto-rotating .pai-orbit-wheel{transition:none!important}
 .pai-orbit.open .pai-orbit-toggle span{transform:translate(-50%,-50%) rotate(45deg);transition-duration:.40s}
 .pai-orbit.open .pai-orbit-toggle span:after{transform:translate(-50%,-50%) rotate(90deg)}
 @media(min-width:769px){.pai-orbit{--orbit-size:240px;--orbit-y:calc(100dvh - 136px)}.pai-orbit-toggle{width:58px;height:58px}}
