@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#f5f5f2">
+<title>GeoSketch MVP</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f5f5f2;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Arial,sans-serif;color:#171717}button{font:inherit}.app{height:100dvh;display:flex;flex-direction:column}.bar{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid #ddd;background:#fafaf7;flex:none}.brand{font-weight:700}.sub{font-size:10px;color:#777;margin-top:2px}.actions{display:flex;gap:7px}.actions button{height:34px;padding:0 12px;border:1px solid #d8d8d3;border-radius:10px;background:white}.actions .dark{background:#171717;color:white;border-color:#171717}.stage{position:relative;flex:1;min-height:0;padding:8px}.card{position:absolute;inset:8px;border:1px solid #d7d7d2;border-radius:16px;overflow:hidden;background:white;box-shadow:0 8px 24px rgba(0,0,0,.04)}canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.hint{position:absolute;left:14px;top:12px;z-index:3;font-size:11px;color:#777;background:rgba(255,255,255,.88);padding:6px 9px;border-radius:999px;pointer-events:none}.status{position:absolute;right:14px;top:12px;z-index:3;font-size:10px;color:#555;background:rgba(255,255,255,.88);padding:6px 9px;border-radius:999px;pointer-events:none}.bottom{height:70px;flex:none;padding:6px 10px max(8px,env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:#fafaf7;border-top:1px solid #ddd}.bottom button{border:0;border-radius:12px;background:transparent;font-size:11px}.bottom button.active{background:#171717;color:white}.dot{font-size:20px;display:block;line-height:18px}.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);z-index:20;background:#171717;color:white;padding:8px 12px;border-radius:999px;font-size:11px;opacity:0;transition:.15s;pointer-events:none}.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="bar"><div><div class="brand">GeoSketch</div><div class="sub">Touch MVP · Safari</div></div><div class="actions"><button id="undo">撤销</button><button id="clear">清空</button><button class="dark" id="regularize">规则化</button></div></header>
+<main class="stage"><div class="card" id="card"><canvas id="c"></canvas><div class="hint">用一根手指直接画</div><div class="status" id="status">READY</div></div></main>
+<nav class="bottom"><button class="active" id="drawBtn"><span class="dot">✎</span>手绘</button><button id="lineBtn"><span class="dot">／</span>直线</button><button id="circleBtn"><span class="dot">○</span>圆</button><button id="rectBtn"><span class="dot">□</span>矩形</button></nav>
+</div><div class="toast" id="toast"></div>
+<script>
+(()=>{
+const canvas=document.getElementById('c'),card=document.getElementById('card'),ctx=canvas.getContext('2d');
+const statusEl=document.getElementById('status'),toast=document.getElementById('toast');
+let dpr=1,w=0,h=0,drawing=false,activeId=null,mode='draw',current=[],strokes=[];
+function resize(){const r=card.getBoundingClientRect();dpr=Math.min(window.devicePixelRatio||1,2);w=r.width;h=r.height;canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);render()}
+function pt(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+function toastMsg(s){toast.textContent=s;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1000)}
+function path(points){if(points.length<2)return;ctx.beginPath();ctx.moveTo(points[0].x,points[0].y);for(let i=1;i<points.length;i++)ctx.lineTo(points[i].x,points[i].y);ctx.stroke()}
+function render(){ctx.clearRect(0,0,w,h);ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#171717';ctx.lineWidth=3;for(const s of strokes)drawStroke(s);ctx.strokeStyle='#315e7d';if(current.length)path(current)}
+function drawStroke(s){ctx.save();ctx.strokeStyle=s.color||'#171717';ctx.lineWidth=3;if(s.type==='free')path(s.points);else if(s.type==='line'){ctx.beginPath();ctx.moveTo(s.a.x,s.a.y);ctx.lineTo(s.b.x,s.b.y);ctx.stroke()}else if(s.type==='circle'){ctx.beginPath();ctx.arc(s.cx,s.cy,s.r,0,Math.PI*2);ctx.stroke()}else if(s.type==='rect'){ctx.strokeRect(s.x,s.y,s.w,s.h)}ctx.restore()}
+function down(e){if(e.pointerType==='mouse'&&e.button!==0)return;e.preventDefault();drawing=true;activeId=e.pointerId;canvas.setPointerCapture?.(e.pointerId);const p=pt(e);current=[p];statusEl.textContent='DRAWING';render()}
+function move(e){if(!drawing||e.pointerId!==activeId)return;e.preventDefault();const p=pt(e),last=current[current.length-1];if(!last||dist(p,last)>0.8){current.push(p);render()}}
+function up(e){if(!drawing||e.pointerId!==activeId)return;e.preventDefault();drawing=false;canvas.releasePointerCapture?.(e.pointerId);activeId=null;if(current.length>1){commit(current)}current=[];statusEl.textContent='READY';render()}
+function commit(points){const a=points[0],b=points[points.length-1];if(mode==='line'){strokes.push({type:'line',a,b})}else if(mode==='circle'){const box=bbox(points),r=(box.w+box.h)/4;strokes.push({type:'circle',cx:box.cx,cy:box.cy,r})}else if(mode==='rect'){const box=bbox(points);strokes.push({type:'rect',x:box.x,y:box.y,w:box.w,h:box.h})}else strokes.push({type:'free',points:points.slice()});toastMsg('已记录一笔')}
+function bbox(ps){let minx=Infinity,miny=Infinity,maxx=-Infinity,maxy=-Infinity;for(const p of ps){minx=Math.min(minx,p.x);miny=Math.min(miny,p.y);maxx=Math.max(maxx,p.x);maxy=Math.max(maxy,p.y)}return{x:minx,y:miny,w:maxx-minx,h:maxy-miny,cx:(minx+maxx)/2,cy:(miny+maxy)/2}}
+function regularize(){if(!strokes.length)return toastMsg('先画一笔');const s=strokes[strokes.length-1];if(s.type!=='free')return toastMsg('已经是规则图形');const ps=s.points,box=bbox(ps),a=ps[0],b=ps[ps.length-1],close=dist(a,b)<Math.min(box.w,box.h)*.45;const diag=Math.hypot(box.w,box.h),straight=dist(a,b)/(ps.reduce((v,p,i)=>i?v+dist(ps[i-1],p):0,0)||1);if(straight>.92){strokes[strokes.length-1]={type:'line',a,b};toastMsg('识别为直线')}else if(close&&Math.abs(box.w-box.h)/Math.max(box.w,box.h)<.22){strokes[strokes.length-1]={type:'circle',cx:box.cx,cy:box.cy,r:(box.w+box.h)/4};toastMsg('识别为圆')}else if(close){strokes[strokes.length-1]={type:'rect',x:box.x,y:box.y,w:box.w,h:box.h};toastMsg('识别为矩形')}else{toastMsg('保持自由曲线')}render()}
+function setMode(m,btn){mode=m;document.querySelectorAll('.bottom button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');toastMsg(m==='draw'?'手绘模式':m==='line'?'直线模式':m==='circle'?'圆模式':'矩形模式')}
+canvas.addEventListener('pointerdown',down,{passive:false});canvas.addEventListener('pointermove',move,{passive:false});canvas.addEventListener('pointerup',up,{passive:false});canvas.addEventListener('pointercancel',up,{passive:false});canvas.addEventListener('contextmenu',e=>e.preventDefault());
+document.getElementById('undo').onclick=()=>{strokes.pop();render()};document.getElementById('clear').onclick=()=>{strokes=[];render()};document.getElementById('regularize').onclick=regularize;
+document.getElementById('drawBtn').onclick=function(){setMode('draw',this)};document.getElementById('lineBtn').onclick=function(){setMode('line',this)};document.getElementById('circleBtn').onclick=function(){setMode('circle',this)};document.getElementById('rectBtn').onclick=function(){setMode('rect',this)};
+window.addEventListener('resize',resize);window.addEventListener('orientationchange',()=>setTimeout(resize,200));resize();
+})();
+</script>
+</body></html>
