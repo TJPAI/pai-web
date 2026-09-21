@@ -38,8 +38,9 @@ The canonical static PAI mark is `assets/images/brand/pai-logo.svg`; Header bran
 - On mobile, keep the approved centered placement below the Header.
 - On desktop, keep the motion mark in the right-side whitespace so it never overlaps the hero headline.
 - Keep it muted, `playsinline`, non-looping; after completion it holds briefly and then fades away without shifting the page layout.
+- For iOS WeChat, mount the muted inline video into the DOM before attempting playback, retry on `loadeddata` / `canplay`, and allow a `WeixinJSBridgeReady` retry. Do not regress to waiting for `canplay` on a detached video element.
 - The Header uses the final static PAI mark while retaining `Tongji University` beneath it.
-- Whenever `home-logo.css` or `home-logo.js` changes, bump the corresponding query-string cache key in both `index.html` and `en/index.html` so Safari does not keep the previous motion behavior.
+- Whenever `home-logo.css` or `home-logo.js` changes, bump the corresponding query-string cache key in both `index.html` and `en/index.html` so Safari and WeChat do not keep the previous motion behavior.
 - Do not move the animation into the shared navigation/page-swipe code unless there is a concrete integration need.
 
 ### Orbit navigation
