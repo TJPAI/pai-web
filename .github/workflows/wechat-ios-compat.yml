@@ -1,0 +1,78 @@
+name: WeChat iOS compatibility patch
+
+on:
+  push:
+    paths:
+      - '.github/workflows/wechat-ios-compat.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply WeChat iOS compatibility
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          js = Path('assets/js/site.js')
+          s = js.read_text()
+          needle = "  'use strict';\n"
+          insert = """  'use strict';
+
+  /* iOS WeChat WebView applies more aggressive text autosizing and viewport chrome
+     than Safari. Scope compatibility fixes to that browser only. */
+  const paiUA=navigator.userAgent||'';
+  const isIOSWeChat=/MicroMessenger/i.test(paiUA)&&/(iPhone|iPad|iPod)/i.test(paiUA);
+  if(isIOSWeChat) document.documentElement.classList.add('pai-wechat-ios');
+"""
+          if 'pai-wechat-ios' not in s:
+              s = s.replace(needle, insert, 1)
+              js.write_text(s)
+
+          css = Path('assets/css/refine.css')
+          c = css.read_text()
+          block = """
+
+/* iOS WeChat WebView compatibility — scoped so approved Safari layout is unchanged. */
+html.pai-wechat-ios{
+  -webkit-text-size-adjust:100%!important;
+  text-size-adjust:100%!important;
+}
+@media(max-width:768px){
+  html.pai-wechat-ios .home-hero .title-display{
+    white-space:nowrap!important;
+    font-size:38px!important;
+    line-height:1.10!important;
+    letter-spacing:-.045em!important;
+  }
+  html.pai-wechat-ios .pai-orbit{
+    --orbit-size:min(48vw,200px);
+    --orbit-y:calc(100dvh - 100px);
+  }
+}
+"""
+          if 'iOS WeChat WebView compatibility' not in c:
+              css.write_text(c.rstrip()+block+'\n')
+
+          # Bust both shared CSS and site.js on every HTML page so WeChat cannot
+          # keep an old WebView-cached copy. Preserve any existing numeric scheme.
+          for p in Path('.').rglob('*.html'):
+              t = p.read_text()
+              t = re.sub(r'assets/css/refine\.css\?v=[^\"\']+', 'assets/css/refine.css?v=20260921-01', t)
+              t = re.sub(r'assets/js/site\.js\?v=[^\"\']+', 'assets/js/site.js?v=20260921-01', t)
+              p.write_text(t)
+      - name: Commit patch and remove one-shot workflow
+        run: |
+          rm .github/workflows/wechat-ios-compat.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: stabilize homepage in iOS WeChat WebView'
+          git push
