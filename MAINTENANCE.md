@@ -50,16 +50,21 @@ The canonical static PAI mark is `assets/images/brand/pai-logo.svg`; Header bran
 ### Mobile WebView compatibility
 - iOS WeChat can retain old CSS more aggressively than Safari. When changing shared mobile typography in `refine.css`, bump the `refine.css` query-string cache key on both homepages before evaluating WeChat screenshots.
 - Keep the mobile text autosizing guard in `refine.css`; do not compensate for a stale WebView cache by permanently shrinking Safari typography.
-- Every directly accessible HTML page, not only the homepages, must use `viewport-fit=cover` and identify iOS WeChat in `<head>` before the main stylesheet/body paint so the intended 100% text scale is present from the first frame. This includes Chinese/English inner pages and faculty detail pages, because users may refresh or open any of them as the initial WebView entry point.
+- Every directly accessible HTML page, not only the homepages, must use `viewport-fit=cover` and identify iOS WeChat in `<head>` before the main stylesheet/body paint so the intended 100% text scale is present from the first frame. This includes Chinese/English inner pages, faculty detail pages and `404.html`, because users may refresh or open any of them as the initial WebView entry point.
+- The single source of truth for that first-paint block is `templates/shared/wechat-first-paint.inc`.
+- Run `python tools/sync_shared_head.py --write` after changing the shared block or after adding a new HTML page. The script updates every deployable HTML page from the shared template.
+- Run `python tools/sync_shared_head.py --check` to verify that no page has drifted. GitHub Pages runs this check automatically before deployment, so a new page cannot silently ship without the guard.
 - Do not replace the first-paint guard with `maximum-scale=1` or `user-scalable=no`; user zoom must remain available.
 - `refine.css` remains the canonical presentation entry point and imports `refine-base.css`, `app-core.css`, and `typography.css` in that order. Do not link or bundle those internal layers directly from HTML; preserve the validated cascade.
 
 ## Validation
 For normal development / Preview deployment, run:
 
+`python tools/sync_shared_head.py --check`
+
 `python tools/validate.py`
 
-The GitHub Pages workflow also runs this check before deployment. Do not weaken the validator merely to make a release pass; fix the underlying link or data issue.
+The GitHub Pages workflow runs both checks before deployment, followed by share-metadata and runtime-syntax validation. Do not weaken the validators merely to make a release pass; fix the underlying template, link or data issue.
 
 Immediately before production cutover, also run:
 
@@ -69,11 +74,12 @@ The production readiness check is intentionally expected to fail while the repos
 
 ## Release flow
 1. Edit content/code.
-2. Run validation.
-3. Review Chinese + English on mobile and desktop.
-4. Check publications, links, images and contact information.
-5. Merge/deploy only after checks pass.
-6. Tag formal releases, e.g. `v1.0.0`.
+2. If a shared first-paint or new-page change is involved, run `python tools/sync_shared_head.py --write`.
+3. Run shared-head and site validation.
+4. Review Chinese + English on mobile and desktop.
+5. Check publications, links, images and contact information.
+6. Merge/deploy only after checks pass.
+7. Tag formal releases, e.g. `v1.0.0`.
 
 ## Preview environment
 `https://tjpai.github.io/pai-web/` is a development and review environment only.
@@ -92,6 +98,6 @@ Do only at the actual production cutover to `https://ai.tongji.edu.cn/`:
 - confirm `404.html` is configured as the server's real 404 error document and still returns HTTP 404;
 - add ICP / public-security filing information only when the official values are confirmed;
 - define redirects only for important legacy URLs that need continuity;
-- run `python tools/validate.py` and then `python tools/check_production_readiness.py`; both must pass;
+- run `python tools/sync_shared_head.py --check`, `python tools/validate.py` and then `python tools/check_production_readiness.py`; all must pass;
 - run a final phone + desktop, Chinese + English, navigation + publication-link check;
 - after production verification, tag the release (for example `v1.0.0`).
