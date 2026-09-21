@@ -1,0 +1,36 @@
+name: Fix WeChat first-paint preload
+
+on:
+  push:
+    paths:
+      - '.github/workflows/wechat-first-paint-preload.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Convert internal CSS links to preloads
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for path in [Path('index.html'), Path('en/index.html')]:
+              s = path.read_text()
+              for name in ['refine-base.css?v=20260919-11','app-core.css?v=20260920-25','typography.css?v=20260919-11']:
+                  s = s.replace(f'<link rel="stylesheet" href="assets/css/{name}">', f'<link rel="preload" as="style" href="assets/css/{name}">')
+                  s = s.replace(f'<link rel="stylesheet" href="../assets/css/{name}">', f'<link rel="preload" as="style" href="../assets/css/{name}">')
+              path.write_text(s)
+          PY
+      - name: Commit and remove one-shot workflow
+        run: |
+          rm .github/workflows/wechat-first-paint-preload.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: preload homepage CSS before refine imports'
+          git push
