@@ -50,8 +50,7 @@ The canonical static PAI mark is `assets/images/brand/pai-logo.svg`; Header bran
 ### Mobile WebView compatibility
 - iOS WeChat can retain old CSS more aggressively than Safari. When changing shared mobile typography in `refine.css`, bump the `refine.css` query-string cache key on both homepages before evaluating WeChat screenshots.
 - Keep the mobile text autosizing guard in `refine.css`; do not compensate for a stale WebView cache by permanently shrinking Safari typography.
-- Keep the homepage critical text-size-adjust rule in `<head>` so the first paint starts at the intended scale.
-- `refine.css` is the canonical deployed presentation bundle and contains the rules from `refine-base.css`, `app-core.css`, and `typography.css` in that order before its local overrides. Keep that order when regenerating the bundle; HTML should continue to link only `refine.css` rather than the internal component files.
+- `refine.css` remains the canonical presentation entry point and imports `refine-base.css`, `app-core.css`, and `typography.css` in that order. Do not link or bundle those internal layers directly from HTML; preserve the validated cascade.
 
 ## Validation
 For normal development / Preview deployment, run:
