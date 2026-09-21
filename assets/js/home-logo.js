@@ -6,6 +6,7 @@
     return path;
   };
   const isHome=()=>['/','/index.html','/en/','/en/index.html'].includes(normalizedPath());
+  const isWechatIOS=()=>/MicroMessenger/i.test(navigator.userAgent)&&/(iPhone|iPad|iPod)/i.test(navigator.userAgent);
   const mediaUrl=()=>{
     const prefix=location.hostname==='tjpai.github.io'?'/pai-web':'';
     return `${prefix}/assets/media/pai-logo-motion.mp4?v=20260920-01`;
@@ -31,8 +32,10 @@
     video.muted=true;
     video.defaultMuted=true;
     video.playsInline=true;
+    video.setAttribute('muted','');
     video.setAttribute('playsinline','');
     video.setAttribute('webkit-playsinline','');
+    video.setAttribute('x5-playsinline','true');
     video.preload='auto';
     video.setAttribute('aria-hidden','true');
     video.autoplay=true;
@@ -45,11 +48,25 @@
       },450);
     };
 
-    video.addEventListener('ended',exitAway,{once:true});
-    video.addEventListener('canplay',()=>{
-      host.replaceChildren(video);
-      video.play().catch(()=>{});
+    let ended=false;
+    video.addEventListener('ended',()=>{
+      if(ended) return;
+      ended=true;
+      exitAway();
     },{once:true});
+
+    const tryPlay=()=>{
+      if(!isHome()||ended) return;
+      const attempt=video.play();
+      if(attempt&&typeof attempt.catch==='function') attempt.catch(()=>{});
+    };
+
+    host.replaceChildren(video);
+    video.addEventListener('loadeddata',tryPlay,{once:true});
+    video.addEventListener('canplay',tryPlay,{once:true});
+    if(isWechatIOS()) document.addEventListener('WeixinJSBridgeReady',tryPlay,{once:true});
+    tryPlay();
+    video.load();
   };
   const schedule=()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(init);};
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',schedule,{once:true}); else schedule();
