@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Validate shared head template
+        run: python tools/sync_shared_head.py --check
       - name: Validate site content
         run: python tools/validate.py
       - name: Validate share metadata
