@@ -1,0 +1,49 @@
+name: Bundle refine CSS for stable first paint
+
+on:
+  push:
+    paths:
+      - '.github/workflows/bundle-refine-css.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Bundle shared CSS and clean homepage links
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          css = Path('assets/css/refine.css')
+          current = css.read_text()
+          current = re.sub(r'^@import url\([^\n]+\);\n?', '', current, count=3, flags=re.M)
+          parts = [
+              '/* Bundled shared presentation entry point. Source components remain in refine-base.css, app-core.css, and typography.css. */\n',
+              '/* refine-base.css */\n' + Path('assets/css/refine-base.css').read_text().rstrip() + '\n\n',
+              '/* app-core.css */\n' + Path('assets/css/app-core.css').read_text().rstrip() + '\n\n',
+              '/* typography.css */\n' + Path('assets/css/typography.css').read_text().rstrip() + '\n\n',
+              '/* refine local overrides */\n' + current.lstrip(),
+          ]
+          css.write_text(''.join(parts))
+
+          for path in [Path('index.html'), Path('en/index.html')]:
+              s = path.read_text()
+              s = re.sub(r'<link rel="preload" as="style" href="(?:\.\./)?assets/css/(?:refine-base|app-core|typography)\.css\?v=[^"]+">', '', s)
+              s = re.sub(r'assets/css/refine\.css\?v=[^"\']+', 'assets/css/refine.css?v=20260921-02', s)
+              path.write_text(s)
+          PY
+      - name: Commit and remove one-shot workflow
+        run: |
+          rm .github/workflows/bundle-refine-css.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: bundle refine CSS for stable mobile first paint'
+          git push
