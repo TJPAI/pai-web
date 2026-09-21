@@ -47,6 +47,10 @@ The canonical static PAI mark is `assets/images/brand/pai-logo.svg`; Header bran
 - Desktop uses the full top navigation instead; do not show both navigation systems at the same time.
 - Keep the existing mobile orbit behavior and page-swipe blocking rules unchanged unless a concrete mobile bug is reproduced.
 
+### Mobile WebView compatibility
+- iOS WeChat can retain old CSS more aggressively than Safari. When changing shared mobile typography in `refine.css`, bump the `refine.css` query-string cache key on both homepages before evaluating WeChat screenshots.
+- Keep the mobile text autosizing guard in `refine.css`; do not compensate for a stale WebView cache by permanently shrinking Safari typography.
+
 ## Validation
 For normal development / Preview deployment, run:
 
