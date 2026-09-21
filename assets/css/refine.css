@@ -37,3 +37,13 @@
   .home-hero~.section .impact{padding-top:39px;padding-bottom:41px}
   .home-hero~.join{padding-top:108px;padding-bottom:108px}
 }
+
+/* Mobile WebView text autosizing guard. WeChat on iOS can enlarge Chinese text
+   after layout and turn the approved two-line homepage title into four lines. */
+html{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+@media(max-width:768px){
+  .home-hero .title-display{white-space:nowrap!important}
+}
