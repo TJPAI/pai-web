@@ -1,0 +1,58 @@
+name: Restore homepage image quality
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/restore-home-image-quality.yml']
+permissions:
+  contents: write
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pillow
+        run: python -m pip install --quiet pillow
+      - name: Restore full-resolution WebP assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/pai-home-src assets/images/home
+          curl -fL --retry 3 'https://alumni.tongji.edu.cn/_upload/article/images/fb/51/b84db8744a1bbde5e391c9c4f2ca/704165f6-fb67-4d2a-b952-f61cb2a2ea5a.png' -o /tmp/pai-home-src/ciie
+          curl -fL --retry 3 'https://news.tongji.edu.cn/_mediafile/tjnews/photos/images/2014/4/25/650/bdj4sjswou5jxkd.jpg' -o /tmp/pai-home-src/mine
+          curl -fL --retry 3 'https://see.tongji.edu.cn/__local/9/93/3D/0B427C67959BBF2EB570EC25939_B112E241_781C3.png?e=.png' -o /tmp/pai-home-src/microsoft
+          curl -fL --retry 3 'https://news.tongji.edu.cn/__local/5/09/7C/9DF69DAA2AE2F9F656D71BAD4C7_46EED02F_A6634.png' -o /tmp/pai-home-src/ieee
+          python - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+
+          jobs = [
+              ('ciie', (1920, 797), Path('assets/images/home/ciie-navigation.webp')),
+              ('mine', (640, 892), Path('assets/images/home/datong-mine-magnetic-communication.webp')),
+              ('microsoft', (1920, 1061), Path('assets/images/home/microsoft-indoor-localization-competition.webp')),
+              ('ieee', (1920, 947), Path('assets/images/home/ieee-president-visit.webp')),
+          ]
+          for name, target, dst in jobs:
+              src = Image.open('/tmp/pai-home-src/' + name).convert('RGB')
+              sw, sh = src.size
+              tw, th = target
+              src_ratio, target_ratio = sw / sh, tw / th
+              if abs(src_ratio - target_ratio) / target_ratio > 0.015:
+                  raise SystemExit(f'{name}: unexpected source ratio {src.size}, target {target}')
+              if src.size != target:
+                  src = src.resize(target, Image.Resampling.LANCZOS)
+              src.save(dst, 'WEBP', quality=92, method=6)
+              check = Image.open(dst)
+              if check.size != target:
+                  raise SystemExit(f'{name}: output dimension mismatch {check.size} != {target}')
+              print(f'{name}: source={sw}x{sh}, output={tw}x{th}, bytes={dst.stat().st_size}')
+          PY
+      - name: Commit full-resolution assets and remove one-shot workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/images/home/*.webp
+          git rm .github/workflows/restore-home-image-quality.yml
+          git commit -m 'assets: restore full-resolution homepage imagery'
+          git push origin HEAD:main
