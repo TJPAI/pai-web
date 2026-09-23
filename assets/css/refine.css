@@ -26,6 +26,30 @@
   .pai-orbit{display:none!important}
 }
 
+/* Desktop editorial polish: give primary navigation and footer a little more presence without changing layout height. */
+@media(min-width:1025px){
+  .site-header .nav-links{font-size:15px;font-weight:560;gap:28px;letter-spacing:.005em}
+  .site-footer.compact-footer{padding:64px 0 28px}
+  .site-footer .brand strong{font-size:28px;letter-spacing:-.035em}
+  .site-footer .brand span{font-size:11px;line-height:1.35;margin-top:7px}
+  .site-footer .footer-links{font-weight:520;line-height:1.65}
+  .site-footer .footer-contact{line-height:1.8}
+  .site-footer .footer-meta{margin-top:42px;padding-top:20px}
+}
+
+/* Real-world application imagery on the home-page translation section. */
+.impact-visuals{display:grid;grid-template-columns:1.12fr .88fr;gap:18px;margin:0 0 38px}
+.impact-visual{margin:0;border:1px solid var(--line);background:var(--soft);overflow:hidden}
+.impact-visual a{display:block}
+.impact-visual img{width:100%;height:clamp(220px,24vw,330px);object-fit:cover}
+.impact-visual figcaption{padding:14px 16px 16px;font-size:13px;line-height:1.55;color:var(--muted);border-top:1px solid var(--line)}
+.impact-visual figcaption strong{display:block;color:var(--ink);font-size:14px;font-weight:620;margin-bottom:3px}
+.impact-visual-source{font-size:11px;letter-spacing:.02em;color:#8A93A2}
+@media(max-width:768px){
+  .impact-visuals{grid-template-columns:1fr;gap:14px;margin-bottom:28px}
+  .impact-visual img{height:auto;aspect-ratio:16/10;object-fit:cover}
+}
+
 /* Homepage mobile rhythm — compact but still editorial */
 @media(max-width:768px){
   .home-hero~.section{padding-top:72px;padding-bottom:72px}
