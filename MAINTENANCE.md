@@ -47,7 +47,7 @@ The canonical static PAI mark is `assets/images/brand/pai-logo.svg`; Header bran
 - At desktop widths, keep the top navigation slightly stronger than the mobile/tablet treatment, but do not increase Header height or reintroduce the orbit menu.
 - Keep homepage imagery sparse and editorial rather than turning the page into a gallery. The approved visual rhythm has three distinct beats: real-world application imagery in `Impact & Translation`, one Microsoft Indoor Localization Competition feature in `Selected Achievements`, and one IEEE President visit feature in `Selected Updates`.
 - The `Impact & Translation` pair should contrast large-venue localization/smart navigation with underground or through-the-earth communication so the breadth of PAI work is visible at a glance.
-- Current homepage feature images are sourced from official Tongji University pages rather than generic stock imagery. For the final production domain, prefer migrating durable approved images to local assets under `/assets/images/` when practical.
+- Homepage display imagery is self-hosted under `assets/images/home/` as web-optimized WebP assets. Keep the official Tongji source-page links in the figure anchors for provenance; do not hotlink the display images from external sites.
 - The desktop Footer intentionally has a little more vertical breathing room and stronger brand/navigation hierarchy than the compact mobile Footer.
 
 ### Orbit navigation
