@@ -1,0 +1,74 @@
+name: Desktop homepage polish
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Apply homepage visual polish
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          source = 'https://news.tongji.edu.cn/info/1002/79122.htm'
+          img1 = 'https://news.tongji.edu.cn/__local/C/EF/EE/5F6E39E9600925FCFC112C64999_C0E3B4F5_70972.png'
+          img2 = 'https://news.tongji.edu.cn/__local/3/38/7E/690D20660F979B6D1BCF9BC6C24_98A681BB_15963.png'
+
+          zh = Path('index.html')
+          text = zh.read_text(encoding='utf-8')
+          marker = '<section class="section"><div class="container"><div class="section-head"><div class="eyebrow">Impact & Translation</div><h2 class="title-section">成果转化与应用</h2></div><div class="impact-grid">'
+          visual = (
+            '<section class="section"><div class="container"><div class="section-head"><div class="eyebrow">Impact & Translation</div><h2 class="title-section">成果转化与应用</h2></div>'
+            '<div class="impact-visuals" aria-label="代表性应用场景">'
+            f'<figure class="impact-visual"><a href="{source}" target="_blank" rel="noopener noreferrer"><img src="{img1}" alt="同济大学室内北斗定位导航系统在中国国际进口博览会发布与展示" loading="lazy" decoding="async"><figcaption><strong>进博会 · 室内定位与智能导览</strong>高精定位与智能导航技术服务大型复杂场馆。<span class="impact-visual-source">同济大学新闻网</span></figcaption></a></figure>'
+            f'<figure class="impact-visual"><a href="{source}" target="_blank" rel="noopener noreferrer"><img src="{img2}" alt="同济大学室内北斗定位导航系统及终端应用展示" loading="lazy" decoding="async"><figcaption><strong>室内北斗 · 系统与终端应用</strong>从定位算法、系统平台到终端和位置服务的工程化应用。<span class="impact-visual-source">同济大学新闻网</span></figcaption></a></figure>'
+            '</div><div class="impact-grid">'
+          )
+          if 'class="impact-visuals"' not in text:
+              if marker not in text:
+                  raise SystemExit('Chinese Impact section marker not found')
+              text = text.replace(marker, visual, 1)
+          zh.write_text(text, encoding='utf-8')
+
+          en = Path('en/index.html')
+          text = en.read_text(encoding='utf-8')
+          marker = '<section class="section"><div class="container"><div class="section-head"><div class="eyebrow">Impact & Translation</div><h2 class="title-section">Research Translation &amp; Applications</h2></div><div class="impact-grid">'
+          visual = (
+            '<section class="section"><div class="container"><div class="section-head"><div class="eyebrow">Impact & Translation</div><h2 class="title-section">Research Translation &amp; Applications</h2></div>'
+            '<div class="impact-visuals" aria-label="Representative application scenes">'
+            f'<figure class="impact-visual"><a href="{source}" target="_blank" rel="noopener noreferrer"><img src="{img1}" alt="Tongji indoor positioning and smart navigation system presented at the China International Import Expo" loading="lazy" decoding="async"><figcaption><strong>CIIE · Indoor Localization & Smart Navigation</strong>High-precision positioning and intelligent guidance for large, complex venues.<span class="impact-visual-source">Tongji University News</span></figcaption></a></figure>'
+            f'<figure class="impact-visual"><a href="{source}" target="_blank" rel="noopener noreferrer"><img src="{img2}" alt="Tongji indoor BeiDou positioning system and terminal application display" loading="lazy" decoding="async"><figcaption><strong>Indoor BeiDou · Systems & Terminal Applications</strong>Engineering translation from positioning algorithms and platforms to terminals and location services.<span class="impact-visual-source">Tongji University News</span></figcaption></a></figure>'
+            '</div><div class="impact-grid">'
+          )
+          if 'class="impact-visuals"' not in text:
+              if marker not in text:
+                  raise SystemExit('English Impact section marker not found')
+              text = text.replace(marker, visual, 1)
+          en.write_text(text, encoding='utf-8')
+
+          # Shared desktop nav/footer CSS changed; force every HTML entry point to load the current refine.css.
+          for p in [Path('404.html'), *Path('.').glob('*.html'), *Path('en').rglob('*.html'), *Path('people').rglob('*.html')]:
+              if not p.exists():
+                  continue
+              s = p.read_text(encoding='utf-8')
+              s2 = re.sub(r'(refine\.css\?v=)[0-9-]+', r'\g<1>20260923-01', s)
+              if s2 != s:
+                  p.write_text(s2, encoding='utf-8')
+          PY
+          rm .github/workflows/desktop-home-polish.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html en/index.html '*.html' en people .github/workflows/desktop-home-polish.yml
+          git commit -m 'style: polish desktop home translation and shared chrome'
+          git push
