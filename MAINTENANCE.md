@@ -43,6 +43,11 @@ The canonical static PAI mark is `assets/images/brand/pai-logo.svg`; Header bran
 - Whenever `home-logo.css` or `home-logo.js` changes, bump the corresponding query-string cache key in both `index.html` and `en/index.html` so Safari and WeChat do not keep the previous motion behavior.
 - Do not move the animation into the shared navigation/page-swipe code unless there is a concrete integration need.
 
+### Desktop homepage presentation
+- At desktop widths, keep the top navigation slightly stronger than the mobile/tablet treatment, but do not increase Header height or reintroduce the orbit menu.
+- The `Impact & Translation` section on Chinese and English homepages includes two representative real-world application images from Tongji University News to break the otherwise text-only grid rhythm. Keep the imagery sparse, sourced, and directly relevant to PAI work; do not replace it with generic stock imagery.
+- The desktop Footer intentionally has a little more vertical breathing room and stronger brand/navigation hierarchy than the compact mobile Footer.
+
 ### Orbit navigation
 - The orbit / center-plus navigation is a mobile interaction aid and is hidden at desktop widths (`min-width: 769px`).
 - Desktop uses the full top navigation instead; do not show both navigation systems at the same time.
