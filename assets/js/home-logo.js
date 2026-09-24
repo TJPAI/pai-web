@@ -21,20 +21,23 @@
   const isHome=()=>HOME_PATHS.has(normalizedPath());
   const ease=t=>t*t*(3-2*t);
 
-  const reshapeHomepage=()=>{
-    if(!isHome()||document.querySelector('.home-achievement-stories')) return;
-    const isEnglish=document.documentElement.lang.toLowerCase().startsWith('en');
-    const sections=[...document.querySelectorAll('main > section')];
+  /* Build the final homepage structure on any main element, including the off-screen
+     swipe preview. This is important on iPhone Safari: if the preview contains the
+     legacy homepage markup while the committed page contains the reshaped markup,
+     the handoff repaints the image area for one frame. */
+  const reshapeHomepage=(main,isEnglish=document.documentElement.lang.toLowerCase().startsWith('en'))=>{
+    if(!main||!main.querySelector('.home-hero')||main.querySelector('.home-achievement-stories')) return false;
+    const sections=[...main.children].filter(node=>node.matches&&node.matches('section'));
     const findSection=label=>sections.find(section=>(section.querySelector('.section-head .eyebrow')?.textContent||'').trim().toLowerCase()===label.toLowerCase());
     const achievementSection=findSection('Research Excellence');
     const impactSection=findSection('Impact & Translation');
-    const join=document.querySelector('main > .join');
-    if(!achievementSection||!join) return;
+    const join=[...main.children].find(node=>node.classList?.contains('join'));
+    if(!achievementSection||!join) return false;
 
     const container=achievementSection.querySelector('.container');
     const head=container?.querySelector('.section-head');
     const media=container?.querySelector('.media-coverage');
-    if(!container||!head||!media) return;
+    if(!container||!head||!media) return false;
 
     [...media.querySelectorAll('.media-item')].forEach(item=>{
       const meta=(item.querySelector('.media-meta')?.textContent||'').trim();
@@ -62,7 +65,7 @@
     more.innerHTML=`<a class="text-link" href="publications.html">${isEnglish?'More research results →':'更多研究成果 →'}</a>`;
     container.appendChild(more);
 
-    const platformSection=document.getElementById('selected-updates');
+    const platformSection=main.querySelector('#selected-updates');
     if(platformSection){
       const platformContainer=platformSection.querySelector('.container');
       if(platformContainer){
@@ -92,9 +95,25 @@
     join.before(mediaSection);
 
     if(impactSection) impactSection.remove();
+    return true;
   };
 
-  const syncHomepageEditorialLinks=()=>{ if(isHome()) reshapeHomepage(); };
+  const prepareAddedHomepage=records=>{
+    const isEnglish=document.documentElement.lang.toLowerCase().startsWith('en');
+    for(const record of records){
+      for(const node of record.addedNodes){
+        if(!(node instanceof Element)) continue;
+        if(node.matches('main')&&node.querySelector('.home-hero')) reshapeHomepage(node,isEnglish);
+        node.querySelectorAll?.('main').forEach(main=>{
+          if(main.querySelector('.home-hero')) reshapeHomepage(main,isEnglish);
+        });
+      }
+    }
+  };
+
+  const syncHomepageEditorialLinks=()=>{
+    if(isHome()) reshapeHomepage(document.querySelector('main'));
+  };
 
   const stop=()=>{
     if(frame) cancelAnimationFrame(frame);
@@ -172,14 +191,21 @@
   const schedule=()=>{
     if(scheduled) return;
     scheduled=true;
-    /* MutationObserver callbacks run before the next paint. Reshape synchronously
-       here so Safari never gets a frame containing the legacy homepage imagery. */
     initHomeLogo(false);
   };
 
   window.initHomeLogo=initHomeLogo;
+  window.reshapeHomepage=reshapeHomepage;
+
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',schedule,{once:true});
   else schedule();
-  new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});
+
+  new MutationObserver(records=>{
+    /* Swipe previews are inserted while the URL still belongs to the outgoing page.
+       Prepare them from their own markup instead of relying on location/isHome(). */
+    prepareAddedHomepage(records);
+    schedule();
+  }).observe(document.body,{childList:true,subtree:true});
+
   addEventListener('pageshow',event=>{if(event.persisted) initHomeLogo(true);});
 })();
