@@ -36,7 +36,7 @@
   const navItems=lang=>lang==='en'?
     [
       ['About','/en/about.html'],['People','/en/team.html'],['Research','/en/research.html'],
-      ['Outputs','/en/publications.html'],['Join','/en/join.html'],['Contact','/en/contact.html']
+      ['Research Results','/en/publications.html'],['Join','/en/join.html'],['Contact','/en/contact.html']
     ]:
     [
       ['关于我们','/about.html'],['研究团队','/team.html'],['研究方向','/research.html'],
@@ -806,7 +806,7 @@
   getPublicationData().catch(()=>{});
 
   const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[char]));
   const doiHref=doi=>'https://doi.org/'+String(doi).trim().split('/').map(encodeURIComponent).join('/');
   const getExpandedYears=()=>[...document.querySelectorAll('.pub-group[data-expanded="true"]')]
@@ -962,7 +962,7 @@
       return;
     }
 
-    const top=document.querySelector('[data-pub-back-top]');
+    const top=event.target.closest&&event.target.closest('[data-pub-back-top]');
     if(top){
       event.preventDefault();
       window.scrollTo({top:0,behavior:'smooth'});
