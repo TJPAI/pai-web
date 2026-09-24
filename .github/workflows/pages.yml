@@ -44,24 +44,27 @@ jobs:
               raise SystemExit('Expected English navigation label not found')
           path.write_text(text.replace(old, new, 1), encoding='utf-8')
           PY
-      - name: Normalize shared stylesheet cache key
+      - name: Normalize shared asset cache keys
         run: |
           python - <<'PY'
           from pathlib import Path
           import re
 
-          version = "20260925-04"
-          pattern = re.compile(r"refine\.css\?v=[0-9-]+")
+          refine_version = "20260925-04"
+          site_js_version = "20260925-01"
+          refine_pattern = re.compile(r"refine\.css\?v=[0-9-]+")
+          site_js_pattern = re.compile(r"site\.js\?v=[0-9-]+")
           changed = 0
           for path in Path(".").rglob("*.html"):
               if "geosketch-mvp" in path.parts:
                   continue
               text = path.read_text(encoding="utf-8")
-              updated = pattern.sub(f"refine.css?v={version}", text)
+              updated = refine_pattern.sub(f"refine.css?v={refine_version}", text)
+              updated = site_js_pattern.sub(f"site.js?v={site_js_version}", updated)
               if updated != text:
                   path.write_text(updated, encoding="utf-8")
                   changed += 1
-          print(f"Normalized refine.css cache key in {changed} HTML files")
+          print(f"Normalized refine.css and site.js cache keys in {changed} HTML files")
           PY
       - name: Tighten publication year divider spacing
         run: |
