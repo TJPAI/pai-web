@@ -36,7 +36,7 @@
   const navItems=lang=>lang==='en'?
     [
       ['About','/en/about.html'],['People','/en/team.html'],['Research','/en/research.html'],
-      ['Publications','/en/publications.html'],['Join','/en/join.html'],['Contact','/en/contact.html']
+      ['Research Results','/en/publications.html'],['Join','/en/join.html'],['Contact','/en/contact.html']
     ]:
     [
       ['关于我们','/about.html'],['研究团队','/team.html'],['研究方向','/research.html'],
@@ -115,8 +115,6 @@
         mobile.innerHTML=markup;
         header.dataset.paiLang=lang;
       }else{
-        /* Same-language navigation keeps the permanent header DOM intact.
-           Only state/hrefs change, avoiding a Safari header repaint on every page swap. */
         const syncLinks=container=>{
           if(!container) return;
           [...container.querySelectorAll('a')].forEach(link=>{
@@ -197,14 +195,11 @@
     }catch(_e){}
   },true);
 
-  /* Retire the legacy worker; this static site uses native navigation and HTTP caching. */
   let siteReady=Promise.resolve();
   if('serviceWorker' in navigator){
     siteReady=navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).catch(()=>{});
   }
 
-  /* Lightweight same-origin document navigation.
-     Keeps Safari on the current document while preserving normal URLs/history. */
   const pageCache=new Map([[location.href.split('#')[0],document.documentElement.outerHTML]]);
   let navigating=false;
   let scrollSaveTimer=null;
@@ -231,8 +226,6 @@
   const destinationScrollForPath=path=>rememberedPageScroll(path);
   const cacheCurrentPageSnapshot=()=>{
     try{
-      /* Never persist transient swipe/compositing state into the page cache.
-         A snapshot may be taken while the live main is still horizontally translated. */
       const snapshot=document.documentElement.cloneNode(true);
       const snapshotMain=snapshot.querySelector('main');
       if(snapshotMain){
@@ -297,7 +290,6 @@
         {transform:`translate3d(${shift}px,0,0)`,opacity:.9}
       ],{duration:105,easing:'cubic-bezier(.4,0,1,1)',fill:'forwards'});
 
-      /* Move the URL before attaching fetched markup so relative assets resolve\n         against the destination page immediately (important on iPhone Safari). */
       const destinationScroll=Number.isFinite(preserveScrollY)?preserveScrollY:0;
       if(historyMode==='push') history.pushState({pai:true,scrollY:destinationScroll},'',url.href);
       else if(historyMode==='replace') history.replaceState({pai:true,scrollY:destinationScroll},'',url.href);
@@ -310,9 +302,6 @@
 
       renderChrome();
 
-      /* Put the destination at its intended vertical position before Safari gets a
-         paint opportunity. Otherwise the freshly swapped main can flash once at
-         the outgoing page's scrollY and only then jump to the remembered position. */
       const hasRequestedScroll=Number.isFinite(preserveScrollY);
       if(hasRequestedScroll){
         const provisionalMaxY=Math.max(0,document.documentElement.scrollHeight-innerHeight);
@@ -321,11 +310,8 @@
         scrollToInstant(0);
       }
 
-      /* Preserve publication expansion state when a rendered snapshot is reused. */
       const preservedPublicationYears=[...next.querySelectorAll('.pub-group[data-expanded="true"]')]
         .map(section=>section.dataset.year).filter(Boolean);
-      /* Publications can change document height after JSON rendering, so make one
-         final no-animation correction after dynamic content has settled. */
       await initPublications(preservedPublicationYears);
       setTimeout(()=>warmNavigation(),80);
       await new Promise(resolve=>requestAnimationFrame(resolve));
@@ -375,8 +361,6 @@
     const url=eligiblePageLink(link);
     if(!url) return;
     event.preventDefault();
-    /* Close the mobile overlay before navigation begins. Because the menu is fixed
-       outside page flow, this never shifts the destination main or its scroll geometry. */
     const mobileMenu=link.closest('.mobile-menu');
     if(mobileMenu){
       mobileMenu.classList.remove('open');
@@ -391,7 +375,6 @@
     if(isLanguageSwitch){
       options={preserveScrollY:window.scrollY};
     }else if(!url.hash){
-      /* Direct/menu navigation and swipe navigation share one saved position source. */
       options={preserveScrollY:destinationScrollForPath(normalizedPath(url.pathname))};
     }
     applyPage(url,options).catch(()=>{ location.href=url.href; });
@@ -402,7 +385,6 @@
     applyPage(new URL(location.href),{historyMode:'none',preserveScrollY:restoredY}).catch(()=>location.reload());
   });
 
-  /* Warm same-origin page HTML after first paint so first visits from body links are fast too. */
   const warmNavigation=()=>{
     if(navigator.connection&&navigator.connection.saveData) return;
     const seen=new Set();
@@ -418,7 +400,6 @@
   if('requestIdleCallback' in window) requestIdleCallback(warmNavigation,{timeout:1800});
   else setTimeout(warmNavigation,700);
 
-  /* On real user intent, also start a few destination images before the click completes. */
   const warmedAssets=new Set();
   const warmLinkIntent=link=>{
     const url=eligiblePageLink(link);
@@ -448,9 +429,6 @@
     if(link) warmLinkIntent(link);
   },{capture:true,passive:true});
 
-  /* Touch page navigation for the seven top-level pages.
-     Horizontal drags behave like a native pager: the adjacent page is already visible
-     underneath the finger, while edge swipes stay reserved for Safari history gestures. */
   const swipePageOrder={
     zh:['/','/about.html','/team.html','/research.html','/publications.html','/join.html','/contact.html'],
     en:['/en/','/en/about.html','/en/team.html','/en/research.html','/en/publications.html','/en/join.html','/en/contact.html']
@@ -542,9 +520,6 @@
     const previewMain=document.importNode(nextMain,true);
     const previewFooter=nextFooter?document.importNode(nextFooter,true):null;
     previewMain.removeAttribute('id');
-    /* Preserve descendant section IDs in the swipe preview. About page mobile
-       layout depends on #overview/#collaboration/#achievements/#international-impact;
-       stripping them changes vertical geometry and causes a handoff jump. */
     previewMain.querySelectorAll('img[src]').forEach(img=>{
       try{ img.src=new URL(img.getAttribute('src'),url.href).href; }catch(_e){}
     });
@@ -559,8 +534,6 @@
       node.setAttribute('srcset',resolved);
     });
     const currentMain=document.querySelector('main');
-    /* Anchor the preview to the real main's document-space origin. This stays exact
-       whether the mobile header is fixed or desktop header is sticky. */
     const mainDocumentTop=Math.max(0,(currentMain?.getBoundingClientRect().top||0)+window.scrollY);
     const targetPath=normalizedPath(url.pathname);
     const targetScroll=destinationScrollForPath(targetPath);
@@ -581,11 +554,6 @@
       shell.appendChild(previewFooter);
     }
     document.body.appendChild(shell);
-    /* Menu and swipe use the same saved target scroll. Preview geometry merely
-       reproduces that document position; it never becomes an independent source. */
-    /* The preview must show the exact same saved Y that menu navigation requests.
-       Do not independently clamp against preview geometry: applyPage is the single
-       authority that clamps against the real destination document after handoff. */
     const previewScroll=targetScroll;
     previewMain.style.top=`${mainDocumentTop-previewScroll}px`;
     if(previewFooter) previewFooter.style.top=`${mainDocumentTop+previewMain.scrollHeight-previewScroll}px`;
@@ -642,8 +610,6 @@
         duration,easing:'cubic-bezier(.22,.72,.22,1)',fill:'forwards'
       });
       animation.finished.then(()=>{
-        /* Persist the final value in inline style, then remove the WAAPI effect.
-           A finished fill:forwards animation otherwise keeps overriding the next swipe. */
         node.style.transform=to;
         animation.cancel();
       }).catch(()=>{
@@ -695,8 +661,6 @@
     const incomingFrom=preview.main.style.transform||`translate3d(${direction>0?width:-width}px,0,0)`;
     const previewFooterFrom=preview.footer?.style.transform||incomingFrom;
     const targetUrl=preview.url;
-    /* Menu and swipe must land from the exact same saved position source.
-       applyPage performs the same final clamp against the real document in both cases. */
     const targetScroll=Number.isFinite(preview.targetScroll)
       ?preview.targetScroll
       :destinationScrollForPath(normalizedPath(targetUrl.pathname));
@@ -752,8 +716,6 @@
     event.preventDefault();
     start.lastDx=dx;
     const direction=dx<0?1:-1;
-    /* The current page always follows the finger immediately. Neighbor HTML may
-       arrive later, but it must not change the gesture model. */
     positionSwipePages(dx);
     if(direction!==start.direction){
       ensureSwipePreview(direction).then(()=>{
@@ -813,8 +775,6 @@
     }
     event.preventDefault();
     saveCurrentScroll();
-    /* Cache the fully rendered page before leaving it. This keeps dynamic pages
-       such as Publications accurate when they later appear as a swipe preview. */
     cacheCurrentPageSnapshot();
     commitSwipe(direction).finally(()=>{ pageSwipeStart=null; });
   },{passive:false});
@@ -989,7 +949,6 @@
         if(section.querySelector('[data-pub-toggle]')) setYearExpanded(section,open);
       });
       syncAllPublicationToggle();
-      
       return;
     }
 
@@ -1000,7 +959,6 @@
       if(!section) return;
       setYearExpanded(section,section.dataset.expanded!=='true');
       syncAllPublicationToggle();
-      
       return;
     }
 
@@ -1011,17 +969,9 @@
     }
   },true);
 
-
-  /* Publications are the only page-level state that needs persistence.
-     Browser-native navigation/history remains untouched. */
-
-
   initPublications([]);
   siteReady.catch(()=>{});
 
-  /* PAI orbit menu — rebuilt from the pre-orbit stable site.
-     One geometry rule only: item angle = base angle + wheel rotation.
-     Therefore every item is upright whenever it reaches 12 o'clock. */
   const initOrbitMenu=()=>{
     if(document.querySelector('.pai-orbit')) return;
     const orbit=document.createElement('div');
@@ -1057,21 +1007,13 @@
       const layout=data.map(([label,href])=>{
         const chars=Array.from(label);
         const ascii=chars.every(ch=>/[\x00-\x7F]/.test(ch));
-        /* One fixed intra-label spacing rule per script. Menu length no longer
-           changes character spacing; only the label's total arc width changes. */
         const charStep=ascii?4.8:7.6;
-        /* Approximate the visible angular width of the end glyphs as well as
-           the centre-to-centre character spacing. This lets us equalise the
-           actual blank arc between neighbouring labels, not their centres. */
         const glyphSpan=ascii?4.6:6.4;
         const span=(Math.max(0,chars.length-1)*charStep)+glyphSpan;
         return {label,href,chars,charStep,span,center:0};
       });
       const used=layout.reduce((sum,item)=>sum+item.span,0);
       const gap=Math.max(0,(360-used)/layout.length);
-      /* Keep Home at 12 o'clock, then place every following label from the
-         previous visible edge + one identical gap. The final wrap-around gap
-         is identical by construction because spans + gaps total 360 degrees. */
       for(let i=1;i<layout.length;i++){
         const prev=layout[i-1];
         const item=layout[i];
@@ -1127,7 +1069,6 @@
       toggle.setAttribute('aria-expanded',open?'true':'false');
       if(open){
         sync();
-        /* Let the opening scale animation finish before continuous rotation starts. */
         scheduleAuto(560);
       }
       toggle.setAttribute('aria-label',open?(normalizedPath().startsWith('/en/')?'Close quick menu':'关闭快捷菜单'):(normalizedPath().startsWith('/en/')?'Open quick menu':'打开快捷菜单'));
@@ -1165,9 +1106,6 @@
       wheel.addEventListener('touchcancel',end,{passive:true});
     }
 
-    /* Do not create a parallel navigation system. These remain ordinary anchors,
-       so the site's existing delegated click handler applies the exact same
-       destinationScrollForPath/history behavior as the top navigation. */
     wheel.addEventListener('click',e=>{
       const link=e.target.closest&&e.target.closest('a');
       if(!link) return;
@@ -1177,7 +1115,6 @@
         moved=false;
         return;
       }
-      /* Navigation uses the site's normal delegated handler. Keep the orbit open. */
     },true);
 
     new MutationObserver(()=>{if(orbit.classList.contains('open'))sync();}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
