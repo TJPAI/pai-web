@@ -62,6 +62,28 @@
     more.innerHTML=`<a class="text-link" href="publications.html">${isEnglish?'More research results →':'更多研究成果 →'}</a>`;
     container.appendChild(more);
 
+    const platformSection=document.getElementById('selected-updates');
+    if(platformSection){
+      const platformContainer=platformSection.querySelector('.container');
+      if(platformContainer){
+        platformContainer.innerHTML=isEnglish?`
+          <div class="section-head"><div class="eyebrow">COLLABORATION PLATFORMS</div><h2 class="title-section">Collaboration Platforms</h2></div>
+          <div class="updates-grid">
+            <article class="update-item"><div class="update-meta">JOURNAL</div><h3 class="title-item">IET Blockchain</h3><p>International journal platform for blockchain and trusted digital systems.</p></article>
+            <article class="update-item"><div class="update-meta">CONFERENCE</div><h3 class="title-item">IEEE Global Blockchain Conference</h3><p>Global conference platform for academic exchange and industry collaboration.</p></article>
+            <article class="update-item"><div class="update-meta">TECHNICAL COMMUNITY</div><h3 class="title-item">IEEE Blockchain Technical Community (BCTC)</h3><p>Technical community connecting research, standards and global collaboration.</p></article>
+          </div>
+          <div class="home-platform-more"><a class="text-link" href="about.html#international-impact">Platforms & impact →</a></div>`:`
+          <div class="section-head"><div class="eyebrow">COLLABORATION PLATFORMS</div><h2 class="title-section">合作平台</h2></div>
+          <div class="updates-grid">
+            <article class="update-item"><div class="update-meta">期刊</div><h3 class="title-item">IET Blockchain</h3><p>面向区块链与可信数字系统的国际期刊平台。</p></article>
+            <article class="update-item"><div class="update-meta">会议</div><h3 class="title-item">IEEE Global Blockchain Conference</h3><p>面向全球学术交流与产业合作的国际会议平台。</p></article>
+            <article class="update-item"><div class="update-meta">技术社区</div><h3 class="title-item">IEEE Blockchain Technical Community (BCTC)</h3><p>连接科研、标准与国际合作的 IEEE 区块链技术社区。</p></article>
+          </div>
+          <div class="home-platform-more"><a class="text-link" href="about.html#international-impact">了解平台及影响力 →</a></div>`;
+      }
+    }
+
     const mediaSection=document.createElement('section');
     mediaSection.className='section home-media-section';
     mediaSection.innerHTML=`<div class="container"><div class="section-head"><div class="eyebrow">MEDIA COVERAGE</div><h2 class="title-section">${isEnglish?'Media Coverage':'媒体报道'}</h2></div></div>`;
