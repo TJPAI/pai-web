@@ -80,18 +80,11 @@
   .home-hero~.join{padding-top:108px;padding-bottom:108px}
 }
 
-/* Mobile WebView text autosizing guard. WeChat on iOS can enlarge Chinese text
-   after layout and turn the approved two-line homepage title into four lines. */
-html{
-  -webkit-text-size-adjust:100%;
-  text-size-adjust:100%;
-}
-@media(max-width:768px){
-  .home-hero .title-display{white-space:nowrap!important}
-}
+/* Mobile WebView text autosizing guard. WeChat on iOS can enlarge Chinese text after layout. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+@media(max-width:768px){.home-hero .title-display{white-space:nowrap!important}}
 
-
-/* Homepage visual storytelling: keep imagery sparse and editorial. Preserve source aspect ratios; never crop documentary research imagery. */
+/* Homepage visual storytelling. */
 .home-feature-visual{margin:30px 0 22px;border:1px solid var(--line);background:var(--soft);overflow:hidden}
 .home-feature-visual a{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(250px,.65fr);align-items:start}
 .home-feature-visual img{display:block;width:100%;height:auto;min-height:0;max-height:none}
@@ -107,4 +100,38 @@ html{
   .home-feature-visual figcaption{padding:14px 16px 16px;border-left:0;border-top:1px solid var(--line)}
   .home-feature-visual figcaption strong{font-size:14px;margin-bottom:4px}
   .update-feature{margin-top:0;margin-bottom:28px}
+}
+
+/* Three flagship stories on the homepage: competition, CIIE deployment and magnetic communication. */
+.home-achievement-stories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
+.home-achievement-story{margin:0;border:1px solid var(--line);background:#fff;overflow:hidden}
+.home-achievement-story a{display:block;color:inherit;text-decoration:none}
+.home-achievement-story img{display:block;width:100%;height:220px;object-fit:cover}
+.home-achievement-story figcaption{padding:17px 18px 18px;min-height:150px}
+.home-achievement-story strong{display:block;font-size:15px;line-height:1.45;color:var(--ink);margin-bottom:7px}
+.home-achievement-story span{display:block;font-size:13px;line-height:1.6;color:var(--muted)}
+.home-achievement-story small{display:block;margin-top:10px;font-size:11px;line-height:1.4;color:#8A93A2}
+.home-achievements-more{margin-top:26px}
+.home-media-section{border-top:1px solid var(--line)}
+.home-media-section .media-coverage{margin-top:0}
+@media(max-width:768px){
+  .home-achievement-stories{grid-template-columns:1fr;gap:16px}
+  .home-achievement-story img{height:auto;object-fit:contain}
+  .home-achievement-story figcaption{min-height:0;padding:15px 16px 17px}
+}
+
+/* About page: achievements live on Research Results; external media closes the About narrative. */
+main:has(#media-coverage):has(#international-impact){display:flex;flex-direction:column}
+main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
+main:has(#media-coverage):has(#international-impact)>#international-impact{order:90}
+main:has(#media-coverage):has(#international-impact)>#media-coverage{order:100}
+
+/* Research Results page: broad achievements first, scholarly publications second. */
+.results-achievements{padding:70px 0 64px;border-bottom:1px solid var(--line)}
+.results-achievements .highlights{margin-top:28px}
+.results-achievements .highlight{padding-top:22px;padding-bottom:22px}
+.results-publications{padding-top:64px}
+@media(max-width:768px){
+  .results-achievements{padding:56px 0 50px}
+  .results-publications{padding-top:50px}
 }
