@@ -32,7 +32,6 @@
     svg.setAttribute('fill','none');
     svg.setAttribute('aria-hidden','true');
     svg.setAttribute('focusable','false');
-
     const path=document.createElementNS(ns,'path');
     path.setAttribute('d',LOGO_PATH);
     path.setAttribute('fill','none');
@@ -47,33 +46,28 @@
   };
 
   const startDraw=(host,path)=>{
-    if(!path.isConnected) return;
     const length=path.getTotalLength();
     path.style.strokeDasharray=`${length} ${length}`;
     path.style.strokeDashoffset=String(length);
-
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
       if(!path.isConnected) return;
+      host.classList.add('pai-logo-motion-ready');
       const started=performance.now();
       const duration=5000;
       const tick=now=>{
         if(!path.isConnected||!isHome()) return;
         const t=Math.min(1,(now-started)/duration);
         path.style.strokeDashoffset=String(length*(1-ease(t)));
-        if(t<1){
-          drawFrame=requestAnimationFrame(tick);
-          return;
-        }
+        if(t<1){drawFrame=requestAnimationFrame(tick);return;}
         path.style.strokeDashoffset='0';
         drawFrame=0;
-        exitTimer=window.setTimeout(()=>{
-          if(!isHome()||!host.isConnected) return;
-          /* Enable transition only now, so there can never be an entry slide. */
+        exitTimer=setTimeout(()=>{
+          if(!host.isConnected||!isHome()) return;
           host.classList.add('pai-logo-motion-can-exit');
           requestAnimationFrame(()=>{
-            if(!isHome()||!host.isConnected) return;
+            if(!host.isConnected||!isHome()) return;
             host.classList.add('pai-logo-motion-exit');
-            hideTimer=window.setTimeout(()=>host.classList.add('pai-logo-motion-hidden'),760);
+            hideTimer=setTimeout(()=>host.classList.add('pai-logo-motion-hidden'),760);
           });
         },450);
       };
@@ -87,18 +81,16 @@
     const host=document.querySelector('.home-hero .hero-art');
     if(!host) return;
     if(host.dataset.paiLogoMotion==='1'&&!force) return;
-
     clearMotion();
     host.dataset.paiLogoMotion='1';
     host.classList.add('pai-logo-motion-host');
-    host.classList.remove('pai-logo-motion-can-exit','pai-logo-motion-exit','pai-logo-motion-hidden');
-
+    host.classList.remove('pai-logo-motion-ready','pai-logo-motion-can-exit','pai-logo-motion-exit','pai-logo-motion-hidden');
     const {svg,path}=makeLogo();
     host.replaceChildren(svg);
-
     if(matchMedia('(prefers-reduced-motion: reduce)').matches){
       path.style.strokeDasharray='none';
       path.style.strokeDashoffset='0';
+      host.classList.add('pai-logo-motion-ready');
       return;
     }
     startDraw(host,path);
@@ -110,12 +102,21 @@
     requestAnimationFrame(()=>init(false));
   };
 
+  const hideBeforeRestore=()=>{
+    if(!isHome()) return;
+    const host=document.querySelector('.home-hero .hero-art');
+    if(!host) return;
+    host.classList.remove('pai-logo-motion-ready');
+  };
+
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',schedule,{once:true});
   else schedule();
   new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});
   addEventListener('popstate',schedule);
-  addEventListener('pageshow',()=>{
-    if(!isHome()) return;
+  addEventListener('pageshow',event=>{
+    if(!event.persisted||!isHome()) return;
     requestAnimationFrame(()=>requestAnimationFrame(()=>init(true)));
   });
+  addEventListener('pagehide',hideBeforeRestore);
+  addEventListener('beforeunload',hideBeforeRestore);
 })();
