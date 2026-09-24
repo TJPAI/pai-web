@@ -44,16 +44,16 @@ jobs:
               raise SystemExit('Expected English navigation label not found')
           path.write_text(text.replace(old, new, 1), encoding='utf-8')
           PY
-      - name: Hide orbit menu while mobile navigation is open
+      - name: Keep only one expanded mobile menu
         run: |
-          printf '\n@media(max-width:768px){body:has(.mobile-menu.open) .pai-orbit{display:none!important}}\n' >> assets/css/refine.css
+          printf '\n@media(max-width:768px){body:has(.mobile-menu.open) .pai-orbit-wheel,body:has(.mobile-menu.open) .pai-orbit-backdrop{display:none!important}}\n' >> assets/css/refine.css
       - name: Normalize shared asset cache keys
         run: |
           python - <<'PY'
           from pathlib import Path
           import re
 
-          refine_version = "20260925-05"
+          refine_version = "20260925-06"
           site_js_version = "20260925-01"
           refine_pattern = re.compile(r"refine\.css\?v=[0-9-]+")
           site_js_pattern = re.compile(r"site\.js\?v=[0-9-]+")
