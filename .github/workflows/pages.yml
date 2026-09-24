@@ -50,6 +50,21 @@ jobs:
                   changed += 1
           print(f"Normalized refine.css cache key in {changed} HTML files")
           PY
+      - name: Tighten publication year divider spacing
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          old = '.results-publications .publication-toolbar{border-bottom:1px solid var(--line)!important;padding-bottom:24px!important}'
+          new = '.results-publications .publication-toolbar{border-bottom:1px solid var(--line)!important;padding-bottom:10px!important}'
+          for name in ('publications.html', 'en/publications.html'):
+              path = Path(name)
+              text = path.read_text(encoding='utf-8')
+              updated = text.replace(old, new)
+              if updated != text:
+                  path.write_text(updated, encoding='utf-8')
+                  print(f'Tightened divider spacing in {name}')
+          PY
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
