@@ -65,37 +65,6 @@ jobs:
                   path.write_text(updated, encoding='utf-8')
                   print(f'Tightened divider spacing in {name}')
           PY
-      - name: Fix orbit menu tap routing
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          fix = '''<script>(function(){
-          function arm(){
-            document.querySelectorAll('.pai-orbit-item:not([data-tap-ready])').forEach(function(link){
-              link.setAttribute('data-tap-ready','1');
-              link.addEventListener('pointerdown',function(e){e.stopPropagation();});
-              link.addEventListener('touchstart',function(e){e.stopPropagation();},{passive:true});
-            });
-          }
-          arm();
-          var wheel=document.querySelector('.pai-orbit-wheel');
-          if(wheel)new MutationObserver(arm).observe(wheel,{childList:true});
-          })();</script>'''
-
-          changed = 0
-          for path in Path('.').rglob('*.html'):
-              if 'geosketch-mvp' in path.parts:
-                  continue
-              text = path.read_text(encoding='utf-8')
-              if 'data-tap-ready' in text:
-                  continue
-              updated = text.replace('</body>', fix + '</body>')
-              if updated != text:
-                  path.write_text(updated, encoding='utf-8')
-                  changed += 1
-          print(f'Applied orbit tap fix to {changed} HTML files')
-          PY
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
