@@ -112,6 +112,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .home-achievement-story span{display:block;font-size:13px;line-height:1.6;color:var(--muted)}
 .home-achievement-story small{display:block;margin-top:10px;font-size:11px;line-height:1.4;color:#8A93A2}
 .home-achievements-more{margin-top:26px}
+.home-platform-more{margin-top:28px}
 .home-media-section{border-top:1px solid var(--line)}
 .home-media-section .media-coverage{margin-top:0}
 @media(max-width:768px){
@@ -125,6 +126,26 @@ main:has(#media-coverage):has(#international-impact){display:flex;flex-direction
 main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 main:has(#media-coverage):has(#international-impact)>#international-impact{order:90}
 main:has(#media-coverage):has(#international-impact)>#media-coverage{order:100}
+
+/* Visible naming: "Platforms & Impact" / “平台及影响力”, with international removed from the label. */
+#international-impact .section-head .eyebrow,
+#international-impact>.container>.eyebrow{font-size:0}
+#international-impact .section-head .eyebrow::after,
+#international-impact>.container>.eyebrow::after{content:"PLATFORMS & IMPACT";font-size:11px;letter-spacing:.16em}
+#international-impact .title-section{font-size:0}
+#international-impact .title-section::after{content:"平台及影响力";font-size:clamp(30px,4vw,52px);line-height:1.08;letter-spacing:-.035em;color:var(--ink)}
+html[lang^="en"] #international-impact .title-section::after{content:"Platforms & Impact"}
+
+/* Platform order: journal, conference, BCTC, IEEE blockchain platform, engineering center. */
+#international-impact>.container{display:flex;flex-direction:column}
+#international-impact .section-head,
+#international-impact>.container>.eyebrow,
+#international-impact>.container>.title-section{order:0}
+#international-impact .detail-block{order:40}
+#international-impact .detail-block:has(a[href*="ietresearch"]){order:10}
+#international-impact .detail-block:has(a[href*="ieee-gbc"]){order:20}
+#international-impact .detail-block:has(a[href*="blockchain.ieee.org"]){order:30}
+#international-impact .detail-block:has(a[href*="sercbaas"]){order:50}
 
 /* Research Results page: broad achievements first, scholarly publications second. */
 .results-achievements{padding:70px 0 64px;border-bottom:1px solid var(--line)}
