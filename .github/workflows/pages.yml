@@ -37,7 +37,7 @@ jobs:
           from pathlib import Path
           import re
 
-          version = "20260925-03"
+          version = "20260925-04"
           pattern = re.compile(r"refine\.css\?v=[0-9-]+")
           changed = 0
           for path in Path(".").rglob("*.html"):
@@ -56,7 +56,7 @@ jobs:
           from pathlib import Path
 
           old = '.results-publications .publication-toolbar{border-bottom:1px solid var(--line)!important;padding-bottom:24px!important}'
-          new = '.results-publications .publication-toolbar{border-bottom:1px solid var(--line)!important;padding-bottom:10px!important}'
+          new = '.results-publications .publication-toolbar{border-bottom:1px solid var(--line)!important;padding-bottom:4px!important}'
           for name in ('publications.html', 'en/publications.html'):
               path = Path(name)
               text = path.read_text(encoding='utf-8')
