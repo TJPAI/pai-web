@@ -31,6 +31,19 @@ jobs:
         run: python tools/validate_share_metadata.py
       - name: Validate site runtime syntax
         run: node --check assets/js/site.js && node --check sw.js
+      - name: Use Outputs in English navigation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('assets/js/site.js')
+          text = path.read_text(encoding='utf-8')
+          old = "['Research Results','/en/publications.html']"
+          new = "['Outputs','/en/publications.html']"
+          if old not in text:
+              raise SystemExit('Expected English navigation label not found')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
       - name: Normalize shared stylesheet cache key
         run: |
           python - <<'PY'
