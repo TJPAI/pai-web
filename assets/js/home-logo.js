@@ -22,10 +22,7 @@
     drawFrame=exitTimer=hideTimer=0;
   };
 
-  const ease=t=>{
-    /* Smoothstep: deterministic in Safari and close to the previous easing. */
-    return t*t*(3-2*t);
-  };
+  const ease=t=>t*t*(3-2*t);
 
   const makeLogo=()=>{
     const ns='http://www.w3.org/2000/svg';
@@ -43,7 +40,6 @@
     path.setAttribute('stroke-width','43');
     path.setAttribute('stroke-linecap','round');
     path.setAttribute('stroke-linejoin','round');
-    /* Keep the stroke hidden even before the first paint. */
     path.style.strokeDasharray='10000 10000';
     path.style.strokeDashoffset='10000';
     svg.appendChild(path);
@@ -56,7 +52,6 @@
     path.style.strokeDasharray=`${length} ${length}`;
     path.style.strokeDashoffset=String(length);
 
-    /* Two frames guarantee Safari paints the hidden state before drawing. */
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
       if(!path.isConnected) return;
       const started=performance.now();
@@ -64,8 +59,7 @@
       const tick=now=>{
         if(!path.isConnected||!isHome()) return;
         const t=Math.min(1,(now-started)/duration);
-        const p=ease(t);
-        path.style.strokeDashoffset=String(length*(1-p));
+        path.style.strokeDashoffset=String(length*(1-ease(t)));
         if(t<1){
           drawFrame=requestAnimationFrame(tick);
           return;
@@ -74,8 +68,13 @@
         drawFrame=0;
         exitTimer=window.setTimeout(()=>{
           if(!isHome()||!host.isConnected) return;
-          host.classList.add('pai-logo-motion-exit');
-          hideTimer=window.setTimeout(()=>host.classList.add('pai-logo-motion-hidden'),760);
+          /* Enable transition only now, so there can never be an entry slide. */
+          host.classList.add('pai-logo-motion-can-exit');
+          requestAnimationFrame(()=>{
+            if(!isHome()||!host.isConnected) return;
+            host.classList.add('pai-logo-motion-exit');
+            hideTimer=window.setTimeout(()=>host.classList.add('pai-logo-motion-hidden'),760);
+          });
         },450);
       };
       drawFrame=requestAnimationFrame(tick);
@@ -92,7 +91,7 @@
     clearMotion();
     host.dataset.paiLogoMotion='1';
     host.classList.add('pai-logo-motion-host');
-    host.classList.remove('pai-logo-motion-exit','pai-logo-motion-hidden');
+    host.classList.remove('pai-logo-motion-can-exit','pai-logo-motion-exit','pai-logo-motion-hidden');
 
     const {svg,path}=makeLogo();
     host.replaceChildren(svg);
@@ -113,13 +112,8 @@
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',schedule,{once:true});
   else schedule();
-
-  /* SPA swaps can recreate the hero. */
   new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});
   addEventListener('popstate',schedule);
-
-  /* iOS Safari can restore a fully rendered SVG on refresh/page restoration.
-     Rebuild the SVG on every pageshow so the one-stroke starts from frame zero. */
   addEventListener('pageshow',()=>{
     if(!isHome()) return;
     requestAnimationFrame(()=>requestAnimationFrame(()=>init(true)));
