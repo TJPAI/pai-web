@@ -31,19 +31,6 @@ jobs:
         run: python tools/validate_share_metadata.py
       - name: Validate site runtime syntax
         run: node --check assets/js/site.js && node --check sw.js && node --check assets/js/menu-exclusive.js
-      - name: Use Outputs in English navigation
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path('assets/js/site.js')
-          text = path.read_text(encoding='utf-8')
-          old = "['Research Results','/en/publications.html']"
-          new = "['Outputs','/en/publications.html']"
-          if old not in text:
-              raise SystemExit('Expected English navigation label not found')
-          path.write_text(text.replace(old, new, 1), encoding='utf-8')
-          PY
       - name: Inject mobile menu exclusivity helper
         run: python tools/inject_menu_exclusive.py
       - name: Normalize shared asset cache keys
@@ -53,7 +40,7 @@ jobs:
           import re
 
           refine_version = "20260925-04"
-          site_js_version = "20260925-01"
+          site_js_version = "20260925-02"
           refine_pattern = re.compile(r"refine\.css\?v=[0-9-]+")
           site_js_pattern = re.compile(r"site\.js\?v=[0-9-]+")
           changed = 0
