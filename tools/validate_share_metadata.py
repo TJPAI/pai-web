@@ -3,20 +3,19 @@ from pathlib import Path
 import re, sys
 
 ROOT = Path(__file__).resolve().parents[1]
-SHARE_IMAGE = 'https://tjpai.github.io/pai-web/assets/images/social/pai-share-v4.jpg'
+BASE_URL = 'https://tjpai.github.io/pai-web/'
+SHARE_IMAGE = BASE_URL + 'assets/images/social/pai-share-v4.jpg'
 errors = []
 checked = []
 
 
-def attr_value(text, tag, attr, value_attr='content'):
-    pattern = rf'<{tag}\b(?=[^>]*\b{attr}=["\']([^"\']+)["\'])[^>]*\b{value_attr}=["\']([^"\']*)["\'][^>]*>'
-    m = re.search(pattern, text, re.I)
-    if m:
-        return m.group(2)
-    # Attribute order may be reversed.
-    pattern = rf'<{tag}\b(?=[^>]*\b{value_attr}=["\']([^"\']*)["\'])[^>]*\b{attr}=["\']([^"\']+)["\'][^>]*>'
-    m = re.search(pattern, text, re.I)
-    return m.group(1) if m else None
+def meta_content(text, kind, key):
+    for tag in re.findall(r'<meta\b[^>]*>', text, re.I):
+        if not re.search(rf'\b{kind}=["\']{re.escape(key)}["\']', tag, re.I):
+            continue
+        m = re.search(r'\bcontent=["\']([^"\']*)["\']', tag, re.I)
+        return m.group(1).strip() if m else None
+    return None
 
 
 def link_href(text, rel):
@@ -28,6 +27,7 @@ def link_href(text, rel):
             return href_m.group(1)
     return None
 
+
 for html in sorted(ROOT.rglob('*.html')):
     text = html.read_text(encoding='utf-8')
     rel = str(html.relative_to(ROOT))
@@ -36,19 +36,17 @@ for html in sorted(ROOT.rglob('*.html')):
         continue
     checked.append(rel)
 
-    title = re.search(r'<title>(.*?)</title>', text, re.I | re.S)
-    if not title or not title.group(1).strip():
+    title_match = re.search(r'<title>(.*?)</title>', text, re.I | re.S)
+    title = title_match.group(1).strip() if title_match else None
+    if not title:
         errors.append(f'{rel}: missing <title>')
 
-    description = attr_value(text, 'meta', 'name', 'content') if False else None
-    m = re.search(r'<meta\b(?=[^>]*\bname=["\']description["\'])[^>]*\bcontent=["\']([^"\']+)["\'][^>]*>', text, re.I)
-    if not m:
-        m = re.search(r'<meta\b(?=[^>]*\bcontent=["\']([^"\']+)["\'])[^>]*\bname=["\']description["\'][^>]*>', text, re.I)
-    if not m:
+    description = meta_content(text, 'name', 'description')
+    if not description:
         errors.append(f'{rel}: missing meta description')
 
     canonical = link_href(text, 'canonical')
-    if not canonical or not canonical.startswith('https://tjpai.github.io/pai-web/'):
+    if not canonical or not canonical.startswith(BASE_URL):
         errors.append(f'{rel}: missing/invalid canonical')
 
     required_meta = {
@@ -65,23 +63,36 @@ for html in sorted(ROOT.rglob('*.html')):
         ('name', 'twitter:description'): None,
         ('name', 'twitter:image'): SHARE_IMAGE,
     }
+    found_meta = {}
     for (kind, key), expected in required_meta.items():
-        found = None
-        for tag in re.findall(r'<meta\b[^>]*>', text, re.I):
-            km = re.search(rf'\b{kind}=["\']{re.escape(key)}["\']', tag, re.I)
-            cm = re.search(r'\bcontent=["\']([^"\']*)["\']', tag, re.I)
-            if km and cm:
-                found = cm.group(1)
-                break
-        if found is None or not found.strip():
+        found = meta_content(text, kind, key)
+        found_meta[key] = found
+        if not found:
             errors.append(f'{rel}: missing {key}')
         elif expected is not None and found != expected:
             errors.append(f'{rel}: {key} should be {expected}, got {found}')
 
+    # Keep browser, Open Graph, and Twitter presentation aligned.
+    if title:
+        for key in ('og:title', 'twitter:title'):
+            value = found_meta.get(key)
+            if value and value != title:
+                errors.append(f'{rel}: {key} must match <title> ({title}), got {value}')
+    if description:
+        for key in ('og:description', 'twitter:description'):
+            value = found_meta.get(key)
+            if value and value != description:
+                errors.append(f'{rel}: {key} must match meta description')
+    og_url = found_meta.get('og:url')
+    if canonical and og_url and og_url != canonical:
+        errors.append(f'{rel}: og:url must match canonical ({canonical}), got {og_url}')
+
     for lang in ('zh-CN', 'en', 'x-default'):
         ok = False
         for tag in re.findall(r'<link\b[^>]*>', text, re.I):
-            if re.search(r'\brel=["\']alternate["\']', tag, re.I) and re.search(rf'\bhreflang=["\']{re.escape(lang)}["\']', tag, re.I) and re.search(r'\bhref=["\']https://tjpai\.github\.io/pai-web/', tag, re.I):
+            if (re.search(r'\brel=["\']alternate["\']', tag, re.I)
+                    and re.search(rf'\bhreflang=["\']{re.escape(lang)}["\']', tag, re.I)
+                    and re.search(r'\bhref=["\']https://tjpai\.github\.io/pai-web/', tag, re.I)):
                 ok = True
                 break
         if not ok:
