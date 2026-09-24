@@ -181,12 +181,13 @@ html[lang^="en"] #international-impact .detail-block:has(a[href*="sercbaas"]) p:
   #international-impact .detail-block:nth-last-of-type(2) .title-item::after{font-size:18px}
 }
 
-/* Research Results page: broad achievements first, scholarly publications second. */
-.results-achievements{padding:70px 0 64px;border-bottom:1px solid var(--line)}
+/* Research Results page: items 01-06 form one continuous achievement sequence. */
+.results-achievements{padding:70px 0 0;border-bottom:0}
 .results-achievements .highlights{margin-top:28px}
 .results-achievements .highlight{padding-top:22px;padding-bottom:22px}
-.results-publications{padding-top:64px}
+.results-publications{padding-top:0}
+.results-publications-heading{margin-top:0}
 @media(max-width:768px){
-  .results-achievements{padding:56px 0 50px}
-  .results-publications{padding-top:50px}
+  .results-achievements{padding:56px 0 0}
+  .results-publications{padding-top:0}
 }
