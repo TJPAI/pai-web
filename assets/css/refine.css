@@ -50,6 +50,22 @@
   .impact-visual img{display:block;width:100%;height:auto}
 }
 
+/* Compact media coverage index: factual third-party coverage, visually secondary to research outcomes. */
+.media-coverage{margin-top:34px}
+.media-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
+.media-item{display:grid;grid-template-columns:118px minmax(0,1fr);gap:16px;align-items:start;padding:15px 0;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}
+.media-item:nth-child(odd){padding-right:24px}
+.media-item:nth-child(even){padding-left:24px;border-left:1px solid var(--line)}
+.media-meta{font-size:11px;line-height:1.5;letter-spacing:.035em;color:#7D8794;text-transform:none}
+.media-title{font-size:14px;line-height:1.55;color:var(--ink)}
+.media-item:hover .media-title{text-decoration:underline;text-underline-offset:3px}
+.media-more{margin-top:22px}
+@media(max-width:768px){
+  .media-list{grid-template-columns:1fr}
+  .media-item{grid-template-columns:98px minmax(0,1fr);gap:12px;padding:14px 0!important;border-left:0!important}
+  .media-title{font-size:13px}
+}
+
 /* Homepage mobile rhythm — compact but still editorial */
 @media(max-width:768px){
   .home-hero~.section{padding-top:72px;padding-bottom:72px}
