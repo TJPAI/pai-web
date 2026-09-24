@@ -1,6 +1,9 @@
 /* Homepage PAI logo motion; isolated from stable navigation/page-swipe CSS. */
 .home-hero{position:relative}
 .home-hero .hero-grid{position:static}
+/* Hide the original hero artwork before JS installs the one-stroke logo. This also
+   prevents iOS Safari from flashing a restored/final SVG frame on refresh. */
+.home-hero .hero-art{visibility:hidden}
 .home-hero .hero-art.pai-logo-motion-host{
   position:absolute;
   left:50%;
@@ -20,6 +23,7 @@
   transition:none;
   will-change:auto;
 }
+.home-hero .hero-art.pai-logo-motion-host.pai-logo-motion-ready{visibility:visible}
 .home-hero .pai-logo-motion{
   display:block;
   width:100%;
