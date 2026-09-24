@@ -135,7 +135,6 @@ for html in html_files:
     if '高水平科研与代表成果' in text:
         errors.append(f'{rel}: deprecated heading "高水平科研与代表成果"; use "代表性成果"')
 
-
 # Research identity/title contracts: homepage and detail page must share canonical markup and text.
 research_specs=[('01','PNL','Positioning &amp;<br>Localization'),('02','IoT-NG','Internet of Things<br>Next Generation'),('03','AIBI','Artificial Intelligence &amp;<br>Blockchain Intelligence')]
 for prefix in ('','en/'):
@@ -148,15 +147,15 @@ for prefix in ('','en/'):
     if len(re.findall(r'class="[^"]*\bresearch-title\b[^"]*"',home))!=3: errors.append(f'{prefix}index.html: expected exactly 3 canonical research-title elements')
     if len(re.findall(r'class="[^"]*\bresearch-title\b[^"]*"',detail))!=3: errors.append(f'{prefix}research.html: expected exactly 3 canonical research-title elements')
 
-# Critical detail-link contracts: these links must land on the matching content block, not just the top of a page.
+# Critical detail-link contracts: these links must follow the current information architecture.
 contracts={
     'index.html':[
         'research.html#pnl','research.html#iotng','research.html#aibi',
-        'about.html#achievements','contact.html#cooperation'
+        'publications.html','about.html#international-impact','about.html#media-coverage'
     ],
     'en/index.html':[
         'research.html#pnl','research.html#iotng','research.html#aibi',
-        'about.html#achievements'
+        'publications.html','about.html#international-impact','about.html#media-coverage'
     ],
     'join.html':['contact.html#recruitment'],
     'en/join.html':['contact.html#recruitment']
@@ -233,7 +232,6 @@ for required in ('assets/css/refine-base.css','assets/css/app-core.css'):
     if not (ROOT/required).exists():
         errors.append(f'{required}: missing shared style layer')
 
-
 # Lightweight-navigation reliability guardrail.
 site_js=(ROOT/'assets/js/site.js').read_text(encoding='utf-8')
 for required in ('history.pushState','popstate','DOMParser','currentMain.replaceWith','eligiblePageLink'):
@@ -249,9 +247,7 @@ for name in ('erwu-liu','rui-wang','gang-shen','dunhui-xiao','shuyan-hu','yan-li
     rel=f'assets/images/people/{name}.{ext}'
     if not (ROOT/rel).is_file(): errors.append(f'{rel}: missing portrait')
 
-
 # Canonical typography ownership guardrail.
-# Title visual properties belong only in assets/css/typography.css; component layers may keep layout properties.
 _typography_owned_selectors=[
     '.eyebrow','.hero h1','.home-hero h1','.page-hero h1',
     '.section-head h2','.content-section h2','.prose h2','.join h2',
@@ -277,7 +273,6 @@ for required in ('--title-display-size','--title-page-size','--title-section-siz
     if required not in _typography:
         errors.append(f'assets/css/typography.css: missing canonical title contract {required}')
 
-# Semantic title classes are the canonical presentation contract; typography.css must not depend on page structure.
 for required in ('.title-display{','.title-page{','.title-section{','.title-feature{','.title-item{','.title-minor{','.item-index{'):
     if required not in _typography:
         errors.append(f'assets/css/typography.css: missing semantic rule {required}')
@@ -294,9 +289,7 @@ for base in (ROOT/'people',ROOT/'en'/'people'):
             if m and 'title-minor' not in m.group(1):
                 errors.append(f'{html.relative_to(ROOT)}: detail-block h3 must use title-minor')
 
-
 # Semantic title hierarchy guardrail.
-# Structural selectors remain compatibility aliases, but canonical content must declare its title level explicitly.
 for html in html_files:
     rel=str(html.relative_to(ROOT))
     if rel=='404.html':
@@ -321,7 +314,6 @@ if '<h3 class="title-item">${esc(publication.title)}</h3>' not in site_js:
     errors.append('assets/js/site.js: publication titles must use semantic title-item class')
 
 # Full semantic heading coverage guardrail.
-# Every h1/h2/h3 inside <main> must explicitly declare its semantic typography level.
 _semantic_heading_classes={'title-display','title-page','title-section','title-feature','title-item','title-minor'}
 for html in html_files:
     rel=str(html.relative_to(ROOT))
@@ -339,9 +331,6 @@ for html in html_files:
         if not (classes&_semantic_heading_classes):
             line=text[:main_match.start(1)+m.start()].count('\n')+1
             errors.append(f'{rel}:{line}: h{m.group(1)} must declare a semantic title class')
-
-# Validation must fail the build when any contract is violated.
-
 
 # PAI terminology / completeness guardrails.
 _deprecated_pai_terms=[
@@ -377,8 +366,6 @@ for rel in paired:
 if not (ROOT/'assets/images/social/pai-share-v4.jpg').exists(): errors.append('missing social share image')
 for rel in ('assets/icons/favicon.svg','assets/icons/favicon-32.png','assets/icons/apple-touch-icon.png','assets/icons/icon-192.png','assets/icons/icon-512.png','site.webmanifest'):
     if not (ROOT/rel).exists(): errors.append(f'missing brand asset: {rel}')
-
-
 
 # Social preview guardrail.
 for html,text in html_text.items():
