@@ -187,14 +187,14 @@ html[lang^="en"] #international-impact .detail-block:has(a[href*="sercbaas"]) p:
 .results-achievements .highlight{padding-top:22px;padding-bottom:22px}
 .results-publications{padding-top:0}
 .results-publications-heading{margin-top:0}
+.results-publications-heading .highlight{border-bottom:0!important}
 @media(max-width:768px){
   .results-achievements{padding:56px 0 0}
   .results-publications{padding-top:0}
 }
 
-/* Research Results final rhythm: keep 01 comfortably separated from the intro, keep 05→06 continuous, and remove the rule under year shortcuts. */
+/* Research Results final rhythm: keep 01 comfortably separated from the intro, keep 05→06 continuous. */
 main>.page-hero:has(+ .results-achievements){padding-bottom:36px!important}
-.results-publications .publication-toolbar{border-bottom:0!important}
 @media(max-width:768px){
   main>.page-hero:has(+ .results-achievements){padding-bottom:28px!important}
 }
