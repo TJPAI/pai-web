@@ -73,14 +73,14 @@
             <article class="update-item"><div class="update-meta">CONFERENCE</div><h3 class="title-item">IEEE Global Blockchain Conference</h3><p>Conference chair institution connecting frontier research, industry and global collaboration.</p></article>
             <article class="update-item"><div class="update-meta">TECHNICAL COMMUNITY</div><h3 class="title-item">IEEE Blockchain Technical Community (BCTC)</h3><p>China leadership institution supporting technical-community development across China and Asia-Pacific.</p></article>
           </div>
-          <div class="home-platform-more"><a class="text-link" href="about.html#international-impact">Platforms & impact →</a></div>`:`
+          <div class="home-platform-more"><a class="text-link" href="about.html#international-impact">More platform information →</a></div>`:`
           <div class="section-head"><div class="eyebrow">COLLABORATION PLATFORMS</div><h2 class="title-section">合作平台</h2></div>
           <div class="updates-grid">
             <article class="update-item"><div class="update-meta">期刊</div><h3 class="title-item">IET Blockchain</h3><p>创刊主编单位，建设开放获取的国际区块链学术期刊平台。</p></article>
             <article class="update-item"><div class="update-meta">会议</div><h3 class="title-item">IEEE Global Blockchain Conference</h3><p>大会主席单位，连接前沿研究、产业协同与国际合作。</p></article>
             <article class="update-item"><div class="update-meta">技术社区</div><h3 class="title-item">IEEE Blockchain Technical Community (BCTC)</h3><p>中国区主席单位，推动中国及亚太区技术社区建设。</p></article>
           </div>
-          <div class="home-platform-more"><a class="text-link" href="about.html#international-impact">了解平台及影响力 →</a></div>`;
+          <div class="home-platform-more"><a class="text-link" href="about.html#international-impact">了解更多平台信息 →</a></div>`;
       }
     }
 
@@ -172,7 +172,9 @@
   const schedule=()=>{
     if(scheduled) return;
     scheduled=true;
-    requestAnimationFrame(()=>initHomeLogo(false));
+    /* MutationObserver callbacks run before the next paint. Reshape synchronously
+       here so Safari never gets a frame containing the legacy homepage imagery. */
+    initHomeLogo(false);
   };
 
   window.initHomeLogo=initHomeLogo;
