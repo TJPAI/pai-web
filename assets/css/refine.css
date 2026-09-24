@@ -191,3 +191,16 @@ html[lang^="en"] #international-impact .detail-block:has(a[href*="sercbaas"]) p:
   .results-achievements{padding:56px 0 0}
   .results-publications{padding-top:0}
 }
+
+/* Research Results final rhythm: keep 01 comfortably separated from the intro, keep 05→06 continuous, and remove the rule under year shortcuts. */
+main>.page-hero:has(+ .results-achievements){padding-bottom:36px!important}
+.results-publications .publication-toolbar{border-bottom:0!important}
+@media(max-width:768px){
+  main>.page-hero:has(+ .results-achievements){padding-bottom:28px!important}
+}
+
+/* Platform heading guard: exactly one English eyebrow above the localized section title. */
+#international-impact .section-head .eyebrow{font-size:0!important;line-height:1!important}
+#international-impact .section-head .eyebrow::before{content:none!important}
+#international-impact .section-head .eyebrow::after{content:"PLATFORM INTRODUCTION"!important;display:block;font-size:11px!important;line-height:1.3!important;letter-spacing:.16em!important}
+#international-impact>.container>.eyebrow{display:none!important}
