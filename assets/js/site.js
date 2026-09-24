@@ -36,7 +36,7 @@
   const navItems=lang=>lang==='en'?
     [
       ['About','/en/about.html'],['People','/en/team.html'],['Research','/en/research.html'],
-      ['Research Results','/en/publications.html'],['Join','/en/join.html'],['Contact','/en/contact.html']
+      ['Outputs','/en/publications.html'],['Join','/en/join.html'],['Contact','/en/contact.html']
     ]:
     [
       ['关于我们','/about.html'],['研究团队','/team.html'],['研究方向','/research.html'],
