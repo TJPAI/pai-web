@@ -21,6 +21,9 @@
   .site-header .brand span{margin-top:3px}
 }
 
+/* English editorial hierarchy: use all caps only for small eyebrow labels. */
+html[lang^="en"] .eyebrow{text-transform:uppercase}
+
 /* Orbit navigation is a mobile interaction aid; desktop already has the full top navigation. */
 @media(min-width:769px){
   .pai-orbit{display:none!important}
