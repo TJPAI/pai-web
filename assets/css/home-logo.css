@@ -17,8 +17,8 @@
   opacity:1;
   pointer-events:none;
   z-index:1;
-  transition:opacity .7s ease, transform .7s cubic-bezier(.22,.61,.36,1);
-  will-change:opacity,transform;
+  transition:none;
+  will-change:auto;
 }
 .home-hero .pai-logo-motion{
   display:block;
@@ -28,6 +28,10 @@
   object-position:center;
   background:transparent;
   mix-blend-mode:multiply;
+}
+.home-hero .hero-art.pai-logo-motion-host.pai-logo-motion-can-exit{
+  transition:opacity .7s ease, transform .7s cubic-bezier(.22,.61,.36,1);
+  will-change:opacity,transform;
 }
 .home-hero .hero-art.pai-logo-motion-host.pai-logo-motion-exit{
   opacity:0;
