@@ -44,59 +44,17 @@ jobs:
               raise SystemExit('Expected English navigation label not found')
           path.write_text(text.replace(old, new, 1), encoding='utf-8')
           PY
-      - name: Keep mobile menus mutually exclusive
+      - name: Hide orbit menu while mobile navigation is open
         run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path('assets/js/site.js')
-          text = path.read_text(encoding='utf-8')
-
-          old_mobile = """    const open=!menu.classList.contains('open');
-    menu.classList.toggle('open',open);
-    button.setAttribute('aria-expanded',open?'true':'false');"""
-          new_mobile = """    const open=!menu.classList.contains('open');
-    if(open){
-      const orbit=document.querySelector('.pai-orbit');
-      if(orbit){
-        orbit.classList.remove('open','dragging','auto-rotating');
-        orbit.querySelector('.pai-orbit-toggle')?.setAttribute('aria-expanded','false');
-      }
-    }
-    menu.classList.toggle('open',open);
-    button.setAttribute('aria-expanded',open?'true':'false');"""
-
-          old_orbit = """    const setOpen=open=>{
-      if(!open) stopAuto();
-      orbit.classList.toggle('open',open);"""
-          new_orbit = """    const setOpen=open=>{
-      if(open){
-        const header=document.querySelector('.site-header');
-        const menu=header?.querySelector('.mobile-menu');
-        const menuButton=header?.querySelector('.menu-btn');
-        menu?.classList.remove('open');
-        menuButton?.setAttribute('aria-expanded','false');
-      }
-      if(!open) stopAuto();
-      orbit.classList.toggle('open',open);"""
-
-          if old_mobile not in text:
-              raise SystemExit('Mobile menu toggle block not found')
-          if old_orbit not in text:
-              raise SystemExit('Orbit menu toggle block not found')
-          text = text.replace(old_mobile, new_mobile, 1).replace(old_orbit, new_orbit, 1)
-          path.write_text(text, encoding='utf-8')
-          PY
-      - name: Validate deployed runtime syntax
-        run: node --check assets/js/site.js
+          printf '\n@media(max-width:768px){body:has(.mobile-menu.open) .pai-orbit{display:none!important}}\n' >> assets/css/refine.css
       - name: Normalize shared asset cache keys
         run: |
           python - <<'PY'
           from pathlib import Path
           import re
 
-          refine_version = "20260925-04"
-          site_js_version = "20260925-02"
+          refine_version = "20260925-05"
+          site_js_version = "20260925-01"
           refine_pattern = re.compile(r"refine\.css\?v=[0-9-]+")
           site_js_pattern = re.compile(r"site\.js\?v=[0-9-]+")
           changed = 0
