@@ -204,3 +204,14 @@ main>.page-hero:has(+ .results-achievements){padding-bottom:36px!important}
 #international-impact .section-head .eyebrow::before{content:none!important}
 #international-impact .section-head .eyebrow::after{content:"PLATFORM INTRODUCTION"!important;display:block;font-size:11px!important;line-height:1.3!important;letter-spacing:.16em!important}
 #international-impact>.container>.eyebrow{display:none!important}
+
+/* First-section divider rhythm: keep both rules, but bring them into a consistent close pair. */
+main:has(.contact-grid)>.content-section{padding-top:40px!important}
+main:has(.join-opportunities)>.join-opportunities{padding-top:40px!important}
+main>.page-hero:has(+ .results-achievements)+.results-achievements{padding-top:40px!important}
+main:has(.contact-grid) .contact-grid{margin-top:0!important}
+@media(max-width:768px){
+  main:has(.contact-grid)>.content-section{padding-top:28px!important}
+  main:has(.join-opportunities)>.join-opportunities{padding-top:28px!important}
+  main>.page-hero:has(+ .results-achievements)+.results-achievements{padding-top:28px!important}
+}
