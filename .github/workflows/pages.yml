@@ -44,17 +44,53 @@ jobs:
               raise SystemExit('Expected English navigation label not found')
           path.write_text(text.replace(old, new, 1), encoding='utf-8')
           PY
-      - name: Keep only one expanded mobile menu
+      - name: Keep mobile menus mutually exclusive
         run: |
-          printf '\n@media(max-width:768px){body:has(.mobile-menu.open) .pai-orbit-wheel,body:has(.mobile-menu.open) .pai-orbit-backdrop{display:none!important}}\n' >> assets/css/refine.css
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('assets/js/site.js')
+          text = path.read_text(encoding='utf-8')
+
+          old_mobile = """    const open=!menu.classList.contains('open');
+    menu.classList.toggle('open',open);
+    button.setAttribute('aria-expanded',open?'true':'false');"""
+          new_mobile = """    const open=!menu.classList.contains('open');
+    if(open){
+      document.querySelector('.pai-orbit.open .pai-orbit-toggle')?.click();
+    }
+    menu.classList.toggle('open',open);
+    button.setAttribute('aria-expanded',open?'true':'false');"""
+
+          old_orbit = """    toggle.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();setOpen(!orbit.classList.contains('open'));});"""
+          new_orbit = """    toggle.addEventListener('click',e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      const opening=!orbit.classList.contains('open');
+      if(opening){
+        document.querySelector('.site-header .mobile-menu.open')&&document.querySelector('.site-header .menu-btn')?.click();
+      }
+      setOpen(opening);
+    });"""
+
+          if old_mobile not in text:
+              raise SystemExit('Mobile menu toggle block not found')
+          if old_orbit not in text:
+              raise SystemExit('Orbit toggle block not found')
+          text = text.replace(old_mobile, new_mobile, 1)
+          text = text.replace(old_orbit, new_orbit, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+      - name: Validate deployed runtime syntax
+        run: node --check assets/js/site.js
       - name: Normalize shared asset cache keys
         run: |
           python - <<'PY'
           from pathlib import Path
           import re
 
-          refine_version = "20260925-06"
-          site_js_version = "20260925-01"
+          refine_version = "20260925-04"
+          site_js_version = "20260925-03"
           refine_pattern = re.compile(r"refine\.css\?v=[0-9-]+")
           site_js_pattern = re.compile(r"site\.js\?v=[0-9-]+")
           changed = 0
