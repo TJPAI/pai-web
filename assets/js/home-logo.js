@@ -22,7 +22,7 @@
   const ease=t=>t*t*(3-2*t);
 
   const reshapeHomepage=()=>{
-    if(!isHome()||document.documentElement.dataset.paiHomeEditorial==='1') return;
+    if(!isHome()||document.querySelector('.home-achievement-stories')) return;
     const isEnglish=document.documentElement.lang.toLowerCase().startsWith('en');
     const sections=[...document.querySelectorAll('main > section')];
     const findSection=label=>sections.find(section=>(section.querySelector('.section-head .eyebrow')?.textContent||'').trim().toLowerCase()===label.toLowerCase());
@@ -70,7 +70,6 @@
     join.before(mediaSection);
 
     if(impactSection) impactSection.remove();
-    document.documentElement.dataset.paiHomeEditorial='1';
   };
 
   const syncHomepageEditorialLinks=()=>{ if(isHome()) reshapeHomepage(); };
