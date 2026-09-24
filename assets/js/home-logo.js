@@ -39,6 +39,10 @@
     path.setAttribute('stroke-width','43');
     path.setAttribute('stroke-linecap','round');
     path.setAttribute('stroke-linejoin','round');
+    /* Keep the path itself invisible until its dash state is safely off the exact
+       end-of-path boundary. Safari can otherwise rasterize the round end cap as a
+       tiny flash at the right-hand endpoint during refresh. */
+    path.style.opacity='0';
     path.style.strokeDasharray='10000 10000';
     path.style.strokeDashoffset='10000';
     svg.appendChild(path);
@@ -47,17 +51,22 @@
 
   const startDraw=(host,path)=>{
     const length=path.getTotalLength();
+    const startOffset=Math.max(0,length-0.75);
     path.style.strokeDasharray=`${length} ${length}`;
-    path.style.strokeDashoffset=String(length);
+    path.style.strokeDashoffset=String(startOffset);
+
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
       if(!path.isConnected) return;
+      /* Reveal only after the hidden dash state has been committed. Starting just
+         inside the first dash avoids the Safari round-cap artifact at the far end. */
+      path.style.opacity='1';
       host.classList.add('pai-logo-motion-ready');
       const started=performance.now();
       const duration=5000;
       const tick=now=>{
         if(!path.isConnected||!isHome()) return;
         const t=Math.min(1,(now-started)/duration);
-        path.style.strokeDashoffset=String(length*(1-ease(t)));
+        path.style.strokeDashoffset=String(startOffset*(1-ease(t)));
         if(t<1){drawFrame=requestAnimationFrame(tick);return;}
         path.style.strokeDashoffset='0';
         drawFrame=0;
@@ -90,6 +99,7 @@
     if(matchMedia('(prefers-reduced-motion: reduce)').matches){
       path.style.strokeDasharray='none';
       path.style.strokeDashoffset='0';
+      path.style.opacity='1';
       host.classList.add('pai-logo-motion-ready');
       return;
     }
