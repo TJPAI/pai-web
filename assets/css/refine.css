@@ -127,14 +127,15 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 main:has(#media-coverage):has(#international-impact)>#international-impact{order:90}
 main:has(#media-coverage):has(#international-impact)>#media-coverage{order:100}
 
-/* Visible naming: "Platforms & Impact" / “平台及影响力”, with international removed from the label. */
+/* Platforms & Impact: one heading only, same title scale as peer sections. */
 #international-impact .section-head .eyebrow,
 #international-impact>.container>.eyebrow{font-size:0}
 #international-impact .section-head .eyebrow::after,
 #international-impact>.container>.eyebrow::after{content:"PLATFORMS & IMPACT";font-size:11px;letter-spacing:.16em}
-#international-impact .title-section{font-size:0}
-#international-impact .title-section::after{content:"平台及影响力";font-size:clamp(30px,4vw,52px);line-height:1.08;letter-spacing:-.035em;color:var(--ink)}
+#international-impact .title-section{font-size:0!important;line-height:1.08!important;letter-spacing:-.035em!important}
+#international-impact .title-section::after{content:"平台及影响力";font-size:clamp(30px,4vw,52px);line-height:1.08;letter-spacing:-.035em;color:var(--ink);font-weight:inherit}
 html[lang^="en"] #international-impact .title-section::after{content:"Platforms & Impact"}
+#international-impact .section-head~.title-section{display:none}
 
 /* Platform order: journal, conference, BCTC, IEEE blockchain platform, engineering center. */
 #international-impact>.container{display:flex;flex-direction:column}
@@ -146,6 +147,29 @@ html[lang^="en"] #international-impact .title-section::after{content:"Platforms 
 #international-impact .detail-block:has(a[href*="ieee-gbc"]){order:20}
 #international-impact .detail-block:has(a[href*="blockchain.ieee.org"]){order:30}
 #international-impact .detail-block:has(a[href*="sercbaas"]){order:50}
+
+/* Concise platform descriptions, aligned to current official platform scopes. */
+#international-impact .detail-block p{font-size:0!important}
+#international-impact .detail-block p::after{display:block;font-size:15px;line-height:1.72;color:var(--muted);font-weight:400}
+#international-impact .detail-block:has(a[href*="ietresearch"]) p::after{content:"创刊主编单位；开放获取国际期刊，聚焦区块链基础研究、前沿技术与新兴应用，持续开展国际学术交流。"}
+#international-impact .detail-block:has(a[href*="ieee-gbc"]) p::after{content:"大会主席单位；首届大会于 2025 年在上海举办，面向前沿研究、产业协同与国际合作建设全球交流平台。"}
+#international-impact .detail-block:has(a[href*="blockchain.ieee.org"]) p::after{content:"中国区主席单位；参与本地社区、会议活动、技术内容与标准建设，负责亚太及中国区学术与技术社区发展。"}
+#international-impact .detail-block:not(:has(a)) .title-item{font-size:0}
+#international-impact .detail-block:not(:has(a)) .title-item::after{content:"IEEE 区块链平台（中国）";font-size:20px;line-height:1.35;color:var(--ink);font-weight:inherit}
+#international-impact .detail-block:not(:has(a)) p::after{content:"负责 IEEE Blockchain China Regional Office 与 IEEE GBC 成果转化服务中心建设，推动学术、产业合作与成果转化。"}
+#international-impact .detail-block:has(a[href*="sercbaas"]) p::after{content:"工程中心牵头单位；依托同济大学，聚焦区块链基础架构、隐私计算、分布式数字身份与可信人工智能，推进工程化与应用落地。"}
+
+html[lang^="en"] #international-impact .detail-block:has(a[href*="ietresearch"]) p::after{content:"Founding Editor-in-Chief institution; an open-access journal for fundamental blockchain research, emerging technologies and applications."}
+html[lang^="en"] #international-impact .detail-block:has(a[href*="ieee-gbc"]) p::after{content:"Conference chair institution; the inaugural 2025 Shanghai conference connects frontier research, industry collaboration and international exchange."}
+html[lang^="en"] #international-impact .detail-block:has(a[href*="blockchain.ieee.org"]) p::after{content:"China leadership institution; supports local groups, events, technical content and standards, with development across China and the Asia-Pacific region."}
+html[lang^="en"] #international-impact .detail-block:not(:has(a)) .title-item::after{content:"IEEE Blockchain Platform (China)"}
+html[lang^="en"] #international-impact .detail-block:not(:has(a)) p::after{content:"Develops the IEEE Blockchain China Regional Office and the Transformation Service Center of IEEE Global Blockchain Conference for academic–industry collaboration and translation."}
+html[lang^="en"] #international-impact .detail-block:has(a[href*="sercbaas"]) p::after{content:"Lead institution; hosted by Tongji University, advancing blockchain infrastructure, privacy computing, decentralized identity, trusted AI and engineering translation."}
+
+@media(max-width:768px){
+  #international-impact .detail-block p::after{font-size:14px;line-height:1.65}
+  #international-impact .detail-block:not(:has(a)) .title-item::after{font-size:18px}
+}
 
 /* Research Results page: broad achievements first, scholarly publications second. */
 .results-achievements{padding:70px 0 64px;border-bottom:1px solid var(--line)}
