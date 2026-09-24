@@ -121,20 +121,30 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   .home-achievement-story figcaption{min-height:0;padding:15px 16px 17px}
 }
 
+/* Prevent legacy homepage imagery from painting for one frame while in-site navigation reshapes the cached home markup. */
+main:has(.home-hero) .achievement-feature{display:none!important}
+main:has(.home-hero)>section:has(.impact-visuals){display:none!important}
+main:has(.home-hero)>.selected-updates:not(:has(.home-platform-more)){visibility:hidden}
+
+/* Homepage platform CTA wording. */
+.home-platform-more .text-link{font-size:0}
+.home-platform-more .text-link::after{content:"了解更多平台信息 →";font-size:14px}
+html[lang^="en"] .home-platform-more .text-link::after{content:"More platform information →"}
+
 /* About page: achievements live on Research Results; external media closes the About narrative. */
 main:has(#media-coverage):has(#international-impact){display:flex;flex-direction:column}
 main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 main:has(#media-coverage):has(#international-impact)>#international-impact{order:90}
 main:has(#media-coverage):has(#international-impact)>#media-coverage{order:100}
 
-/* Platforms & Impact: one heading only, same title scale as peer sections. */
+/* Platform introduction: one heading only, same title scale as peer sections. */
 #international-impact .section-head .eyebrow,
 #international-impact>.container>.eyebrow{font-size:0}
 #international-impact .section-head .eyebrow::after,
-#international-impact>.container>.eyebrow::after{content:"PLATFORMS & IMPACT";font-size:11px;letter-spacing:.16em}
+#international-impact>.container>.eyebrow::after{content:"PLATFORM INTRODUCTION";font-size:11px;letter-spacing:.16em}
 #international-impact .title-section{font-size:0!important;line-height:1.08!important;letter-spacing:-.035em!important}
-#international-impact .title-section::after{content:"平台及影响力";font-size:clamp(30px,4vw,52px);line-height:1.08;letter-spacing:-.035em;color:var(--ink);font-weight:inherit}
-html[lang^="en"] #international-impact .title-section::after{content:"Platforms & Impact"}
+#international-impact .title-section::after{content:"平台简介";font-size:clamp(30px,4vw,52px);line-height:1.08;letter-spacing:-.035em;color:var(--ink);font-weight:inherit}
+html[lang^="en"] #international-impact .title-section::after{content:"Platform Introduction"}
 #international-impact .section-head~.title-section{display:none}
 
 /* Platform order: journal, conference, BCTC, IEEE blockchain platform, engineering center. */
