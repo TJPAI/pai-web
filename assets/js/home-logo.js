@@ -21,27 +21,49 @@
 
   const syncHomepageEditorialLinks=()=>{
     if(!isHome()) return;
+    const isEnglish=document.documentElement.lang.toLowerCase().startsWith('en');
 
     const image=document.querySelector('img[src$="datong-mine-magnetic-communication.webp"]');
     const link=image?.closest('a');
     const caption=link?.querySelector('figcaption');
     if(link&&caption){
       link.href=MINING_SOURCE;
-      const isEnglish=document.documentElement.lang.toLowerCase().startsWith('en');
       caption.innerHTML=isEnglish
         ? '<strong>Mining · Through-the-Earth Magnetic Communication</strong>Guangming Daily feature on Tongji University’s deep-penetration wireless communication rescue equipment.<span class="impact-visual-source">Guangming Daily</span>'
         : '<strong>煤矿 · 跨介质磁通信</strong>《接通“地心来电”》：同济大学教授研发国内最大穿透深度无线通信救援设备。<span class="impact-visual-source">光明日报</span>';
     }
 
-    /* Homepage media selection: keep six representative stories. Remove the
-       overlapping 2018 China News Service item and the second 2014 Guangming
-       Daily item, while keeping the deeper feature “接通地心来电”. */
+    /* Keep the five flagship achievements consistent with the About page. */
+    const highlights=[...document.querySelectorAll('.section.soft .highlights .highlight')];
+    if(highlights.length>=5){
+      const setAchievement=(index,title,body='')=>{
+        const article=highlights[index];
+        const titleNode=article?.querySelector('.title-item');
+        if(!article||!titleNode) return;
+        titleNode.textContent=title;
+        let paragraph=article.querySelector('p');
+        if(body){
+          if(!paragraph){ paragraph=document.createElement('p'); titleNode.after(paragraph); }
+          paragraph.textContent=body;
+        }else if(paragraph){
+          paragraph.remove();
+        }
+      };
+      setAchievement(2,
+        isEnglish?'China Patent Excellence Award':'中国专利优秀奖',
+        isEnglish?'A DWELT high-precision localization patent received the China Patent Excellence Award in 2022.':'DWELT 高精定位相关专利获 2022 年中国专利优秀奖。');
+      setAchievement(3,
+        isEnglish?'First-Prize Science & Technology Awards from the Ministry of Education and Shanghai':'教育部及上海市科技一等奖',
+        isEnglish?'First Prize of the Ministry of Education Technology Invention Award, Shanghai Technology Invention Award, and Shanghai Science and Technology Progress Award.':'教育部技术发明一等奖、上海市技术发明一等奖、上海市科技进步一等奖。');
+    }
+
+    /* Homepage media is deliberately concise: six representative stories. */
     const mediaItems=[...document.querySelectorAll('.media-coverage .media-list .media-item')];
     mediaItems.forEach(item=>{
       const meta=(item.querySelector('.media-meta')?.textContent||'').trim();
       const title=(item.querySelector('.media-title')?.textContent||'').trim();
       if(/中国新闻网\s*·\s*2018|China News Service\s*·\s*2018/i.test(meta)) item.remove();
-      if((/光明日报\s*·\s*2014|Guangming Daily\s*·\s*2014/i.test(meta)) && /上海科学家发明深穿透无线通信救援设备|Shanghai scientists develop deep-penetration wireless rescue communication equipment/i.test(title)) item.remove();
+      if(/光明日报\s*·\s*2014|Guangming Daily\s*·\s*2014/i.test(meta)&&/上海科学家|Shanghai scientists/i.test(title)) item.remove();
       if(/China Daily\s*·\s*2018/i.test(meta)) item.href=CHINA_DAILY_SOURCE;
     });
   };
