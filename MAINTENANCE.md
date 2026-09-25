@@ -50,7 +50,7 @@ The canonical static PAI mark is `assets/images/brand/pai-logo.svg`; Header bran
 - At desktop widths, keep the top navigation slightly stronger than the mobile/tablet treatment, but do not increase Header height or reintroduce the orbit menu.
 - Keep homepage imagery sparse and editorial rather than turning the page into a gallery.
 - The current `Research Excellence / 代表性成果` block uses three documentary stories: Microsoft Indoor Localization Competition, CIIE high-precision localization / smart navigation, and through-the-earth magnetic communication.
-- The three achievement images are self-hosted under `assets/images/home/`, use `loading="lazy"` and `decoding="async"`, and should remain documentary rather than decorative.
+- The three achievement images are self-hosted under `assets/images/home/`. On the deployed site they must use `loading="eager"` and `decoding="sync"` to avoid iPhone Safari image flashing when lightweight navigation returns to the homepage. `tools/prepare_home_assets.py` enforces this deployment transform and `tools/validate_home_assets.py` guards it against regression.
 - The homepage separately presents Collaboration Platforms and Media Coverage; do not fold those sections back into the achievement-image block.
 - Documentary homepage images must preserve their native aspect ratio: use container-width scaling with `height:auto`; do not crop them with fixed heights, forced aspect ratios, or `object-fit:cover`.
 - Keep the verified external source-page links on the achievement figures for provenance; do not hotlink display images from external sites.
