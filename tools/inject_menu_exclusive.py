@@ -1,17 +1,25 @@
 from pathlib import Path
 
-TAG = '<script src="/pai-web/assets/js/menu-exclusive.js?v=20260925-01"></script>'
+SCRIPT = 'assets/js/menu-exclusive.js?v=20260925-01'
 
 changed = 0
 for path in Path('.').rglob('*.html'):
     if 'geosketch-mvp' in path.parts:
         continue
     text = path.read_text(encoding='utf-8')
-    if TAG in text:
-        continue
     if '</body>' not in text:
         continue
-    text = text.replace('</body>', TAG + '</body>', 1)
+
+    depth = len(path.parent.parts)
+    prefix = '../' * depth
+    tag = f'<script src="{prefix}{SCRIPT}"></script>'
+
+    # Source pages intentionally do not carry this deployment-only helper.
+    # If the expected tag is already present, keep the transform idempotent.
+    if tag in text:
+        continue
+
+    text = text.replace('</body>', tag + '</body>', 1)
     path.write_text(text, encoding='utf-8')
     changed += 1
 
