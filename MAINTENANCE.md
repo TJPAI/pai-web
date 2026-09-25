@@ -10,6 +10,7 @@ This site is a static bilingual website. Keep changes small, reviewable, and fac
 - Do not add a DOI unless it has been verified.
 - Do not add publication PDF files or `pdf` fields to `pai-web`. Use DOI / publisher links for formal publications. Use a verified arXiv link only when it is the appropriate public source.
 - `tools/validate.py` rejects duplicate titles, duplicate DOI assignments, malformed publication records and `pdf` fields.
+- The English user-facing navigation label is `Outputs`; the stable URL remains `/en/publications.html`.
 
 ## Team
 - Overview: `team.html`
@@ -33,27 +34,32 @@ Prefer local files under `/assets/` for production. Avoid CDN fonts and nonessen
 The canonical static PAI mark is `assets/images/brand/pai-logo.svg`; Header branding should reference this asset rather than duplicating the SVG path in CSS.
 
 ### Homepage logo motion
-- The verified 5-second homepage logo animation is `assets/media/pai-logo-motion.mp4`.
-- `assets/js/home-logo.js` mounts it into the homepage intro area on Chinese and English homepages.
+- The approved homepage logo animation is generated as inline SVG by `assets/js/home-logo.js` from the canonical one-stroke path used by the final PAI mark.
+- The draw animation runs for about 5 seconds, holds briefly, then fades without shifting page layout.
+- `assets/css/home-logo.css` controls placement and the fade/hidden states.
 - On mobile, keep the approved centered placement below the Header.
 - On desktop, keep the motion mark in the right-side whitespace so it never overlaps the hero headline.
-- Keep it muted, `playsinline`, non-looping; after completion it holds briefly and then fades away without shifting the page layout.
-- For iOS WeChat, mount the muted inline video into the DOM before attempting playback, retry on `loadeddata` / `canplay`, and allow a `WeixinJSBridgeReady` retry. Do not regress to waiting for `canplay` on a detached video element.
+- The animation is non-looping. Its `requestAnimationFrame` loop must stop when drawing completes; do not introduce a permanent animation timer.
+- Respect `prefers-reduced-motion`: the final mark should appear without running the draw animation.
+- `home-logo.js` also prepares homepage editorial structure for lightweight-navigation / swipe previews so iPhone Safari does not hand off from legacy markup to different committed markup for one frame. Do not separate that preparation from the preview path without reproducing and testing the Safari behavior.
 - The Header uses the final static PAI mark while retaining `Tongji University` beneath it.
 - Whenever `home-logo.css` or `home-logo.js` changes, bump the corresponding query-string cache key in both `index.html` and `en/index.html` so Safari and WeChat do not keep the previous motion behavior.
 - Do not move the animation into the shared navigation/page-swipe code unless there is a concrete integration need.
 
 ### Desktop homepage presentation
 - At desktop widths, keep the top navigation slightly stronger than the mobile/tablet treatment, but do not increase Header height or reintroduce the orbit menu.
-- Keep homepage imagery sparse and editorial rather than turning the page into a gallery. The approved visual rhythm has three distinct beats: real-world application imagery in `Impact & Translation`, one Microsoft Indoor Localization Competition feature in `Selected Achievements`, and one IEEE President visit feature in `Selected Updates`.
-- The `Impact & Translation` pair should contrast large-venue localization/smart navigation with underground or through-the-earth communication so the breadth of PAI work is visible at a glance.
-- Homepage display imagery is self-hosted under `assets/images/home/` as web-optimized WebP assets. Keep the official Tongji source-page links in the figure anchors for provenance; do not hotlink the display images from external sites.
+- Keep homepage imagery sparse and editorial rather than turning the page into a gallery.
+- The current `Research Excellence / 代表性成果` block uses three documentary stories: Microsoft Indoor Localization Competition, CIIE high-precision localization / smart navigation, and through-the-earth magnetic communication.
+- The three achievement images are self-hosted under `assets/images/home/`, use `loading="lazy"` and `decoding="async"`, and should remain documentary rather than decorative.
+- The homepage separately presents Collaboration Platforms and Media Coverage; do not fold those sections back into the achievement-image block.
 - Documentary homepage images must preserve their native aspect ratio: use container-width scaling with `height:auto`; do not crop them with fixed heights, forced aspect ratios, or `object-fit:cover`.
+- Keep the verified external source-page links on the achievement figures for provenance; do not hotlink display images from external sites.
 - The desktop Footer intentionally has a little more vertical breathing room and stronger brand/navigation hierarchy than the compact mobile Footer.
 
 ### Orbit navigation
 - The orbit / center-plus navigation is a mobile interaction aid and is hidden at desktop widths (`min-width: 769px`).
 - Desktop uses the full top navigation instead; do not show both navigation systems at the same time.
+- The top mobile menu and orbit menu must be mutually exclusive through their real toggle state transitions, not CSS-only hiding, so classes, ARIA state, animation and auto-rotation stay synchronized.
 - Keep the existing mobile orbit behavior and page-swipe blocking rules unchanged unless a concrete mobile bug is reproduced.
 
 ### Mobile WebView compatibility
