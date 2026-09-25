@@ -38,8 +38,8 @@ jobs:
       - name: Validate share metadata
         run: python tools/validate_share_metadata.py
       - name: Validate site runtime syntax
-        run: node --check assets/js/site.js && node --check sw.js && node --check assets/js/menu-exclusive.js
-      - name: Inject mobile menu exclusivity helper
+        run: node --check assets/js/site.js && node --check sw.js && node --check assets/js/menu-exclusive.js && node --check assets/js/anchor-navigation.js
+      - name: Inject mobile navigation helpers
         run: python tools/inject_menu_exclusive.py
       - name: Validate mobile menu exclusivity helper
         run: python tools/validate_menu_exclusive.py
