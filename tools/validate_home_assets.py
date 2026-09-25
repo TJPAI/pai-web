@@ -30,9 +30,9 @@ for rel, (path, prefix) in pages.items():
             continue
         tag = matches[0]
         if not re.search(r'\bloading=["\']eager["\']', tag, re.I):
-            errors.append(f'{rel}: {asset} must be loading="eager" to avoid Safari re-entry flash')
+            errors.append(f'{rel}: {asset} must remain loading="eager" for iPhone Safari stability')
         if not re.search(r'\bdecoding=["\']sync["\']', tag, re.I):
-            errors.append(f'{rel}: {asset} must be decoding="sync" to avoid Safari re-entry flash')
+            errors.append(f'{rel}: {asset} must remain decoding="sync" for iPhone Safari stability')
 
 if errors:
     print('Homepage asset validation failed:')
@@ -40,4 +40,4 @@ if errors:
         print(f' - {error}')
     sys.exit(1)
 
-print('Homepage asset validation passed.')
+print('Homepage asset validation passed: source is Safari-safe eager/sync.')
