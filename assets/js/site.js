@@ -164,6 +164,19 @@
   };
   renderChrome();
 
+  let closeOrbitMenu=()=>{};
+  const setMobileMenu=open=>{
+    const header=document.querySelector('.site-header');
+    const menu=header?.querySelector('.mobile-menu');
+    const button=header?.querySelector('.menu-btn');
+    if(!menu||!button) return;
+    if(open) closeOrbitMenu();
+    menu.classList.toggle('open',open);
+    button.setAttribute('aria-expanded',String(open));
+    const en=normalizedPath().startsWith('/en/');
+    button.setAttribute('aria-label',open?(en?'Close menu':'关闭菜单'):(en?'Open menu':'打开菜单'));
+  };
+
   document.addEventListener('click',event=>{
     const button=event.target.closest&&event.target.closest('.menu-btn');
     if(!button) return;
@@ -171,8 +184,7 @@
     const menu=button.closest('.site-header')?.querySelector('.mobile-menu');
     if(!menu) return;
     const open=!menu.classList.contains('open');
-    menu.classList.toggle('open',open);
-    button.setAttribute('aria-expanded',open?'true':'false');
+    setMobileMenu(open);
   },true);
 
   document.addEventListener('keydown',event=>{
@@ -181,8 +193,8 @@
     const menu=header?.querySelector('.mobile-menu');
     const button=header?.querySelector('.menu-btn');
     if(!menu?.classList.contains('open')) return;
-    menu.classList.remove('open');
-    if(button){ button.setAttribute('aria-expanded','false'); button.focus(); }
+    setMobileMenu(false);
+    button?.focus();
   });
 
   document.addEventListener('click',event=>{
@@ -363,9 +375,7 @@
     event.preventDefault();
     const mobileMenu=link.closest('.mobile-menu');
     if(mobileMenu){
-      mobileMenu.classList.remove('open');
-      const button=mobileMenu.closest('.site-header')?.querySelector('.menu-btn');
-      if(button) button.setAttribute('aria-expanded','false');
+      setMobileMenu(false);
     }
     saveCurrentScroll();
     cacheCurrentPageSnapshot();
@@ -1089,6 +1099,7 @@
       return Math.atan2(p.clientY-(rect.top+rect.height/2),p.clientX-(rect.left+rect.width/2))*180/Math.PI;
     };
     const setOpen=open=>{
+      if(open) setMobileMenu(false);
       if(!open) stopAuto();
       orbit.classList.toggle('open',open);
       toggle.setAttribute('aria-expanded',open?'true':'false');
@@ -1098,6 +1109,7 @@
       }
       toggle.setAttribute('aria-label',open?(normalizedPath().startsWith('/en/')?'Close quick menu':'关闭快捷菜单'):(normalizedPath().startsWith('/en/')?'Open quick menu':'打开快捷菜单'));
     };
+    closeOrbitMenu=()=>setOpen(false);
     const begin=e=>{
       if(!orbit.classList.contains('open')) return;
       stopAuto();

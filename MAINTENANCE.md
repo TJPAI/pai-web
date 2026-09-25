@@ -41,7 +41,7 @@ The canonical static PAI mark is `assets/images/brand/pai-logo.svg`; Header bran
 - On desktop, keep the motion mark in the right-side whitespace so it never overlaps the hero headline.
 - The animation is non-looping. Its `requestAnimationFrame` loop must stop when drawing completes; do not introduce a permanent animation timer.
 - Respect `prefers-reduced-motion`: the final mark should appear without running the draw animation.
-- `home-logo.js` also prepares homepage editorial structure for lightweight-navigation / swipe previews so iPhone Safari does not hand off from legacy markup to different committed markup for one frame. Do not separate that preparation from the preview path without reproducing and testing the Safari behavior.
+- Both homepages contain the final editorial structure in HTML. Lightweight navigation and swipe previews use that same markup; `home-logo.js` only manages the logo animation. Keep the canonical homepage image loading settings in previews and committed pages to avoid a visible handoff.
 - The Header uses the final static PAI mark while retaining `Tongji University` beneath it.
 - Whenever `home-logo.css` or `home-logo.js` changes, bump the corresponding query-string cache key in both `index.html` and `en/index.html` so Safari and WeChat do not keep the previous motion behavior.
 - Do not move the animation into the shared navigation/page-swipe code unless there is a concrete integration need.
@@ -60,7 +60,8 @@ The canonical static PAI mark is `assets/images/brand/pai-logo.svg`; Header bran
 ### Orbit navigation
 - The orbit / center-plus navigation is a mobile interaction aid and is hidden at desktop widths (`min-width: 769px`).
 - Desktop uses the full top navigation instead; do not show both navigation systems at the same time.
-- The top mobile menu and orbit menu must be mutually exclusive through their real toggle state transitions, not CSS-only hiding, so classes, ARIA state, animation and auto-rotation stay synchronized.
+- The top mobile menu and orbit menu share explicit state transitions in `site.js` (`setMobileMenu` and the orbit `setOpen`). Opening either directly closes the other; do not simulate button clicks to coordinate them. Classes, ARIA state and auto-rotation must stay synchronized.
+- Navigation helper references are committed in HTML and validated with `python tools/sync_navigation_scripts.py --check`; deployment must not inject an additional behavior layer. Use the same tool without `--check` after adding a page.
 - Keep the existing mobile orbit behavior and page-swipe blocking rules unchanged unless a concrete mobile bug is reproduced.
 
 ### Mobile WebView compatibility
@@ -117,3 +118,7 @@ Do only at the actual production cutover to `https://ai.tongji.edu.cn/`:
 - run `python tools/sync_shared_head.py --check`, `python tools/validate.py` and then `python tools/check_production_readiness.py`; all must pass;
 - run a final phone + desktop, Chinese + English, navigation + publication-link check;
 - after production verification, tag the release (for example `v1.0.0`).
+
+## Platform content ownership
+- Platform descriptions, headings and display order live in `about.html` and `en/about.html`. Never replace readable text with CSS pseudo-elements or identify platforms by their sibling position.
+- Use stable `platform-journal`, `platform-conference`, `platform-community`, `platform-china` and `platform-center` classes for scoped presentation.

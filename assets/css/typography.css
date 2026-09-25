@@ -143,3 +143,11 @@
   html[lang="en"] .contact-card .title-item{letter-spacing:-.018em!important}
 }
 
+
+/* Platform introduction keeps its approved display scale. */
+#international-impact .title-section{font-size:clamp(30px,4vw,52px)!important;line-height:1.08!important;letter-spacing:-.035em!important}
+#international-impact .eyebrow{font-size:11px!important;line-height:1.3!important;letter-spacing:.16em!important}
+#international-impact .platform-china .title-item{font-size:20px!important;line-height:1.35!important}
+@media(max-width:768px){
+  #international-impact .platform-china .title-item{font-size:18px!important}
+}
