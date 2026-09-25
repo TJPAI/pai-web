@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -25,14 +25,22 @@ jobs:
         uses: actions/checkout@v7
       - name: Validate tooling syntax
         run: python -m py_compile tools/*.py
+      - name: Canonicalize Outputs labels in source
+        run: |
+          python tools/prepare_outputs_labels.py
+          if ! git diff --quiet -- en; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add en
+            git commit -m "Canonicalize Outputs labels in English source"
+            git push
+          fi
       - name: Validate shared head template
         run: python tools/sync_shared_head.py --check
       - name: Validate site content
         run: python tools/validate.py
       - name: Validate homepage assets
         run: python tools/validate_home_assets.py
-      - name: Prepare Outputs navigation labels
-        run: python tools/prepare_outputs_labels.py
       - name: Validate Outputs label
         run: python tools/validate_outputs_label.py
       - name: Validate share metadata
