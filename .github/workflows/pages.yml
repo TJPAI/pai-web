@@ -31,6 +31,8 @@ jobs:
         run: python tools/prepare_home_assets.py
       - name: Validate homepage assets
         run: python tools/validate_home_assets.py
+      - name: Prepare Outputs navigation labels
+        run: python tools/prepare_outputs_labels.py
       - name: Validate Outputs label
         run: python tools/validate_outputs_label.py
       - name: Validate share metadata
