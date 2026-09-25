@@ -2,7 +2,7 @@ from pathlib import Path
 
 SCRIPTS = (
     'assets/js/menu-exclusive.js?v=20260925-01',
-    'assets/js/anchor-navigation.js?v=20260925-02',
+    'assets/js/anchor-navigation.js?v=20260925-03',
 )
 
 changed = 0
@@ -23,8 +23,8 @@ for path in Path('.').rglob('*.html'):
 
     for tag in expected:
         text = text.replace(tag, '')
-    # Remove the previous anchor-navigation cache key if present in an already prepared artifact.
-    text = text.replace(f'<script src="{prefix}assets/js/anchor-navigation.js?v=20260925-01"></script>', '')
+    for old_version in ('20260925-01', '20260925-02'):
+        text = text.replace(f'<script src="{prefix}assets/js/anchor-navigation.js?v={old_version}"></script>', '')
     text = text.replace('</body>', tags + '</body>', 1)
     path.write_text(text, encoding='utf-8')
     changed += 1
