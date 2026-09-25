@@ -40,7 +40,7 @@ jobs:
           import re
 
           refine_version = "20260925-04"
-          site_js_version = "20260925-02"
+          site_js_version = "20260925-03"
           refine_pattern = re.compile(r"refine\.css\?v=[0-9-]+")
           site_js_pattern = re.compile(r"site\.js\?v=[0-9-]+")
           changed = 0
