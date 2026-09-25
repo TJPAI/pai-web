@@ -995,7 +995,7 @@
       const en=normalizedPath().startsWith('/en/');
       const lang=en?'en':'zh';
       const languageLabel=en?'中文':'EN';
-      const home=[en?'Home':'首页',en?'/en/':'/'];
+      const home=[en?'Home':'返回首页',en?'/en/':'/'];
       return [home,...navItems(lang),[languageLabel,counterpartWithContext(normalizedPath())]];
     };
 
@@ -1008,10 +1008,7 @@
         const ascii=chars.every(ch=>/[\x00-\x7F]/.test(ch));
         const charStep=ascii?4.8:7.6;
         const glyphSpan=ascii?4.6:6.4;
-        const naturalSpan=(Math.max(0,chars.length-1)*charStep)+glyphSpan;
-        const threeChineseCharSpan=(2*7.6)+6.4;
-        const threeEnglishCharSpan=(2*4.8)+4.6;
-        const span=label==='首页'?Math.max(naturalSpan,threeChineseCharSpan):label==='EN'?Math.max(naturalSpan,threeEnglishCharSpan):naturalSpan;
+        const span=(Math.max(0,chars.length-1)*charStep)+glyphSpan;
         return {label,href,chars,charStep,span,center:0};
       });
       const used=layout.reduce((sum,item)=>sum+item.span,0);
