@@ -1008,7 +1008,9 @@
         const ascii=chars.every(ch=>/[\x00-\x7F]/.test(ch));
         const charStep=ascii?4.8:7.6;
         const glyphSpan=ascii?4.6:6.4;
-        const span=(Math.max(0,chars.length-1)*charStep)+glyphSpan;
+        const naturalSpan=(Math.max(0,chars.length-1)*charStep)+glyphSpan;
+        const fourChineseCharSpan=(3*7.6)+6.4;
+        const span=(label==='首页'||label==='EN')?Math.max(naturalSpan,fourChineseCharSpan):naturalSpan;
         return {label,href,chars,charStep,span,center:0};
       });
       const used=layout.reduce((sum,item)=>sum+item.span,0);
