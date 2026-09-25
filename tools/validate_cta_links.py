@@ -5,23 +5,24 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 write = '--write' in sys.argv[1:]
 
-# Exact user-facing CTA contracts. Destination pages without a fragment must open at page top.
+# Exact user-facing CTA contracts. Page-top destinations use #main-content so
+# lightweight navigation cannot restore an old remembered scroll position.
 contracts = {
     'index.html': [
-        ('研究方向 <span>→</span>', 'research.html'),
-        ('联系我们 <span>→</span>', 'contact.html'),
-        ('更多研究成果 →', 'publications.html'),
+        ('研究方向 <span>→</span>', 'research.html#main-content'),
+        ('联系我们 <span>→</span>', 'contact.html#main-content'),
+        ('更多研究成果 →', 'publications.html#main-content'),
         ('了解更多平台信息 →', 'about.html#international-impact'),
         ('查看全部媒体报道 →', 'about.html#media-coverage'),
-        ('加入 PAI →', 'join.html'),
+        ('加入 PAI →', 'join.html#main-content'),
     ],
     'en/index.html': [
-        ('Research <span>→</span>', 'research.html'),
-        ('Contact <span>→</span>', 'contact.html'),
-        ('More research results →', 'publications.html'),
+        ('Research <span>→</span>', 'research.html#main-content'),
+        ('Contact <span>→</span>', 'contact.html#main-content'),
+        ('More research results →', 'publications.html#main-content'),
         ('More platform information →', 'about.html#international-impact'),
         ('View all media coverage →', 'about.html#media-coverage'),
-        ('Join PAI →', 'join.html'),
+        ('Join PAI →', 'join.html#main-content'),
     ],
     'join.html': [('联系我们 →', 'contact.html#recruitment')],
     'en/join.html': [('Contact Us →', 'contact.html#recruitment')],
@@ -30,12 +31,16 @@ contracts = {
 if write:
     fixes = {
         'index.html': [
-            ('<a class="btn textual" href="join.html">加入我们 <span>→</span></a>',
-             '<a class="btn textual" href="contact.html">联系我们 <span>→</span></a>'),
+            ('href="research.html">研究方向 <span>→</span>', 'href="research.html#main-content">研究方向 <span>→</span>'),
+            ('href="contact.html">联系我们 <span>→</span>', 'href="contact.html#main-content">联系我们 <span>→</span>'),
+            ('href="publications.html">更多研究成果 →', 'href="publications.html#main-content">更多研究成果 →'),
+            ('href="join.html">加入 PAI →', 'href="join.html#main-content">加入 PAI →'),
         ],
         'en/index.html': [
-            ('<a class="btn textual" href="join.html">Join PAI <span>→</span></a>',
-             '<a class="btn textual" href="contact.html">Contact <span>→</span></a>'),
+            ('href="research.html">Research <span>→</span>', 'href="research.html#main-content">Research <span>→</span>'),
+            ('href="contact.html">Contact <span>→</span>', 'href="contact.html#main-content">Contact <span>→</span>'),
+            ('href="publications.html">More research results →', 'href="publications.html#main-content">More research results →'),
+            ('href="join.html">Join PAI →', 'href="join.html#main-content">Join PAI →'),
         ],
     }
     changed = 0
@@ -48,7 +53,7 @@ if write:
         if updated != text:
             path.write_text(updated, encoding='utf-8')
             changed += 1
-    print(f'Canonicalized homepage CTA labels/links in {changed} page(s).')
+    print(f'Canonicalized deterministic CTA destinations in {changed} page(s).')
 
 errors = []
 for rel, items in contracts.items():
