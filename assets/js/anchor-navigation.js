@@ -12,10 +12,12 @@
     try{ url=new URL(link.href,location.href); }catch(_e){ return; }
     if(url.origin!==location.origin||url.hash!=='#main-content') return;
 
-    // Page-top homepage CTAs must never briefly inherit the current page scroll
-    // while the lightweight router initializes the destination page.
+    // Homepage page-top CTAs must render exactly like choosing the same page
+    // from the main menu: start at document scroll position 0, not at an
+    // in-page anchor offset and never at a remembered destination scroll.
     event.preventDefault();
     event.stopPropagation();
+    url.hash='';
     location.assign(url.href);
   },true);
 })();
