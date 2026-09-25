@@ -10,12 +10,14 @@ OLD_IMAGE = BASE_URL + 'assets/images/social/pai-share-v4.jpg'
 ICON_IMAGE = BASE_URL + 'assets/icons/icon-512.png'
 NEW_IMAGE = BASE_URL + 'assets/images/social/pai-logo-share.png'
 
-WIDTH, HEIGHT = 1200, 630
+# WeChat renders link thumbnails in an almost-square viewport. Use a square
+# source with generous safe margins so the complete PAI mark survives crops.
+WIDTH, HEIGHT = 1200, 1200
 SS = 3
 CANVAS_W, CANVAS_H = WIDTH * SS, HEIGHT * SS
 BG = (255, 255, 255)
 INK = (23, 26, 31)
-TARGET_LOGO_W = 760.0
+TARGET_LOGO_W = 900.0
 
 svg = SVG.read_text(encoding='utf-8')
 path_match = re.search(r'<path\b[^>]*\bd="([^"]+)"', svg)
@@ -106,10 +108,10 @@ for path in ROOT.rglob('*.html'):
         continue
     updated = text.replace(OLD_IMAGE, NEW_IMAGE).replace(ICON_IMAGE, NEW_IMAGE)
     updated = re.sub(r'<meta property="og:image:width" content="\d+">', '<meta property="og:image:width" content="1200">', updated)
-    updated = re.sub(r'<meta property="og:image:height" content="\d+">', '<meta property="og:image:height" content="630">', updated)
-    updated = updated.replace('<meta name="twitter:card" content="summary">', '<meta name="twitter:card" content="summary_large_image">')
+    updated = re.sub(r'<meta property="og:image:height" content="\d+">', '<meta property="og:image:height" content="1200">', updated)
+    updated = updated.replace('<meta name="twitter:card" content="summary_large_image">', '<meta name="twitter:card" content="summary">')
     if updated != text:
         path.write_text(updated, encoding='utf-8')
         changed += 1
 
-print(f'Generated {OUT.relative_to(ROOT)} and prepared logo share metadata in {changed} HTML file(s).')
+print(f'Generated {OUT.relative_to(ROOT)} and prepared square logo share metadata in {changed} HTML file(s).')
