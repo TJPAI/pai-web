@@ -4,7 +4,7 @@ import re, sys
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE_URL = 'https://tjpai.github.io/pai-web/'
-SHARE_IMAGE = BASE_URL + 'assets/images/social/pai-share-v4.jpg'
+SHARE_IMAGE = BASE_URL + 'assets/icons/icon-512.png'
 errors = []
 checked = []
 
@@ -55,10 +55,10 @@ for html in sorted(ROOT.rglob('*.html')):
         ('property', 'og:description'): None,
         ('property', 'og:url'): None,
         ('property', 'og:image'): SHARE_IMAGE,
-        ('property', 'og:image:width'): '1200',
-        ('property', 'og:image:height'): '630',
+        ('property', 'og:image:width'): '512',
+        ('property', 'og:image:height'): '512',
         ('property', 'og:image:alt'): None,
-        ('name', 'twitter:card'): 'summary_large_image',
+        ('name', 'twitter:card'): 'summary',
         ('name', 'twitter:title'): None,
         ('name', 'twitter:description'): None,
         ('name', 'twitter:image'): SHARE_IMAGE,
