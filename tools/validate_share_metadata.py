@@ -4,7 +4,7 @@ import re, sys
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE_URL = 'https://tjpai.github.io/pai-web/'
-SHARE_IMAGE = BASE_URL + 'assets/icons/icon-512.png'
+SHARE_IMAGE = BASE_URL + 'assets/images/social/pai-logo-share.png'
 errors = []
 checked = []
 
@@ -31,7 +31,6 @@ def link_href(text, rel):
 for html in sorted(ROOT.rglob('*.html')):
     text = html.read_text(encoding='utf-8')
     rel = str(html.relative_to(ROOT))
-    # 404 is an error document, not a shareable content page.
     if rel == '404.html' or 'class="site-header"' not in text:
         continue
     checked.append(rel)
@@ -55,10 +54,10 @@ for html in sorted(ROOT.rglob('*.html')):
         ('property', 'og:description'): None,
         ('property', 'og:url'): None,
         ('property', 'og:image'): SHARE_IMAGE,
-        ('property', 'og:image:width'): '512',
-        ('property', 'og:image:height'): '512',
+        ('property', 'og:image:width'): '1200',
+        ('property', 'og:image:height'): '630',
         ('property', 'og:image:alt'): None,
-        ('name', 'twitter:card'): 'summary',
+        ('name', 'twitter:card'): 'summary_large_image',
         ('name', 'twitter:title'): None,
         ('name', 'twitter:description'): None,
         ('name', 'twitter:image'): SHARE_IMAGE,
@@ -72,7 +71,6 @@ for html in sorted(ROOT.rglob('*.html')):
         elif expected is not None and found != expected:
             errors.append(f'{rel}: {key} should be {expected}, got {found}')
 
-    # Keep browser, Open Graph, and Twitter presentation aligned.
     if title:
         for key in ('og:title', 'twitter:title'):
             value = found_meta.get(key)
@@ -97,6 +95,10 @@ for html in sorted(ROOT.rglob('*.html')):
                 break
         if not ok:
             errors.append(f'{rel}: missing hreflang {lang}')
+
+share_file = ROOT / 'assets/images/social/pai-logo-share.png'
+if not share_file.is_file():
+    errors.append('generated share image is missing: assets/images/social/pai-logo-share.png')
 
 if errors:
     print('Share metadata validation failed:')
