@@ -27,10 +27,10 @@ jobs:
         run: python tools/sync_shared_head.py --check
       - name: Validate site content
         run: python tools/validate.py
-      - name: Prepare Safari-safe homepage images
-        run: python tools/prepare_home_assets.py
       - name: Validate homepage assets
         run: python tools/validate_home_assets.py
+      - name: Prepare Safari-safe homepage images
+        run: python tools/prepare_home_assets.py
       - name: Prepare Outputs navigation labels
         run: python tools/prepare_outputs_labels.py
       - name: Validate Outputs label
