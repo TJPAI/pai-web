@@ -23,10 +23,9 @@ for rel, (path, prefix) in pages.items():
         pattern = re.compile(rf'(<img\b[^>]*\bsrc=["\']{src}["\'][^>]*?)\s+loading=["\']lazy["\']\s+decoding=["\']async["\']([^>]*>)', re.I)
         text, count = pattern.subn(r'\1 loading="eager" decoding="sync"\2', text, count=1)
         if count != 1:
-            # Already-canonical tags are valid and should make the transform idempotent.
             canonical = re.findall(rf'<img\b[^>]*\bsrc=["\']{src}["\'][^>]*\bloading=["\']eager["\'][^>]*\bdecoding=["\']sync["\'][^>]*>', text, re.I)
             if len(canonical) != 1:
-                errors.append(f'{rel}: could not canonicalize {asset} to eager/sync')
+                errors.append(f'{rel}: could not confirm Safari-safe eager/sync for {asset}')
     if text != original:
         path.write_text(text, encoding='utf-8')
         changed += 1
@@ -37,4 +36,7 @@ if errors:
         print(f' - {error}')
     sys.exit(1)
 
-print(f'Prepared homepage images for Safari ({changed} page(s) changed).')
+if changed:
+    print(f'Canonicalized homepage images for Safari ({changed} page(s) changed).')
+else:
+    print('Homepage images already Safari-safe in source; no deployment rewrite needed.')
