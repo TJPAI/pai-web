@@ -1,34 +1,33 @@
 # PAI Web
 
-Static bilingual website for the PAI Research Center at Tongji University.
+Official website repository for the PAI Research Center at Tongji University.
 
-## Current status
+## Maintenance status
 
-The site is in a stable, small-change maintenance phase. Treat the current `main` branch and successful GitHub Pages deployment as the source of truth.
+The current site is stable. Prefer small, atomic changes and avoid broad refactors unless a concrete issue requires them.
 
-## Key entry points
+Key constraints:
+- Treat `main` as the source of truth.
+- Preserve the iPhone/Safari navigation and swipe behavior in `assets/js/site.js`.
+- Keep the mobile top menu and orbit menu mutually exclusive through their actual state transitions.
+- Keep the English UI label `Outputs` while the URL remains `/en/publications.html`.
+- Do not re-enable the legacy Service Worker; `sw.js` is a retirement stub that clears old `pai-site-*` caches.
+- Keep preview indexing blocked until the production-domain cutover is explicitly performed.
 
-- Chinese home: `index.html`
-- English home: `en/index.html`
-- Shared runtime/navigation: `assets/js/site.js`
-- Homepage logo motion: `assets/js/home-logo.js`
-- Mobile menu/orbit exclusivity: `assets/js/menu-exclusive.js`
-- Shared presentation: `assets/css/refine.css`
-- Content validation: `tools/validate.py`
-- Share metadata validation: `tools/validate_share_metadata.py`
-- GitHub Pages workflow: `.github/workflows/pages.yml`
+## Main files
 
-## Maintenance rules
-
-- Prefer small, atomic changes; avoid broad refactors.
-- Protect iPhone Safari navigation, swipe, scroll restoration, page cache, orbit navigation and homepage logo motion unless a concrete bug is reproduced.
-- English user-facing navigation uses **Outputs** while the stable URL remains `/en/publications.html`.
-- Keep Chinese and English pages aligned.
-- Do not re-enable a Service Worker without a specific requirement.
-- Preview remains blocked from search indexing until the production-domain cutover is completed.
-
-See `MAINTENANCE.md` for detailed implementation notes and `PRODUCTION_CUTOVER.md` for the production-domain checklist.
+- `index.html`, `en/index.html` — Chinese and English homepages
+- `assets/js/site.js` — shared navigation, page switching, swipe, publication loading and orbit behavior
+- `assets/js/home-logo.js` — inline SVG homepage logo animation
+- `assets/js/menu-exclusive.js` — mobile menu/orbit exclusivity helper
+- `assets/css/refine.css` — shared presentation entry point
+- `assets/css/typography.css` — canonical title typography
+- `tools/validate.py` — structural and content validation
+- `tools/validate_share_metadata.py` — share metadata consistency checks
+- `tools/validate_home_assets.py` — homepage achievement-image and lazy-loading checks
+- `MAINTENANCE.md` — detailed implementation notes
+- `PRODUCTION_CUTOVER.md` — production-domain migration checklist
 
 ## Deployment
 
-Pushes to `main` are validated and deployed through GitHub Pages. A change is considered live only after the Pages workflow completes successfully.
+GitHub Pages deploys from `main` through `.github/workflows/pages.yml`. A change is considered deployed only after the workflow completes successfully.
