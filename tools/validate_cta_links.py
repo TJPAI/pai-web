@@ -56,6 +56,13 @@ if write:
     print(f'Canonicalized deterministic CTA destinations in {changed} page(s).')
 
 errors = []
+
+# Fixed section targets share one visual landing rhythm below the sticky/fixed header.
+anchor_css = (ROOT / 'assets/css/app-core.css').read_text(encoding='utf-8')
+if 'main [id]{scroll-margin-top:96px}' not in anchor_css:
+    errors.append('assets/css/app-core.css: desktop anchor targets must keep a 24px gap below the 72px header')
+if '@media(max-width:768px){main [id]{scroll-margin-top:80px}}' not in anchor_css:
+    errors.append('assets/css/app-core.css: mobile anchor targets must keep an 18px gap below the 62px header')
 for rel, items in contracts.items():
     text = (ROOT / rel).read_text(encoding='utf-8')
     for label, href in items:

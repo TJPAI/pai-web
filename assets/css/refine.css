@@ -1,6 +1,6 @@
 /* Shared presentation entry point. Load stable base styles first, component/UI refinements second, and canonical title typography last. */
 @import url("./refine-base.css?v=20260919-11");
-@import url("./app-core.css?v=20260920-25");
+@import url("./app-core.css?v=20260925-01");
 @import url("./typography.css?v=20260919-11");
 
 /* Header brand: keep the accessible PAI text in the DOM, render the canonical static SVG mark visually. */

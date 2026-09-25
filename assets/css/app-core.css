@@ -3,8 +3,8 @@
 html{scroll-behavior:auto!important}
 
 /* Anchor targets should remain visible below the sticky header. */
-main [id]{scroll-margin-top:88px}
-@media(max-width:768px){main [id]{scroll-margin-top:74px}}
+main [id]{scroll-margin-top:96px}
+@media(max-width:768px){main [id]{scroll-margin-top:80px}}
 
 /* One menu button style everywhere */
 @media(max-width:768px){
