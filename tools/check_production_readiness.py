@@ -31,6 +31,15 @@ for rel in ('data/publications.json','data/publications-archive.json'):
     if '"pdf"' in text:
         errors.append(f'{rel}: contains a forbidden publication PDF field')
 
+# Production must keep the same Safari-safe homepage image contract as Preview.
+for rel in ('index.html','en/index.html'):
+    text=(ROOT/rel).read_text(encoding='utf-8')
+    for match in re.findall(r'<img\b[^>]*assets/images/home/[^>]+>', text, re.I):
+        if not re.search(r'\bloading=["\']eager["\']', match, re.I):
+            errors.append(f'{rel}: production homepage image is not eager-loaded')
+        if not re.search(r'\bdecoding=["\']sync["\']', match, re.I):
+            errors.append(f'{rel}: production homepage image is not synchronously decoded')
+
 if errors:
     print('Production readiness check FAILED:')
     for e in errors:
