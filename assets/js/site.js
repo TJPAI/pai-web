@@ -1009,8 +1009,9 @@
         const charStep=ascii?4.8:7.6;
         const glyphSpan=ascii?4.6:6.4;
         const naturalSpan=(Math.max(0,chars.length-1)*charStep)+glyphSpan;
-        const fourChineseCharSpan=(3*7.6)+6.4;
-        const span=(label==='首页'||label==='EN')?Math.max(naturalSpan,fourChineseCharSpan):naturalSpan;
+        const threeChineseCharSpan=(2*7.6)+6.4;
+        const threeEnglishCharSpan=(2*4.8)+4.6;
+        const span=label==='首页'?Math.max(naturalSpan,threeChineseCharSpan):label==='EN'?Math.max(naturalSpan,threeEnglishCharSpan):naturalSpan;
         return {label,href,chars,charStep,span,center:0};
       });
       const used=layout.reduce((sum,item)=>sum+item.span,0);
