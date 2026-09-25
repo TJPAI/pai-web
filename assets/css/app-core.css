@@ -38,7 +38,7 @@ main [id]{scroll-margin-top:96px}
 /* Publications */
 .pub-year-row{justify-content:flex-start!important;align-items:baseline!important;gap:12px!important}
 .pub-year-row span{padding-bottom:0!important}
-.publication-toolbar{margin:-20px 0 42px;padding:0 0 20px;border-bottom:1px solid var(--line)}
+.publication-toolbar{margin:-20px 0 42px;padding:14px 0 6px;border-bottom:1px solid var(--line)}
 .publication-years{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0;padding:0}
 .publication-year-link{appearance:none;border:0;background:transparent;padding:0;color:var(--muted);font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .publication-year-link:hover,.publication-year-link:focus-visible{color:var(--ink)}
@@ -48,7 +48,7 @@ main [id]{scroll-margin-top:96px}
 .pub-back-top{position:fixed;right:22px;bottom:28px;z-index:45;border:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-radius:999px;padding:9px 13px;color:var(--ink);font-size:12px;font-weight:600;box-shadow:0 6px 22px rgba(17,24,39,.08);opacity:0;pointer-events:none;transform:translateY(8px);transition:.18s ease;-webkit-tap-highlight-color:transparent}
 .pub-back-top.visible{opacity:1;pointer-events:auto;transform:none}
 @media(max-width:768px){
-  .publication-toolbar{margin:-14px 0 34px;padding-bottom:17px}
+  .publication-toolbar{margin:-14px 0 34px;padding:11px 0 6px}
   .publication-years{gap:8px 17px}
   .publication-year-link{font-size:13.5px}
   .pub-toggle{font-size:12px;padding-top:8px}

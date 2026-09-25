@@ -3,7 +3,7 @@ from pathlib import Path
 import re, sys
 
 ROOT = Path(__file__).resolve().parents[1]
-REFINE_VERSION = "20260926-01"
+REFINE_VERSION = "20260926-02"
 SITE_JS_VERSION = "20260926-01"
 
 refine_pattern = re.compile(r"refine\.css\?v=[0-9-]+")
