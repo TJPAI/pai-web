@@ -19,6 +19,12 @@ for required, description in (
     if not re.search(required, en_outputs, re.I):
         errors.append(f'en/publications.html: {description} must remain Outputs')
 
+for path in (ROOT / 'en').rglob('*.html'):
+    text = path.read_text(encoding='utf-8')
+    rel = path.relative_to(ROOT)
+    if '>Publications</a>' in text:
+        errors.append(f'{rel}: stale Publications navigation label; use Outputs')
+
 if 'outputs.html' in site_js or 'outputs.html' in en_outputs:
     errors.append('Outputs must keep the stable publications.html URL; outputs.html is not allowed')
 
