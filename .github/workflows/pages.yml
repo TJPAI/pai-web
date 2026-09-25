@@ -42,27 +42,7 @@ jobs:
       - name: Inject mobile menu exclusivity helper
         run: python tools/inject_menu_exclusive.py
       - name: Normalize shared asset cache keys
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import re
-
-          refine_version = "20260925-04"
-          site_js_version = "20260925-03"
-          refine_pattern = re.compile(r"refine\.css\?v=[0-9-]+")
-          site_js_pattern = re.compile(r"site\.js\?v=[0-9-]+")
-          changed = 0
-          for path in Path(".").rglob("*.html"):
-              if "geosketch-mvp" in path.parts:
-                  continue
-              text = path.read_text(encoding="utf-8")
-              updated = refine_pattern.sub(f"refine.css?v={refine_version}", text)
-              updated = site_js_pattern.sub(f"site.js?v={site_js_version}", updated)
-              if updated != text:
-                  path.write_text(updated, encoding="utf-8")
-                  changed += 1
-          print(f"Normalized refine.css and site.js cache keys in {changed} HTML files")
-          PY
+        run: python tools/normalize_asset_versions.py
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
