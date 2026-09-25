@@ -10,14 +10,16 @@ OLD_IMAGE = BASE_URL + 'assets/images/social/pai-share-v4.jpg'
 ICON_IMAGE = BASE_URL + 'assets/icons/icon-512.png'
 NEW_IMAGE = BASE_URL + 'assets/images/social/pai-logo-share.png'
 
-# WeChat renders link thumbnails in an almost-square viewport. Use a square
-# source with generous safe margins so the complete PAI mark survives crops.
+# WeChat renders link thumbnails in an almost-square viewport. Keep a square
+# source, but let the approved PAI mark occupy most of the frame so it remains
+# recognizable at the small thumbnail size used by WeChat.
 WIDTH, HEIGHT = 1200, 1200
 SS = 3
 CANVAS_W, CANVAS_H = WIDTH * SS, HEIGHT * SS
 BG = (255, 255, 255)
 INK = (23, 26, 31)
-TARGET_LOGO_W = 900.0
+TARGET_LOGO_W = 1040.0
+VISUAL_SHIFT_X = 14.0
 
 svg = SVG.read_text(encoding='utf-8')
 path_match = re.search(r'<path\b[^>]*\bd="([^"]+)"', svg)
@@ -34,7 +36,7 @@ _, _, view_w, view_h = [float(v) for v in view_match.group(1).split()]
 stroke_w = float(stroke_match.group(1))
 scale = TARGET_LOGO_W / view_w
 logo_h = view_h * scale
-left = (WIDTH - TARGET_LOGO_W) / 2
+left = (WIDTH - TARGET_LOGO_W) / 2 + VISUAL_SHIFT_X
 top = (HEIGHT - logo_h) / 2
 
 pixels = bytearray(BG * (CANVAS_W * CANVAS_H))
