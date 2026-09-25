@@ -1,6 +1,9 @@
 (function(){
   'use strict';
 
+  const header=document.querySelector('.site-header');
+  if(header&&!header.id) header.id='page-top';
+
   document.addEventListener('click',event=>{
     if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey) return;
     const link=event.target.closest&&event.target.closest('a[href]');
@@ -12,12 +15,11 @@
     try{ url=new URL(link.href,location.href); }catch(_e){ return; }
     if(url.origin!==location.origin||url.hash!=='#main-content') return;
 
-    // Homepage page-top CTAs must render exactly like choosing the same page
-    // from the main menu: start at document scroll position 0, not at an
-    // in-page anchor offset and never at a remembered destination scroll.
-    event.preventDefault();
-    event.stopPropagation();
-    url.hash='';
-    location.assign(url.href);
+    // Keep these CTAs inside the site's lightweight router so the current
+    // page's scroll position is written into history and restored by Back.
+    // Point at the persistent header instead of main-content so the target
+    // page lands at the same visual top as choosing it from the main menu.
+    url.hash='#page-top';
+    link.href=url.href;
   },true);
 })();
