@@ -1,33 +1,39 @@
-# PAI Web
+# PAI Research Center Website
 
-Official website repository for the PAI Research Center at Tongji University.
+Static bilingual website for the PAI Research Center at Tongji University.
 
-## Maintenance status
+## Structure
 
-The current site is stable. Prefer small, atomic changes and avoid broad refactors unless a concrete issue requires them.
+- Chinese pages live at repository root.
+- English pages live under `en/`.
+- Shared runtime: `assets/js/site.js`.
+- Shared presentation entry point: `assets/css/refine.css`.
+- Publication data: `data/publications.json` and `data/publications-archive.json`.
+- Faculty detail pages: `people/` and `en/people/`.
 
-Key constraints:
-- Treat `main` as the source of truth.
-- Preserve the iPhone/Safari navigation and swipe behavior in `assets/js/site.js`.
-- Keep the mobile top menu and orbit menu mutually exclusive through their actual state transitions.
-- Keep the English UI label `Outputs` while the URL remains `/en/publications.html`.
-- Do not re-enable the legacy Service Worker; `sw.js` is a retirement stub that clears old `pai-site-*` caches.
-- Keep preview indexing blocked until the production-domain cutover is explicitly performed.
+## Current English terminology
 
-## Main files
+The English navigation label is **Outputs** while the stable route remains `en/publications.html`.
 
-- `index.html`, `en/index.html` — Chinese and English homepages
-- `assets/js/site.js` — shared navigation, page switching, swipe, publication loading and orbit behavior
-- `assets/js/home-logo.js` — inline SVG homepage logo animation
-- `assets/js/menu-exclusive.js` — mobile menu/orbit exclusivity helper
-- `assets/css/refine.css` — shared presentation entry point
-- `assets/css/typography.css` — canonical title typography
-- `tools/validate.py` — structural and content validation
-- `tools/validate_share_metadata.py` — share metadata consistency checks
-- `tools/validate_home_assets.py` — homepage achievement-image and lazy-loading checks
-- `MAINTENANCE.md` — detailed implementation notes
-- `PRODUCTION_CUTOVER.md` — production-domain migration checklist
+## Homepage image stability
 
-## Deployment
+The three documentary images in the homepage achievement section are committed directly with `loading="eager"` and `decoding="sync"` in both Chinese and English homepages. This is an intentional iPhone Safari stability requirement. Do not change them back to lazy/async loading.
 
-GitHub Pages deploys from `main` through `.github/workflows/pages.yml`. A change is considered deployed only after the workflow completes successfully.
+`tools/prepare_home_assets.py` is an idempotent deployment safeguard, and `tools/validate_home_assets.py` verifies the source remains Safari-safe.
+
+## Validation
+
+GitHub Pages runs the following checks before deployment:
+
+- shared first-paint template consistency;
+- site/link/content validation;
+- homepage image stability;
+- Outputs terminology;
+- share metadata;
+- JavaScript syntax.
+
+See `MAINTENANCE.md` for detailed maintenance rules and `PRODUCTION_CUTOVER.md` for production-domain cutover steps.
+
+## Preview
+
+The GitHub Pages site is a preview/review environment. `robots.txt` intentionally blocks indexing until the production cutover.
