@@ -24,7 +24,7 @@ contracts = {
         ('Join PAI →', 'join.html'),
     ],
     'join.html': [('联系我们 →', 'contact.html#recruitment')],
-    'en/join.html': [('Contact us →', 'contact.html#recruitment')],
+    'en/join.html': [('Contact Us →', 'contact.html#recruitment')],
 }
 
 if write:
