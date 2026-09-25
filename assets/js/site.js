@@ -798,8 +798,11 @@
     if(!publicationDataPromise){
       publicationDataPromise=Promise.all([
         jsonFor('/data/publications.json'),
-        jsonFor('/data/publications-archive.json').catch(()=>[])
-      ]).then(parts=>parts.flat().sort((a,b)=>b.year-a.year));
+        jsonFor('/data/publications-archive.json')
+      ]).then(parts=>parts.flat().sort((a,b)=>b.year-a.year)).catch(error=>{
+        publicationDataPromise=null;
+        throw error;
+      });
     }
     return publicationDataPromise;
   };
@@ -928,11 +931,20 @@
       updateBackTopVisibility();
     }catch(_e){
       const en=publicationLanguage()==='en';
-      host.innerHTML=`<p class="muted">${en?'Publications are temporarily unavailable. Please try again later.':'论文数据暂时无法载入，请稍后再试。'}</p>`;
+      host.innerHTML=`<p class="muted">${en?'Publications are temporarily unavailable. Please try again later.':'论文数据暂时无法载入，请稍后再试。'}</p><button type="button" class="pub-toggle" data-pub-retry>${en?'Retry':'重新加载'}</button>`;
     }
   };
 
   document.addEventListener('click',event=>{
+    const retry=event.target.closest&&event.target.closest('[data-pub-retry]');
+    if(retry){
+      event.preventDefault();
+      retry.disabled=true;
+      retry.textContent=publicationLanguage()==='en'?'Loading…':'正在加载…';
+      initPublications([]);
+      return;
+    }
+
     const jump=event.target.closest&&event.target.closest('[data-pub-year-jump]');
     if(jump){
       event.preventDefault();
@@ -1018,8 +1030,22 @@
         const item=layout[i];
         item.center=prev.center+prev.span/2+gap+item.span/2;
       }
-      layout.forEach(({label,href,chars,charStep,center})=>{
-        markup.push(`<a class="pai-orbit-item" aria-label="${label}" href="${root(href)}" style="--item-angle:${center}deg"><span class="pai-orbit-sr">${label}</span></a>`);
+      // Annular sectors share the text layout, with a four-degree dead zone
+      // between neighbors. Clipping also limits native link hit testing.
+      const sectorClip=span=>{
+        const half=(span+gap-4)/2;
+        const point=(angle,radius)=>{
+          const radians=angle*Math.PI/180;
+          return `${50+Math.sin(radians)*radius}% ${50-Math.cos(radians)*radius}%`;
+        };
+        const points=[];
+        const steps=Math.ceil(half*2/3);
+        for(let i=0;i<=steps;i++) points.push(point(-half+2*half*i/steps,50));
+        for(let i=steps;i>=0;i--) points.push(point(-half+2*half*i/steps,29));
+        return `polygon(${points.join(',')})`;
+      };
+      layout.forEach(({label,href,chars,charStep,span,center})=>{
+        markup.push(`<a class="pai-orbit-item" aria-label="${label}" href="${root(href)}" style="--item-angle:${center}deg;clip-path:${sectorClip(span)}"><span class="pai-orbit-sr">${label}</span></a>`);
         chars.forEach((ch,j)=>{
           const offset=(j-(chars.length-1)/2)*charStep;
           markup.push(`<span class="pai-orbit-char" aria-hidden="true" style="--char-angle:${center+offset}deg">${ch}</span>`);
@@ -1080,7 +1106,7 @@
       orbit.classList.add('dragging');
       startAngle=pointAngle(e);
       startRotation=rotation;
-      if(e.pointerId!==undefined) wheel.setPointerCapture?.(e.pointerId);
+      if(e.pointerId!==undefined) (e.target.closest('a')||wheel).setPointerCapture?.(e.pointerId);
     };
     const move=e=>{
       if(!dragging) return;
