@@ -18,8 +18,7 @@ SS = 3
 CANVAS_W, CANVAS_H = WIDTH * SS, HEIGHT * SS
 BG = (255, 255, 255)
 INK = (23, 26, 31)
-TARGET_LOGO_W = 1040.0
-VISUAL_SHIFT_X = 14.0
+TARGET_LOGO_W = 1248.0
 
 svg = SVG.read_text(encoding='utf-8')
 path_match = re.search(r'<path\b[^>]*\bd="([^"]+)"', svg)
@@ -36,7 +35,7 @@ _, _, view_w, view_h = [float(v) for v in view_match.group(1).split()]
 stroke_w = float(stroke_match.group(1))
 scale = TARGET_LOGO_W / view_w
 logo_h = view_h * scale
-left = (WIDTH - TARGET_LOGO_W) / 2 + VISUAL_SHIFT_X
+left = (WIDTH - TARGET_LOGO_W) / 2
 top = (HEIGHT - logo_h) / 2
 
 pixels = bytearray(BG * (CANVAS_W * CANVAS_H))
