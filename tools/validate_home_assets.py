@@ -29,10 +29,10 @@ for rel, (path, prefix) in pages.items():
             errors.append(f'{rel}: expected exactly one homepage image reference to {src}; found {len(matches)}')
             continue
         tag = matches[0]
-        if not re.search(r'\bloading=["\']lazy["\']', tag, re.I):
-            errors.append(f'{rel}: {asset} must remain loading="lazy"')
-        if not re.search(r'\bdecoding=["\']async["\']', tag, re.I):
-            errors.append(f'{rel}: {asset} must remain decoding="async"')
+        if not re.search(r'\bloading=["\']eager["\']', tag, re.I):
+            errors.append(f'{rel}: {asset} must be loading="eager" to avoid Safari re-entry flash')
+        if not re.search(r'\bdecoding=["\']sync["\']', tag, re.I):
+            errors.append(f'{rel}: {asset} must be decoding="sync" to avoid Safari re-entry flash')
 
 if errors:
     print('Homepage asset validation failed:')
