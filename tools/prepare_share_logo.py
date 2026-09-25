@@ -33,14 +33,15 @@ stroke_w = float(stroke_match.group(1))
 scale = TARGET_LOGO_W / view_w
 logo_h = view_h * scale
 left = (WIDTH - TARGET_LOGO_W) / 2
- top = (HEIGHT - logo_h) / 2
+top = (HEIGHT - logo_h) / 2
 
 pixels = bytearray(BG * (CANVAS_W * CANVAS_H))
+ink_bytes = bytes(INK)
 
 def set_px(x, y):
     if 0 <= x < CANVAS_W and 0 <= y < CANVAS_H:
         i = (y * CANVAS_W + x) * 3
-        pixels[i:i+3] = bytes(INK)
+        pixels[i:i+3] = ink_bytes
 
 radius = max(1, int(round(stroke_w * scale * SS / 2)))
 
@@ -70,21 +71,20 @@ for a, b in zip(points, points[1:]):
         t = i / steps
         draw_disk(x1 + (x2 - x1) * t, y1 + (y2 - y1) * t, radius)
 
-# Downsample 3x supersampled RGB canvas for smoother edges.
 small = bytearray(WIDTH * HEIGHT * 3)
 for y in range(HEIGHT):
     for x in range(WIDTH):
-        acc = [0, 0, 0]
+        r = g = b = 0
         for sy in range(SS):
             row = ((y * SS + sy) * CANVAS_W + x * SS) * 3
             for sx in range(SS):
                 i = row + sx * 3
-                acc[0] += pixels[i]
-                acc[1] += pixels[i+1]
-                acc[2] += pixels[i+2]
+                r += pixels[i]
+                g += pixels[i+1]
+                b += pixels[i+2]
         o = (y * WIDTH + x) * 3
         div = SS * SS
-        small[o:o+3] = bytes((acc[0] // div, acc[1] // div, acc[2] // div))
+        small[o:o+3] = bytes((r // div, g // div, b // div))
 
 def chunk(kind, data):
     return struct.pack('>I', len(data)) + kind + data + struct.pack('>I', zlib.crc32(kind + data) & 0xffffffff)
