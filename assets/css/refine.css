@@ -165,3 +165,8 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
   main:has(.join-opportunities)>.join-opportunities{padding-top:28px!important}
   main>.page-hero:has(+ .results-achievements)+.results-achievements{padding-top:28px!important}
 }
+
+/* Keep partner lists visible when no separate mobile summary exists. */
+@media(max-width:768px){
+  .partner:not(:has(.partner-inline)) p{display:block;font-size:15px;line-height:1.6;color:var(--muted)}
+}
