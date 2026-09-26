@@ -1163,7 +1163,7 @@
       orbit.classList.remove('auto-rotating');
     };
     const autoTick=ts=>{
-      if(!orbit.classList.contains('open')||dragging){stopAuto();return;}
+      if(document.hidden||!orbit.classList.contains('open')||dragging){stopAuto();return;}
       if(autoLastTs){
         const dt=Math.min(50,ts-autoLastTs);
         rotation+=AUTO_DEG_PER_SECOND*dt/1000;
@@ -1173,13 +1173,15 @@
       autoRaf=requestAnimationFrame(autoTick);
     };
     const startAuto=()=>{
-      if(autoRaf||dragging||!orbit.classList.contains('open')) return;
+      if(document.hidden||autoRaf||dragging||!orbit.classList.contains('open')) return;
       orbit.classList.add('auto-rotating');
       autoLastTs=0;
       autoRaf=requestAnimationFrame(autoTick);
     };
     const scheduleAuto=(delay=100)=>{
       if(autoTimer) clearTimeout(autoTimer);
+      autoTimer=0;
+      if(document.hidden||dragging||!orbit.classList.contains('open')) return;
       autoTimer=setTimeout(()=>{autoTimer=0;startAuto();},delay);
     };
     const pointAngle=e=>{
@@ -1217,6 +1219,16 @@
       paint();
     };
     const end=()=>{ dragging=false; orbit.classList.remove('dragging'); scheduleAuto(120); };
+
+    document.addEventListener('visibilitychange',()=>{
+      if(document.hidden){
+        stopAuto();
+        dragging=false;
+        orbit.classList.remove('dragging');
+      }else{
+        scheduleAuto();
+      }
+    });
 
     toggle.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();setOpen(!orbit.classList.contains('open'));});
 
