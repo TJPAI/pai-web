@@ -130,3 +130,8 @@ Do only at the actual production cutover to `https://ai.tongji.edu.cn/`:
 - In an environment with Playwright installed, run `node tools/verify_navigation.cjs`. Set `PAI_BROWSER_EXECUTABLE` to an existing Chromium binary if needed.
 - The check serves repository files through intercepted requests at the GitHub Pages URL, including its `/pai-web/` prefix. It verifies all 26 entry pages at mobile/desktop sizes, Home assets, page metadata, history positions, language switches, reload spacing, failed-request recovery, mobile swipes, delayed images, menu exclusivity, homepage CTA return positions and logo lifecycle. It does not write to the live website.
 - Chromium mobile emulation is a regression check, not a substitute for iPhone Safari visual acceptance.
+
+## Language-switch reading position
+- Language switches preserve the corresponding content block and relative reading position below the header, not the same absolute scroll offset. Shared section IDs, platform classes and publication DOI/title keys identify content; parallel static card order provides the fallback mapping.
+- Preserve expanded publication years when switching languages so the same paper remains visible. Page top and bottom stay at their respective edges. Browser Back/Forward continues to restore its own saved pixel positions.
+- When adding/reordering bilingual sections or cards, keep their identifiers/order paired and run the browser acceptance checks.

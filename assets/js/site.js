@@ -286,7 +286,58 @@
     });
   };
 
-  const applyPage=async(url,{historyMode='push',preserveScrollY=null,transitionDirection=0,gestureOffset=0}={})=>{
+  // Match content landmarks across translations instead of reusing pixel offsets.
+  const readingBlocks=()=>{
+    const blocks=[];
+    const types=['pub','publication-toolbar','pub-year-row','person','detail-block',
+      'contact-card','join-item','metric','partner','research','challenge','media-item'];
+    const selector=['article','figure',...types.map(type=>'.'+type)].join(',');
+    document.querySelectorAll('main > section').forEach((section,index)=>{
+      const sectionKey=section.id||`section-${index}`;
+      blocks.push({key:sectionKey,node:section});
+      const counts=new Map();
+      section.querySelectorAll(selector).forEach(node=>{
+        const kind=types.find(type=>node.classList.contains(type))||node.tagName.toLowerCase();
+        const ordinal=counts.get(kind)||0;
+        counts.set(kind,ordinal+1);
+        const platform=[...node.classList].find(name=>name.startsWith('platform-'));
+        const identity=node.dataset.publicationKey||node.id||platform||String(ordinal);
+        blocks.push({key:`${sectionKey}/${kind}/${identity}`,node});
+      });
+    });
+    const footer=document.querySelector('.site-footer');
+    if(footer) blocks.push({key:'footer',node:footer});
+    return blocks;
+  };
+  const readingLine=()=>Math.max(0,document.querySelector('.site-header')?.getBoundingClientRect().bottom||0)+16;
+  const captureReadingPosition=()=>{
+    if(window.scrollY<8) return {edge:'top'};
+    if(window.scrollY+innerHeight>=document.documentElement.scrollHeight-8) return {edge:'bottom'};
+    const line=readingLine();
+    const visible=readingBlocks().map(block=>({...block,rect:block.node.getBoundingClientRect()}))
+      .filter(block=>block.rect.height>0&&block.rect.bottom>line);
+    const containing=visible.filter(block=>block.rect.top<=line);
+    // Prefer a nested item over its section; for side-by-side cards keep reading order.
+    const block=containing.reduce((best,item)=>!best||best.node.contains(item.node)?item:best,null)
+      ||visible.sort((a,b)=>a.rect.top-b.rect.top)[0];
+    if(!block) return {edge:'top'};
+    return {
+      key:block.key,
+      progress:Math.max(0,(line-block.rect.top)/block.rect.height),
+      gap:Math.max(0,block.rect.top-line)
+    };
+  };
+  const restoreReadingPosition=position=>{
+    if(position.edge==='top'){scrollToInstant(0);return;}
+    if(position.edge==='bottom'){scrollToInstant(document.documentElement.scrollHeight-innerHeight);return;}
+    const blocks=readingBlocks();
+    const block=blocks.find(item=>item.key===position.key);
+    if(!block) return;
+    const rect=block.node.getBoundingClientRect();
+    scrollToInstant(window.scrollY+rect.top+position.progress*rect.height-readingLine()-position.gap);
+  };
+
+  const applyPage=async(url,{historyMode='push',preserveScrollY=null,readingContext=null,transitionDirection=0,gestureOffset=0}={})=>{
     if(navigating) return;
     if(scrollSaveTimer!==null){
       clearTimeout(scrollSaveTimer);
@@ -333,16 +384,20 @@
       if(hasRequestedScroll){
         const provisionalMaxY=Math.max(0,document.documentElement.scrollHeight-innerHeight);
         scrollToInstant(Math.min(Math.max(0,preserveScrollY),provisionalMaxY));
-      }else if(!url.hash){
+      }else if(!readingContext&&!url.hash){
         scrollToInstant(0);
       }
 
-      const preservedPublicationYears=[...next.querySelectorAll('.pub-group[data-expanded="true"]')]
+      const preservedPublicationYears=readingContext?.expandedYears||[...next.querySelectorAll('.pub-group[data-expanded="true"]')]
         .map(section=>section.dataset.year).filter(Boolean);
       await initPublications(preservedPublicationYears);
       setTimeout(()=>warmNavigation(),80);
       await new Promise(resolve=>requestAnimationFrame(resolve));
-      if(hasRequestedScroll){
+      if(readingContext){
+        restoreReadingPosition(readingContext.position);
+        const y=rememberPageScroll(normalizedPath(url.pathname),window.scrollY);
+        try{ history.replaceState(historyStateWithScroll(y),'',location.href); }catch(_e){}
+      }else if(hasRequestedScroll){
         const maxY=Math.max(0,document.documentElement.scrollHeight-innerHeight);
         const restoredY=Math.min(Math.max(0,preserveScrollY),maxY);
         if(Math.abs(window.scrollY-restoredY)>1) scrollToInstant(restoredY);
@@ -398,7 +453,7 @@
     const isLanguageSwitch=label==='EN'||label==='中文';
     let options;
     if(isLanguageSwitch){
-      options={preserveScrollY:window.scrollY};
+      options={readingContext:{position:captureReadingPosition(),expandedYears:getExpandedYears()}};
     }else if(!url.hash){
       options={preserveScrollY:destinationScrollForPath(normalizedPath(url.pathname))};
     }
@@ -925,6 +980,7 @@
           const extra=index>=PUB_VISIBLE_DEFAULT;
           article.className='pub'+(!isExpanded&&extra?' is-collapsed':'');
           article.dataset.pubExtra=extra?'1':'0';
+          article.dataset.publicationKey=publication.doi||publication.title;
           const actions=publication.doi?
             `<div class="pub-actions"><a href="${esc(doiHref(publication.doi))}" target="_blank" rel="noopener">DOI ↗</a></div>`:'';
           article.innerHTML=`<h3 class="title-item">${esc(publication.title)}</h3><p class="pub-authors">${esc(publication.authors)}</p><p class="pub-venue">${esc(publication.venue)} · ${year}</p>${actions}`;

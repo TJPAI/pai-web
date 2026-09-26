@@ -71,7 +71,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
       assert.deepEqual(await toolbar(),spacing);await checkHead('publications.html');
       console.log(`${width}px: Back/Forward positions, language switch and reload passed`);
       // A failed request is recoverable without reloading the document.
-      failPapers=true;await page.reload();await page.locator('[data-pub-retry]').waitFor();
+      failPapers=true;await page.goto(BASE+'publications.html');await page.locator('[data-pub-retry]').waitFor();
       failPapers=false;await page.locator('[data-pub-retry]').click();await page.locator('.pub').first().waitFor();
       const expectedPapers=['data/publications.json','data/publications-archive.json'].reduce((n,f)=>n+JSON.parse(fs.readFileSync(path.join(ROOT,f),'utf8')).length,0);
       assert.equal(await page.locator('.pub').count(),expectedPapers);
@@ -114,6 +114,57 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
         assert.equal(await page.locator('.pai-logo-motion-hidden').count(),0,'Reload reused the completed logo state');
         console.log('Mobile: homepage CTA Back positions and logo draw/fade/reload passed');
       }
+      // Different translation lengths must preserve the same reading landmark,
+      // including papers that only exist in an expanded year group.
+      const readingCases=[
+        ['index.html','.home-achievement-story',1],
+        ['about.html','.platform-conference',0],
+        ['research.html','#iotng',0],
+        ['team.html','.person',3],
+        ['contact.html','.contact-card',0],
+        ['join.html','.join-item',1],
+        ['people/erwu-liu.html','.detail-block',1],
+        ['publications.html','.pub-group[data-year="2025"] .pub',4]
+      ];
+      for(const [file,selector,index] of readingCases){
+        await page.goto(BASE+file);
+        if(file==='publications.html'){
+          await page.locator('[data-pub-toggle-all]').click();
+        }
+        const target=page.locator(selector).nth(index);
+        await target.waitFor({state:'visible'});
+        await page.waitForFunction(()=>[...document.images].every(img=>img.complete));
+        await target.evaluate(node=>{
+          const r=node.getBoundingClientRect();
+          const line=document.querySelector('.site-header').getBoundingClientRect().bottom+16;
+          window.scrollTo(0,scrollY+r.top+r.height*.35-line);
+        });
+        await page.waitForTimeout(180);
+        const offset=()=>page.locator(selector).nth(index).evaluate(node=>{
+          const r=node.getBoundingClientRect();
+          return (document.querySelector('.site-header').getBoundingClientRect().bottom+16-r.top)/r.height;
+        });
+        const start=await offset();
+        const sourceAtBottom=await page.evaluate(()=>document.documentElement.scrollHeight-innerHeight-scrollY<8);
+        for(const lang of ['en/','']){
+          const destination=lang+(file==='index.html'?'':file);
+          await linkTo(destination);
+          await page.locator(selector).nth(index).waitFor({state:'visible'});
+          if(sourceAtBottom){
+            assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight-innerHeight-scrollY<8),`${file}: lost bottom position`);
+          }else{
+            assert.ok(Math.abs(await offset()-start)<.03,`${width}px ${file}: translation lost content position (${start} -> ${await offset()})`);
+          }
+        }
+      }
+      for(const bottom of [false,true]){
+        await page.goto(BASE+'about.html');
+        if(bottom)await page.evaluate(()=>window.scrollTo(0,document.documentElement.scrollHeight));
+        await linkTo('en/about.html');
+        assert.ok(await page.evaluate(bottom=>bottom?document.documentElement.scrollHeight-innerHeight-scrollY<2:scrollY<2,bottom));
+      }
+      console.log(`${width}px: bilingual reading landmarks, expanded papers and page edges passed`);
+      await page.evaluate(()=>{sessionStorage.removeItem('pai-page-scroll-v1');localStorage.setItem('pai-lang','zh');});
       await context.close();
     }
     assert.deepEqual(failures,[]);console.log('Navigation acceptance passed; no page errors or missing local resources.');
