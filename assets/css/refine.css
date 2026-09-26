@@ -170,3 +170,6 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
 @media(max-width:768px){
   .partner:not(:has(.partner-inline)) p{display:block;font-size:15px;line-height:1.6;color:var(--muted)}
 }
+@media(min-width:769px){
+  .partner:not(:has(p)) .partner-inline{display:block;font-size:18px;line-height:1.9;color:#313846}
+}
