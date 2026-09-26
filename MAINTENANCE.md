@@ -43,7 +43,7 @@ The canonical static PAI mark is `assets/images/brand/pai-logo.svg`; Header bran
 - Respect `prefers-reduced-motion`: the final mark should appear without running the draw animation.
 - Both homepages contain the final editorial structure in HTML. Lightweight navigation and swipe previews use that same markup; `home-logo.js` only manages the logo animation. Keep the canonical homepage image loading settings in previews and committed pages to avoid a visible handoff.
 - The Header uses the final static PAI mark while retaining `Tongji University` beneath it.
-- Whenever `home-logo.css` or `home-logo.js` changes, bump the corresponding query-string cache key in both `index.html` and `en/index.html` so Safari and WeChat do not keep the previous motion behavior.
+- `home-logo.css` and `home-logo.js` are shared entry-point assets so returning Home also works when the session started on an inner page. When either changes, update its cache key in `tools/sync_navigation_scripts.py` and run that tool to synchronize every HTML entry point. The animation still only runs on Home.
 - Do not move the animation into the shared navigation/page-swipe code unless there is a concrete integration need.
 
 ### Desktop homepage presentation
@@ -122,3 +122,11 @@ Do only at the actual production cutover to `https://ai.tongji.edu.cn/`:
 ## Platform content ownership
 - Platform descriptions, headings and display order live in `about.html` and `en/about.html`. Never replace readable text with CSS pseudo-elements or identify platforms by their sibling position.
 - Use stable `platform-journal`, `platform-conference`, `platform-community`, `platform-china` and `platform-center` classes for scoped presentation.
+
+## Lightweight page identity
+- `syncPageHead` in `site.js` updates description, canonical, language alternates, Open Graph/Twitter metadata and the owned JSON-LD block with the target page. Do not replace the entire head or rerun arbitrary scripts. The host-level robots policy and shared assets stay in place.
+
+## Browser acceptance
+- In an environment with Playwright installed, run `node tools/verify_navigation.cjs`. Set `PAI_BROWSER_EXECUTABLE` to an existing Chromium binary if needed.
+- The check serves repository files through intercepted requests at the GitHub Pages URL, including its `/pai-web/` prefix. It verifies all 26 entry pages at mobile/desktop sizes, Home assets, page metadata, history positions, language switches, reload spacing, failed-request recovery, mobile swipes, delayed images, menu exclusivity, homepage CTA return positions and logo lifecycle. It does not write to the live website.
+- Chromium mobile emulation is a regression check, not a substitute for iPhone Safari visual acceptance.

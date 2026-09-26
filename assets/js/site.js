@@ -272,6 +272,20 @@
     return html;
   };
 
+  // Page identity must follow the displayed content during lightweight navigation.
+  // Shared assets and the host's robots policy remain owned by the document shell.
+  const pageHeadSelector=[
+    'meta[name="description"]','meta[property^="og:"]','meta[name^="twitter:"]',
+    'link[rel="canonical"]','link[rel="alternate"][hreflang]',
+    'script[type="application/ld+json"][data-pai-schema]'
+  ].join(',');
+  const syncPageHead=next=>{
+    document.head.querySelectorAll(pageHeadSelector).forEach(node=>node.remove());
+    next.head.querySelectorAll(pageHeadSelector).forEach(node=>{
+      document.head.appendChild(document.importNode(node,true));
+    });
+  };
+
   const applyPage=async(url,{historyMode='push',preserveScrollY=null,transitionDirection=0,gestureOffset=0}={})=>{
     if(navigating) return;
     if(scrollSaveTimer!==null){
@@ -309,6 +323,7 @@
       const incomingMain=document.importNode(nextMain,true);
       currentMain.replaceWith(incomingMain);
       document.title=next.title||document.title;
+      syncPageHead(next);
       document.documentElement.lang=next.documentElement.lang||document.documentElement.lang;
       document.body.className=next.body.className;
 
