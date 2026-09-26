@@ -262,14 +262,19 @@
     },120);
   },{passive:true});
 
-  const fetchPage=async url=>{
+  const pageRequests=new Map();
+  const fetchPage=(url,{priority='high'}={})=>{
     const key=url.href.split('#')[0];
-    if(pageCache.has(key)) return pageCache.get(key);
-    const response=await fetch(key,{credentials:'same-origin'});
-    if(!response.ok) throw new Error('page unavailable');
-    const html=await response.text();
-    pageCache.set(key,html);
-    return html;
+    if(pageCache.has(key)) return Promise.resolve(pageCache.get(key));
+    if(pageRequests.has(key)) return pageRequests.get(key);
+    const request=fetch(key,{credentials:'same-origin',priority}).then(async response=>{
+      if(!response.ok) throw new Error('page unavailable');
+      const html=await response.text();
+      pageCache.set(key,html);
+      return html;
+    }).finally(()=>pageRequests.delete(key));
+    pageRequests.set(key,request);
+    return request;
   };
 
   // Page identity must follow the displayed content during lightweight navigation.
@@ -465,25 +470,27 @@
     applyPage(new URL(location.href),{historyMode:'none',preserveScrollY:restoredY}).catch(()=>location.reload());
   });
 
+  // Background warming is limited to the language counterpart and swipe neighbors.
+  // Explicit user intent bypasses that small speculative set.
   const warmNavigation=()=>{
     if(navigator.connection&&navigator.connection.saveData) return;
-    const seen=new Set();
-    [...document.querySelectorAll('a[href]')].forEach((link,index)=>{
-      const url=eligiblePageLink(link);
-      if(!url) return;
-      const key=url.href.split('#')[0];
-      if(seen.has(key)) return;
-      seen.add(key);
-      setTimeout(()=>fetchPage(url).catch(()=>{}),Math.min(index,20)*35);
-    });
+    const url=new URL(root(counterpartFor(normalizedPath())),location.origin);
+    fetchPage(url,{priority:'low'}).catch(()=>{});
   };
   if('requestIdleCallback' in window) requestIdleCallback(warmNavigation,{timeout:1800});
   else setTimeout(warmNavigation,700);
 
+  const warmPublicationData=url=>{
+    if(navigator.connection&&navigator.connection.saveData) return;
+    if(sectionForPath(normalizedPath(url.pathname))==='publications'){
+      getPublicationData('low').catch(()=>{});
+    }
+  };
   const warmedAssets=new Set();
   const warmLinkIntent=link=>{
     const url=eligiblePageLink(link);
     if(!url) return;
+    warmPublicationData(url);
     const key=url.href.split('#')[0];
     if(warmedAssets.has(key)) return;
     warmedAssets.add(key);
@@ -498,7 +505,7 @@
           preload.src=src.href;
         }catch(_e){}
       });
-    }).catch(()=>{});
+    }).catch(()=>warmedAssets.delete(key));
   };
   document.addEventListener('touchstart',event=>{
     const link=event.target.closest&&event.target.closest('a');
@@ -564,7 +571,11 @@
     const lang=path.startsWith('/en/')?'en':'zh';
     [-1,1].forEach(direction=>{
       const targetPath=swipeTargetFor(path,lang,direction);
-      if(targetPath) fetchPage(new URL(root(targetPath),location.origin)).catch(()=>{});
+      if(targetPath){
+        const url=new URL(root(targetPath),location.origin);
+        fetchPage(url,{priority:'low'}).catch(()=>{});
+        warmPublicationData(url);
+      }
     });
   };
   setTimeout(warmSwipeNeighbors,260);
@@ -650,6 +661,7 @@
     const targetPath=swipeTargetFor(start.path,start.lang,direction);
     if(!targetPath) return Promise.resolve(null);
     const url=new URL(root(targetPath),location.origin);
+    warmPublicationData(url);
     return fetchPage(url).then(html=>buildSwipePreview(url,direction,html)).catch(()=>null);
   };
 
@@ -859,9 +871,9 @@
     commitSwipe(direction).finally(()=>{ pageSwipeStart=null; });
   },{passive:false});
 
-  const responseFor=async url=>{
+  const responseFor=async(url,priority)=>{
     try{
-      const response=await fetch(url.href,{credentials:'same-origin',cache:'no-store'});
+      const response=await fetch(url.href,{credentials:'same-origin',cache:'no-store',priority});
       return response&&response.ok?response:null;
     }catch(_e){
       return null;
@@ -869,16 +881,16 @@
   };
 
   let publicationDataPromise=null;
-  const jsonFor=async path=>{
-    const response=await responseFor(new URL(absolute(path)));
+  const jsonFor=async(path,priority)=>{
+    const response=await responseFor(new URL(absolute(path)),priority);
     if(!response) throw new Error('resource unavailable');
     return response.json();
   };
-  const getPublicationData=()=>{
+  const getPublicationData=(priority='high')=>{
     if(!publicationDataPromise){
       publicationDataPromise=Promise.all([
-        jsonFor('/data/publications.json'),
-        jsonFor('/data/publications-archive.json')
+        jsonFor('/data/publications.json',priority),
+        jsonFor('/data/publications-archive.json',priority)
       ]).then(parts=>parts.flat().sort((a,b)=>b.year-a.year)).catch(error=>{
         publicationDataPromise=null;
         throw error;

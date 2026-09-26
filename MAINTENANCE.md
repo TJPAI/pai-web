@@ -135,3 +135,9 @@ Do only at the actual production cutover to `https://ai.tongji.edu.cn/`:
 - Language switches preserve the corresponding content block and relative reading position below the header, not the same absolute scroll offset. Shared section IDs, platform classes and publication DOI/title keys identify content; parallel static card order provides the fallback mapping.
 - Preserve expanded publication years when switching languages so the same paper remains visible. Page top and bottom stay at their respective edges. Browser Back/Forward continues to restore its own saved pixel positions.
 - When adding/reordering bilingual sections or cards, keep their identifiers/order paired and run the browser acceptance checks.
+
+## Navigation preloading
+- `fetchPage` shares both completed HTML and in-flight requests. Failed requests leave the in-flight map so later intent can retry.
+- Speculative HTML loading is limited to adjacent swipe pages and the current page's language counterpart. Intent-driven loading starts immediately; background fetch priority is only a browser hint.
+- Publication data warms when Outputs is a swipe neighbor or the user touches/hovers its link. Reuse the same data promise for rendering; keep failure recovery and Save-Data behavior.
+- Run `node tools/verify_navigation_performance.cjs` (same Playwright setup as acceptance) for the controlled 600 ms latency/request-count check. These timings are laboratory comparisons, not live-site guarantees.

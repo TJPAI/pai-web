@@ -237,7 +237,8 @@ site_js=(ROOT/'assets/js/site.js').read_text(encoding='utf-8')
 for required in ('history.pushState','popstate','DOMParser','currentMain.replaceWith','eligiblePageLink'):
     if required not in site_js:
         errors.append(f'assets/js/site.js: lightweight navigation contract missing ({required})')
-if "fetch(key,{credentials:'same-origin'})" not in site_js:
+page_fetch=re.search(r"fetch\(key,\{([^}]*)\}\)",site_js)
+if not page_fetch or "credentials:'same-origin'" not in page_fetch.group(1) or re.search(r"\bcache\s*:",page_fetch.group(1)):
     errors.append('assets/js/site.js: lightweight navigation must use ordinary HTTP caching')
 
 # Faculty portraits are ordinary static files. Gang Shen intentionally uses PNG.
