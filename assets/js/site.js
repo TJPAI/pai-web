@@ -671,15 +671,13 @@
     const width=Math.max(1,innerWidth);
     const bounded=Math.max(-width,Math.min(width,dx));
     const direction=bounded<0?1:-1;
-    const current=document.querySelector('main');
+    const current=start.main;
     if(current){
       current.style.willChange='transform';
       current.style.transform=`translate3d(${bounded}px,0,0)`;
     }
-    const currentFooter=document.querySelector('.site-footer');
-    const footerRect=currentFooter?.getBoundingClientRect();
-    const footerVisible=!!(footerRect&&footerRect.bottom>0&&footerRect.top<innerHeight);
-    if(currentFooter&&footerVisible){
+    const currentFooter=start.visibleFooter;
+    if(currentFooter){
       currentFooter.style.willChange='transform';
       currentFooter.style.transform=`translate3d(${bounded}px,0,0)`;
     }
@@ -801,7 +799,15 @@
       }
       if(ax<8&&ay<8) return;
       if(ay>ax*1.08){ pageSwipeStart=null; return; }
-      if(ax>=8&&ax>ay*1.18) start.locked=true;
+      if(ax>=8&&ax>ay*1.18){
+        // Horizontal dragging prevents vertical scroll. Read geometry once,
+        // before transform writes, rather than measuring on every touchmove.
+        start.main=document.querySelector('main');
+        const footer=document.querySelector('.site-footer');
+        const rect=footer?.getBoundingClientRect();
+        start.visibleFooter=rect&&rect.bottom>0&&rect.top<innerHeight?footer:null;
+        start.locked=true;
+      }
     }
     if(!start.locked) return;
 
