@@ -55,6 +55,8 @@ jobs:
         run: node --check assets/js/site.js
       - name: Bundle CSS for deployment
         run: python tools/prepare_css_bundle.py
+      - name: Stamp deployed asset cache keys
+        run: python tools/normalize_asset_versions.py
       - name: Configure Pages
         uses: actions/configure-pages@v6
       - name: Upload artifact
