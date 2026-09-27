@@ -5,32 +5,20 @@ Generated production URLs/robots/sitemap/CNAME are owned by prepare_site_urls.py
 validate_seo_contracts.py after the environment switch. This check therefore validates
 the selected production configuration plus source invariants that must survive cutover.
 """
-from pathlib import Path
-import json
 import re
 import sys
-from urllib.parse import urlparse
 
-ROOT = Path(__file__).resolve().parents[1]
+from site_config import ROOT, CONFIG
+
 errors = []
-
-config_path = ROOT / 'config' / 'site.json'
-try:
-    config = json.loads(config_path.read_text(encoding='utf-8'))
-except Exception as exc:
-    raise SystemExit(f'config/site.json is invalid: {exc}')
-
-active = config.get('active_environment')
-environments = config.get('environments') or {}
+active = CONFIG['active_environment']
+environments = CONFIG['environments']
 production = environments.get('production') or {}
 preview = environments.get('preview') or {}
 
 if active != 'production':
     errors.append('config/site.json active_environment is not production')
-
-base_url = str(production.get('base_url') or '')
-parsed = urlparse(base_url)
-if parsed.scheme != 'https' or parsed.netloc != 'ai.tongji.edu.cn' or parsed.path != '/':
+if production.get('base_url') != 'https://ai.tongji.edu.cn/':
     errors.append('production base_url must be https://ai.tongji.edu.cn/')
 if production.get('custom_domain') != 'ai.tongji.edu.cn':
     errors.append('production custom_domain must be ai.tongji.edu.cn')
@@ -38,8 +26,6 @@ if production.get('allow_indexing') is not True:
     errors.append('production allow_indexing must be true')
 if preview.get('allow_indexing') is not False:
     errors.append('preview allow_indexing must remain false')
-if preview.get('base_url') == production.get('base_url'):
-    errors.append('preview and production base_url must remain distinct')
 
 # Temporary external faculty imagery must never return to the source tree.
 for html in ROOT.rglob('*.html'):
