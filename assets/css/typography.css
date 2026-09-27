@@ -143,6 +143,11 @@
   html[lang="en"] .contact-card .title-item{letter-spacing:-.018em!important}
 }
 
+/* Semantic item headings may be h2 or h3; layout must not depend on rank. */
+.highlight .title-item{margin:0}
+.contact-card .title-item{margin:0 0 10px}
+.join-item .title-item{margin:0 0 12px}
+@media(max-width:768px){.join-item .title-item{margin-bottom:8px}}
 
 /* Platform introduction keeps its approved display scale. */
 #international-impact .title-section{font-size:clamp(30px,4vw,52px)!important;line-height:1.08!important;letter-spacing:-.035em!important}
