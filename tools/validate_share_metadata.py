@@ -2,8 +2,8 @@
 from pathlib import Path
 import re, sys
 
-ROOT = Path(__file__).resolve().parents[1]
-BASE_URL = 'https://tjpai.github.io/pai-web/'
+from site_config import ROOT, BASE_URL
+
 SHARE_IMAGE = BASE_URL + 'assets/images/social/pai-logo-share.png'
 errors = []
 checked = []
@@ -46,7 +46,7 @@ for html in sorted(ROOT.rglob('*.html')):
 
     canonical = link_href(text, 'canonical')
     if not canonical or not canonical.startswith(BASE_URL):
-        errors.append(f'{rel}: missing/invalid canonical')
+        errors.append(f'{rel}: missing/invalid canonical for configured base {BASE_URL}')
 
     required_meta = {
         ('property', 'og:type'): 'website',
@@ -90,11 +90,11 @@ for html in sorted(ROOT.rglob('*.html')):
         for tag in re.findall(r'<link\b[^>]*>', text, re.I):
             if (re.search(r'\brel=["\']alternate["\']', tag, re.I)
                     and re.search(rf'\bhreflang=["\']{re.escape(lang)}["\']', tag, re.I)
-                    and re.search(r'\bhref=["\']https://tjpai\.github\.io/pai-web/', tag, re.I)):
+                    and re.search(rf'\bhref=["\']{re.escape(BASE_URL)}', tag, re.I)):
                 ok = True
                 break
         if not ok:
-            errors.append(f'{rel}: missing hreflang {lang}')
+            errors.append(f'{rel}: missing hreflang {lang} for configured base')
 
 share_file = ROOT / 'assets/images/social/pai-logo-share.png'
 if not share_file.is_file():
