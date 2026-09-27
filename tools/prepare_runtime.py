@@ -6,13 +6,36 @@ ROOT = Path(__file__).resolve().parents[1]
 SITE_JS = ROOT / 'assets' / 'js' / 'site.js'
 INDEX = ROOT / 'index.html'
 
-# Desktop does not render the mobile orbit, so avoid creating its DOM/listeners there.
 text = SITE_JS.read_text(encoding='utf-8')
-old = "  };\n  initOrbitMenu();\n\n})();"
-new = "  };\n  const orbitMedia=matchMedia('(max-width:768px)');\n  const ensureOrbitMenu=()=>{if(orbitMedia.matches)initOrbitMenu();};\n  ensureOrbitMenu();\n  if(orbitMedia.addEventListener) orbitMedia.addEventListener('change',ensureOrbitMenu);\n  else orbitMedia.addListener?.(ensureOrbitMenu);\n\n})();"
-if text.count(old) != 1:
+
+# Desktop does not render the mobile orbit, so avoid creating its DOM/listeners there.
+old_orbit = "  };\n  initOrbitMenu();\n\n})();"
+new_orbit = "  };\n  const orbitMedia=matchMedia('(max-width:768px)');\n  const ensureOrbitMenu=()=>{if(orbitMedia.matches)initOrbitMenu();};\n  ensureOrbitMenu();\n  if(orbitMedia.addEventListener) orbitMedia.addEventListener('change',ensureOrbitMenu);\n  else orbitMedia.addListener?.(ensureOrbitMenu);\n\n})();"
+if text.count(old_orbit) != 1:
     raise SystemExit('site.js orbit bootstrap contract changed; expected exactly one initOrbitMenu() tail')
-SITE_JS.write_text(text.replace(old, new), encoding='utf-8')
+text = text.replace(old_orbit, new_orbit)
+
+# Swipe neighbors only help touch/mobile navigation. Avoid speculative page requests on
+# ordinary desktop, and move initial mobile warming off the critical post-load window.
+old_swipe_guard = "  const warmSwipeNeighbors=()=>{\n    if(navigator.connection&&navigator.connection.saveData) return;"
+new_swipe_guard = "  const warmSwipeNeighbors=()=>{\n    if(innerWidth>768&&!matchMedia('(pointer:coarse)').matches) return;\n    if(navigator.connection&&navigator.connection.saveData) return;"
+if text.count(old_swipe_guard) != 1:
+    raise SystemExit('site.js swipe warmup contract changed; expected warmSwipeNeighbors guard')
+text = text.replace(old_swipe_guard, new_swipe_guard)
+
+old_initial_swipe = "  setTimeout(warmSwipeNeighbors,260);"
+new_initial_swipe = "  if('requestIdleCallback' in window) requestIdleCallback(warmSwipeNeighbors,{timeout:1800});\n  else setTimeout(warmSwipeNeighbors,1200);"
+if text.count(old_initial_swipe) != 1:
+    raise SystemExit('site.js initial swipe warmup contract changed')
+text = text.replace(old_initial_swipe, new_initial_swipe)
+
+old_after_nav = "      setTimeout(()=>warmSwipeNeighbors(),40);"
+new_after_nav = "      setTimeout(()=>warmSwipeNeighbors(),600);"
+if text.count(old_after_nav) != 1:
+    raise SystemExit('site.js post-navigation swipe warmup contract changed')
+text = text.replace(old_after_nav, new_after_nav)
+
+SITE_JS.write_text(text, encoding='utf-8')
 
 # Resolve the root-page language preference in <head>, before CSS and eager homepage
 # imagery start loading. site.js retains the same redirect as a defensive fallback.
@@ -30,4 +53,4 @@ bootstrap = (
 )
 INDEX.write_text(index.replace(marker, bootstrap), encoding='utf-8')
 
-print('Prepared deployment runtime: mobile-only orbit plus early root-page language redirect.')
+print('Prepared deployment runtime: early language redirect, mobile-only orbit, idle mobile swipe warming.')
