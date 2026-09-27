@@ -1,0 +1,15 @@
+{
+  "active_environment": "preview",
+  "environments": {
+    "preview": {
+      "base_url": "https://tjpai.github.io/pai-web/",
+      "custom_domain": null,
+      "allow_indexing": false
+    },
+    "production": {
+      "base_url": "https://ai.tongji.edu.cn/",
+      "custom_domain": "ai.tongji.edu.cn",
+      "allow_indexing": true
+    }
+  }
+}
