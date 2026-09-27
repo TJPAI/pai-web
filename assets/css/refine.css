@@ -237,6 +237,18 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
   .join-context .btn{align-self:flex-start;margin-top:34px}
 }
 
+/* Contact page: replace the uneven two-column stack with three equal editorial contact rows. */
+@media(min-width:1025px){
+  .contact-grid{display:block}
+  .contact-grid>div{display:contents}
+  .contact-grid .contact-card{display:grid;grid-template-columns:minmax(220px,280px) minmax(0,1fr);column-gap:42px;row-gap:6px;align-items:start;padding:27px 0;border-top:1px solid var(--line)}
+  .contact-grid .contact-card:last-child{border-bottom:1px solid var(--line)}
+  .contact-grid .contact-card .eyebrow{grid-column:1;margin:2px 0 0}
+  .contact-grid .contact-card h3{grid-column:1;margin:8px 0 0;line-height:1.35}
+  .contact-grid .contact-card p{grid-column:2;margin:0;max-width:46em;font-size:15px;line-height:1.75}
+  .contact-grid .contact-card p+p{margin-top:8px}
+}
+
 /* Research Results page: items 01-06 form one continuous achievement sequence. */
 .results-achievements{padding:70px 0 0;border-bottom:0}
 .results-achievements .highlights{margin-top:28px}
