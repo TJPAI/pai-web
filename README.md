@@ -29,9 +29,12 @@ GitHub Pages builds a deployment artifact rather than publishing the repository 
 5. applies narrowly scoped deployment runtime optimizations;
 6. bundles the layered `refine.css` stack into one deployed stylesheet;
 7. stamps deployed local CSS/JS references with content-derived cache hashes;
-8. uploads and deploys the artifact.
+8. stages an explicit `_site/` public tree;
+9. uploads and deploys only that public tree.
 
 Source CSS remains layered for maintainability; deployed CSS is bundled to avoid an `@import` request waterfall.
+
+The published site includes website HTML/assets/data plus the retained `geosketch-mvp` experience, but excludes repository/build internals such as `tools/`, `config/`, `.github/`, README and maintenance documents.
 
 ## Environment switch
 
@@ -50,6 +53,8 @@ DNS and the GitHub Pages **Custom domain** setting remain external configuration
 Do not manually bump deployed CSS/JS query strings for ordinary changes. The deployment workflow computes cache keys from the final asset contents after runtime preparation and CSS bundling.
 
 The source-level cache-key checker still prevents inconsistent references between HTML files.
+
+Generated deployment outputs are ignored by Git (`_site/`, the CSS bundle, generated square share PNG and generated `CNAME`).
 
 ## Validation
 
