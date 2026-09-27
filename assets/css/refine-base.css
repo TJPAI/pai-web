@@ -2,7 +2,7 @@
 .home-hero .hero-kicker{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
 .home-hero .hero-kicker:before{content:"";width:32px;height:1px;background:var(--graphite);opacity:.45}
 .home-hero .hero-note{max-width:520px;color:var(--muted);font-size:var(--text-support-size);margin:0 0 28px}
-.research-code{display:flex;align-items:baseline;gap:9px;font-weight:700}.research-index{display:inline!important;color:var(--muted);font-weight:450;letter-spacing:.06em}
+.research-code{display:flex;align-items:baseline;gap:9px;font-weight:700}.research-index{display:inline;color:var(--muted);font-weight:450;letter-spacing:.06em}
 .partner-inline{font-weight:520}
 .highlight p{max-width:34em}
 .impact .tag{margin-top:0}.impact-capabilities{margin-top:14px;color:var(--ink);font-size:var(--text-support-size);font-weight:600;letter-spacing:.005em}
@@ -39,7 +39,7 @@
  .home-hero .hero-note{display:none}
  .home-hero .hero-art{right:-138px;bottom:-82px;width:480px;height:370px;opacity:.34}.home-hero .hero-art svg{transform:scale(1.42)}
  .challenge{position:relative;padding:31px 0 33px;overflow:hidden}.challenge .num{margin-bottom:15px}.challenge h3{position:relative;z-index:1}
- .research{padding:50px 0 54px}.research-code{font-size:13px;margin-bottom:22px;gap:8px;font-weight:720;color:var(--graphite)}.research-index{font-size:12px!important;color:#A8AFB9!important;font-weight:450!important}.research h3{max-width:12.5em}.research p{font-size:14px;line-height:1.7;margin-top:16px}.research .text-link{margin-top:21px}
+ .research{padding:50px 0 54px}.research-code{font-size:13px;margin-bottom:22px;gap:8px;font-weight:720;color:var(--graphite)}.research-index{font-size:12px;color:#A8AFB9;font-weight:450}.research h3{max-width:12.5em}.research p{font-size:14px;line-height:1.7;margin-top:16px}.research .text-link{margin-top:21px}
  .partner{padding:25px 0!important}.home-hero~.section .partner h3{margin-bottom:8px!important}.partner-inline{font-size:15px!important;color:var(--muted)!important;line-height:1.6}
  .highlight,.highlight:nth-child(odd),.highlight:nth-child(even){padding:27px 0}.highlight p{font-size:13px;color:var(--muted);line-height:1.55}
  .impact{padding:44px 0 46px}.impact .tag{font-size:9px;letter-spacing:.16em;margin-bottom:14px}.impact .num{display:none}.impact p{font-size:14px;color:#7C8594;margin-top:11px;letter-spacing:.01em}.impact-capabilities{font-size:15px;line-height:1.6;margin-top:12px;color:var(--ink);font-weight:620}.impact .fact{margin-top:16px;padding-top:14px;font-size:12px;line-height:1.65;color:var(--muted)}
