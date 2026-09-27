@@ -4,39 +4,69 @@ Static bilingual website for the PAI Research Center at Tongji University.
 
 ## Structure
 
-- Chinese pages live at repository root.
-- English pages live under `en/`.
+- Chinese pages: repository root.
+- English pages: `en/`.
 - Shared runtime: `assets/js/site.js`.
 - Shared presentation entry point: `assets/css/refine.css`.
 - Publication data: `data/publications.json` and `data/publications-archive.json`.
 - Faculty detail pages: `people/` and `en/people/`.
+- Environment/domain configuration: `config/site.json`.
 
-## Current English terminology
+## Stable content contracts
 
-The English navigation label is **Outputs** while the stable route remains `en/publications.html`. English HTML source files must contain `Outputs` directly; deployment does not rewrite the label.
+- English navigation uses **Outputs** while the stable route remains `en/publications.html`.
+- The three homepage documentary images intentionally use `loading="eager"` and `decoding="sync"` for iPhone Safari stability. Do not change them to lazy/async without a reproduced device-level reason.
+- `sw.js` is a legacy Service Worker retirement stub; page caching is not provided by a Service Worker.
 
-## Homepage image stability
+## Deployment pipeline
 
-The three documentary images in the homepage achievement section are committed directly with `loading="eager"` and `decoding="sync"` in both Chinese and English homepages. This is an intentional iPhone Safari stability requirement. Do not change them back to lazy/async loading.
+GitHub Pages builds a deployment artifact rather than publishing the repository byte-for-byte. The workflow:
 
-`tools/validate_home_assets.py` verifies the source remains Safari-safe; deployment does not rewrite these image attributes.
+1. validates shared head/content/accessibility/manifest/SEO/link/output contracts;
+2. prepares URLs and crawl policy from `config/site.json`;
+3. prepares share metadata;
+4. validates JavaScript and navigation asset references;
+5. applies narrowly scoped deployment runtime optimizations;
+6. bundles the layered `refine.css` stack into one deployed stylesheet;
+7. stamps deployed local CSS/JS references with content-derived cache hashes;
+8. uploads and deploys the artifact.
+
+Source CSS remains layered for maintainability; deployed CSS is bundled to avoid an `@import` request waterfall.
+
+## Environment switch
+
+`config/site.json` is the single source of truth for Preview vs Production URLs.
+
+Current mode:
+
+`active_environment: "preview"`
+
+Preview uses `https://tjpai.github.io/pai-web/` and blocks indexing. Production is preconfigured for `https://ai.tongji.edu.cn/` and enables indexing. At production cutover, switch the active environment instead of manually replacing URLs across HTML/sitemap/robots.
+
+DNS and the GitHub Pages **Custom domain** setting remain external configuration and must still be completed outside the repository.
+
+## Cache keys
+
+Do not manually bump deployed CSS/JS query strings for ordinary changes. The deployment workflow computes cache keys from the final asset contents after runtime preparation and CSS bundling.
+
+The source-level cache-key checker still prevents inconsistent references between HTML files.
 
 ## Validation
 
-GitHub Pages runs the following checks before deployment:
+The Pages workflow currently validates:
 
 - Python tooling syntax;
 - shared first-paint template consistency;
-- site/link/content validation;
-- homepage image stability;
-- Outputs terminology;
+- site/link/content structure;
+- accessibility contracts;
+- web manifest and icon dimensions;
+- environment-aware SEO contracts;
+- homepage Safari image contracts;
+- CTA links and Outputs terminology;
 - share metadata;
 - JavaScript syntax;
-- mobile-menu helper injection/path validation;
-- shared asset cache-key normalization and verification.
+- shared navigation asset references;
+- source cache-key consistency;
+- prepared runtime syntax.
 
-See `MAINTENANCE.md` for detailed maintenance rules and `PRODUCTION_CUTOVER.md` for production-domain cutover steps.
-
-## Preview
-
-The GitHub Pages site is a preview/review environment. `robots.txt` intentionally blocks indexing until the production cutover.
+See `MAINTENANCE.md` for maintenance rules and `PRODUCTION_CUTOVER.md` for the production-domain checklist.
