@@ -12,12 +12,12 @@ check_only = '--check' in sys.argv
 errors = []
 changed = 0
 for path in ROOT.rglob('*.html'):
-    if 'geosketch-mvp' in path.parts:
+    relative = path.relative_to(ROOT)
+    if 'geosketch-mvp' in path.parts or relative.as_posix() == '404.html':
         continue
     text = path.read_text(encoding='utf-8')
     if '</body>' not in text:
         continue
-    relative = path.relative_to(ROOT)
     prefix = '../' * len(relative.parent.parts)
     style = f'<link rel="stylesheet" href="{prefix}{STYLE}">'
     scripts = [f'<script src="{prefix}{script}"></script>' for script in SCRIPTS]
