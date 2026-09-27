@@ -1,143 +1,196 @@
 # PAI Website Maintenance Guide
 
-This site is a static bilingual website. Keep changes small, reviewable, and factual.
+This is a static bilingual research-center website. Keep changes small, factual, reviewable, and compatible with iPhone Safari / iOS WebView behavior.
 
-## Publications
-- Recent papers: `data/publications.json`
-- Archive papers: `data/publications-archive.json`
-- Required fields: `year`, `title`, `authors`, `venue`
-- Optional field: `doi`
-- Do not add a DOI unless it has been verified.
-- Do not add publication PDF files or `pdf` fields to `pai-web`. Use DOI / publisher links for formal publications. Use a verified arXiv link only when it is the appropriate public source.
-- `tools/validate.py` rejects duplicate titles, duplicate DOI assignments, malformed publication records and `pdf` fields.
-- The English user-facing navigation label is `Outputs`; the stable URL remains `/en/publications.html`.
+Engineering priority:
 
-## Team
-- Overview: `team.html`
-- Faculty detail pages: `people/*.html`
-- English faculty detail pages: `en/people/*.html`
-- Use lowercase English filenames and stable slugs.
-- Only publish verified titles, bios, honors and contact details.
-- For books and other formal publications, use the publisher's full official title and preserve authorship accurately; do not present a co-authored work as a sole-authored work.
-- The six core-faculty photos are already local production assets under `/assets/images/people/`; do not reintroduce temporary-site image URLs.
+**correctness > stability > simplicity > long-term maintainability > performance > feature breadth > development speed**
 
-## Bilingual pages
-Chinese pages live at repository root. English pages live under `/en/`.
-Keep the Chinese/English switch linked to the corresponding page, not always the homepage.
-Keep paired Chinese/English URLs symmetric in `sitemap.xml` and in the language map inside `assets/js/site.js`.
+## 1. Sources of truth
 
-## News and featured content
-Only completed or verified events should be published. If there are no suitable verified news items, omit the homepage News module rather than using demo content.
+- Chinese pages: repository root.
+- English pages: `en/`.
+- Shared behavior: `assets/js/site.js`.
+- Shared presentation entry point: `assets/css/refine.css`.
+- Publications: `data/publications.json` and `data/publications-archive.json`.
+- Faculty pages: `people/` and `en/people/`.
+- Environment/domain settings: `config/site.json`.
 
-## Assets
-Prefer local files under `/assets/` for production. Avoid CDN fonts and nonessential third-party scripts.
-The canonical static PAI mark is `assets/images/brand/pai-logo.svg`; Header branding should reference this asset rather than duplicating the SVG path in CSS.
+Do not create a second source of truth for domain names, research terminology, shared navigation, or asset versions.
 
-### Homepage logo motion
-- The approved homepage logo animation is generated as inline SVG by `assets/js/home-logo.js` from the canonical one-stroke path used by the final PAI mark.
-- The draw animation runs for about 5 seconds, holds briefly, then fades without shifting page layout.
-- `assets/css/home-logo.css` controls placement and the fade/hidden states.
-- On mobile, keep the approved centered placement below the Header.
-- On desktop, keep the motion mark in the right-side whitespace so it never overlaps the hero headline.
-- The animation is non-looping. Its `requestAnimationFrame` loop must stop when drawing completes; do not introduce a permanent animation timer.
-- Respect `prefers-reduced-motion`: the final mark should appear without running the draw animation.
-- Both homepages contain the final editorial structure in HTML. Lightweight navigation and swipe previews use that same markup; `home-logo.js` only manages the logo animation. Keep the canonical homepage image loading settings in previews and committed pages to avoid a visible handoff.
-- The Header uses the final static PAI mark while retaining `Tongji University` beneath it.
-- `home-logo.css` and `home-logo.js` are shared entry-point assets so returning Home also works when the session started on an inner page. When either changes, update its cache key in `tools/sync_navigation_scripts.py` and run that tool to synchronize every HTML entry point. The animation still only runs on Home.
-- Do not move the animation into the shared navigation/page-swipe code unless there is a concrete integration need.
+## 2. Bilingual content
 
-### Desktop homepage presentation
-- At desktop widths, keep the top navigation slightly stronger than the mobile/tablet treatment, but do not increase Header height or reintroduce the orbit menu.
-- Keep homepage imagery sparse and editorial rather than turning the page into a gallery.
-- The current `Research Excellence / 代表性成果` block uses three documentary stories: Microsoft Indoor Localization Competition, CIIE high-precision localization / smart navigation, and through-the-earth magnetic communication.
-- The three achievement images are self-hosted under `assets/images/home/` and are committed directly with `loading="eager"` and `decoding="sync"` in both homepages. Keep this Safari-safe setting; it prevents visible image re-entry/flicker when iPhone Safari returns to Home through lightweight navigation.
-- `tools/prepare_home_assets.py` remains an idempotent deployment safeguard, and `tools/validate_home_assets.py` rejects regressions away from `eager` + `sync`.
-- The homepage separately presents Collaboration Platforms and Media Coverage; do not fold those sections back into the achievement-image block.
-- Documentary homepage images must preserve their native aspect ratio: use container-width scaling with `height:auto`; do not crop them with fixed heights, forced aspect ratios, or `object-fit:cover`.
-- Keep the verified external source-page links on the achievement figures for provenance; do not hotlink display images from external sites.
-- The desktop Footer intentionally has a little more vertical breathing room and stronger brand/navigation hierarchy than the compact mobile Footer.
+Keep Chinese and English page pairs complete and structurally aligned. The language switch should lead to the corresponding page and preserve supported content context where possible.
 
-### Orbit navigation
-- The orbit / center-plus navigation is a mobile interaction aid and is hidden at desktop widths (`min-width: 769px`).
-- Desktop uses the full top navigation instead; do not show both navigation systems at the same time.
-- The top mobile menu and orbit menu share explicit state transitions in `site.js` (`setMobileMenu` and the orbit `setOpen`). Opening either directly closes the other; do not simulate button clicks to coordinate them. Classes, ARIA state and auto-rotation must stay synchronized.
-- Navigation helper references are committed in HTML and validated with `python tools/sync_navigation_scripts.py --check`; deployment must not inject an additional behavior layer. Use the same tool without `--check` after adding a page.
-- Keep the existing mobile orbit behavior and page-swipe blocking rules unchanged unless a concrete mobile bug is reproduced.
+The stable English navigation label is **Outputs**; its route remains `/en/publications.html`.
 
-### Mobile WebView compatibility
-- iOS WeChat can retain old CSS more aggressively than Safari. When changing shared mobile typography in `refine.css`, bump the `refine.css` query-string cache key on both homepages before evaluating WeChat screenshots.
-- Keep the mobile text autosizing guard in `refine.css`; do not compensate for a stale WebView cache by permanently shrinking Safari typography.
-- Every directly accessible HTML page, not only the homepages, must use `viewport-fit=cover` and identify iOS WeChat in `<head>` before the main stylesheet/body paint so the intended 100% text scale is present from the first frame. This includes Chinese/English inner pages, faculty detail pages and `404.html`, because users may refresh or open any of them as the initial WebView entry point.
-- The single source of truth for that first-paint block is `templates/shared/wechat-first-paint.inc`.
-- Run `python tools/sync_shared_head.py --write` after changing the shared block or after adding a new HTML page. The script updates every deployable HTML page from the shared template.
-- Run `python tools/sync_shared_head.py --check` to verify that no page has drifted. GitHub Pages runs this check automatically before deployment, so a new page cannot silently ship without the guard.
-- Do not replace the first-paint guard with `maximum-scale=1` or `user-scalable=no`; user zoom must remain available.
-- `refine.css` remains the canonical presentation entry point and imports `refine-base.css`, `app-core.css`, and `typography.css` in that order. Do not link or bundle those internal layers directly from HTML; preserve the validated cascade.
+Use internationally natural English rather than literal administrative translation, but do not change institutional facts, titles, awards, dates, or roles without verification.
 
-## Validation
-For normal development / Preview deployment, run:
+## 3. Publications
 
-`python tools/sync_shared_head.py --check`
+Required fields: `year`, `title`, `authors`, `venue`.
 
-`python tools/validate.py`
+Optional field: `doi`.
 
-The GitHub Pages workflow runs both checks before deployment, followed by share-metadata and runtime-syntax validation. Do not weaken the validators merely to make a release pass; fix the underlying template, link or data issue.
+Do not add a DOI unless verified. Do not store publication PDF files or `pdf` fields in `pai-web`; use DOI/publisher links, or a verified arXiv link when appropriate.
 
-Immediately before production cutover, also run:
+`tools/validate.py` checks malformed records, duplicate titles, duplicate DOI assignments and forbidden PDF fields.
 
-`python tools/check_production_readiness.py`
+## 4. Team and faculty
 
-The production readiness check is intentionally expected to fail while the repository is still configured for GitHub Preview. It checks production robots/sitemap state, Preview-domain leakage, temporary-site image dependencies and forbidden publication PDF fields.
+Keep the six core-faculty overview cards equal in visual weight. Detail pages use stable lowercase English slugs.
 
-## Release flow
-1. Edit content/code.
-2. If a shared first-paint or new-page change is involved, run `python tools/sync_shared_head.py --write`.
-3. Run shared-head and site validation.
-4. Review Chinese + English on mobile and desktop.
-5. Check publications, links, images and contact information.
-6. Merge/deploy only after checks pass.
-7. Tag formal releases, e.g. `v1.0.0`.
+Publish only verified titles, bios, honors and contact information. Core-faculty portraits are local assets under `assets/images/people/`; do not reintroduce temporary-site image URLs.
 
-## Preview environment
-`https://tjpai.github.io/pai-web/` is a development and review environment only.
-Its `robots.txt` blocks indexing, and `site.js` adds `noindex,nofollow` on the GitHub preview host.
-Do not change the Preview site into an indexable production copy.
+## 5. Homepage image and logo contracts
 
-## Production cutover
-Already completed before cutover:
-- six core-faculty photos are local under `/assets/images/people/` and Team pages use local relative paths;
-- canonical Header mark is local under `/assets/images/brand/pai-logo.svg`.
+The three documentary achievement images are intentionally committed with:
 
-Do only at the actual production cutover to `https://ai.tongji.edu.cn/`:
-- replace every Preview-domain URL in `sitemap.xml` with `https://ai.tongji.edu.cn/...` while preserving the symmetric `zh-CN` / `en` / `x-default` alternates;
-- replace Preview `robots.txt` with a production version that allows indexing and points to `https://ai.tongji.edu.cn/sitemap.xml`;
-- replace hard-coded Preview-domain canonical / hreflang / Open Graph URLs in Chinese and English HTML with the production domain, then verify the rendered output;
-- confirm `404.html` is configured as the server's real 404 error document and still returns HTTP 404;
-- add ICP / public-security filing information only when the official values are confirmed;
-- define redirects only for important legacy URLs that need continuity;
-- run `python tools/sync_shared_head.py --check`, `python tools/validate.py` and then `python tools/check_production_readiness.py`; all must pass;
-- run a final phone + desktop, Chinese + English, navigation + publication-link check;
-- after production verification, tag the release (for example `v1.0.0`).
+- `loading="eager"`
+- `decoding="sync"`
 
-## Platform content ownership
-- Platform descriptions, headings and display order live in `about.html` and `en/about.html`. Never replace readable text with CSS pseudo-elements or identify platforms by their sibling position.
-- Use stable `platform-journal`, `platform-conference`, `platform-community`, `platform-china` and `platform-center` classes for scoped presentation.
+This is an iPhone Safari stability contract. Do not switch them to lazy/async without a reproduced device-level reason. `tools/validate_home_assets.py` protects this behavior.
 
-## Lightweight page identity
-- `syncPageHead` in `site.js` updates description, canonical, language alternates, Open Graph/Twitter metadata and the owned JSON-LD block with the target page. Do not replace the entire head or rerun arbitrary scripts. The host-level robots policy and shared assets stay in place.
+The homepage PAI logo animation is generated by `assets/js/home-logo.js` and styled by `assets/css/home-logo.css`. It is non-looping, stops its animation work after completion, and respects `prefers-reduced-motion`.
 
-## Browser acceptance
-- In an environment with Playwright installed, run `node tools/verify_navigation.cjs`. Set `PAI_BROWSER_EXECUTABLE` to an existing Chromium binary if needed.
-- The check serves repository files through intercepted requests at the GitHub Pages URL, including its `/pai-web/` prefix. It verifies all 26 entry pages at mobile/desktop sizes, Home assets, page metadata, history positions, language switches, reload spacing, failed-request recovery, mobile swipes, delayed images, menu exclusivity, homepage CTA return positions and logo lifecycle. It does not write to the live website.
-- Chromium mobile emulation is a regression check, not a substitute for iPhone Safari visual acceptance.
+`home-logo.js` / `home-logo.css` are deliberately available from inner-page entry points because lightweight navigation can return to Home without a full document reload.
 
-## Language-switch reading position
-- Language switches preserve the corresponding content block and relative reading position below the header, not the same absolute scroll offset. Shared section IDs, platform classes and publication DOI/title keys identify content; parallel static card order provides the fallback mapping.
-- Preserve expanded publication years when switching languages so the same paper remains visible. Page top and bottom stay at their respective edges. Browser Back/Forward continues to restore its own saved pixel positions.
-- When adding/reordering bilingual sections or cards, keep their identifiers/order paired and run the browser acceptance checks.
+## 6. Navigation and mobile interaction
 
-## Navigation preloading
-- `fetchPage` shares both completed HTML and in-flight requests. Failed requests leave the in-flight map so later intent can retry.
-- Speculative HTML loading is limited to adjacent swipe pages and the current page's language counterpart. Intent-driven loading starts immediately; background fetch priority is only a browser hint.
-- Publication data warms when Outputs is a swipe neighbor or the user touches/hovers its link. Reuse the same data promise for rendering; keep failure recovery and Save-Data behavior.
-- Run `node tools/verify_navigation_performance.cjs` (same Playwright setup as acceptance) for the controlled 600 ms latency/request-count check. These timings are laboratory comparisons, not live-site guarantees.
+`assets/js/site.js` owns:
+
+- desktop/mobile navigation synchronization;
+- bilingual context switching;
+- lightweight page navigation;
+- Back/Forward scroll restoration;
+- mobile horizontal page swipe;
+- orbit quick navigation;
+- publication rendering and navigation warming.
+
+The orbit menu is a mobile interaction aid. Desktop uses the full top navigation. The top mobile menu and orbit menu must remain mutually exclusive.
+
+Do not rewrite swipe thresholds, text-selection guards, scroll restoration, or Safari-specific behavior without a reproduced bug.
+
+Speculative loading should remain conservative:
+
+- mobile swipe neighbors warm only after idle/background time;
+- ordinary desktop hover may warm target HTML at low priority but should not preload batches of images;
+- touch intent may preload target imagery;
+- respect `Save-Data` where the browser exposes it.
+
+## 7. First-paint / WebView compatibility
+
+Every directly accessible HTML page must use the shared iOS WeChat text-scaling guard before normal page paint. Its source of truth is:
+
+`templates/shared/wechat-first-paint.inc`
+
+After changing that block or adding a page, use `tools/sync_shared_head.py` and keep `--check` green.
+
+Do not disable user zoom with `maximum-scale=1` or `user-scalable=no`.
+
+## 8. CSS architecture
+
+Source CSS remains layered:
+
+`refine.css` → `refine-base.css` → `app-core.css` → `typography.css`
+
+HTML should link the presentation entry point, not internal layers directly.
+
+At deployment, `tools/prepare_css_bundle.py` creates `refine-bundle.css` so browsers do not pay an `@import` request waterfall. Do not manually commit the generated bundle as a second source of truth.
+
+Existing focus/skip-link accessibility styles live in `app-core.css`; avoid adding duplicate global focus layers.
+
+## 9. Runtime preparation
+
+`tools/prepare_runtime.py` currently applies a small set of deployment-only optimizations that have already been validated in Pages:
+
+- early root-page English preference redirect before heavy homepage assets load;
+- mobile-only orbit initialization;
+- delayed/conservative swipe-neighbor warming;
+- HTML-only low-priority desktop hover warming;
+- normal browser caching for static publication JSON.
+
+Keep this transform narrow and fail-fast if its expected source contracts change. Do not let it become a general second runtime implementation. When a safe, reviewable source-level consolidation is practical, prefer moving stable behavior back into `site.js`.
+
+## 10. Cache keys
+
+Do not manually bump deployed CSS/JS versions for ordinary changes.
+
+`tools/normalize_asset_versions.py --check` verifies that source HTML uses consistent asset references. After runtime preparation and CSS bundling, the same tool stamps deployed CSS/JS URLs with content-derived SHA-256 cache keys.
+
+This means unchanged content keeps a stable cache key and changed content automatically gets a new one.
+
+## 11. Accessibility
+
+`tools/validate_accessibility.py` protects deterministic static contracts including:
+
+- page language;
+- H1 structure;
+- main/skip-link semantics for normal site pages;
+- image alt text;
+- safe `_blank` links;
+- focus order;
+- navigation ARIA;
+- iframe titles.
+
+The standalone `404.html` intentionally uses a minimal shell and is validated accordingly.
+
+Do not weaken accessibility checks just to make CI pass; first determine whether the page or the rule is wrong.
+
+## 12. Manifest and icons
+
+`site.webmanifest` uses relative `id`, `start_url`, and `scope` so it works under both the GitHub Pages preview subpath and the future custom domain.
+
+`tools/validate_manifest.py` verifies the manifest and required PNG dimensions, including 192×192, 512×512, 180×180 Apple touch icon, and 32×32 favicon.
+
+## 13. Preview / Production environments
+
+The active environment is defined only in `config/site.json`.
+
+Preview:
+
+`https://tjpai.github.io/pai-web/`
+
+Production target:
+
+`https://ai.tongji.edu.cn/`
+
+Preview intentionally blocks search indexing. At production cutover, change `active_environment` to `production`; deployment tooling then prepares canonical/hreflang/Open Graph/structured-data URLs, sitemap, robots policy, share URLs and CNAME from the configured environment.
+
+Do **not** manually search-and-replace Preview URLs across every HTML file for cutover.
+
+DNS and the GitHub Pages Custom domain setting remain external and must be configured separately.
+
+## 14. Validation and release
+
+GitHub Pages performs the authoritative validation pipeline. It currently includes:
+
+- Python syntax;
+- shared head consistency;
+- site/content/link contracts;
+- accessibility;
+- manifest/icon dimensions;
+- environment-aware SEO;
+- homepage Safari image settings;
+- CTA and Outputs contracts;
+- share metadata;
+- JavaScript syntax;
+- navigation asset references;
+- source cache-key consistency;
+- prepared-runtime syntax;
+- deploy-time CSS bundling and content-hash stamping.
+
+Before production cutover also run/verify `tools/check_production_readiness.py` in the production environment configuration.
+
+Formal release flow:
+
+1. make small, factual changes;
+2. let validators pass;
+3. verify Chinese + English and mobile + desktop behavior;
+4. verify iPhone Safari for homepage image/animation/navigation changes;
+5. deploy;
+6. tag formal releases only after production verification.
+
+## 15. 404 page
+
+`404.html` is intentionally lightweight and independent from the shared lightweight-navigation and homepage-animation assets. Keep it fast, bilingual at runtime, `noindex,nofollow`, and suitable for being served as the real HTTP 404 document.
