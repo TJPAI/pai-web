@@ -45,6 +45,16 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
   .site-footer .footer-meta{margin-top:42px;padding-top:20px}
 }
 
+/* Homepage vertical rhythm follows content density: quick metrics, steady collaboration, spacious visual work. */
+@media(min-width:769px){
+  .home-hero~.section:has(.numbers){padding-top:98px;padding-bottom:100px}
+  .home-hero~.section:has(.numbers) .section-head{margin-bottom:42px}
+  .home-hero~.section:has(.partner-grid){padding-top:112px;padding-bottom:114px}
+  .home-hero~.section:has(.partner-grid) .section-head{margin-bottom:46px}
+  .home-hero~.section:has(.home-achievement-stories){padding-top:132px;padding-bottom:130px}
+  .home-hero~.section:has(.home-achievement-stories) .section-head{margin-bottom:50px}
+}
+
 /* Homepage collaboration: use a quieter 2×2 editorial index on wide screens to avoid repeating the three-column/grid rhythm. */
 @media(min-width:1025px){
   .home-hero~.section .partner-grid{grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
@@ -99,6 +109,12 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
 @media(max-width:768px){
   .home-hero~.section{padding-top:72px;padding-bottom:72px}
   .home-hero~.section .section-head{margin-bottom:34px}
+  .home-hero~.section:has(.numbers){padding-top:60px;padding-bottom:62px}
+  .home-hero~.section:has(.numbers) .section-head{margin-bottom:30px}
+  .home-hero~.section:has(.partner-grid){padding-top:68px;padding-bottom:70px}
+  .home-hero~.section:has(.partner-grid) .section-head{margin-bottom:32px}
+  .home-hero~.section:has(.home-achievement-stories){padding-top:82px;padding-bottom:80px}
+  .home-hero~.section:has(.home-achievement-stories) .section-head{margin-bottom:38px}
   .home-hero~.section .challenge{padding-top:28px;padding-bottom:29px}
   .home-hero~.section .research{padding-top:36px;padding-bottom:40px}
   .home-hero~.section .partner{padding-top:21px!important;padding-bottom:21px!important}
