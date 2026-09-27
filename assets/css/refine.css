@@ -55,6 +55,15 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
   .home-hero~.section .partner p{font-size:17px;line-height:1.8;color:#394150}
 }
 
+/* Homepage collaboration platforms: keep the three institutions equal, but present them as editorial rows instead of another three-column card grid. */
+@media(min-width:1025px){
+  .selected-updates .updates-grid{display:block;border-top:1px solid var(--line)}
+  .selected-updates .update-item,.selected-updates .update-item+.update-item{display:grid;grid-template-columns:130px minmax(260px,.8fr) minmax(0,1.2fr);gap:28px;align-items:start;padding:26px 0;border-left:0;border-bottom:1px solid var(--line)}
+  .selected-updates .update-meta{margin:4px 0 0}
+  .selected-updates .update-item h3{margin:0}
+  .selected-updates .update-item p{margin:0;max-width:46em}
+}
+
 /* Real-world application imagery on the home-page translation section. Preserve each source image's native aspect ratio. */
 .impact-visuals{display:grid;grid-template-columns:1.12fr .88fr;gap:18px;margin:0 0 38px;align-items:start}
 .impact-visual{margin:0;border:1px solid var(--line);background:var(--soft);overflow:hidden}
