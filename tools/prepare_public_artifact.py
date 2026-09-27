@@ -47,10 +47,29 @@ cname = ROOT / 'CNAME'
 if cname.is_file():
     shutil.copy2(cname, OUT / 'CNAME')
 
+# These files are build inputs only. The browser receives refine-bundle.css and the
+# generated square share PNG instead. Compatibility shims app.css/team.css remain public.
+BUILD_ONLY_ASSETS = (
+    'assets/css/refine.css',
+    'assets/css/refine-base.css',
+    'assets/css/app-core.css',
+    'assets/css/typography.css',
+    'assets/images/social/pai-share-logo.svg',
+    'assets/images/social/pai-share-v4.jpg',
+)
+for rel in BUILD_ONLY_ASSETS:
+    target = OUT / rel
+    if not target.is_file():
+        raise SystemExit(f'expected build-only asset missing before public pruning: {rel}')
+    target.unlink()
+
 # Guard against accidentally publishing repository/build internals.
 for forbidden in ('tools', 'config', 'templates', '.github', 'README.md', 'MAINTENANCE.md', 'PRODUCTION_CUTOVER.md'):
     if (OUT / forbidden).exists():
         raise SystemExit(f'public artifact unexpectedly contains {forbidden}')
+for rel in BUILD_ONLY_ASSETS:
+    if (OUT / rel).exists():
+        raise SystemExit(f'public artifact unexpectedly contains build-only asset {rel}')
 
 files = sum(1 for path in OUT.rglob('*') if path.is_file())
 print(f'Prepared public Pages artifact at _site with {files} files.')
