@@ -3,8 +3,8 @@ from pathlib import Path
 import json, re, sys
 import xml.etree.ElementTree as ET
 
-ROOT = Path(__file__).resolve().parents[1]
-BASE = 'https://tjpai.github.io/pai-web/'
+from site_config import ROOT, BASE_URL, CUSTOM_DOMAIN, ALLOW_INDEXING, ENVIRONMENT
+
 errors = []
 
 # Canonical bilingual content pages expected to be indexable at production cutover.
@@ -16,10 +16,10 @@ paired = [
 
 def public_url(rel):
     if rel == 'index.html':
-        return BASE
+        return BASE_URL
     if rel == 'en/index.html':
-        return BASE + 'en/'
-    return BASE + rel
+        return BASE_URL + 'en/'
+    return BASE_URL + rel
 
 expected = set()
 for rel in paired:
@@ -60,8 +60,10 @@ for rel in ('index.html', 'en/index.html'):
         errors.append(f'{rel}: JSON-LD @type must be ResearchOrganization')
     if data.get('name') != 'PAI Research Center':
         errors.append(f'{rel}: JSON-LD organization name drifted')
-    if data.get('url') != BASE:
-        errors.append(f'{rel}: JSON-LD organization URL must be {BASE}')
+    if data.get('url') != BASE_URL:
+        errors.append(f'{rel}: JSON-LD organization URL must be {BASE_URL}')
+    if data.get('@id') != BASE_URL + '#organization':
+        errors.append(f'{rel}: JSON-LD organization @id must use configured base URL')
     if not data.get('email'):
         errors.append(f'{rel}: JSON-LD organization email missing')
 
@@ -84,15 +86,31 @@ for prefix in ('', 'en/'):
         if not data.get('name') or not data.get('jobTitle'):
             errors.append(f'{page}: JSON-LD name/jobTitle missing')
         member = data.get('memberOf') or {}
-        if member.get('@id') != BASE + '#organization':
+        if member.get('@id') != BASE_URL + '#organization':
             errors.append(f'{page}: JSON-LD memberOf must reference PAI organization')
         if data.get('url') != public_url(page):
             errors.append(f'{page}: JSON-LD url does not match canonical page URL')
+        expected_id = public_url(page) + '#person'
+        if data.get('@id') != expected_id:
+            errors.append(f'{page}: JSON-LD @id must be {expected_id}')
 
-# robots.txt is intentionally preview-only until the production-domain cutover.
+# Crawl and custom-domain contracts are generated from the active environment.
 robots = (ROOT / 'robots.txt').read_text(encoding='utf-8')
-if 'Disallow: /' not in robots or 'Preview environment only' not in robots:
-    errors.append('robots.txt: preview crawl-block contract changed; review production-domain cutover explicitly')
+if ALLOW_INDEXING:
+    if 'Disallow: /' in robots or 'Allow: /' not in robots:
+        errors.append('robots.txt: indexing should be enabled for active environment')
+    if f'Sitemap: {BASE_URL}sitemap.xml' not in robots:
+        errors.append('robots.txt: production sitemap URL missing')
+else:
+    if 'Disallow: /' not in robots:
+        errors.append('robots.txt: preview indexing must remain disabled')
+
+cname = ROOT / 'CNAME'
+if CUSTOM_DOMAIN:
+    if not cname.is_file() or cname.read_text(encoding='utf-8').strip() != CUSTOM_DOMAIN:
+        errors.append(f'CNAME: expected configured custom domain {CUSTOM_DOMAIN}')
+elif cname.exists():
+    errors.append('CNAME: must not exist when active environment has no custom domain')
 
 if errors:
     print('SEO contract validation failed:')
@@ -100,4 +118,7 @@ if errors:
         print(' -', error)
     sys.exit(1)
 
-print(f'SEO contracts OK: {len(expected)} sitemap URLs; organization + faculty JSON-LD validated; preview robots preserved')
+print(
+    f'SEO contracts OK: env={ENVIRONMENT}; {len(expected)} sitemap URLs; '
+    f'organization + faculty JSON-LD validated; indexing={"on" if ALLOW_INDEXING else "off"}'
+)
