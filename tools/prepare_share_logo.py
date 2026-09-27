@@ -2,10 +2,10 @@
 from pathlib import Path
 import math, re, struct, zlib
 
-ROOT = Path(__file__).resolve().parents[1]
+from site_config import ROOT, BASE_URL
+
 SVG = ROOT / 'assets/images/brand/pai-logo.svg'
 OUT = ROOT / 'assets/images/social/pai-logo-share.png'
-BASE_URL = 'https://tjpai.github.io/pai-web/'
 OLD_IMAGE = BASE_URL + 'assets/images/social/pai-share-v4.jpg'
 ICON_IMAGE = BASE_URL + 'assets/icons/icon-512.png'
 NEW_IMAGE = BASE_URL + 'assets/images/social/pai-logo-share.png'
@@ -107,6 +107,7 @@ for path in ROOT.rglob('*.html'):
     text = path.read_text(encoding='utf-8')
     if 'class="site-header"' not in text:
         continue
+    # prepare_site_urls.py has already normalized all absolute URLs to BASE_URL.
     updated = text.replace(OLD_IMAGE, NEW_IMAGE).replace(ICON_IMAGE, NEW_IMAGE)
     updated = re.sub(r'<meta property="og:image:width" content="\d+">', '<meta property="og:image:width" content="1200">', updated)
     updated = re.sub(r'<meta property="og:image:height" content="\d+">', '<meta property="og:image:height" content="1200">', updated)
@@ -115,4 +116,4 @@ for path in ROOT.rglob('*.html'):
         path.write_text(updated, encoding='utf-8')
         changed += 1
 
-print(f'Generated {OUT.relative_to(ROOT)} and prepared square logo share metadata in {changed} HTML file(s).')
+print(f'Generated {OUT.relative_to(ROOT)} and prepared square logo share metadata in {changed} HTML file(s); base={BASE_URL}')
