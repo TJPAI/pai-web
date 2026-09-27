@@ -24,6 +24,11 @@
 /* English editorial hierarchy: use all caps only for small eyebrow labels. */
 html[lang^="en"] .eyebrow{text-transform:uppercase}
 
+/* Homepage actions: restrained institutional feedback instead of generic floating-button motion. */
+.home-hero .btn{transition:background-color .18s ease,border-color .18s ease,color .18s ease}
+.home-hero .btn:hover{transform:none}
+.home-hero .btn.textual:hover{text-decoration:underline;text-underline-offset:4px}
+
 /* Orbit navigation is a mobile interaction aid; desktop already has the full top navigation. */
 @media(min-width:769px){
   .pai-orbit{display:none!important}
