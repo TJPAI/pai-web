@@ -65,6 +65,16 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
   .home-hero~.section .partner p{font-size:17px;line-height:1.8;color:#394150}
 }
 
+/* About collaboration keeps the fuller partner copy, but uses the same editorial 2×2 language as the homepage. */
+@media(min-width:1025px){
+  main:has(#international-impact) #collaboration .partner-grid{grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
+  main:has(#international-impact) #collaboration .partner,main:has(#international-impact) #collaboration .partner+.partner,main:has(#international-impact) #collaboration .partner:nth-child(3),main:has(#international-impact) #collaboration .partner:nth-child(4){padding:30px 38px 32px 0;border-left:0;border-top:0;border-bottom:1px solid var(--line)}
+  main:has(#international-impact) #collaboration .partner:nth-child(even){padding-left:38px;padding-right:0;border-left:1px solid var(--line)}
+  main:has(#international-impact) #collaboration .partner:nth-child(n+3){padding-top:32px}
+  main:has(#international-impact) #collaboration .partner h3{margin-bottom:15px}
+  main:has(#international-impact) #collaboration .partner p{font-size:16px;line-height:1.78;color:#394150}
+}
+
 /* Homepage collaboration platforms: keep the three institutions equal, but present them as editorial rows instead of another three-column card grid. */
 @media(min-width:1025px){
   .selected-updates .updates-grid{display:block;border-top:1px solid var(--line)}
