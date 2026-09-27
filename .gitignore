@@ -1,0 +1,12 @@
+# Deployment/build outputs
+_site/
+assets/css/refine-bundle.css
+assets/images/social/pai-logo-share.png
+CNAME
+
+# Python tooling cache
+__pycache__/
+*.py[cod]
+
+# Local OS metadata
+.DS_Store
