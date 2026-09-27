@@ -1,8 +1,0 @@
-/* Keyboard focus remains visible without changing pointer/touch presentation. */
-:focus-visible{
-  outline:2px solid currentColor;
-  outline-offset:4px;
-}
-.skip-link:focus-visible{
-  outline-offset:2px;
-}
