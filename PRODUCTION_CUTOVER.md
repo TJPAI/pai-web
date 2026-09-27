@@ -1,87 +1,114 @@
 # PAI Website Production Cutover
 
-This repository currently serves a GitHub Pages preview/review site. Keep preview behavior stable until the official production domain is ready.
+This repository currently serves a GitHub Pages preview/review site. Keep Preview stable until the official production domain is ready.
 
-## Current stable contracts
+## Stable contracts
 
 - English navigation uses **Outputs** while the stable route remains `/en/publications.html`.
-- The homepage achievement images are committed with `loading="eager"` and `decoding="sync"` in both languages to avoid iPhone Safari image flicker during lightweight navigation.
-- The mobile top menu and orbit menu are mutually exclusive through real toggle transitions; the center-plus control remains available.
-- Shared navigation, swipe, scroll restoration and lightweight page switching remain in `assets/js/site.js` and should not be reworked during cutover.
-- `sw.js` is only a legacy cache-retirement stub; do not restore a page-caching Service Worker during cutover.
+- Homepage documentary images remain `loading="eager"` + `decoding="sync"` for iPhone Safari stability.
+- Shared navigation, swipe, scroll restoration and lightweight page switching remain owned by `assets/js/site.js`.
+- `sw.js` is only a legacy Service Worker retirement stub; do not restore page-caching Service Worker behavior during cutover.
+- Build-time CSS bundling and content-hash cache keys are part of the Pages artifact pipeline and require no manual version bump.
 
-## Preview environment
+## Single environment switch
 
-Preview URL:
+Environment/domain state is defined in:
 
-`https://tjpai.github.io/pai-web/`
+`config/site.json`
 
-Preview-specific behavior:
+Current Preview configuration:
 
-- `robots.txt` blocks indexing.
-- sitemap/canonical/hreflang/Open Graph URLs use the GitHub Pages preview domain.
-- `site.js` treats `tjpai.github.io` as the preview host and applies the `/pai-web` prefix where required.
+- base URL: `https://tjpai.github.io/pai-web/`
+- indexing: disabled
+- custom domain: none
 
-Do not make the preview copy indexable as a substitute for production.
+Production configuration is already defined as:
 
-## Production target
+- base URL: `https://ai.tongji.edu.cn/`
+- indexing: enabled
+- custom domain: `ai.tongji.edu.cn`
 
-Target domain:
+At the actual cutover, change only:
 
-`https://ai.tongji.edu.cn/`
+`"active_environment": "preview"`
 
-Perform these changes only when the production host is actually ready:
+to:
 
-1. Replace Preview-domain URLs in `sitemap.xml` with `https://ai.tongji.edu.cn/`, preserving all Chinese/English/x-default alternates.
-2. Replace Preview `robots.txt` with a production version that allows indexing and references `https://ai.tongji.edu.cn/sitemap.xml`.
-3. Replace Preview-domain canonical, hreflang, Open Graph and structured-data URLs in all Chinese and English HTML with the production domain.
-4. Confirm all local asset paths work from the production root, including the independently injected mobile-menu exclusivity helper.
-5. Confirm `404.html` is served as the actual error document and returns HTTP 404.
-6. Add ICP/public-security filing details only after official values are confirmed.
-7. Add redirects only for legacy URLs that genuinely need continuity.
-8. Keep homepage achievement images eager/sync; do not reintroduce lazy/async loading during cutover.
-9. Do not introduce CDN fonts or unnecessary third-party scripts during the cutover.
+`"active_environment": "production"`
 
-## Required checks before cutover
+The deployment pipeline then prepares the production form of:
 
-Run:
+- canonical URLs;
+- `hreflang` URLs;
+- Open Graph / Twitter asset URLs;
+- owned JSON-LD URLs;
+- `sitemap.xml`;
+- `robots.txt`;
+- `CNAME`.
 
-`python tools/sync_shared_head.py --check`
+Do not manually search-and-replace Preview URLs across HTML files, sitemap and robots.
 
-`python tools/validate.py`
+## External cutover steps
 
-`python tools/prepare_home_assets.py`
+Repository automation cannot perform these infrastructure actions by itself:
 
-`python tools/validate_home_assets.py`
+1. Configure DNS for `ai.tongji.edu.cn` according to the hosting setup.
+2. Set the GitHub Pages **Custom domain** to `ai.tongji.edu.cn` and confirm HTTPS provisioning/enforcement.
+3. Confirm the production site resolves over HTTPS from public networks.
 
-`python tools/validate_outputs_label.py`
+Do not switch the repository environment until the external domain is ready to serve the Pages deployment.
 
-`python tools/validate_share_metadata.py`
+## Production verification
+
+After switching `active_environment` and deploying, verify:
+
+- `https://ai.tongji.edu.cn/` returns the Chinese homepage;
+- `/en/` returns the English homepage;
+- canonical / hreflang / Open Graph / JSON-LD contain only the production domain;
+- `robots.txt` allows intended crawling and points to the production sitemap;
+- `sitemap.xml` contains the production URLs and bilingual alternates;
+- generated `CNAME` is `ai.tongji.edu.cn`;
+- no Preview-domain URLs remain in the deployed SEO surface;
+- all local assets resolve from the production root;
+- `404.html` is actually served with HTTP 404 behavior by the production host;
+- language switching, lightweight navigation, Back/Forward scroll restoration and mobile swiping still work;
+- top mobile menu and orbit menu remain mutually exclusive;
+- homepage Logo animation behaves correctly and respects reduced motion;
+- homepage documentary images remain stable on iPhone Safari;
+- Outputs publication data and DOI links load correctly;
+- share previews use the generated square PAI image.
+
+## Required automated checks
+
+The normal Pages deployment already runs the authoritative checks, including:
+
+- shared first-paint template;
+- site/content/link contracts;
+- accessibility contracts;
+- manifest/icon dimensions;
+- SEO contracts;
+- homepage image stability;
+- CTA / Outputs contracts;
+- share metadata;
+- JavaScript syntax;
+- navigation references;
+- cache-key consistency;
+- prepared runtime syntax;
+- CSS bundle generation;
+- content-hash stamping.
+
+For production cutover, also verify:
 
 `python tools/check_production_readiness.py`
 
-and JavaScript syntax checks for:
+The readiness check is expected to fail while `active_environment` is still Preview. It must pass against the production configuration before the formal production release is considered complete.
 
-- `assets/js/site.js`
-- `assets/js/menu-exclusive.js`
-- `sw.js`
+## Content/infrastructure items that still require factual confirmation
 
-The production readiness check is expected to fail while the repository still intentionally points at the GitHub preview environment. At actual cutover, all checks must pass.
+- Add ICP/public-security filing information only after official values are confirmed.
+- Add redirects only for legacy URLs that genuinely require continuity.
+- Do not introduce CDN fonts, analytics, or third-party scripts simply as part of cutover.
 
-## Manual verification
+## Release
 
-Before tagging the production release, verify on real devices and desktop:
-
-- Chinese and English homepages;
-- all top-level navigation pages;
-- People overview and faculty detail pages;
-- Outputs / 研究成果 pages and publication links;
-- language switching with supported anchors;
-- top mobile menu and orbit-menu mutual exclusion;
-- swipe navigation and scroll restoration;
-- homepage image return/re-entry behavior on iPhone Safari;
-- homepage logo animation;
-- share preview metadata;
-- 404 behavior.
-
-After production verification, tag the release, for example `v1.0.0`.
+After production DNS/HTTPS and site behavior are verified on desktop and real phones, tag the formal production release (for example `v1.0.0`).
