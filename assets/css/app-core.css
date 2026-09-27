@@ -57,12 +57,12 @@ main [id]{scroll-margin-top:96px}
 
 /* Canonical research identity/title: homepage and Research page share one mobile definition. */
 @media(max-width:768px){
-  .research-identity{display:grid!important;grid-template-columns:max-content max-content minmax(0,1fr)!important;column-gap:12px!important;align-items:start!important;justify-content:start!important;width:100%!important;max-width:100%!important;margin:0 0 26px!important;padding:0!important;line-height:1!important;text-align:left!important}
-  .research-identity>.research-index{grid-column:1!important;margin:0!important;padding:0!important;font-size:16px!important;line-height:1.05!important;letter-spacing:.08em!important;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap!important}
-  .research-identity>.research-code-main{display:contents!important}
-  .research-identity>.research-code-main>span{grid-column:2!important;margin:0!important;padding:0!important;font-size:17px!important;line-height:1.05!important;letter-spacing:.09em!important;font-weight:700!important;color:var(--ink)!important;white-space:nowrap!important}
-  .research-identity>.research-code-main>.research-expansion{grid-column:3!important;width:auto!important;max-width:180px!important;margin:0!important;padding:0!important;font-size:9px!important;line-height:1.12!important;letter-spacing:.055em!important;font-style:normal!important;font-weight:500!important;text-transform:uppercase!important;color:var(--muted)!important;white-space:normal!important;text-align:left!important}
-  .research-title{width:auto!important;max-width:13em!important;margin:0 0 20px!important;padding:0!important}
+  .research-identity{display:grid;grid-template-columns:max-content max-content minmax(0,1fr);column-gap:12px;align-items:start;justify-content:start;width:100%;max-width:100%;margin:0 0 26px;padding:0;line-height:1;text-align:left}
+  .research-identity>.research-index{grid-column:1;margin:0;padding:0;font-size:16px!important;line-height:1.05;letter-spacing:.08em;font-weight:500!important;color:#A8AFB9!important;white-space:nowrap}
+  .research-identity>.research-code-main{display:contents}
+  .research-identity>.research-code-main>span{grid-column:2;margin:0;padding:0;font-size:17px;line-height:1.05;letter-spacing:.09em;font-weight:700;color:var(--ink);white-space:nowrap}
+  .research-identity>.research-code-main>.research-expansion{grid-column:3;width:auto;max-width:180px;margin:0;padding:0;font-size:9px;line-height:1.12;letter-spacing:.055em;font-style:normal;font-weight:500;text-transform:uppercase;color:var(--muted);white-space:normal;text-align:left}
+  .research .research-title,.research-direction .research-title{width:auto;max-width:13em;margin:0 0 20px;padding:0}
 }
 
 /* About page links */
@@ -115,7 +115,7 @@ main [id]{scroll-margin-top:96px}
 
 /* English mobile reading polish — 2026-09-19 */
 @media(max-width:768px){
-  html[lang="en"] .research-title{max-width:15.5em!important}
+  html[lang="en"] .research-title{max-width:15.5em}
   html[lang="en"] .research-detail>p:not(.direction-keywords),
   html[lang="en"] .contact-card>p,
   html[lang="en"] .prose>p{max-width:34em}
