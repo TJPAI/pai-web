@@ -8,6 +8,13 @@ ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED = {'.git', 'node_modules', 'templates', 'tmp', 'geosketch-mvp'}
 errors = []
 
+site_js = (ROOT / 'assets/js/site.js').read_text(encoding='utf-8')
+runtime_creates_mobile_nav = (
+    "document.createElement('nav')" in site_js
+    and "mobile.className='mobile-menu'" in site_js
+    and "mobile.setAttribute('aria-label'" in site_js
+)
+
 pages = []
 for path in ROOT.rglob('*.html'):
     rel = path.relative_to(ROOT)
@@ -18,6 +25,7 @@ for path in ROOT.rglob('*.html'):
 for path in sorted(pages):
     rel = path.relative_to(ROOT).as_posix()
     text = path.read_text(encoding='utf-8')
+    custom_404 = rel == '404.html'
 
     lang_match = re.search(r'<html\b[^>]*\blang=["\']([^"\']+)["\']', text, re.I)
     expected_lang = 'en' if rel.startswith('en/') else 'zh-CN'
@@ -30,12 +38,18 @@ for path in sorted(pages):
     if h1_count != 1:
         errors.append(f'{rel}: expected exactly one h1; found {h1_count}')
 
-    main_ids = re.findall(r'<main\b[^>]*\bid=["\']main-content["\']', text, re.I)
-    if len(main_ids) != 1:
-        errors.append(f'{rel}: expected exactly one <main id="main-content">')
-
-    if not re.search(r'<a\b[^>]*class=["\'][^"\']*\bskip-link\b[^"\']*["\'][^>]*href=["\']#main-content["\']', text, re.I):
-        errors.append(f'{rel}: missing skip link to #main-content')
+    # The standalone 404 page intentionally uses a minimal shell with a single main
+    # landmark and no repeated site navigation. Main-site pages must expose the shared
+    # skip target explicitly.
+    if custom_404:
+        if len(re.findall(r'<main\b', text, re.I)) != 1:
+            errors.append(f'{rel}: expected exactly one main landmark')
+    else:
+        main_ids = re.findall(r'<main\b[^>]*\bid=["\']main-content["\']', text, re.I)
+        if len(main_ids) != 1:
+            errors.append(f'{rel}: expected exactly one <main id="main-content">')
+        if not re.search(r'<a\b[^>]*class=["\'][^"\']*\bskip-link\b[^"\']*["\'][^>]*href=["\']#main-content["\']', text, re.I):
+            errors.append(f'{rel}: missing skip link to #main-content')
 
     for tag in re.findall(r'<img\b[^>]*>', text, re.I):
         if not re.search(r'\balt=["\'][^"\']*["\']', tag, re.I):
@@ -65,8 +79,13 @@ for path in sorted(pages):
 
         if not re.search(r'<nav\b[^>]*class=["\'][^"\']*\bnav-links\b[^"\']*["\'][^>]*\baria-label=["\'][^"\']+["\']', text, re.I):
             errors.append(f'{rel}: desktop navigation missing aria-label')
-        if not re.search(r'<nav\b[^>]*class=["\'][^"\']*\bmobile-menu\b[^"\']*["\'][^>]*\baria-label=["\'][^"\']+["\']', text, re.I):
-            errors.append(f'{rel}: mobile navigation missing aria-label')
+
+        has_mobile_nav = bool(re.search(
+            r'<nav\b[^>]*class=["\'][^"\']*\bmobile-menu\b[^"\']*["\'][^>]*\baria-label=["\'][^"\']+["\']',
+            text, re.I
+        ))
+        if not has_mobile_nav and not runtime_creates_mobile_nav:
+            errors.append(f'{rel}: mobile navigation missing aria-label and runtime fallback')
 
     for tag in re.findall(r'<iframe\b[^>]*>', text, re.I):
         if not re.search(r'\btitle=["\'][^"\']+["\']', tag, re.I):
