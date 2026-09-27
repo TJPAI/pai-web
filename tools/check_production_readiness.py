@@ -65,10 +65,12 @@ for rel in ('index.html', 'en/index.html'):
         if not re.search(r'\bdecoding=["\']sync["\']', match, re.I):
             errors.append(f'{rel}: homepage image is not synchronously decoded')
 
-# Production-facing local assets that must exist before DNS cutover.
+# Source assets needed to generate/serve the production artifact. The square
+# pai-logo-share.png is intentionally generated later by prepare_share_logo.py.
 for rel in (
     'assets/images/brand/pai-logo.svg',
-    'assets/images/social/pai-logo-share.png',
+    'assets/images/social/pai-share-logo.svg',
+    'assets/images/social/pai-share-v4.jpg',
     'assets/icons/favicon.svg',
     'assets/icons/favicon-32.png',
     'assets/icons/apple-touch-icon.png',
@@ -77,7 +79,7 @@ for rel in (
     '404.html',
 ):
     if not (ROOT / rel).is_file():
-        errors.append(f'{rel}: required production asset is missing')
+        errors.append(f'{rel}: required production source asset is missing')
 
 if errors:
     print('Production readiness check FAILED:')
