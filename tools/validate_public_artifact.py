@@ -25,11 +25,11 @@ def resolve_local(source: Path, raw: str) -> Path | None:
     if not path:
         return None
     if path.startswith('/'):
-        # Site source uses relative URLs for runtime assets; root-relative paths in
-        # public documents are interpreted from the staged site root.
-        target = SITE / path.lstrip('/')
-    else:
-        target = source.parent / path
+        errors.append(
+            f'{source.relative_to(SITE)}: root-relative reference is not portable to the Preview subpath: {raw}'
+        )
+        return None
+    target = source.parent / path
     try:
         target = target.resolve()
         target.relative_to(SITE.resolve())
@@ -80,4 +80,4 @@ if errors:
     sys.exit(1)
 
 files = sum(1 for path in SITE.rglob('*') if path.is_file())
-print(f'Public artifact validation passed: {files} files; local HTML/CSS/manifest references resolve.')
+print(f'Public artifact validation passed: {files} files; local HTML/CSS/manifest references resolve and remain Preview-portable.')
