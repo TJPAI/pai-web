@@ -49,6 +49,10 @@ jobs:
         run: python tools/sync_navigation_scripts.py --check
       - name: Validate shared asset cache keys
         run: python tools/normalize_asset_versions.py --check
+      - name: Prepare deployment runtime
+        run: python tools/prepare_runtime.py
+      - name: Validate prepared runtime syntax
+        run: node --check assets/js/site.js
       - name: Bundle CSS for deployment
         run: python tools/prepare_css_bundle.py
       - name: Configure Pages
