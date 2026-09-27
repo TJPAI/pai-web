@@ -29,6 +29,8 @@ jobs:
         run: python tools/sync_shared_head.py --check
       - name: Validate site content
         run: python tools/validate.py
+      - name: Validate accessibility contracts
+        run: python tools/validate_accessibility.py
       - name: Prepare site URLs and crawl policy
         run: python tools/prepare_site_urls.py
       - name: Validate SEO contracts
