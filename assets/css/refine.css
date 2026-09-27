@@ -170,6 +170,22 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   .home-achievement-story figcaption{min-height:0;padding:15px 16px 17px}
 }
 
+/* Homepage closing sequence: media acts as a compact credibility appendix, while Join gets the final pause. */
+.home-media-section{padding-top:92px;padding-bottom:86px}
+.home-media-section .section-head{margin-bottom:32px}
+.home-media-section .media-title{font-size:13px;line-height:1.5;color:#46505E}
+.home-media-section .media-meta{color:#9098A4}
+.home-media-section .media-more{margin-top:18px}
+.home-media-section+.join{border-top:1px solid var(--line);padding-top:154px;padding-bottom:158px}
+.home-media-section+.join h2{max-width:720px;margin-top:14px;margin-bottom:28px}
+@media(max-width:768px){
+  .home-media-section{padding-top:62px;padding-bottom:58px}
+  .home-media-section .section-head{margin-bottom:28px}
+  .home-media-section .media-more{margin-top:16px}
+  .home-media-section+.join{padding-top:118px;padding-bottom:122px}
+  .home-media-section+.join h2{margin-bottom:24px}
+}
+
 /* About page: achievements live on Research Results; external media closes the About narrative. */
 main:has(#media-coverage):has(#international-impact){display:flex;flex-direction:column}
 main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
