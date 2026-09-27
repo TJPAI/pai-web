@@ -36,8 +36,8 @@ main [id]{scroll-margin-top:96px}
 }
 
 /* Publications */
-.pub-year-row{justify-content:flex-start!important;align-items:baseline!important;gap:12px!important}
-.pub-year-row span{padding-bottom:0!important}
+.pub-year-row{justify-content:flex-start;align-items:baseline;gap:12px}
+.pub-year-row span{padding-bottom:0}
 .publication-toolbar{margin:-20px 0 42px;padding:14px 0 6px;border-bottom:1px solid var(--line)}
 .publication-years{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0;padding:0}
 .publication-year-link{appearance:none;border:0;background:transparent;padding:0;color:var(--muted);font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -87,9 +87,9 @@ main [id]{scroll-margin-top:96px}
   .contact-card p a{font-weight:400}
 
   /* Research */
-  .research-direction{padding-top:48px!important;padding-bottom:49px!important}
-  .research-direction .research-identity{margin-bottom:22px!important}
-  .research-direction .direction-keywords{margin-top:20px!important}
+  .research-direction{padding-top:48px;padding-bottom:49px}
+  .research-direction .research-identity{margin-bottom:22px}
+  .research-direction .direction-keywords{margin-top:20px}
 
   /* About international impact */
   #international-impact .detail-block{border-top:0;padding:0 0 30px}
@@ -100,8 +100,8 @@ main [id]{scroll-margin-top:96px}
   /* Publications */
   .pub{padding-top:21px;padding-bottom:23px;border-top-color:#EEF0F3}
   .pub h3{margin-bottom:8px}
-  .pub-authors{color:#78808D!important;line-height:1.55!important}
-  .pub-venue{margin-top:5px!important;color:#9299A5!important;line-height:1.5!important}
+  .pub-authors{color:#78808D;line-height:1.55}
+  .pub-venue{margin-top:5px;color:#9299A5;line-height:1.5}
   .pub-actions{margin-top:13px;color:#747C89}
 
   /* Footer */
