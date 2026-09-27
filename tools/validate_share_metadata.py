@@ -18,14 +18,37 @@ def meta_content(text, kind, key):
     return None
 
 
-def link_href(text, rel):
+def link_href(text, rel, hreflang=None):
     for m in re.finditer(r'<link\b[^>]*>', text, re.I):
         tag = m.group(0)
         rel_m = re.search(r'\brel=["\']([^"\']+)["\']', tag, re.I)
         href_m = re.search(r'\bhref=["\']([^"\']+)["\']', tag, re.I)
-        if rel_m and href_m and rel in rel_m.group(1).split():
-            return href_m.group(1)
+        if not rel_m or not href_m or rel not in rel_m.group(1).split():
+            continue
+        if hreflang is not None:
+            lang_m = re.search(r'\bhreflang=["\']([^"\']+)["\']', tag, re.I)
+            if not lang_m or lang_m.group(1) != hreflang:
+                continue
+        return href_m.group(1)
     return None
+
+
+def public_url(rel):
+    if rel == 'index.html':
+        return BASE_URL
+    if rel == 'en/index.html':
+        return BASE_URL + 'en/'
+    return BASE_URL + rel
+
+
+def counterparts(rel):
+    if rel.startswith('en/'):
+        zh_rel = rel[3:]
+        en_rel = rel
+    else:
+        zh_rel = rel
+        en_rel = 'en/' + rel
+    return public_url(zh_rel), public_url(en_rel)
 
 
 for html in sorted(ROOT.rglob('*.html')):
@@ -44,9 +67,10 @@ for html in sorted(ROOT.rglob('*.html')):
     if not description:
         errors.append(f'{rel}: missing meta description')
 
+    expected_canonical = public_url(rel)
     canonical = link_href(text, 'canonical')
-    if not canonical or not canonical.startswith(BASE_URL):
-        errors.append(f'{rel}: missing/invalid canonical for configured base {BASE_URL}')
+    if canonical != expected_canonical:
+        errors.append(f'{rel}: canonical must be {expected_canonical}, got {canonical}')
 
     required_meta = {
         ('property', 'og:type'): 'website',
@@ -85,16 +109,16 @@ for html in sorted(ROOT.rglob('*.html')):
     if canonical and og_url and og_url != canonical:
         errors.append(f'{rel}: og:url must match canonical ({canonical}), got {og_url}')
 
-    for lang in ('zh-CN', 'en', 'x-default'):
-        ok = False
-        for tag in re.findall(r'<link\b[^>]*>', text, re.I):
-            if (re.search(r'\brel=["\']alternate["\']', tag, re.I)
-                    and re.search(rf'\bhreflang=["\']{re.escape(lang)}["\']', tag, re.I)
-                    and re.search(rf'\bhref=["\']{re.escape(BASE_URL)}', tag, re.I)):
-                ok = True
-                break
-        if not ok:
-            errors.append(f'{rel}: missing hreflang {lang} for configured base')
+    zh_url, en_url = counterparts(rel)
+    expected_alternates = {
+        'zh-CN': zh_url,
+        'en': en_url,
+        'x-default': zh_url,
+    }
+    for lang, expected in expected_alternates.items():
+        actual = link_href(text, 'alternate', lang)
+        if actual != expected:
+            errors.append(f'{rel}: hreflang {lang} must be {expected}, got {actual}')
 
 share_file = ROOT / 'assets/images/social/pai-logo-share.png'
 if not share_file.is_file():
@@ -106,4 +130,4 @@ if errors:
         print(' -', e)
     sys.exit(1)
 
-print(f'Share metadata OK: {len(checked)} content pages; image={SHARE_IMAGE}')
+print(f'Share metadata OK: {len(checked)} content pages; exact bilingual canonical/hreflang pairs validated; image={SHARE_IMAGE}')
