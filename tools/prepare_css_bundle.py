@@ -11,14 +11,11 @@ ROOT = Path(__file__).resolve().parents[1]
 CSS = ROOT / 'assets' / 'css'
 ENTRY = CSS / 'refine.css'
 OUT = CSS / 'refine-bundle.css'
-A11Y = CSS / 'a11y.css'
 
 entry = ENTRY.read_text(encoding='utf-8')
 imports = re.findall(r'^@import\s+url\(["\'](\./[^?"\']+)(?:\?[^"\']*)?["\']\);\s*$', entry, re.M)
 if not imports:
     raise SystemExit('refine.css has no local @import layers to bundle')
-if not A11Y.is_file():
-    raise SystemExit('assets/css/a11y.css is required for the deployment bundle')
 
 parts = [
     '/* Generated deployment bundle. Source of truth remains refine.css and its imported layers. */\n'
@@ -32,9 +29,7 @@ for rel in imports:
 
 entry_without_imports = re.sub(r'^@import\s+url\(["\']\./[^"\']+["\']\);\s*\n?', '', entry, flags=re.M)
 parts.append('\n/* ---- refine.css page-level refinements ---- */\n')
-parts.append(entry_without_imports.rstrip() + '\n')
-parts.append('\n/* ---- a11y.css ---- */\n')
-parts.append(A11Y.read_text(encoding='utf-8').lstrip())
+parts.append(entry_without_imports.lstrip())
 OUT.write_text(''.join(parts), encoding='utf-8')
 
 changed = 0
@@ -49,4 +44,4 @@ for html in ROOT.rglob('*.html'):
         html.write_text(updated, encoding='utf-8')
         changed += 1
 
-print(f'Built {OUT.relative_to(ROOT)} from {len(imports)} refine layers plus accessibility styles; rewrote {changed} HTML page(s).')
+print(f'Built {OUT.relative_to(ROOT)} from {len(imports)} layers and rewrote {changed} HTML page(s) for deployment.')
