@@ -55,21 +55,20 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
   .home-hero~.section:has(.home-achievement-stories) .section-head{margin-bottom:50px}
 }
 
-/* Homepage collaboration: use a quieter 2×2 editorial index on wide screens to avoid repeating the three-column/grid rhythm. */
+/* Shared 2×2 partner-index skeleton; homepage and About keep their own density. */
 @media(min-width:1025px){
-  .home-hero~.section .partner-grid{grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
-  .home-hero~.section .partner,.home-hero~.section .partner+.partner,.home-hero~.section .partner:nth-child(3),.home-hero~.section .partner:nth-child(4){padding:28px 34px 30px 0;border-left:0;border-top:0;border-bottom:1px solid var(--line)}
-  .home-hero~.section .partner:nth-child(even){padding-left:34px;padding-right:0;border-left:1px solid var(--line)}
+  :is(.home-hero~.section,main:has(#international-impact) #collaboration) .partner-grid{grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
+  :is(.home-hero~.section,main:has(#international-impact) #collaboration) .partner{border-left:0;border-top:0;border-bottom:1px solid var(--line)}
+  :is(.home-hero~.section,main:has(#international-impact) #collaboration) .partner:nth-child(even){border-left:1px solid var(--line)}
+
+  .home-hero~.section .partner{padding:28px 34px 30px 0}
+  .home-hero~.section .partner:nth-child(even){padding-left:34px;padding-right:0}
   .home-hero~.section .partner:nth-child(n+3){padding-top:30px}
   .home-hero~.section .partner h3{margin-bottom:14px}
   .home-hero~.section .partner p{font-size:17px;line-height:1.8;color:#394150}
-}
 
-/* About collaboration keeps the fuller partner copy, but uses the same editorial 2×2 language as the homepage. */
-@media(min-width:1025px){
-  main:has(#international-impact) #collaboration .partner-grid{grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
-  main:has(#international-impact) #collaboration .partner,main:has(#international-impact) #collaboration .partner+.partner,main:has(#international-impact) #collaboration .partner:nth-child(3),main:has(#international-impact) #collaboration .partner:nth-child(4){padding:30px 38px 32px 0;border-left:0;border-top:0;border-bottom:1px solid var(--line)}
-  main:has(#international-impact) #collaboration .partner:nth-child(even){padding-left:38px;padding-right:0;border-left:1px solid var(--line)}
+  main:has(#international-impact) #collaboration .partner{padding:30px 38px 32px 0}
+  main:has(#international-impact) #collaboration .partner:nth-child(even){padding-left:38px;padding-right:0}
   main:has(#international-impact) #collaboration .partner:nth-child(n+3){padding-top:32px}
   main:has(#international-impact) #collaboration .partner h3{margin-bottom:15px}
   main:has(#international-impact) #collaboration .partner p{font-size:16px;line-height:1.78;color:#394150}
@@ -204,13 +203,6 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 #international-impact>.container{display:flex;flex-direction:column}
 #international-impact .platform-heading{margin-top:64px}
 #international-impact .detail-block p{font-size:15px;line-height:1.72;color:var(--muted);font-weight:400}
-@media(min-width:1025px){
-  #international-impact .section-head{margin-bottom:42px}
-  #international-impact .detail-block{display:grid;grid-template-columns:minmax(220px,260px) minmax(0,1fr);gap:36px;align-items:start;padding:25px 0;border-top:1px solid var(--line)}
-  #international-impact .detail-block:last-child{border-bottom:1px solid var(--line)}
-  #international-impact .detail-block h3{margin:0;line-height:1.45}
-  #international-impact .detail-block p{margin:0;max-width:39em}
-}
 @media(max-width:768px){
   #international-impact .platform-heading{margin-top:52px}
   #international-impact .detail-block p{font-size:14px;line-height:1.65}
@@ -226,22 +218,28 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
   .team-grid .person .person-link:hover{text-decoration:underline;text-underline-offset:3px}
 }
 
-/* Join context: turn three loose section heads into a compact recruitment information index on desktop. */
+/* Shared desktop editorial-row skeleton for About platforms, Join context, and Contact. */
 @media(min-width:1025px){
+  :is(#international-impact .detail-block,.join-context .section-head,.contact-grid .contact-card){display:grid;align-items:start;border-top:1px solid var(--line)}
+
+  #international-impact .section-head{margin-bottom:42px}
+  #international-impact .detail-block{grid-template-columns:minmax(220px,260px) minmax(0,1fr);gap:36px;padding:25px 0}
+  #international-impact .detail-block:last-child{border-bottom:1px solid var(--line)}
+  #international-impact .detail-block h3{margin:0;line-height:1.45}
+  #international-impact .detail-block p{margin:0;max-width:39em}
+
   .join-context>.container{display:flex;flex-direction:column}
-  .join-context .section-head{display:grid;grid-template-columns:minmax(220px,280px) minmax(0,1fr);column-gap:42px;row-gap:5px;align-items:start;margin:0;padding:27px 0;border-top:1px solid var(--line)}
+  :is(.join-context .section-head,.contact-grid .contact-card){grid-template-columns:minmax(220px,280px) minmax(0,1fr);column-gap:42px;padding:27px 0}
+  .join-context .section-head{row-gap:5px;margin:0}
   .join-context .section-head:last-of-type{border-bottom:1px solid var(--line)}
   .join-context .section-head .eyebrow{grid-column:1;margin:2px 0 0}
   .join-context .section-head h2{grid-column:1;margin:8px 0 0;font-size:24px;line-height:1.25}
   .join-context .section-head p{grid-column:2;grid-row:1 / span 2;margin:0;max-width:46em;font-size:15px;line-height:1.78;color:#4A5563}
   .join-context .btn{align-self:flex-start;margin-top:34px}
-}
 
-/* Contact page: replace the uneven two-column stack with three equal editorial contact rows. */
-@media(min-width:1025px){
   .contact-grid{display:block}
   .contact-grid>div{display:contents}
-  .contact-grid .contact-card{display:grid;grid-template-columns:minmax(220px,280px) minmax(0,1fr);column-gap:42px;row-gap:6px;align-items:start;padding:27px 0;border-top:1px solid var(--line)}
+  .contact-grid .contact-card{row-gap:6px}
   .contact-grid .contact-card:last-child{border-bottom:1px solid var(--line)}
   .contact-grid .contact-card .eyebrow{grid-column:1;margin:2px 0 0}
   .contact-grid .contact-card h3{grid-column:1;margin:8px 0 0;line-height:1.35}
@@ -268,14 +266,10 @@ main>.page-hero:has(+ .results-achievements){padding-bottom:36px!important}
 }
 
 /* First-section divider rhythm: keep both rules, but bring them into a consistent close pair. */
-main:has(.contact-grid)>.content-section{padding-top:40px!important}
-main:has(.join-opportunities)>.join-opportunities{padding-top:40px!important}
-main>.page-hero:has(+ .results-achievements)+.results-achievements{padding-top:40px!important}
+:is(main:has(.contact-grid)>.content-section,main:has(.join-opportunities)>.join-opportunities,main>.page-hero:has(+ .results-achievements)+.results-achievements){padding-top:40px!important}
 main:has(.contact-grid) .contact-grid{margin-top:0!important}
 @media(max-width:768px){
-  main:has(.contact-grid)>.content-section{padding-top:28px!important}
-  main:has(.join-opportunities)>.join-opportunities{padding-top:28px!important}
-  main>.page-hero:has(+ .results-achievements)+.results-achievements{padding-top:28px!important}
+  :is(main:has(.contact-grid)>.content-section,main:has(.join-opportunities)>.join-opportunities,main>.page-hero:has(+ .results-achievements)+.results-achievements){padding-top:28px!important}
 }
 
 /* Keep partner lists visible when no separate mobile summary exists. */
