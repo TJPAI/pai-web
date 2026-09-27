@@ -38,6 +38,17 @@ for path in sorted(pages):
     if h1_count != 1:
         errors.append(f'{rel}: expected exactly one h1; found {h1_count}')
 
+    main_match = re.search(r'<main\b[^>]*>(.*?)</main>', text, re.I | re.S)
+    if main_match:
+        heading_levels = [int(level) for level in re.findall(r'<h([1-6])\b', main_match.group(1), re.I)]
+        if heading_levels and heading_levels[0] != 1:
+            errors.append(f'{rel}: first heading inside main must be h1, found h{heading_levels[0]}')
+        for previous, current in zip(heading_levels, heading_levels[1:]):
+            if current > previous + 1:
+                errors.append(f'{rel}: heading level jumps from h{previous} to h{current}')
+    else:
+        errors.append(f'{rel}: missing main landmark')
+
     # The standalone 404 page intentionally uses a minimal shell with a single main
     # landmark and no repeated site navigation. Main-site pages must expose the shared
     # skip target explicitly.
@@ -97,4 +108,4 @@ if errors:
         print(f' - {error}')
     sys.exit(1)
 
-print(f'Accessibility contract validation passed on {len(pages)} HTML page(s).')
+print(f'Accessibility contract validation passed on {len(pages)} HTML page(s), including semantic heading order.')
