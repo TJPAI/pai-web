@@ -2,18 +2,12 @@
 from __future__ import annotations
 
 from pathlib import Path
-import re
 
-from site_config import ROOT, BASE_URL, CUSTOM_DOMAIN, ALLOW_INDEXING, ENVIRONMENT
-
-KNOWN_BASES = {
-    "https://tjpai.github.io/pai-web/",
-    "https://ai.tongji.edu.cn/",
-}
+from site_config import ROOT, BASE_URL, CUSTOM_DOMAIN, ALLOW_INDEXING, ENVIRONMENT, KNOWN_BASE_URLS
 
 
 def rewrite_text(text: str) -> str:
-    for base in KNOWN_BASES:
+    for base in KNOWN_BASE_URLS:
         if base != BASE_URL:
             text = text.replace(base, BASE_URL)
     return text
