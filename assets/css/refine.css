@@ -133,12 +133,17 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .home-achievement-stories{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1.15fr) minmax(0,.8fr);gap:18px;align-items:start}
 .home-achievement-story{margin:0;border:1px solid var(--line);background:#fff;overflow:hidden}
 .home-achievement-story a{display:block;color:inherit;text-decoration:none}
-.home-achievement-story img{display:block;width:100%;aspect-ratio:16/9;height:auto;object-fit:cover}
+.home-achievement-story img{display:block;width:100%;aspect-ratio:16/9;height:auto;object-fit:cover;transition:transform .32s cubic-bezier(.2,.7,.2,1)}
 .home-achievement-story:nth-child(3) img{aspect-ratio:4/5;object-position:center 35%}
 .home-achievement-story figcaption{padding:17px 18px 18px;min-height:150px}
 .home-achievement-story strong{display:block;font-size:15px;line-height:1.45;color:var(--ink);margin-bottom:7px}
 .home-achievement-story span{display:block;font-size:13px;line-height:1.6;color:var(--muted)}
 .home-achievement-story small{display:block;margin-top:10px;font-size:11px;line-height:1.4;color:#8A93A2}
+@media(hover:hover) and (pointer:fine){
+  .home-achievement-story a:hover img{transform:scale(1.012)}
+  .home-achievement-story a:hover strong{text-decoration:underline;text-underline-offset:3px}
+}
+@media(prefers-reduced-motion:reduce){.home-achievement-story img{transition:none}.home-achievement-story a:hover img{transform:none}}
 .home-achievements-more{margin-top:26px}
 .home-platform-more{margin-top:28px}
 .home-media-section{border-top:1px solid var(--line)}
