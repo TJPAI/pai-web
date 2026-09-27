@@ -35,6 +35,14 @@ if text.count(old_after_nav) != 1:
     raise SystemExit('site.js post-navigation swipe warmup contract changed')
 text = text.replace(old_after_nav, new_after_nav)
 
+# A touchstart is strong navigation intent and may preload images. Desktop mouseover is
+# weak intent: fetch only the target HTML at low priority instead of up to six images.
+old_mouseover = "  document.addEventListener('mouseover',event=>{\n    const link=event.target.closest&&event.target.closest('a');\n    if(link) warmLinkIntent(link);\n  },{capture:true,passive:true});"
+new_mouseover = "  document.addEventListener('mouseover',event=>{\n    const link=event.target.closest&&event.target.closest('a');\n    const url=eligiblePageLink(link);\n    if(url) fetchPage(url,{priority:'low'}).catch(()=>{});\n  },{capture:true,passive:true});"
+if text.count(old_mouseover) != 1:
+    raise SystemExit('site.js desktop hover warmup contract changed')
+text = text.replace(old_mouseover, new_mouseover)
+
 SITE_JS.write_text(text, encoding='utf-8')
 
 # Resolve the root-page language preference in <head>, before CSS and eager homepage
@@ -53,4 +61,4 @@ bootstrap = (
 )
 INDEX.write_text(index.replace(marker, bootstrap), encoding='utf-8')
 
-print('Prepared deployment runtime: early language redirect, mobile-only orbit, idle mobile swipe warming.')
+print('Prepared deployment runtime: early language redirect, mobile-only orbit, conservative speculative warming.')
