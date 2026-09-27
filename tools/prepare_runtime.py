@@ -43,6 +43,14 @@ if text.count(old_mouseover) != 1:
     raise SystemExit('site.js desktop hover warmup contract changed')
 text = text.replace(old_mouseover, new_mouseover)
 
+# Publications are static deploy assets. Let the browser/CDN apply ordinary HTTP caching
+# instead of forcing a network fetch on every fresh document load.
+old_static_fetch = "      const response=await fetch(url.href,{credentials:'same-origin',cache:'no-store',priority});"
+new_static_fetch = "      const response=await fetch(url.href,{credentials:'same-origin',priority});"
+if text.count(old_static_fetch) != 1:
+    raise SystemExit('site.js static resource fetch contract changed')
+text = text.replace(old_static_fetch, new_static_fetch)
+
 SITE_JS.write_text(text, encoding='utf-8')
 
 # Resolve the root-page language preference in <head>, before CSS and eager homepage
@@ -61,4 +69,4 @@ bootstrap = (
 )
 INDEX.write_text(index.replace(marker, bootstrap), encoding='utf-8')
 
-print('Prepared deployment runtime: early language redirect, mobile-only orbit, conservative speculative warming.')
+print('Prepared deployment runtime: early language redirect, mobile-only orbit, conservative warming, cacheable static data.')
