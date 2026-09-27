@@ -61,12 +61,14 @@ jobs:
         run: python tools/prepare_css_bundle.py
       - name: Stamp deployed asset cache keys
         run: python tools/normalize_asset_versions.py
+      - name: Stage public site artifact
+        run: python tools/prepare_public_artifact.py
       - name: Configure Pages
         uses: actions/configure-pages@v6
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: .
+          path: _site
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
