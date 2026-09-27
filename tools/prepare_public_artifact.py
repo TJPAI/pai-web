@@ -32,7 +32,6 @@ for rel in PUBLIC_DIRS:
     shutil.copytree(source, OUT / rel)
 
 PUBLIC_FILES = (
-    '.nojekyll',
     'robots.txt',
     'sitemap.xml',
     'site.webmanifest',
