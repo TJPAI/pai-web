@@ -72,6 +72,7 @@ for html in sorted(ROOT.rglob('*.html')):
     if canonical != expected_canonical:
         errors.append(f'{rel}: canonical must be {expected_canonical}, got {canonical}')
 
+    expected_locale = 'en_US' if rel.startswith('en/') else 'zh_CN'
     required_meta = {
         ('property', 'og:type'): 'website',
         ('property', 'og:title'): None,
@@ -81,6 +82,7 @@ for html in sorted(ROOT.rglob('*.html')):
         ('property', 'og:image:width'): '1200',
         ('property', 'og:image:height'): '1200',
         ('property', 'og:image:alt'): None,
+        ('property', 'og:locale'): expected_locale,
         ('name', 'twitter:card'): 'summary',
         ('name', 'twitter:title'): None,
         ('name', 'twitter:description'): None,
@@ -130,4 +132,4 @@ if errors:
         print(' -', e)
     sys.exit(1)
 
-print(f'Share metadata OK: {len(checked)} content pages; exact bilingual canonical/hreflang pairs validated; image={SHARE_IMAGE}')
+print(f'Share metadata OK: {len(checked)} content pages; exact bilingual canonical/hreflang/locale metadata validated; image={SHARE_IMAGE}')
