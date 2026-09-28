@@ -72,21 +72,23 @@ for html in sorted(ROOT.rglob('*.html')):
     if canonical != expected_canonical:
         errors.append(f'{rel}: canonical must be {expected_canonical}, got {canonical}')
 
+    is_home = rel in ('index.html', 'en/index.html')
+    expected_image = (BASE_URL + 'assets/images/social/pai-share-v4.jpg?v=20260929-logo') if is_home else SHARE_IMAGE
     expected_locale = 'en_US' if rel.startswith('en/') else 'zh_CN'
     required_meta = {
         ('property', 'og:type'): 'website',
         ('property', 'og:title'): None,
         ('property', 'og:description'): None,
         ('property', 'og:url'): None,
-        ('property', 'og:image'): SHARE_IMAGE,
+        ('property', 'og:image'): expected_image,
         ('property', 'og:image:width'): '1200',
-        ('property', 'og:image:height'): '1200',
+        ('property', 'og:image:height'): '630' if is_home else '1200',
         ('property', 'og:image:alt'): None,
         ('property', 'og:locale'): expected_locale,
-        ('name', 'twitter:card'): 'summary',
+        ('name', 'twitter:card'): 'summary_large_image' if is_home else 'summary',
         ('name', 'twitter:title'): None,
         ('name', 'twitter:description'): None,
-        ('name', 'twitter:image'): SHARE_IMAGE,
+        ('name', 'twitter:image'): expected_image,
     }
     found_meta = {}
     for (kind, key), expected in required_meta.items():

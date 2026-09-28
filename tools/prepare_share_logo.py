@@ -102,6 +102,9 @@ OUT.write_bytes(png)
 
 changed = 0
 for path in ROOT.rglob('*.html'):
+    # Homepages use the committed 1200x630 uploaded-logo card.
+    if path.relative_to(ROOT).as_posix() in ('index.html', 'en/index.html'):
+        continue
     if 'geosketch-mvp' in path.parts or path.name == '404.html':
         continue
     text = path.read_text(encoding='utf-8')

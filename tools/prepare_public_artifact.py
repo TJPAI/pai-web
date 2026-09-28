@@ -59,14 +59,13 @@ if robots_meta not in geosketch_text:
     geosketch.write_text(geosketch_text.replace(marker, marker + '\n' + robots_meta), encoding='utf-8')
 
 # These files are build inputs only. The browser receives refine-bundle.css and the
-# generated square share PNG instead. Compatibility shims app.css/team.css remain public.
+# generated square share PNG for inner pages instead. Compatibility shims app.css/team.css remain public.
 BUILD_ONLY_ASSETS = (
     'assets/css/refine.css',
     'assets/css/refine-base.css',
     'assets/css/app-core.css',
     'assets/css/typography.css',
     'assets/images/social/pai-share-logo.svg',
-    'assets/images/social/pai-share-v4.jpg',
 )
 for rel in BUILD_ONLY_ASSETS:
     target = OUT / rel
