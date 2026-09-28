@@ -82,7 +82,7 @@ else:
     if '<meta name="robots" content="noindex,nofollow">' not in geosketch_text:
         errors.append('geosketch-mvp/index.html: deployed utility must remain noindex,nofollow')
 
-# Runtime safety/privacy contracts must be true in the final JS that users receive.
+# Runtime safety/privacy/accessibility contracts must be true in the final JS users receive.
 site_js_path = SITE / 'assets/js/site.js'
 if site_js_path.is_file():
     site_js = site_js_path.read_text(encoding='utf-8')
@@ -103,6 +103,20 @@ if site_js_path.is_file():
     if unsafe_doi_link in site_js:
         errors.append('assets/js/site.js: runtime DOI links still expose referrer information')
 
+    # Closed orbit navigation is invisible, so its links must stay out of the focus tree.
+    orbit_hidden = "wheel.setAttribute('aria-hidden',open?'false':'true')"
+    orbit_disable_focus = "link.setAttribute('tabindex','-1')"
+    orbit_restore_focus = "link.removeAttribute('tabindex')"
+    orbit_initial_hidden = "syncOrbitA11y(false)"
+    for snippet, message in (
+        (orbit_hidden, 'deployed orbit does not expose open/closed state to assistive technology'),
+        (orbit_disable_focus, 'closed orbit links remain keyboard-focusable'),
+        (orbit_restore_focus, 'open orbit links do not restore keyboard focusability'),
+        (orbit_initial_hidden, 'orbit is not initialized in the hidden/non-focusable state'),
+    ):
+        if snippet not in site_js:
+            errors.append(f'assets/js/site.js: {message}')
+
 if errors:
     print('Public artifact validation failed:')
     for error in errors:
@@ -110,4 +124,4 @@ if errors:
     sys.exit(1)
 
 files = sum(1 for path in SITE.rglob('*') if path.is_file())
-print(f'Public artifact validation passed: {files} files; local references resolve, Preview paths are portable, GeoSketch stays noindex, and runtime SW/DOI safety contracts hold.')
+print(f'Public artifact validation passed: {files} files; local references resolve, Preview paths are portable, GeoSketch stays noindex, and runtime SW/DOI/orbit safety contracts hold.')
