@@ -104,16 +104,16 @@ if site_js_path.is_file():
         errors.append('assets/js/site.js: runtime DOI links still expose referrer information')
 
     # Closed orbit navigation is invisible, so its links must stay out of the focus tree.
-    orbit_hidden = "wheel.setAttribute('aria-hidden',open?'false':'true')"
-    orbit_disable_focus = "link.setAttribute('tabindex','-1')"
-    orbit_restore_focus = "link.removeAttribute('tabindex')"
-    orbit_initial_hidden = "syncOrbitA11y(false)"
-    for snippet, message in (
-        (orbit_hidden, 'deployed orbit does not expose open/closed state to assistive technology'),
-        (orbit_disable_focus, 'closed orbit links remain keyboard-focusable'),
-        (orbit_restore_focus, 'open orbit links do not restore keyboard focusability'),
-        (orbit_initial_hidden, 'orbit is not initialized in the hidden/non-focusable state'),
-    ):
+    orbit_contracts = (
+        ("wheel.setAttribute('aria-hidden',open?'false':'true')", 'deployed orbit does not expose open/closed state to assistive technology'),
+        ("link.setAttribute('tabindex','-1')", 'closed orbit links remain keyboard-focusable'),
+        ("link.removeAttribute('tabindex')", 'open orbit links do not restore keyboard focusability'),
+        ("syncOrbitA11y(false)", 'orbit is not initialized in the hidden/non-focusable state'),
+        ("if(link.closest('.pai-orbit-wheel')) closeOrbitMenu()", 'orbit selection does not close the quick menu before navigation'),
+        ("const orbit=document.querySelector('.pai-orbit.open')", 'Escape handling does not detect an open orbit'),
+        ("orbit.querySelector('.pai-orbit-toggle')?.focus()", 'Escape handling does not restore focus to the orbit toggle'),
+    )
+    for snippet, message in orbit_contracts:
         if snippet not in site_js:
             errors.append(f'assets/js/site.js: {message}')
 
