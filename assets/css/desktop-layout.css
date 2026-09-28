@@ -35,18 +35,43 @@
     max-width:var(--desktop-read);
   }
 
-  /* Publication lists are continuous-reading content, not a wide dashboard. */
-  main>.content-section>.container:has(.publication-toolbar),
-  main>.content-section>.container:has(.pub-year-row),
-  main>.content-section>.container:has(.pub){
+  /* Inner pages share a frame, but prose and publication lists keep their own measure.
+     Scope follows the current main element through lightweight navigation. */
+  main:has(>.page-hero):not(:has(.person-detail)){
+    --desktop-prose:820px;
+  }
+  main:has(>.page-hero):not(:has(.person-detail))>.page-hero{
+    padding:80px 0 56px;
+  }
+  main:has(>.page-hero):not(:has(.person-detail))>.page-hero h1{
+    margin:0 0 20px;
+  }
+  main:has(>.page-hero):not(:has(.person-detail))>.page-hero p{
+    max-width:760px;
+  }
+  main:has(>.page-hero):not(:has(.person-detail))>:is(.content-section,.section){
+    padding-top:72px;
+    padding-bottom:72px;
+  }
+  main:has(>.page-hero):not(:has(.person-detail)) .section-head{
+    margin-bottom:36px;
+  }
+  main:has(>.page-hero)>.content-section>.container.prose{
+    max-width:var(--desktop-prose);
+  }
+  main:has(>.page-hero) .prose h2:not(:first-child){
+    margin-top:40px;
+  }
+  main:has(>.page-hero) .prose>p:last-child{
+    margin-bottom:0;
+  }
+  main>.research-direction>.container,
+  main>.results-achievements>.container,
+  main>.results-publications>.container{
     max-width:var(--desktop-read);
   }
-
-  /* About/contact prose should not use screen width merely because it is available. */
-  #overview>.container,
-  #international-impact>.container,
-  #collaboration>.container,
-  #media-coverage>.container{
-    max-width:var(--desktop-main);
+  /* The publication canvas must not change width when JavaScript inserts the list. */
+  main:has(>.page-hero)>.results-publications{
+    padding-top:0;
   }
 }
