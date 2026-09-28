@@ -88,10 +88,10 @@
   .selected-updates{padding-top:106px;padding-bottom:106px}
   .home-media-section{padding-top:82px;padding-bottom:78px}
 
-  /* Selected achievements: fit the first card to its image, keep the group compact. */
+  /* Selected achievements: fit the first two cards closely to their image widths. */
   .home-achievement-stories{
-    grid-template-columns:300px minmax(0,1.2fr) minmax(0,1fr);
-    gap:10px;
+    grid-template-columns:300px 400px minmax(0,1fr);
+    gap:16px;
     align-items:start;
   }
   .home-achievement-story{height:auto}
