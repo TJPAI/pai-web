@@ -15,6 +15,14 @@ if text.count(old_orbit) != 1:
     raise SystemExit('site.js orbit bootstrap contract changed; expected exactly one initOrbitMenu() tail')
 text = text.replace(old_orbit, new_orbit)
 
+# Retire only the legacy PAI Service Worker scope. Never unregister unrelated Service
+# Workers that may share the production origin under a different path.
+old_sw_cleanup = "  let siteReady=Promise.resolve();\n  if('serviceWorker' in navigator){\n    siteReady=navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).catch(()=>{});\n  }"
+new_sw_cleanup = "  let siteReady=Promise.resolve();\n  if('serviceWorker' in navigator){\n    const legacyScope=new URL(root('/'),location.origin).href;\n    siteReady=navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.filter(r=>r.scope===legacyScope).map(r=>r.unregister()))).catch(()=>{});\n  }"
+if text.count(old_sw_cleanup) != 1:
+    raise SystemExit('site.js legacy Service Worker cleanup contract changed')
+text = text.replace(old_sw_cleanup, new_sw_cleanup)
+
 # Swipe neighbors only help touch/mobile navigation. Avoid speculative page requests on
 # ordinary desktop, and move initial mobile warming off the critical post-load window.
 old_swipe_guard = "  const warmSwipeNeighbors=()=>{\n    if(navigator.connection&&navigator.connection.saveData) return;"
@@ -69,4 +77,4 @@ bootstrap = (
 )
 INDEX.write_text(index.replace(marker, bootstrap), encoding='utf-8')
 
-print('Prepared deployment runtime: early language redirect, mobile-only orbit, conservative warming, cacheable static data.')
+print('Prepared deployment runtime: early language redirect, scoped legacy SW cleanup, mobile-only orbit, conservative warming, cacheable static data.')
