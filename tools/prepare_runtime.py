@@ -67,6 +67,20 @@ if text.count(old_doi_rel) != 1:
     raise SystemExit('site.js DOI link privacy contract changed')
 text = text.replace(old_doi_rel, new_doi_rel)
 
+# The closed orbit is visually hidden. Keep its links out of the keyboard/accessibility
+# navigation order until the menu is actually opened.
+old_orbit_set_open = "    const setOpen=open=>{\n      if(open) setMobileMenu(false);\n      if(!open) stopAuto();\n      orbit.classList.toggle('open',open);\n      toggle.setAttribute('aria-expanded',open?'true':'false');\n      if(open){\n        sync();\n        scheduleAuto(560);\n      }\n      toggle.setAttribute('aria-label',open?(normalizedPath().startsWith('/en/')?'Close quick menu':'关闭快捷菜单'):(normalizedPath().startsWith('/en/')?'Open quick menu':'打开快捷菜单'));\n    };"
+new_orbit_set_open = "    const syncOrbitA11y=open=>{\n      wheel.setAttribute('aria-hidden',open?'false':'true');\n      wheel.querySelectorAll('a').forEach(link=>{\n        if(open) link.removeAttribute('tabindex');\n        else link.setAttribute('tabindex','-1');\n      });\n    };\n    const setOpen=open=>{\n      if(open) setMobileMenu(false);\n      if(!open) stopAuto();\n      orbit.classList.toggle('open',open);\n      toggle.setAttribute('aria-expanded',open?'true':'false');\n      if(open){\n        sync();\n        syncOrbitA11y(true);\n        scheduleAuto(560);\n      }else{\n        syncOrbitA11y(false);\n      }\n      toggle.setAttribute('aria-label',open?(normalizedPath().startsWith('/en/')?'Close quick menu':'关闭快捷菜单'):(normalizedPath().startsWith('/en/')?'Open quick menu':'打开快捷菜单'));\n    };"
+if text.count(old_orbit_set_open) != 1:
+    raise SystemExit('site.js orbit accessibility/open-state contract changed')
+text = text.replace(old_orbit_set_open, new_orbit_set_open)
+
+old_orbit_initial = "    sync();\n    paint();\n  };"
+new_orbit_initial = "    sync();\n    syncOrbitA11y(false);\n    paint();\n  };"
+if text.count(old_orbit_initial) != 1:
+    raise SystemExit('site.js orbit initial accessibility contract changed')
+text = text.replace(old_orbit_initial, new_orbit_initial)
+
 SITE_JS.write_text(text, encoding='utf-8')
 
 # Resolve the root-page language preference in <head>, before CSS and eager homepage
@@ -85,4 +99,4 @@ bootstrap = (
 )
 INDEX.write_text(index.replace(marker, bootstrap), encoding='utf-8')
 
-print('Prepared deployment runtime: early language redirect, scoped legacy SW cleanup, mobile-only orbit, conservative warming, cacheable static data, private DOI links.')
+print('Prepared deployment runtime: early language redirect, scoped legacy SW cleanup, mobile-only and focus-safe orbit, conservative warming, cacheable static data, private DOI links.')
