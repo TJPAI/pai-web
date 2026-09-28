@@ -59,6 +59,14 @@ if text.count(old_static_fetch) != 1:
     raise SystemExit('site.js static resource fetch contract changed')
 text = text.replace(old_static_fetch, new_static_fetch)
 
+# Runtime-generated DOI links open a new browsing context. Match the static-link privacy
+# contract by suppressing both opener access and referrer transmission.
+old_doi_rel = 'target="_blank" rel="noopener">DOI ↗</a>'
+new_doi_rel = 'target="_blank" rel="noopener noreferrer">DOI ↗</a>'
+if text.count(old_doi_rel) != 1:
+    raise SystemExit('site.js DOI link privacy contract changed')
+text = text.replace(old_doi_rel, new_doi_rel)
+
 SITE_JS.write_text(text, encoding='utf-8')
 
 # Resolve the root-page language preference in <head>, before CSS and eager homepage
@@ -77,4 +85,4 @@ bootstrap = (
 )
 INDEX.write_text(index.replace(marker, bootstrap), encoding='utf-8')
 
-print('Prepared deployment runtime: early language redirect, scoped legacy SW cleanup, mobile-only orbit, conservative warming, cacheable static data.')
+print('Prepared deployment runtime: early language redirect, scoped legacy SW cleanup, mobile-only orbit, conservative warming, cacheable static data, private DOI links.')
