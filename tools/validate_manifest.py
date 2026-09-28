@@ -14,9 +14,12 @@ try:
 except Exception as exc:
     raise SystemExit(f'site.webmanifest: invalid JSON: {exc}')
 
-for key in ('name', 'short_name', 'id', 'start_url', 'scope', 'display', 'background_color', 'theme_color', 'icons'):
+for key in ('name', 'short_name', 'description', 'lang', 'id', 'start_url', 'scope', 'display', 'background_color', 'theme_color', 'icons'):
     if not manifest.get(key):
         errors.append(f'site.webmanifest: missing {key}')
+
+if manifest.get('lang') != 'zh-CN':
+    errors.append('site.webmanifest: lang must remain zh-CN for the root experience')
 
 for key in ('id', 'start_url', 'scope'):
     value = str(manifest.get(key, ''))
@@ -55,6 +58,9 @@ for icon in manifest.get('icons', []):
     declared = icon.get('sizes')
     if declared != f'{size[0]}x{size[1]}':
         errors.append(f'{src}: manifest sizes={declared!r} does not match PNG {size[0]}x{size[1]}')
+    purpose = {part for part in str(icon.get('purpose', '')).split() if part}
+    if not {'any', 'maskable'}.issubset(purpose):
+        errors.append(f'{src}: manifest purpose must include both any and maskable')
 
 for src, expected in expected_manifest_icons.items():
     if seen.get(src) != expected:
