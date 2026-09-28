@@ -88,9 +88,9 @@
   .selected-updates{padding-top:106px;padding-bottom:106px}
   .home-media-section{padding-top:82px;padding-bottom:78px}
 
-  /* Selected achievements: equal image height, tighter grouping, natural card heights. */
+  /* Selected achievements: fit the first card to its image, keep the group compact. */
   .home-achievement-stories{
-    grid-template-columns:minmax(0,1fr) minmax(0,1.12fr) minmax(250px,.94fr);
+    grid-template-columns:300px minmax(0,1.2fr) minmax(0,1fr);
     gap:10px;
     align-items:start;
   }
