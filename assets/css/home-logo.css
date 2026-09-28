@@ -91,15 +91,14 @@
   .selected-updates{padding-top:106px;padding-bottom:106px}
   .home-media-section{padding-top:82px;padding-bottom:78px}
 
-  /* Selected achievements: preserve native aspect ratio, keep one image height,
-     and give the portrait story slightly more width for better visual balance. */
+  /* Selected achievements: keep image heights equal while allowing each card to size naturally. */
   .home-achievement-stories{
     grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(235px,.82fr);
     gap:20px;
-    align-items:stretch;
+    align-items:start;
   }
-  .home-achievement-story{height:100%}
-  .home-achievement-story>a{height:100%;display:flex;flex-direction:column}
+  .home-achievement-story{height:auto}
+  .home-achievement-story>a{height:auto;display:block}
   .home-achievement-story img,
   .home-achievement-story:nth-child(3) img{
     width:auto!important;
@@ -109,9 +108,8 @@
     aspect-ratio:auto!important;
     object-fit:contain!important;
     object-position:center!important;
-    flex:0 0 auto;
   }
-  .home-achievement-story figcaption{flex:1;min-height:154px}
+  .home-achievement-story figcaption{min-height:0}
 
   /* The two compact information tables need a little more typographic presence. */
   .selected-updates .update-item h3{font-size:18.5px!important}
