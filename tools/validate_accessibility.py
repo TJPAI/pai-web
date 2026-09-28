@@ -68,8 +68,12 @@ for path in sorted(pages):
 
     for tag in re.findall(r'<a\b[^>]*\btarget=["\']_blank["\'][^>]*>', text, re.I):
         rel_attr = re.search(r'\brel=["\']([^"\']*)["\']', tag, re.I)
-        if not rel_attr or 'noopener' not in rel_attr.group(1).lower().split():
-            errors.append(f'{rel}: target="_blank" link missing rel="noopener": {tag[:140]}')
+        rel_tokens = set(rel_attr.group(1).lower().split()) if rel_attr else set()
+        missing = [token for token in ('noopener', 'noreferrer') if token not in rel_tokens]
+        if missing:
+            errors.append(
+                f'{rel}: target="_blank" link missing rel token(s) {", ".join(missing)}: {tag[:140]}'
+            )
 
     for value in re.findall(r'\btabindex=["\']([^"\']+)["\']', text, re.I):
         try:
@@ -108,4 +112,4 @@ if errors:
         print(f' - {error}')
     sys.exit(1)
 
-print(f'Accessibility contract validation passed on {len(pages)} HTML page(s), including semantic heading order.')
+print(f'Accessibility contract validation passed on {len(pages)} HTML page(s), including semantic heading order and safe new-window links.')
