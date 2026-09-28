@@ -27,9 +27,6 @@
 @media(max-width:768px){.home-hero .hero-art.pai-logo-motion-host{top:34px;width:160px;height:160px}}
 @media(max-width:390px){.home-hero .hero-art.pai-logo-motion-host{top:30px;width:150px;height:150px}}
 
-/* Updated flagship magnetic-communication image, shared by desktop and mobile homepages. */
-.home-achievement-story:nth-child(3) img{content:url("../images/home/datong-mine-magnetic-communication-20260929.svg")}
-
 /* Desktop editorial layout: concentrated reading widths, wider visual/research sections. */
 @media(min-width:1100px){
   .site-header .container,
