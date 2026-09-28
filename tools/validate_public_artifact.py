@@ -73,17 +73,26 @@ for rel in (
     if not (SITE / rel).exists():
         errors.append(f'missing required public artifact file: {rel}')
 
-# The legacy Service Worker retirement code must never unregister unrelated workers on
-# the same production origin. Deployment runtime scopes cleanup to the PAI site root.
+# Runtime safety/privacy contracts must be true in the final JS that users receive.
 site_js_path = SITE / 'assets/js/site.js'
 if site_js_path.is_file():
     site_js = site_js_path.read_text(encoding='utf-8')
+
+    # Never unregister unrelated Service Workers sharing the production origin.
     scoped_cleanup = "rs.filter(r=>r.scope===legacyScope).map(r=>r.unregister())"
     unsafe_cleanup = "rs.map(r=>r.unregister())"
     if scoped_cleanup not in site_js:
         errors.append('assets/js/site.js: deployed legacy Service Worker cleanup is not scope-limited')
     if unsafe_cleanup in site_js:
         errors.append('assets/js/site.js: deployed runtime still contains origin-wide Service Worker unregister')
+
+    # DOI links are generated at runtime, so the static HTML validator cannot see them.
+    safe_doi_link = 'target="_blank" rel="noopener noreferrer">DOI ↗</a>'
+    unsafe_doi_link = 'target="_blank" rel="noopener">DOI ↗</a>'
+    if safe_doi_link not in site_js:
+        errors.append('assets/js/site.js: runtime DOI links are missing noopener+noreferrer')
+    if unsafe_doi_link in site_js:
+        errors.append('assets/js/site.js: runtime DOI links still expose referrer information')
 
 if errors:
     print('Public artifact validation failed:')
@@ -92,4 +101,4 @@ if errors:
     sys.exit(1)
 
 files = sum(1 for path in SITE.rglob('*') if path.is_file())
-print(f'Public artifact validation passed: {files} files; local references resolve, Preview paths are portable, and legacy Service Worker cleanup is scope-limited.')
+print(f'Public artifact validation passed: {files} files; local references resolve, Preview paths are portable, and runtime SW/DOI safety contracts hold.')
