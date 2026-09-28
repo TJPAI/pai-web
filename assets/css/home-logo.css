@@ -32,8 +32,26 @@
   .site-header .container,
   .site-footer .container{max-width:1120px}
 
+  /* Header reads as one left-anchored system instead of two distant islands. */
+  .site-header .nav{justify-content:flex-start;gap:0}
+  .site-header .nav-links{margin-left:58px}
+
+  /* Hero text and animated mark share one local composition. */
+  .home-hero{padding-top:64px;padding-bottom:70px}
   .home-hero>.container{max-width:1060px}
-  .home-hero .hero-grid{grid-template-columns:minmax(0,1.15fr) minmax(310px,.85fr);gap:52px}
+  .home-hero .hero-grid{
+    position:relative;
+    grid-template-columns:minmax(0,1.15fr) minmax(310px,.85fr);
+    gap:52px;
+  }
+  .home-hero .hero-art.pai-logo-motion-host{
+    left:auto;
+    right:34px;
+    top:41%;
+    width:224px;
+    height:224px;
+    transform:translateY(-50%);
+  }
 
   /* Use width according to content type rather than one universal desktop canvas. */
   .home-hero~.section>.container{max-width:1000px}
@@ -53,22 +71,27 @@
   .home-hero~.section .research-title.title-feature{font-size:23px!important;line-height:1.28!important}
   .home-hero~.section :is(.challenge p,.research p,.partner p,.update-item p){font-size:16.5px;line-height:1.72}
   .home-hero~.section .text-link{font-size:14.5px}
-  .home-hero~.section .media-title{font-size:14.5px;line-height:1.58}
-  .home-hero~.section .media-meta{font-size:11.5px}
+  .home-hero~.section .media-title{font-size:15px;line-height:1.55}
+  .home-hero~.section .media-meta{font-size:12px}
+
+  /* Collaboration network: a little denser and stronger inside the same 2x2 frame. */
+  .home-hero~.section:has(.partner-grid) .partner{padding-top:25px;padding-bottom:27px}
+  .home-hero~.section:has(.partner-grid) .partner h3{font-size:20px!important;margin-bottom:12px}
+  .home-hero~.section:has(.partner-grid) .partner p{font-size:16.5px;line-height:1.66}
 
   /* Reduce generic vertical drift after narrowing the content canvas. */
   .home-hero~.section:has(.challenge-grid){padding-top:110px;padding-bottom:110px}
   .home-hero~.section:has(.research-grid){padding-top:110px;padding-bottom:112px}
   .home-hero~.section:has(.numbers){padding-top:90px;padding-bottom:92px}
-  .home-hero~.section:has(.partner-grid){padding-top:100px;padding-bottom:102px}
+  .home-hero~.section:has(.partner-grid){padding-top:96px;padding-bottom:98px}
   .home-hero~.section:has(.home-achievement-stories){padding-top:118px;padding-bottom:116px}
-  .selected-updates{padding-top:110px;padding-bottom:110px}
-  .home-media-section{padding-top:84px;padding-bottom:80px}
+  .selected-updates{padding-top:106px;padding-bottom:106px}
+  .home-media-section{padding-top:82px;padding-bottom:78px}
 
-  /* Selected achievements: preserve every source image's native aspect ratio.
-     The three images share one visual height; card widths reflect the source proportions. */
+  /* Selected achievements: preserve native aspect ratio, keep one image height,
+     and give the portrait story slightly more width for better visual balance. */
   .home-achievement-stories{
-    grid-template-columns:minmax(0,1.05fr) minmax(0,1.25fr) minmax(210px,.70fr);
+    grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(235px,.82fr);
     gap:20px;
     align-items:stretch;
   }
@@ -86,4 +109,9 @@
     flex:0 0 auto;
   }
   .home-achievement-story figcaption{flex:1;min-height:154px}
+
+  /* The two compact information tables need a little more typographic presence. */
+  .selected-updates .update-item h3{font-size:18.5px!important}
+  .selected-updates .update-item p{font-size:15.5px;line-height:1.62}
+  .home-media-section .media-list{line-height:1.5}
 }
