@@ -46,8 +46,8 @@
   }
   .home-hero .hero-art.pai-logo-motion-host{
     left:auto;
-    right:140px;
-    top:34%;
+    right:190px;
+    top:calc(34% - 10px);
     width:224px;
     height:224px;
     transform:translateY(-50%);
