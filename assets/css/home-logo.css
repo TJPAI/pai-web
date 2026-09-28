@@ -88,22 +88,24 @@
   .selected-updates{padding-top:106px;padding-bottom:106px}
   .home-media-section{padding-top:82px;padding-bottom:78px}
 
-  /* Selected achievements: fit the first two cards closely to their image widths. */
+  /* Selected achievements: each column follows its image aspect ratio at a shared 165px height. */
   .home-achievement-stories{
-    grid-template-columns:300px 400px minmax(0,1fr);
-    gap:16px;
+    grid-template-columns:299px 398px 313px;
+    gap:18px;
+    justify-content:center;
     align-items:start;
   }
-  .home-achievement-story{height:auto}
-  .home-achievement-story>a{height:auto;display:block}
+  .home-achievement-story{height:auto;width:100%}
+  .home-achievement-story>a{height:auto;display:block;width:100%}
   .home-achievement-story img,
   .home-achievement-story:nth-child(3) img{
-    width:auto!important;
+    display:block;
+    width:100%!important;
     height:165px!important;
-    max-width:100%;
-    margin:0 auto;
+    max-width:none;
+    margin:0;
     aspect-ratio:auto!important;
-    object-fit:contain!important;
+    object-fit:fill!important;
     object-position:center!important;
   }
   .home-achievement-story figcaption{min-height:0}
