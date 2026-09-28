@@ -67,6 +67,14 @@ if text.count(old_doi_rel) != 1:
     raise SystemExit('site.js DOI link privacy contract changed')
 text = text.replace(old_doi_rel, new_doi_rel)
 
+# Lightweight navigation already closes the top mobile menu. Apply the same behavior to
+# orbit links so the destination page is never left covered by the quick-navigation wheel.
+old_nav_close = "    const mobileMenu=link.closest('.mobile-menu');\n    if(mobileMenu){\n      setMobileMenu(false);\n    }\n    saveCurrentScroll();"
+new_nav_close = "    const mobileMenu=link.closest('.mobile-menu');\n    if(mobileMenu){\n      setMobileMenu(false);\n    }\n    if(link.closest('.pai-orbit-wheel')) closeOrbitMenu();\n    saveCurrentScroll();"
+if text.count(old_nav_close) != 1:
+    raise SystemExit('site.js navigation menu-close contract changed')
+text = text.replace(old_nav_close, new_nav_close)
+
 # The closed orbit is visually hidden. Keep its links out of the keyboard/accessibility
 # navigation order until the menu is actually opened.
 old_orbit_set_open = "    const setOpen=open=>{\n      if(open) setMobileMenu(false);\n      if(!open) stopAuto();\n      orbit.classList.toggle('open',open);\n      toggle.setAttribute('aria-expanded',open?'true':'false');\n      if(open){\n        sync();\n        scheduleAuto(560);\n      }\n      toggle.setAttribute('aria-label',open?(normalizedPath().startsWith('/en/')?'Close quick menu':'关闭快捷菜单'):(normalizedPath().startsWith('/en/')?'Open quick menu':'打开快捷菜单'));\n    };"
@@ -99,4 +107,4 @@ bootstrap = (
 )
 INDEX.write_text(index.replace(marker, bootstrap), encoding='utf-8')
 
-print('Prepared deployment runtime: early language redirect, scoped legacy SW cleanup, mobile-only and focus-safe orbit, conservative warming, cacheable static data, private DOI links.')
+print('Prepared deployment runtime: early language redirect, scoped legacy SW cleanup, mobile-only/focus-safe/self-closing orbit, conservative warming, cacheable static data, private DOI links.')
