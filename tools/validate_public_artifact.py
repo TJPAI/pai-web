@@ -73,6 +73,18 @@ for rel in (
     if not (SITE / rel).exists():
         errors.append(f'missing required public artifact file: {rel}')
 
+# The legacy Service Worker retirement code must never unregister unrelated workers on
+# the same production origin. Deployment runtime scopes cleanup to the PAI site root.
+site_js_path = SITE / 'assets/js/site.js'
+if site_js_path.is_file():
+    site_js = site_js_path.read_text(encoding='utf-8')
+    scoped_cleanup = "rs.filter(r=>r.scope===legacyScope).map(r=>r.unregister())"
+    unsafe_cleanup = "rs.map(r=>r.unregister())"
+    if scoped_cleanup not in site_js:
+        errors.append('assets/js/site.js: deployed legacy Service Worker cleanup is not scope-limited')
+    if unsafe_cleanup in site_js:
+        errors.append('assets/js/site.js: deployed runtime still contains origin-wide Service Worker unregister')
+
 if errors:
     print('Public artifact validation failed:')
     for error in errors:
@@ -80,4 +92,4 @@ if errors:
     sys.exit(1)
 
 files = sum(1 for path in SITE.rglob('*') if path.is_file())
-print(f'Public artifact validation passed: {files} files; local HTML/CSS/manifest references resolve and remain Preview-portable.')
+print(f'Public artifact validation passed: {files} files; local references resolve, Preview paths are portable, and legacy Service Worker cleanup is scope-limited.')
