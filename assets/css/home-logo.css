@@ -26,3 +26,13 @@
 @media(min-width:769px){.home-hero .hero-art.pai-logo-motion-host{left:70%;top:54px;width:200px;height:200px}}
 @media(max-width:768px){.home-hero .hero-art.pai-logo-motion-host{top:34px;width:160px;height:160px}}
 @media(max-width:390px){.home-hero .hero-art.pai-logo-motion-host{top:30px;width:150px;height:150px}}
+
+/* Desktop reading focus: keep the homepage visually central on wide screens. */
+@media(min-width:1100px){
+  .site-header .container,
+  .site-footer .container{max-width:1180px}
+  .home-hero>.container{max-width:1080px}
+  .home-hero .hero-grid{grid-template-columns:minmax(0,1.16fr) minmax(320px,.84fr);gap:56px}
+  .home-hero~.section>.container{max-width:1040px}
+  .home-hero~.section:has(.numbers)>.container{max-width:900px}
+}
