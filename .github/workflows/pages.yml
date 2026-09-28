@@ -27,6 +27,8 @@ jobs:
           persist-credentials: false
       - name: Validate tooling syntax
         run: python -m py_compile tools/*.py
+      - name: Validate environment matrix
+        run: python tools/validate_environment_matrix.py
       - name: Validate shared head template
         run: python tools/sync_shared_head.py --check
       - name: Validate site content
