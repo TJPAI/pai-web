@@ -161,18 +161,18 @@
 
 /* Desktop inner-page type scale. Homepage and mobile retain their established tokens. */
 @media(min-width:1100px){
-  main:has(>.page-hero):not(:has(.person-detail)){
+  main:has(>.page-hero):not(:where(:has(.person-detail))){
     --title-page-size:48px;
     --title-section-size:32px;
     --title-feature-size:28px;
     --title-item-size:20px;
   }
-  main:has(>.page-hero):not(:has(.person-detail)) :is(.prose>p,.research-detail>p:not(.direction-keywords)){
+  main:has(>.page-hero):not(:where(:has(.person-detail))) :is(.prose>p,.research-detail>p:not(.direction-keywords)){
     font-size:var(--text-body-size);
     line-height:var(--text-body-line);
     font-weight:400;
   }
-  main:has(>.page-hero) :is(.section-head>p,.highlight p,.join-item p,.contact-card p,#international-impact .detail-block p){
+  main:has(>.page-hero) :is(.section-head>p,.highlight p,.join-item p,.contact-card p,#international-impact .detail-block p,#collaboration .partner p){
     font-size:var(--text-body-size);
     line-height:var(--text-body-line);
     font-weight:400;
@@ -190,4 +190,9 @@
     line-height:1.16!important;
     letter-spacing:-.03em!important;
   }
+  main:has(>.page-hero) .join-context .title-section{
+    --title-section-size:24px;
+  }
+  main>.results-publications .pub-year{font-size:28px;font-weight:var(--title-feature-weight)}
+
 }

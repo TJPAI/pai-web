@@ -201,7 +201,7 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 
 /* Platform content and order live in the bilingual HTML, not generated CSS. */
 #international-impact>.container{display:flex;flex-direction:column}
-#international-impact .platform-heading{margin-top:64px}
+#international-impact .platform-heading{margin-top:var(--platform-heading-offset,64px)}
 #international-impact .detail-block p{font-size:15px;line-height:1.72;color:var(--muted);font-weight:400}
 @media(max-width:768px){
   #international-impact .platform-heading{margin-top:52px}
@@ -222,7 +222,7 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 @media(min-width:1025px){
   :is(#international-impact .detail-block,.join-context .section-head,.contact-grid .contact-card){display:grid;align-items:start;border-top:1px solid var(--line)}
 
-  #international-impact .section-head{margin-bottom:42px}
+  #international-impact .section-head{margin-bottom:36px}
   #international-impact .detail-block{grid-template-columns:minmax(220px,260px) minmax(0,1fr);gap:36px;padding:25px 0}
   #international-impact .detail-block:last-child{border-bottom:1px solid var(--line)}
   #international-impact .detail-block h3{margin:0;line-height:1.45}
@@ -241,10 +241,27 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
   .contact-grid>div{display:contents}
   .contact-grid .contact-card{row-gap:6px}
   .contact-grid .contact-card:last-child{border-bottom:1px solid var(--line)}
-  .contact-grid .contact-card .eyebrow{grid-column:1;margin:2px 0 0}
-  .contact-grid .contact-card h3{grid-column:1;margin:8px 0 0;line-height:1.35}
+  .contact-grid .contact-card .eyebrow{grid-column:1;grid-row:1;margin:2px 0 0}
+  .contact-grid .contact-card .title-item{grid-column:1;grid-row:2;margin:0;line-height:1.35}
   .contact-grid .contact-card p{grid-column:2;margin:0;max-width:46em;font-size:15px;line-height:1.75}
-  .contact-grid .contact-card p+p{margin-top:8px}
+  .contact-grid .contact-card p:first-of-type{grid-row:1 / span 2}
+  .contact-grid .contact-card p+p{grid-row:3;margin-top:8px}
+}
+
+/* Desktop opportunities: give long English role names the same generous column as Chinese. */
+@media(min-width:1100px){
+  .join-opportunities .join-grid{grid-template-columns:1fr;border-bottom:0}
+  .join-opportunities .join-item{
+    display:grid;
+    grid-template-columns:44px minmax(220px,280px) minmax(0,1fr);
+    gap:24px;
+    align-items:start;
+    padding:24px 0;
+    border-left:0;
+    border-bottom:1px solid var(--line);
+  }
+  .join-opportunities .join-item .title-item{margin:0}
+  .join-opportunities .join-item p{margin:0}
 }
 
 /* Research Results page: items 01-06 form one continuous achievement sequence. */

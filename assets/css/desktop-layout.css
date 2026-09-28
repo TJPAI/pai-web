@@ -37,23 +37,23 @@
 
   /* Inner pages share a frame, but prose and publication lists keep their own measure.
      Scope follows the current main element through lightweight navigation. */
-  main:has(>.page-hero):not(:has(.person-detail)){
+  main:has(>.page-hero):not(:where(:has(.person-detail))){
     --desktop-prose:820px;
   }
-  main:has(>.page-hero):not(:has(.person-detail))>.page-hero{
+  main:has(>.page-hero):not(:where(:has(.person-detail)))>.page-hero{
     padding:80px 0 56px;
   }
-  main:has(>.page-hero):not(:has(.person-detail))>.page-hero h1{
+  main:has(>.page-hero):not(:where(:has(.person-detail)))>.page-hero h1{
     margin:0 0 20px;
   }
-  main:has(>.page-hero):not(:has(.person-detail))>.page-hero p{
+  main:has(>.page-hero):not(:where(:has(.person-detail)))>.page-hero p{
     max-width:760px;
   }
-  main:has(>.page-hero):not(:has(.person-detail))>:is(.content-section,.section){
+  main:has(>.page-hero):not(:where(:has(.person-detail)))>:is(.content-section,.section){
     padding-top:72px;
     padding-bottom:72px;
   }
-  main:has(>.page-hero):not(:has(.person-detail)) .section-head{
+  main:has(>.page-hero):not(:where(:has(.person-detail))) .section-head{
     margin-bottom:36px;
   }
   main:has(>.page-hero)>.content-section>.container.prose{
@@ -74,4 +74,42 @@
   main:has(>.page-hero)>.results-publications{
     padding-top:0;
   }
+
+  /* Research: retain the three-direction sequence with a readable text measure. */
+  main>.research-direction .research-title{max-width:28em;margin:0 0 20px}
+  main>.research-direction .research-detail>p{max-width:var(--desktop-prose)}
+  main>.research-direction .direction-id{margin-bottom:18px}
+  main>.research-direction .direction-keywords{margin-top:20px;margin-bottom:0}
+
+  /* About: match the English standalone heading to the Chinese section-head baseline. */
+  #international-impact .platform-heading{
+    --platform-heading-offset:calc(var(--title-eyebrow-size)*1.2 + 10px);
+    margin:var(--platform-heading-offset) 0 36px;
+  }
+  main:has(>.page-hero) #media-coverage .media-coverage{margin-top:24px}
+  main:has(>.page-hero) #media-coverage .media-summary{margin:0 0 24px}
+
+  main:has(>.page-hero) .join-context .section-head{margin-bottom:0}
+
+  /* Six faculty retain equal-sized cards, with compact and consistent row spacing. */
+  main:has(>.page-hero) .team-grid{gap:36px 28px}
+  main:has(>.page-hero) .team-grid .person .research-line{margin-top:12px}
+
+  /* Achievement 01–06 is one reading sequence, followed by the year-indexed papers. */
+  main>.results-achievements .highlights,
+  main>.results-publications .highlights{grid-template-columns:1fr}
+  main>.results-achievements .highlights{margin-top:0}
+  main>:is(.results-achievements,.results-publications) .highlight{
+    grid-template-columns:44px minmax(0,1fr);
+    gap:20px;
+    padding:22px 0;
+    border-left:0;
+  }
+  main>:is(.results-achievements,.results-publications) .highlight p{max-width:none}
+  main>.results-publications .results-publications-heading{border-top:0}
+  main>.results-publications .publication-toolbar{margin:0 0 28px;padding:12px 0}
+  main>.results-publications .pub{padding:20px 0}
+  main>.results-publications .pub-group+.pub-group{margin-top:48px}
+  main>.results-publications .pub-year-row{margin-bottom:12px}
+
 }
