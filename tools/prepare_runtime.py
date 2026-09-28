@@ -23,6 +23,15 @@ if text.count(old_sw_cleanup) != 1:
     raise SystemExit('site.js legacy Service Worker cleanup contract changed')
 text = text.replace(old_sw_cleanup, new_sw_cleanup)
 
+# Escape closes whichever mobile navigation surface is open and restores focus to its
+# owning button. The source handles the top menu; deployment extends the same behavior
+# to the orbit quick menu.
+old_escape = "  document.addEventListener('keydown',event=>{\n    if(event.key!=='Escape') return;\n    const header=document.querySelector('.site-header');\n    const menu=header?.querySelector('.mobile-menu');\n    const button=header?.querySelector('.menu-btn');\n    if(!menu?.classList.contains('open')) return;\n    setMobileMenu(false);\n    button?.focus();\n  });"
+new_escape = "  document.addEventListener('keydown',event=>{\n    if(event.key!=='Escape') return;\n    const header=document.querySelector('.site-header');\n    const menu=header?.querySelector('.mobile-menu');\n    const button=header?.querySelector('.menu-btn');\n    if(menu?.classList.contains('open')){\n      setMobileMenu(false);\n      button?.focus();\n      return;\n    }\n    const orbit=document.querySelector('.pai-orbit.open');\n    if(orbit){\n      closeOrbitMenu();\n      orbit.querySelector('.pai-orbit-toggle')?.focus();\n    }\n  });"
+if text.count(old_escape) != 1:
+    raise SystemExit('site.js Escape navigation contract changed')
+text = text.replace(old_escape, new_escape)
+
 # Swipe neighbors only help touch/mobile navigation. Avoid speculative page requests on
 # ordinary desktop, and move initial mobile warming off the critical post-load window.
 old_swipe_guard = "  const warmSwipeNeighbors=()=>{\n    if(navigator.connection&&navigator.connection.saveData) return;"
@@ -107,4 +116,4 @@ bootstrap = (
 )
 INDEX.write_text(index.replace(marker, bootstrap), encoding='utf-8')
 
-print('Prepared deployment runtime: early language redirect, scoped legacy SW cleanup, mobile-only/focus-safe/self-closing orbit, conservative warming, cacheable static data, private DOI links.')
+print('Prepared deployment runtime: early language redirect, scoped legacy SW cleanup, mobile-only/focus-safe/self-closing/Escape-aware orbit, conservative warming, cacheable static data, private DOI links.')
