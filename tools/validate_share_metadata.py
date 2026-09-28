@@ -73,7 +73,7 @@ for html in sorted(ROOT.rglob('*.html')):
         errors.append(f'{rel}: canonical must be {expected_canonical}, got {canonical}')
 
     is_home = rel in ('index.html', 'en/index.html')
-    expected_image = (BASE_URL + 'assets/images/social/pai-share-v4.jpg?v=20260929-logo') if is_home else SHARE_IMAGE
+    expected_image = (BASE_URL + 'assets/images/social/pai-share-v4.jpg?v=20260929-logo-90') if is_home else SHARE_IMAGE
     expected_locale = 'en_US' if rel.startswith('en/') else 'zh_CN'
     required_meta = {
         ('property', 'og:type'): 'website',
