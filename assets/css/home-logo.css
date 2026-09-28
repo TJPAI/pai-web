@@ -88,9 +88,9 @@
   .selected-updates{padding-top:106px;padding-bottom:106px}
   .home-media-section{padding-top:82px;padding-bottom:78px}
 
-  /* Selected achievements: each column follows its image aspect ratio at a shared 165px height. */
+  /* Selected achievements: each column matches its image aspect ratio at the shared 165px height. */
   .home-achievement-stories{
-    grid-template-columns:299px 398px 313px;
+    grid-template-columns:298.59px 397.74px 313.35px;
     gap:18px;
     justify-content:center;
     align-items:start;
@@ -105,7 +105,7 @@
     max-width:none;
     margin:0;
     aspect-ratio:auto!important;
-    object-fit:fill!important;
+    object-fit:contain!important;
     object-position:center!important;
   }
   .home-achievement-story figcaption{min-height:0}
