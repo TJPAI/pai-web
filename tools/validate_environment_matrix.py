@@ -53,10 +53,10 @@ def validate_environment(name: str) -> None:
             errors.append('production: custom_domain must match base_url hostname')
 
     # Simulate the same known-base replacement used by prepare_site_urls.py, but only
-    # in memory. Every page identity URL must resolve exclusively to this environment.
+    # in memory. Every public page identity URL must resolve exclusively to this environment.
     for path in ROOT.rglob('*.html'):
         rel = path.relative_to(ROOT)
-        if any(part in {'.git', 'node_modules', 'templates', 'tmp', 'geosketch-mvp'} for part in rel.parts):
+        if any(part in {'.git', 'node_modules', 'templates', 'tmp'} for part in rel.parts):
             continue
         source = path.read_text(encoding='utf-8')
         transformed = rewrite_for(source, base)
@@ -98,4 +98,4 @@ if errors:
         print(' -', error)
     sys.exit(1)
 
-print('Environment matrix OK: Preview and Production URL, crawl, sitemap, and custom-domain contracts preflighted.')
+print('Environment matrix OK: Preview and Production URL, crawl, sitemap, and custom-domain contracts preflighted across all public HTML.')
