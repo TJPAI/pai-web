@@ -297,3 +297,53 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
 @media(min-width:769px){
   .partner:not(:has(p)) .partner-inline{display:block;font-size:18px;line-height:1.9;color:#313846}
 }
+
+/* Parallel card summaries reserve the same rows, including short entries. */
+@media(min-width:769px){
+  .team-grid .person .research-line,
+  .team-grid .person .bio-short,
+  html[lang="en"] .research-grid .research>h3,
+  html[lang="en"] .research-grid .research>p,
+  html[lang="en"] .home-achievement-story figcaption>span{
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:var(--summary-lines);
+    overflow:hidden;
+    height:calc(var(--summary-lines)*1lh);
+    min-height:calc(var(--summary-lines)*1lh);
+  }
+  .team-grid .person .research-line{--summary-lines:1}
+  .team-grid .person .bio-short{--summary-lines:2}
+  html[lang="en"] .team-grid .person .research-line{--summary-lines:2}
+  html[lang="en"] .team-grid .person .bio-short{--summary-lines:3}
+  html[lang="en"] .research-grid .research>h3{--summary-lines:3;line-height:1.3}
+  html[lang="en"] .research-grid .research>p{--summary-lines:3}
+  html[lang="en"] .home-achievement-story figcaption>span{--summary-lines:2}
+
+  /* One row: index, acronym, and a readable two-line expansion. */
+  .research-identity{
+    display:grid;grid-template-columns:max-content max-content minmax(0,1fr);
+    align-items:center;column-gap:12px;line-height:1.2;
+  }
+  .research-identity>.research-index{display:block;font-size:16px;line-height:1;letter-spacing:.03em;color:#8B94A2}
+  .research-identity>.research-code-main{display:contents}
+  .research-identity>.research-code-main>span{font-size:28px;line-height:1;letter-spacing:0;font-weight:650;color:var(--ink);white-space:nowrap}
+  .research-identity>.research-code-main>.research-expansion{
+    font-size:12px;line-height:1.3;letter-spacing:0;text-transform:none;
+    font-weight:500;max-width:none;color:#596577;
+  }
+  .research-direction .research-identity{column-gap:16px}
+  .research-direction .research-identity>.research-code-main>span{font-size:36px}
+  .research-direction .research-identity>.research-code-main>.research-expansion{font-size:15px;line-height:1.3}
+  .selected-updates .update-meta{font-size:15px;line-height:1.4;font-weight:600;letter-spacing:.04em;color:#596577}
+}
+@media(max-width:768px){
+  .team-grid .person .bio-short{display:block;-webkit-line-clamp:unset;overflow:visible;height:auto}
+}
+
+@media(min-width:769px) and (max-width:1099px){
+  .research-grid .research{padding-left:16px;padding-right:16px}
+  .research-grid .research-identity{column-gap:8px}
+  .research-grid .research-identity>.research-code-main>span{font-size:24px}
+  .research-grid .research-identity>.research-code-main>.research-expansion{font-size:11px}
+}
