@@ -351,3 +351,13 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
 .media-list .media-item{align-items:start}
 .media-list .media-item>.media-meta,
 .media-list .media-item>.media-title{margin:0;align-self:start;line-height:24px}
+
+/* Keep secondary information readable on phones without truncating content. */
+@media(max-width:768px){
+  .research-identity>.research-code-main>.research-expansion{
+    font-size:11px;line-height:1.35;letter-spacing:0;text-transform:none;
+  }
+  .media-list .media-item>.media-meta{font-size:12px;color:#667085}
+  .home-achievement-story small{font-size:12px;color:#667085}
+  .selected-updates .update-meta{font-size:13px;line-height:1.4;letter-spacing:.04em;color:#596577}
+}

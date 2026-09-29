@@ -54,7 +54,7 @@ Do not manually bump deployed CSS/JS query strings for ordinary changes. The dep
 
 The source-level cache-key checker still prevents inconsistent references between HTML files.
 
-Generated deployment outputs are ignored by Git (`_site/`, the CSS bundle, generated square share PNG and generated `CNAME`).
+Generated deployment outputs are ignored by Git (`_site/`, the CSS bundle and generated `CNAME`).
 
 ## Validation
 

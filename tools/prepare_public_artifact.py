@@ -59,7 +59,7 @@ if robots_meta not in geosketch_text:
     geosketch.write_text(geosketch_text.replace(marker, marker + '\n' + robots_meta), encoding='utf-8')
 
 # These files are build inputs only. The browser receives refine-bundle.css and the
-# generated square share PNG for inner pages instead.
+# committed full-logo social card is published for all content pages.
 BUILD_ONLY_ASSETS = (
     'assets/css/refine.css',
     'assets/css/refine-base.css',

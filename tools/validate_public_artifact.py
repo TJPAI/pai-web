@@ -70,7 +70,7 @@ except Exception as exc:
 for rel in (
     'index.html', 'en/index.html', '404.html', 'robots.txt', 'sitemap.xml',
     'site.webmanifest', 'sw.js', 'assets/css/refine-bundle.css',
-    'assets/images/social/pai-logo-share.png', 'assets/images/social/pai-share-v4.jpg',
+    'assets/images/social/pai-share-v4.jpg',
     'assets/js/site.js',
 ):
     if not (SITE / rel).exists():

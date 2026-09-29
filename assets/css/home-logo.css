@@ -88,9 +88,20 @@
   .selected-updates{padding-top:106px;padding-bottom:106px}
   .home-media-section{padding-top:82px;padding-bottom:78px}
 
-  /* Selected achievements: each column matches its image aspect ratio at the shared 165px height. */
+  /* The two compact information tables need a little more typographic presence. */
+  .selected-updates .update-item h3{font-size:18.5px!important}
+  .selected-updates .update-item p{font-size:15.5px;line-height:1.62}
+  .home-media-section .media-list{line-height:1.5}
+}
+
+/* Deploy sync: Chinese homepage copy update. */
+
+@media(min-width:769px){
+  /* Native image ratios share one height (up to 165px), shrinking together on narrow desktops. */
   .home-achievement-stories{
-    grid-template-columns:298.59px 397.74px 313.35px;
+    grid-template-columns:minmax(0,1.80961357fr) minmax(0,2.40903388fr) minmax(0,2.09150327fr);
+    max-width:1077.18px;
+    margin-inline:auto;
     gap:18px;
     justify-content:center;
     align-items:start;
@@ -101,7 +112,7 @@
   .home-achievement-story:nth-child(3) img{
     display:block;
     width:100%!important;
-    height:165px!important;
+    height:auto!important;
     max-width:none;
     margin:0;
     aspect-ratio:auto!important;
@@ -110,10 +121,4 @@
   }
   .home-achievement-story figcaption{min-height:0}
 
-  /* The two compact information tables need a little more typographic presence. */
-  .selected-updates .update-item h3{font-size:18.5px!important}
-  .selected-updates .update-item p{font-size:15.5px;line-height:1.62}
-  .home-media-section .media-list{line-height:1.5}
 }
-
-/* Deploy sync: Chinese homepage copy update. */

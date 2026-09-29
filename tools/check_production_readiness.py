@@ -51,8 +51,7 @@ for rel in ('index.html', 'en/index.html'):
         if not re.search(r'\bdecoding=["\']sync["\']', match, re.I):
             errors.append(f'{rel}: homepage image is not synchronously decoded')
 
-# Source assets needed to generate/serve the production artifact. The square
-# pai-logo-share.png is intentionally generated later by prepare_share_logo.py.
+# Source assets needed to serve the production artifact, including the full-logo share card.
 for rel in (
     'assets/images/brand/pai-logo.svg',
     'assets/images/social/pai-share-v4.jpg',
