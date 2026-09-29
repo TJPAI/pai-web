@@ -412,11 +412,6 @@
       await new Promise(resolve=>requestAnimationFrame(resolve));
       if(readingContext){
         restoreReadingPosition(readingContext.position);
-        // Footer language changes should keep the switch at the same viewport position.
-        if(Number.isFinite(readingContext.footerSwitchTop)){
-          const languageLink=document.querySelector('.site-footer .footer-links>a:last-child');
-          if(languageLink) scrollToInstant(window.scrollY+languageLink.getBoundingClientRect().top-readingContext.footerSwitchTop);
-        }
         const y=rememberPageScroll(normalizedPath(url.pathname),window.scrollY);
         try{ history.replaceState(historyStateWithScroll(y),'',location.href); }catch(_e){}
       }else if(hasRequestedScroll){
@@ -476,10 +471,7 @@
     const isLanguageSwitch=label==='EN'||label==='中文';
     let options;
     if(isLanguageSwitch){
-      options={readingContext:{
-        position:captureReadingPosition(),expandedYears:getExpandedYears(),
-        footerSwitchTop:link.closest('.site-footer')?link.getBoundingClientRect().top:null
-      }};
+      options={readingContext:{position:captureReadingPosition(),expandedYears:getExpandedYears()}};
     }else if(!url.hash){
       options={preserveScrollY:destinationScrollForPath(normalizedPath(url.pathname))};
     }
