@@ -137,20 +137,12 @@
   }
 }
 
-/* Bilingual navigation geometry: matching slots across Chinese and English. */
+/* Bilingual footer geometry: matching slots across Chinese and English. */
 .site-footer .footer-links a:nth-child(-n+6){
   width:4em;
 }
 .site-footer .footer-links a:nth-child(7){
   width:2em;
-}
-@media(min-width:769px){
-  .site-header .nav-links a:nth-child(-n+6){
-    flex:0 0 4em;
-  }
-  .site-header .nav-links a:nth-child(7){
-    flex:0 0 2em;
-  }
 }
 
 /* English title refinements — 2026-09-19 */
