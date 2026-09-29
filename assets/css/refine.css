@@ -381,3 +381,15 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
   .media-list .media-item>.media-meta{line-height:1.5}
   .media-list .media-item>.media-title{font-size:14px;line-height:1.65}
 }
+
+/* Phone research labels share a visible top edge despite their different type sizes. */
+@media(max-width:768px){
+  .research-identity{align-items:start}
+  .research-identity>.research-index,
+  .research-identity>.research-code-main>span,
+  .research-identity>.research-code-main>.research-expansion{
+    align-self:start;margin-top:0;padding-top:0;
+    text-box-trim:trim-start;
+    text-box-edge:cap alphabetic;
+  }
+}
