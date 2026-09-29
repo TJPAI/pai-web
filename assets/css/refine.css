@@ -1,7 +1,8 @@
-/* Shared presentation entry point. Load stable base styles first, component/UI refinements second, and canonical title typography last. */
+/* Shared presentation entry point. Bundle every layer here in cascade order. */
 @import url("./refine-base.css?v=20260919-11");
 @import url("./app-core.css?v=20260926-02");
 @import url("./typography.css?v=20260926-01");
+@import url("./desktop-layout.css?v=20260928-01");
 
 /* Header brand: keep the accessible PAI text in the DOM, render the canonical static SVG mark visually. */
 .site-header .brand strong{

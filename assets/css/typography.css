@@ -1,5 +1,3 @@
-@import url("./desktop-layout.css?v=20260928-01");
-
 /* Global typography hierarchy — single source of truth for title and body text typography.
    Layout belongs in site.css/refine-base.css/app-core.css. Type size/weight/color belong here. */
 

@@ -24,8 +24,11 @@ for rel in imports:
     path = (CSS / rel.removeprefix('./')).resolve()
     if path.parent != CSS.resolve() or not path.is_file():
         raise SystemExit(f'Unsupported refine import: {rel}')
+    layer = path.read_text(encoding='utf-8')
+    if re.search(r'^@import\b', layer, re.M):
+        raise SystemExit(f'Nested CSS import in {path.name}; add the layer to refine.css instead')
     parts.append(f'\n/* ---- {path.name} ---- */\n')
-    parts.append(path.read_text(encoding='utf-8').rstrip() + '\n')
+    parts.append(layer.rstrip() + '\n')
 
 entry_without_imports = re.sub(r'^@import\s+url\(["\']\./[^"\']+["\']\);\s*\n?', '', entry, flags=re.M)
 parts.append('\n/* ---- refine.css page-level refinements ---- */\n')
