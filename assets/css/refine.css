@@ -361,3 +361,23 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
   .home-achievement-story small{font-size:12px;color:#667085}
   .selected-updates .update-meta{font-size:13px;line-height:1.4;letter-spacing:.04em;color:#596577}
 }
+
+/* Mid-size screens favor readable cards and full research summaries. */
+@media(min-width:769px) and (max-width:1099px){
+  .team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .research-grid{grid-template-columns:minmax(0,1fr)}
+  .research-grid .research{display:grid;grid-template-columns:220px minmax(0,1fr);column-gap:28px;padding:28px 0}
+  .research-grid .research+.research{border-left:0;border-top:1px solid var(--line)}
+  .research-grid .research>.research-identity{grid-column:1;grid-row:1 / span 3;align-self:start;margin:0}
+  .research-grid .research>:is(h3,p,a){grid-column:2}
+  .research-grid .research>h3{margin-top:0}
+  .research-grid .research>p{margin-bottom:0}
+  html[lang="en"] .research-grid .research>:is(h3,p){display:block;height:auto;min-height:0;-webkit-line-clamp:unset;overflow:visible}
+  .media-list{grid-template-columns:minmax(0,1fr)}
+  .media-list .media-item{padding-left:0;padding-right:0;border-left:0}
+}
+@media(max-width:480px){
+  .media-list .media-item{grid-template-columns:minmax(0,1fr);gap:5px}
+  .media-list .media-item>.media-meta{line-height:1.5}
+  .media-list .media-item>.media-title{font-size:14px;line-height:1.65}
+}

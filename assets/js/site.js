@@ -342,7 +342,19 @@
     scrollToInstant(window.scrollY+rect.top+position.progress*rect.height-readingLine()-position.gap);
   };
 
-  const applyPage=async(url,{historyMode='push',preserveScrollY=null,readingContext=null,transitionDirection=0,gestureOffset=0}={})=>{
+  const focusPageDestination=(main,url,preserveReading=false)=>{
+    let anchor=null;
+    try{ anchor=url.hash?document.getElementById(decodeURIComponent(url.hash.slice(1))):null; }catch(_e){}
+    const target=(anchor&&main.contains(anchor)?anchor:null)||(preserveReading?main:main.querySelector('h1'))||main;
+    const temporaryTabIndex=!target.hasAttribute('tabindex');
+    if(temporaryTabIndex){
+      target.setAttribute('tabindex','-1');
+      target.addEventListener('blur',()=>target.removeAttribute('tabindex'),{once:true});
+    }
+    target.focus({preventScroll:true});
+  };
+
+  const applyPage=async(url,{historyMode='push',preserveScrollY=null,readingContext=null,transitionDirection=0,gestureOffset=0,focusDestination=false}={})=>{
     if(navigating) return;
     if(scrollSaveTimer!==null){
       clearTimeout(scrollSaveTimer);
@@ -426,6 +438,7 @@
         ],{duration:175,easing:'cubic-bezier(.2,.72,.22,1)',fill:'both'});
       }
       incomingMain.style.willChange='';
+      if(focusDestination) focusPageDestination(incomingMain,url,Boolean(readingContext)||Number(preserveScrollY)>0);
       setTimeout(()=>warmSwipeNeighbors(),40);
     }finally{
       navigating=false;
@@ -462,12 +475,13 @@
     }else if(!url.hash){
       options={preserveScrollY:destinationScrollForPath(normalizedPath(url.pathname))};
     }
+    options={...options,focusDestination:event.detail===0};
     applyPage(url,options).catch(()=>{ location.href=url.href; });
   });
 
   addEventListener('popstate',event=>{
     const restoredY=Number.isFinite(event.state?.scrollY)?event.state.scrollY:0;
-    applyPage(new URL(location.href),{historyMode:'none',preserveScrollY:restoredY}).catch(()=>location.reload());
+    applyPage(new URL(location.href),{historyMode:'none',preserveScrollY:restoredY,focusDestination:true}).catch(()=>location.reload());
   });
 
   // Background warming is limited to the language counterpart and swipe neighbors.
