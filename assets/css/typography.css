@@ -144,7 +144,6 @@
 .site-footer .footer-links a:nth-child(7){
   width:2em;
 }
-html[lang="en"] .site-footer .footer-links a{text-transform:uppercase}
 
 /* English desktop header uses uppercase labels without changing its geometry. */
 @media(min-width:769px){
