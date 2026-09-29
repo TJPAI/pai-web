@@ -65,6 +65,7 @@ BUILD_ONLY_ASSETS = (
     'assets/css/refine-base.css',
     'assets/css/app-core.css',
     'assets/css/typography.css',
+    'assets/css/desktop-layout.css',
 )
 for rel in BUILD_ONLY_ASSETS:
     target = OUT / rel

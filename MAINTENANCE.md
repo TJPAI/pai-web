@@ -92,7 +92,7 @@ Do not disable user zoom with `maximum-scale=1` or `user-scalable=no`.
 
 Source CSS remains layered:
 
-`refine.css` → `refine-base.css` → `app-core.css` → `typography.css`
+`refine.css` imports `refine-base.css`, `app-core.css`, `typography.css`, then `desktop-layout.css`.
 
 HTML should link the presentation entry point, not internal layers directly.
 

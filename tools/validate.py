@@ -215,13 +215,13 @@ if 'document.documentElement.lang=next.documentElement.lang' not in site_js:
     errors.append('assets/js/site.js: lightweight navigation must synchronize document language')
 
 refine_css=(ROOT/'assets/css/refine.css').read_text(encoding='utf-8')
-for import_name in ('./refine-base.css','./app-core.css'):
+for import_name in ('./refine-base.css','./app-core.css','./typography.css','./desktop-layout.css'):
     if import_name not in refine_css:
         errors.append(f'assets/css/refine.css: missing shared import {import_name}')
 if any(token in refine_css for token in ('.menu-btn{','.research-direction .direction-id{','.team-grid img.person-photo{')):
     errors.append('assets/css/refine.css: entry point should only compose shared style layers, not duplicate component rules')
 
-for required in ('assets/css/refine-base.css','assets/css/app-core.css'):
+for required in ('assets/css/refine-base.css','assets/css/app-core.css','assets/css/typography.css','assets/css/desktop-layout.css'):
     if not (ROOT/required).exists():
         errors.append(f'{required}: missing shared style layer')
 

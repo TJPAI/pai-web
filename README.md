@@ -32,7 +32,7 @@ GitHub Pages builds a deployment artifact rather than publishing the repository 
 8. stages an explicit `_site/` public tree;
 9. uploads and deploys only that public tree.
 
-Source CSS remains layered for maintainability; deployed CSS is bundled to avoid an `@import` request waterfall.
+Source CSS remains layered for maintainability. `refine.css` imports the base, app, typography, and desktop layout layers in order; deployment bundles them into one stylesheet without an `@import` request waterfall.
 
 The published site includes website HTML/assets/data plus the retained `geosketch-mvp` experience, but excludes repository/build internals such as `tools/`, `config/`, `.github/`, README and maintenance documents.
 

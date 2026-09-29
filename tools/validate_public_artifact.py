@@ -48,6 +48,8 @@ for html in SITE.rglob('*.html'):
 
 for css in SITE.rglob('*.css'):
     text = css.read_text(encoding='utf-8')
+    if css.name == 'refine-bundle.css' and re.search(r'^\s*@import\b', text, re.M):
+        errors.append('refine-bundle.css: unresolved @import in deployed bundle')
     for raw in re.findall(r'url\(\s*["\']?([^"\')]+)', text, re.I):
         target = resolve_local(css, raw)
         if target is not None and not target.exists():
