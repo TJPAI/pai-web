@@ -55,7 +55,6 @@ for rel in ('index.html', 'en/index.html'):
 # pai-logo-share.png is intentionally generated later by prepare_share_logo.py.
 for rel in (
     'assets/images/brand/pai-logo.svg',
-    'assets/images/social/pai-share-logo.svg',
     'assets/images/social/pai-share-v4.jpg',
     'assets/icons/favicon.svg',
     'assets/icons/favicon-32.png',

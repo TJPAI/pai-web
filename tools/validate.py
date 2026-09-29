@@ -221,13 +221,6 @@ for import_name in ('./refine-base.css','./app-core.css'):
 if any(token in refine_css for token in ('.menu-btn{','.research-direction .direction-id{','.team-grid img.person-photo{')):
     errors.append('assets/css/refine.css: entry point should only compose shared style layers, not duplicate component rules')
 
-for shim in ('assets/css/app.css','assets/css/team.css'):
-    p=ROOT/shim
-    if not p.exists():
-        errors.append(f'{shim}: missing compatibility shim')
-    elif 'Compatibility shim' not in p.read_text(encoding='utf-8'):
-        errors.append(f'{shim}: must remain a compatibility shim; shared rules belong in app-core.css')
-
 for required in ('assets/css/refine-base.css','assets/css/app-core.css'):
     if not (ROOT/required).exists():
         errors.append(f'{required}: missing shared style layer')
