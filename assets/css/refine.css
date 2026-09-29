@@ -7,8 +7,8 @@
 /* Header brand: keep the accessible PAI text in the DOM, render the canonical static SVG mark visually. */
 .site-header .brand strong{
   display:block;
-  width:70px;
-  height:32px;
+  width:92px;
+  height:48px;
   font-size:0;
   color:transparent;
   background-repeat:no-repeat;
@@ -16,10 +16,9 @@
   background-size:contain;
   background-image:url("../images/brand/pai-logo.svg");
 }
-.site-header .brand span{margin-top:4px}
+.site-header .brand span{display:none}
 @media(max-width:768px){
-  .site-header .brand strong{width:70px;height:32px}
-  .site-header .brand span{margin-top:3px}
+  .site-header .brand strong{width:80px;height:42px}
 }
 
 /* English editorial hierarchy: use all caps only for small eyebrow labels. */
@@ -347,3 +346,8 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
   .research-grid .research-identity>.research-code-main>span{font-size:24px}
   .research-grid .research-identity>.research-code-main>.research-expansion{font-size:11px}
 }
+
+/* Match the first-line boxes of source/year and headline in each media row. */
+.media-list .media-item{align-items:start}
+.media-list .media-item>.media-meta,
+.media-list .media-item>.media-title{margin:0;align-self:start;line-height:24px}
