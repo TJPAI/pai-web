@@ -137,10 +137,17 @@
   }
 }
 
-/* English navigation sizing: keep bilingual chrome visually aligned. */
-html[lang="en"] .site-footer .footer-links{font-size:15px}
-@media(min-width:1025px){
-  html[lang="en"] .site-header .nav-links{font-size:16px}
+/* Keep the bilingual language switch centered on one stable slot without changing menu typography. */
+.site-footer .footer-links a:last-child{
+  width:2.5em;
+  justify-self:start;
+  text-align:center;
+}
+@media(min-width:769px){
+  .site-header .nav-links a:last-child{
+    flex:0 0 2.5em;
+    text-align:center;
+  }
 }
 
 /* English title refinements — 2026-09-19 */
