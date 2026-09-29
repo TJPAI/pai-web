@@ -58,6 +58,7 @@
   }
   main:has(>.page-hero)>.content-section>.container.prose{
     max-width:var(--desktop-prose);
+    margin-left:max(24px,calc((100% - var(--desktop-main))/2));
   }
   main:has(>.page-hero) .prose h2:not(:first-child){
     margin-top:40px;
@@ -69,6 +70,10 @@
   main>.results-achievements>.container,
   main>.results-publications>.container{
     max-width:var(--desktop-read);
+  }
+  /* Align narrower reading columns to the page-hero rail, not the viewport center. */
+  main>.research-direction>.container{
+    margin-left:max(24px,calc((100% - var(--desktop-main))/2));
   }
   /* The publication canvas must not change width when JavaScript inserts the list. */
   main:has(>.page-hero)>.results-publications{
