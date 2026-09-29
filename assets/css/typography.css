@@ -137,12 +137,6 @@
   }
 }
 
-/* English navigation sizing: keep bilingual chrome visually aligned. */
-html[lang="en"] .site-footer .footer-links{font-size:15px}
-@media(min-width:1025px){
-  html[lang="en"] .site-header .nav-links{font-size:16px}
-}
-
 /* English title refinements — 2026-09-19 */
 @media(max-width:768px){
   html[lang="en"] .research-title{font-size:26px!important;line-height:1.17!important;letter-spacing:-.022em!important}
