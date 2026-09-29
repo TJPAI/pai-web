@@ -56,7 +56,7 @@ for rel in ('index.html', 'en/index.html'):
 for rel in (
     'assets/images/brand/pai-logo.svg',
     'assets/images/social/pai-share-v4.jpg',
-    'assets/icons/favicon.svg',
+    'assets/icons/favicon-16.png',
     'assets/icons/favicon-32.png',
     'assets/icons/apple-touch-icon.png',
     'assets/icons/icon-192.png',

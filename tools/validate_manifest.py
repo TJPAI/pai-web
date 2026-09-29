@@ -67,6 +67,7 @@ for src, expected in expected_manifest_icons.items():
         errors.append(f'{src}: expected manifest icon dimensions {expected[0]}x{expected[1]}')
 
 for src, expected in {
+    'assets/icons/favicon-16.png': (16, 16),
     'assets/icons/favicon-32.png': (32, 32),
     'assets/icons/apple-touch-icon.png': (180, 180),
 }.items():
