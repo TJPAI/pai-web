@@ -156,8 +156,8 @@
       const links=items.map(([label,href])=>`<a href="${root(href)}">${label}</a>`).join('')+
         `<a href="${root(languageHref)}">${languageLabel}</a>`;
       const contact=lang==='en'?
-        `4800 Cao'an Highway, Jiading District, Shanghai<br>Tongji University Jiading Campus<br><a href="mailto:23666042@tongji.edu.cn">23666042@tongji.edu.cn</a>`:
-        `上海市嘉定区曹安公路4800号<br>同济大学嘉定校区智信馆<br><a href="mailto:23666042@tongji.edu.cn">23666042@tongji.edu.cn</a>`;
+        `4800 Cao'an Highway, Jiading District, Shanghai<br>Tongji University Jiading Campus<br><a href="mailto:lingtang@tongji.edu.cn">lingtang@tongji.edu.cn</a>`:
+        `上海市嘉定区曹安公路4800号<br>同济大学嘉定校区智信馆<br><a href="mailto:lingtang@tongji.edu.cn">lingtang@tongji.edu.cn</a>`;
       footer.classList.add('compact-footer');
       footer.innerHTML=`<div class="container"><div class="footer-grid"><div><div class="brand"><strong>PAI</strong><span>PAI Research Center · Tongji University</span></div></div><div class="footer-links">${links}</div><div class="footer-contact">${contact}</div></div><div class="footer-meta"><span>© PAI Research Center</span></div></div>`;
     }

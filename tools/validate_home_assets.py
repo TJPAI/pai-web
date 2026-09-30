@@ -6,9 +6,9 @@ ROOT = Path(__file__).resolve().parents[1]
 errors = []
 
 assets = (
-    'microsoft-indoor-localization-competition.webp',
-    'ciie-navigation.webp',
-    'datong-mine-magnetic-communication.webp',
+    'microsoft-indoor-localization-competition.jpg',
+    'ciie-navigation.jpg',
+    'datong-mine-magnetic-communication.jpg',
 )
 
 pages = {

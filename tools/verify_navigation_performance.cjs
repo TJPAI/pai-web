@@ -15,7 +15,7 @@ const ROOT=path.resolve(__dirname,'..'),BASE='https://tjpai.github.io/pai-web/';
    if(file.endsWith('.html')||file.endsWith('.json'))await new Promise(r=>setTimeout(r,delay));
    if(file==='contact.html'&&failContactOnce){failContactOnce=false;return route.fulfill({status:503,body:'Temporary test failure'});}
    const source=file==='assets/js/site.js'&&process.env.PAI_SITE_JS_OVERRIDE?process.env.PAI_SITE_JS_OVERRIDE:path.join(ROOT,file);
-   const contentType=({'.html':'text/html','.js':'application/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.webp':'image/webp'})[path.extname(file)];
+   const contentType=({'.html':'text/html','.js':'application/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.jpg':'image/webp'})[path.extname(file)];
    await route.fulfill({status:fs.existsSync(source)?200:404,body:fs.existsSync(source)?fs.readFileSync(source):'missing',contentType});
   });
   const page=await context.newPage();await page.goto(BASE+'research.html');

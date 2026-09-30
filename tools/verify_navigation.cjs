@@ -27,7 +27,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
         if(!file.startsWith(ROOT+path.sep)||!fs.existsSync(file)){
           failures.push(`Missing local resource: ${name}`);return route.fulfill({status:404,body:'Missing'});
         }
-        const contentType=({'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.webp':'image/webp','.png':'image/png','.jpg':'image/jpeg'})[path.extname(file)];
+        const contentType=({'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.jpg':'image/webp','.png':'image/png','.jpg':'image/jpeg'})[path.extname(file)];
         return route.fulfill({status:200,body:fs.readFileSync(file),contentType});
       });
       const page=await context.newPage();page.on('pageerror',e=>failures.push(e.message));
