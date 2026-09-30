@@ -23,7 +23,6 @@ PUBLIC_DIRS = (
     'data',
     'en',
     'people',
-    'geosketch-mvp',
 )
 for rel in PUBLIC_DIRS:
     source = ROOT / rel
@@ -47,17 +46,6 @@ cname = ROOT / 'CNAME'
 if cname.is_file():
     shutil.copy2(cname, OUT / 'CNAME')
 
-# GeoSketch remains directly accessible as a utility/demo, but it is not part of the
-# institutional website's indexable content. Keep that boundary explicit in production.
-geosketch = OUT / 'geosketch-mvp' / 'index.html'
-geosketch_text = geosketch.read_text(encoding='utf-8')
-robots_meta = '<meta name="robots" content="noindex,nofollow">'
-if robots_meta not in geosketch_text:
-    marker = '<title>GeoSketch MVP</title>'
-    if geosketch_text.count(marker) != 1:
-        raise SystemExit('geosketch-mvp/index.html: expected one GeoSketch title marker')
-    geosketch.write_text(geosketch_text.replace(marker, marker + '\n' + robots_meta), encoding='utf-8')
-
 # These files are build inputs only. The browser receives refine-bundle.css and the
 # committed full-logo social card is published for all content pages.
 BUILD_ONLY_ASSETS = (
@@ -74,7 +62,7 @@ for rel in BUILD_ONLY_ASSETS:
     target.unlink()
 
 # Guard against accidentally publishing repository/build internals.
-for forbidden in ('tools', 'config', 'templates', '.github', 'README.md', 'MAINTENANCE.md', 'PRODUCTION_CUTOVER.md'):
+for forbidden in ('tools', 'config', 'templates', '.github', 'README.md', 'MAINTENANCE.md', 'PRODUCTION_CUTOVER.md', 'geosketch-mvp'):
     if (OUT / forbidden).exists():
         raise SystemExit(f'public artifact unexpectedly contains {forbidden}')
 for rel in BUILD_ONLY_ASSETS:
