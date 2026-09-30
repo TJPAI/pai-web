@@ -76,14 +76,9 @@ for rel in (
     if not (SITE / rel).exists():
         errors.append(f'missing required public artifact file: {rel}')
 
-# GeoSketch is intentionally public-by-URL but excluded from institutional search indexing.
-geosketch = SITE / 'geosketch-mvp' / 'index.html'
-if not geosketch.is_file():
-    errors.append('missing required public artifact file: geosketch-mvp/index.html')
-else:
-    geosketch_text = geosketch.read_text(encoding='utf-8')
-    if '<meta name="robots" content="noindex,nofollow">' not in geosketch_text:
-        errors.append('geosketch-mvp/index.html: deployed utility must remain noindex,nofollow')
+# GeoSketch is intentionally outside the institutional public artifact.
+if (SITE / 'geosketch-mvp').exists():
+    errors.append('public artifact must not contain geosketch-mvp')
 
 # Runtime safety/privacy/accessibility contracts must be true in the final JS users receive.
 site_js_path = SITE / 'assets/js/site.js'
@@ -127,4 +122,4 @@ if errors:
     sys.exit(1)
 
 files = sum(1 for path in SITE.rglob('*') if path.is_file())
-print(f'Public artifact validation passed: {files} files; local references resolve, Preview paths are portable, GeoSketch stays noindex, and runtime SW/DOI/orbit safety contracts hold.')
+print(f'Public artifact validation passed: {files} files; local references resolve, Preview paths are portable, GeoSketch stays excluded, and runtime SW/DOI/orbit safety contracts hold.')
