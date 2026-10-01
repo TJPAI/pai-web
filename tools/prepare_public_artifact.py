@@ -33,7 +33,7 @@ for rel in PUBLIC_DIRS:
 PUBLIC_FILES = (
     'robots.txt',
     'sitemap.xml',
-    'site.webmanifest',
+    'site.json',
     'sw.js',
 )
 for rel in PUBLIC_FILES:

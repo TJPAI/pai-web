@@ -55,21 +55,21 @@ for css in SITE.rglob('*.css'):
         if target is not None and not target.exists():
             errors.append(f'{css.relative_to(SITE)}: missing CSS url() target {raw}')
 
-manifest_path = SITE / 'site.webmanifest'
+manifest_path = SITE / 'site.json'
 try:
     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
     for icon in manifest.get('icons', []):
         raw = icon.get('src', '')
         target = resolve_local(manifest_path, raw)
         if target is not None and not target.exists():
-            errors.append(f'site.webmanifest: missing icon target {raw}')
+            errors.append(f'site.json: missing icon target {raw}')
 except Exception as exc:
-    errors.append(f'site.webmanifest: invalid JSON: {exc}')
+    errors.append(f'site.json: invalid JSON: {exc}')
 
 # Deployment-only outputs must be present after all transforms.
 for rel in (
     'index.html', 'en/index.html', '404.html', 'robots.txt', 'sitemap.xml',
-    'site.webmanifest', 'sw.js', 'assets/css/refine-bundle.css',
+    'site.json', 'sw.js', 'assets/css/refine-bundle.css',
     'assets/images/social/pai-share-v4.jpg',
     'assets/js/site.js',
 ):

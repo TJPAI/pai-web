@@ -354,11 +354,11 @@ for rel in paired:
         text=p.read_text(encoding='utf-8')
         for token,label in [
             ('og:image','Open Graph image'),('apple-touch-icon','Apple touch icon'),
-            ('site.webmanifest','web manifest'),('class="skip-link"','skip link'),('id="main-content"','main landmark target')
+            ('site.json','web manifest'),('class="skip-link"','skip link'),('id="main-content"','main landmark target')
         ]:
             if token not in text: errors.append(f'{candidate}: missing {label}')
 if not (ROOT/'assets/images/social/pai-share-v4.jpg').exists(): errors.append('missing social share image')
-for rel in ('assets/icons/favicon-16.png','assets/icons/favicon-32.png','assets/icons/apple-touch-icon.png','assets/icons/icon-192.png','assets/icons/icon-512.png','site.webmanifest'):
+for rel in ('assets/icons/favicon-16.png','assets/icons/favicon-32.png','assets/icons/apple-touch-icon.png','assets/icons/icon-192.png','assets/icons/icon-512.png','site.json'):
     if not (ROOT/rel).exists(): errors.append(f'missing brand asset: {rel}')
 
 # Social preview guardrail.

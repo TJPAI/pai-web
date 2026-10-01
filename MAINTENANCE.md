@@ -139,7 +139,7 @@ Do not weaken accessibility checks just to make CI pass; first determine whether
 
 ## 12. Manifest and icons
 
-`site.webmanifest` uses relative `id`, `start_url`, and `scope` so it works under both the GitHub Pages preview subpath and the future custom domain.
+`site.json` uses relative `id`, `start_url`, and `scope` so it works under both the GitHub Pages preview subpath and the future custom domain.
 
 `tools/validate_manifest.py` verifies the manifest and required PNG dimensions, including 192×192, 512×512, 180×180 Apple touch icon, and 32×32 favicon.
 

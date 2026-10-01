@@ -7,27 +7,27 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 errors = []
-manifest_path = ROOT / 'site.webmanifest'
+manifest_path = ROOT / 'site.json'
 
 try:
     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
 except Exception as exc:
-    raise SystemExit(f'site.webmanifest: invalid JSON: {exc}')
+    raise SystemExit(f'site.json: invalid JSON: {exc}')
 
 for key in ('name', 'short_name', 'description', 'lang', 'id', 'start_url', 'scope', 'display', 'background_color', 'theme_color', 'icons'):
     if not manifest.get(key):
-        errors.append(f'site.webmanifest: missing {key}')
+        errors.append(f'site.json: missing {key}')
 
 if manifest.get('lang') != 'zh-CN':
-    errors.append('site.webmanifest: lang must remain zh-CN for the root experience')
+    errors.append('site.json: lang must remain zh-CN for the root experience')
 
 for key in ('id', 'start_url', 'scope'):
     value = str(manifest.get(key, ''))
     if not value.startswith('./'):
-        errors.append(f'site.webmanifest: {key} must stay relative for preview/custom-domain portability')
+        errors.append(f'site.json: {key} must stay relative for preview/custom-domain portability')
 
 if manifest.get('display') != 'standalone':
-    errors.append('site.webmanifest: display must remain standalone')
+    errors.append('site.json: display must remain standalone')
 
 
 def png_size(path: Path):
@@ -44,11 +44,11 @@ seen = {}
 for icon in manifest.get('icons', []):
     src = icon.get('src')
     if not src:
-        errors.append('site.webmanifest: icon missing src')
+        errors.append('site.json: icon missing src')
         continue
     path = ROOT / src
     if not path.is_file():
-        errors.append(f'site.webmanifest: missing icon file {src}')
+        errors.append(f'site.json: missing icon file {src}')
         continue
     size = png_size(path)
     if size is None:
