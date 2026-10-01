@@ -234,8 +234,8 @@ page_fetch=re.search(r"fetch\(key,\{([^}]*)\}\)",site_js)
 if not page_fetch or "credentials:'same-origin'" not in page_fetch.group(1) or re.search(r"\bcache\s*:",page_fetch.group(1)):
     errors.append('assets/js/site.js: lightweight navigation must use ordinary HTTP caching')
 
-# Faculty portraits are ordinary static files. Gang Shen intentionally uses PNG.
-portrait_ext={'gang-shen':'png'}
+# Faculty portraits are ordinary static JPEG files.
+portrait_ext={}
 for name in ('erwu-liu','rui-wang','gang-shen','dunhui-xiao','shuyan-hu','yan-liu'):
     ext=portrait_ext.get(name,'jpg')
     rel=f'assets/images/people/{name}.{ext}'
@@ -308,7 +308,7 @@ if '<h3 class="title-item">${esc(publication.title)}</h3>' not in site_js:
     errors.append('assets/js/site.js: publication titles must use semantic title-item class')
 
 # Full semantic heading coverage guardrail.
-_semantic_heading_classes={'title-display','title-page','title-section','title-feature','title-item','title-minor'}
+_semantic_heading_classes={'pub-year','title-display','title-page','title-section','title-feature','title-item','title-minor'}
 for html in html_files:
     rel=str(html.relative_to(ROOT))
     if rel=='404.html':

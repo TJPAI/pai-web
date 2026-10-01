@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-  const prefix='';
+  const prefix=new URL('.',document.currentScript.src).pathname.replace(/\/assets\/js\/$/,'');
   const root=path=>`${prefix}${path}`;
   const absolute=path=>new URL(root(path),location.origin).href;
   const PUB_VISIBLE_DEFAULT=3;
