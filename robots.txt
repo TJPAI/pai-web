@@ -1,4 +1,4 @@
 User-agent: *
-Disallow: /
+Allow: /
 
-# Preview environment only. Replace with production robots.txt at ai.tongji.edu.cn cutover.
+Sitemap: https://ai.tongji.edu.cn/sitemap.xml
