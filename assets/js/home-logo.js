@@ -11,7 +11,6 @@
 
   const normalizedPath=()=>{
     let path=location.pathname||'/';
-    if(location.hostname==='tjpai.github.io'&&path.startsWith('/pai-web')) path=path.slice('/pai-web'.length)||'/';
     return path;
   };
   const isHome=()=>HOME_PATHS.has(normalizedPath());

@@ -1,9 +1,7 @@
 (function(){
   'use strict';
 
-  const previewHost='tjpai.github.io';
-  const isPreview=location.hostname===previewHost;
-  const prefix=isPreview?'/pai-web':'';
+  const prefix='';
   const root=path=>`${prefix}${path}`;
   const absolute=path=>new URL(root(path),location.origin).href;
   const PUB_VISIBLE_DEFAULT=3;
