@@ -24,8 +24,8 @@ jobs:
           test -f assets/images/people/rui-wang.jpg
           test -f assets/images/people/shuyan-hu.jpg
           test -f assets/images/people/yan-liu.jpg
-          if grep -R --exclude-dir=.git -n 'gang-shen\.png' .; then
-            echo 'Legacy gang-shen.png reference remains'
+          if grep -R -n --include='*.html' --include='*.css' --include='*.js' --include='*.json' 'gang-shen\.png' .; then
+            echo 'Legacy gang-shen.png reference remains in site files'
             exit 1
           fi
 
