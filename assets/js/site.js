@@ -1,9 +1,7 @@
 (function(){
   'use strict';
 
-  const previewHost='tjpai.github.io';
-  const isPreview=location.hostname===previewHost;
-  const prefix=isPreview?'/pai-web':'';
+  const prefix=new URL('.',document.currentScript.src).pathname.replace(/\/assets\/js\/$/,'');
   const root=path=>`${prefix}${path}`;
   const absolute=path=>new URL(root(path),location.origin).href;
   const PUB_VISIBLE_DEFAULT=3;
@@ -961,6 +959,15 @@
   const initPublications=async(expandedYears=[])=>{
     const host=document.querySelector('[data-publications]');
     if(!host) return;
+    if(host.hasAttribute('data-publications-static')){
+      const expanded=new Set((expandedYears||[]).map(String));
+      host.querySelectorAll('.pub-group').forEach(section=>setYearExpanded(section,expanded.has(section.dataset.year)));
+      host.querySelectorAll('[data-pub-enhancement]').forEach(element=>element.hidden=false);
+      host.dataset.paiInitialized='1';
+      syncAllPublicationToggle();
+      updateBackTopVisibility();
+      return;
+    }
     try{
       const items=await getPublicationData();
       const byYear=new Map();
