@@ -201,10 +201,8 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 
 /* Platform content and order live in the bilingual HTML, not generated CSS. */
 #international-impact>.container{display:flex;flex-direction:column}
-#international-impact .platform-heading{margin-top:var(--platform-heading-offset,64px)}
 #international-impact .detail-block p{font-size:15px;line-height:1.72;color:var(--muted);font-weight:400}
 @media(max-width:768px){
-  #international-impact .platform-heading{margin-top:52px}
   main:has(#international-impact) :is(#collaboration .partner,#international-impact .detail-block){
     padding:22px 0;
     margin-top:0;
