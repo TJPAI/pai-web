@@ -211,9 +211,9 @@ main>.page-hero{
   border-bottom:1px solid var(--line);
 }
 :is(
-  #international-impact .detail-block:first-of-type,
+  #international-impact .section-summary + .detail-block,
   .join-opportunities .join-item:first-child,
-  .contact-grid .contact-card:first-child,
+  .contact-grid>div:first-child>.contact-card:first-child,
   main>.results-achievements .highlight:first-child
 ){
   border-top:1px solid var(--line);
