@@ -223,6 +223,10 @@ main:has(.join-opportunities)>.join-context{
   border-top:0;
 }
 
+main:has(#international-impact) #collaboration .partner-grid{
+  border-top:0;
+}
+
 /* Shared inner-page list divider system: per-row bottom rules only. */
 :is(
   #international-impact .detail-block,
