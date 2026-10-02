@@ -635,15 +635,35 @@ main>.research-direction{
 }
 html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 
-/* When a section owns a wide close, its final internal short rule is suppressed. */
-.divider-wide .update-item:last-child{border-bottom:0!important}
-.divider-wide .research-grid{border-bottom:0}
+/* When a section owns a wide close, remove the short rules from the final visual row.
+   The section border is the only horizontal close at that hierarchy. */
+.divider-wide .divider-short-list>:last-child{
+  border-bottom:0!important;
+}
+.divider-wide .research-grid{
+  border-bottom:0;
+}
+
+/* One-column list layouts: only the final item belongs to the final visual row. */
 @media(max-width:768px){
-  .divider-wide .research:last-child{border-bottom:0}
+  .divider-wide .divider-short-list>:last-child{
+    border-bottom:0!important;
+  }
 }
+
+/* Two-column homepage grids: clear both cells in the final visual row. */
 @media(min-width:769px){
-  .divider-wide .challenge:nth-last-child(-n+2){border-bottom:0}
+  .divider-wide .challenge-grid>:nth-last-child(-n+2){
+    border-bottom:0!important;
+  }
 }
-@media(min-width:1025px){
-  .divider-wide .partner:nth-last-child(-n+2){border-bottom:0}
+
+/* Desktop research is a three-column row; desktop partner/media are two-column rows. */
+@media(min-width:1100px){
+  .divider-wide .research-grid>:nth-last-child(-n+3){
+    border-bottom:0!important;
+  }
+  .divider-wide :is(.partner-grid,.media-list)>:nth-last-child(-n+2){
+    border-bottom:0!important;
+  }
 }
