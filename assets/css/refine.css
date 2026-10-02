@@ -238,24 +238,23 @@ main:has(#international-impact) #collaboration .partner-grid{
   border-bottom:0!important;
 }
 
-/* Editorial-list dividers: short rules separate repeated items; full-width rules stay at section boundaries. */
-:is(
-  #international-impact .detail-block,
-  .join-opportunities .join-item,
-  .contact-grid .contact-card,
-  main>:is(.results-achievements,.results-publications) .highlight
-){
-  border-top:0;
-  border-bottom:1px solid var(--line);
+/* Short dividers belong only to repeated content rows. */
+.divider-short-list{
+  border-top:0!important;
+  border-bottom:0!important;
 }
-.join-opportunities .join-item:last-child{
-  border-bottom:0;
+.divider-short-list>:is(.challenge,.research,.partner,.update-item,.media-item,.highlight,.join-item),
+.divider-short-list .contact-card,
+#international-impact.divider-short-list .detail-block{
+  border-top:0!important;
+  border-bottom:1px solid var(--line)!important;
 }
-@media(max-width:768px){
-  main:has(#international-impact) #collaboration .partner{
-    border-top:0;
-    border-bottom:1px solid var(--line);
-  }
+.divider-short-list.no-final-divider>:last-child{
+  border-bottom:0!important;
+}
+/* A wide section close replaces the final short close at the same hierarchy. */
+.divider-wide .divider-short-list>:last-child{
+  border-bottom:0!important;
 }
 
 /* About first intro heading uses the same line-to-title distance as later intro headings. */
@@ -635,10 +634,6 @@ main>.research-direction{
   .direction-facts strong{font-size:12px;letter-spacing:.06em}
 }
 html[lang="en"] .direction-facts strong{letter-spacing:.01em}
-
-/* Final Join opportunity closes without an internal short divider. */
-main:has(.join-opportunities) .join-opportunities .join-item:last-child{border-bottom:0!important}
-
 
 /* When a section owns a wide close, its final internal short rule is suppressed. */
 .divider-wide .update-item:last-child{border-bottom:0!important}
