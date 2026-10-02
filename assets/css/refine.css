@@ -98,12 +98,9 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
 
 /* Compact media coverage index: factual third-party coverage, visually secondary to research outcomes. */
 :is(.media-summary,.section-summary){max-width:760px;margin:-18px 0 30px;color:var(--muted);font-size:14px;line-height:1.75}
-main:has(#international-impact) :is(#collaboration,#international-impact,#media-coverage) :is(.section-summary,.media-summary)::after{
-  content:"";
-  display:block;
+.section-wide-divider{
   width:100vw;
   margin-left:calc(50% - 50vw);
-  margin-top:30px;
   border-bottom:1px solid var(--line);
 }
 .media-coverage{margin-top:34px}
@@ -117,9 +114,6 @@ main:has(#international-impact) :is(#collaboration,#international-impact,#media-
 .media-more{margin-top:22px}
 @media(max-width:768px){
   :is(.media-summary,.section-summary){margin:-14px 0 24px;font-size:13px;line-height:1.7}
-  main:has(#international-impact) :is(#collaboration,#international-impact,#media-coverage) :is(.section-summary,.media-summary)::after{
-    margin-top:24px;
-  }
   .media-list{grid-template-columns:1fr}
   .media-item{grid-template-columns:98px minmax(0,1fr);gap:12px;padding:14px 0!important;border-left:0!important}
   .media-title{font-size:13px}
