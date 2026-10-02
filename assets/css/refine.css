@@ -98,10 +98,13 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
 
 /* Compact media coverage index: factual third-party coverage, visually secondary to research outcomes. */
 :is(.media-summary,.section-summary){max-width:760px;margin:-18px 0 30px;color:var(--muted);font-size:14px;line-height:1.75}
-.section-wide-divider{
+/* Unified divider system: wide = level-1 boundary; short = internal content boundary. */
+.divider-wide{
+  border-bottom:1px solid var(--line)!important;
+}
+.container>.divider-wide{
   width:100vw;
   margin-left:calc(50% - 50vw);
-  border-bottom:1px solid var(--line);
 }
 .media-coverage{margin-top:34px}
 .media-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:0}
@@ -198,21 +201,6 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   .home-media-section .media-more{margin-top:16px}
   .home-media-section+.join{padding-top:118px;padding-bottom:122px}
   .home-media-section+.join h2{margin-bottom:24px}
-}
-
-/* Inner-page divider hierarchy: page-specific full-width separators. */
-main>.page-hero{
-  border-bottom:1px solid var(--line);
-}
-
-/* About keeps full-width separators after its major narrative sections. */
-main:has(#international-impact)>:is(.content-section,#overview){
-  border-bottom:1px solid var(--line);
-}
-
-/* Join keeps a full-width separator between opportunities and contextual information. */
-main:has(.join-opportunities)>.join-opportunities{
-  border-bottom:1px solid var(--line);
 }
 
 main:has(.join-opportunities) .join-opportunities .join-grid{
@@ -629,27 +617,15 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 main:has(.join-opportunities) .join-opportunities .join-item:last-child{border-bottom:0!important}
 
 
-/* Collaboration Platforms keeps short rules only between rows; the section border owns the close. */
-.home-hero~.section.selected-updates .update-item:last-child{
-  border-bottom:0!important;
-}
-
-/* Homepage primary modules own their full-width lower boundary. */
-.home-hero~.section:has(.challenge-grid),
-.home-hero~.section:has(.research-grid),
-.home-hero~.section:has(.partner-grid),
-.home-hero~.section.selected-updates,
-.home-hero~.section.home-media-section{
-  border-bottom:1px solid var(--line);
-}
-/* Remove short closing rules only where they would duplicate the section boundary. */
-.home-hero~.section:has(.research-grid) .research-grid{border-bottom:0}
+/* When a section owns a wide close, its final internal short rule is suppressed. */
+.divider-wide .update-item:last-child{border-bottom:0!important}
+.divider-wide .research-grid{border-bottom:0}
 @media(max-width:768px){
-  .home-hero~.section:has(.research-grid) .research:last-child{border-bottom:0}
+  .divider-wide .research:last-child{border-bottom:0}
 }
 @media(min-width:769px){
-  .home-hero~.section:has(.challenge-grid) .challenge:nth-last-child(-n+2){border-bottom:0}
+  .divider-wide .challenge:nth-last-child(-n+2){border-bottom:0}
 }
 @media(min-width:1025px){
-  .home-hero~.section:has(.partner-grid) .partner:nth-last-child(-n+2){border-bottom:0}
+  .divider-wide .partner:nth-last-child(-n+2){border-bottom:0}
 }
