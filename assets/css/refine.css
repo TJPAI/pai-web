@@ -195,6 +195,11 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   .home-media-section+.join h2{margin-bottom:24px}
 }
 
+/* About hero flows directly into the narrower intro prose; avoid a redundant full-width divider. */
+main:has(#international-impact)>.page-hero{
+  border-bottom:0;
+}
+
 /* About intro prose: use the same editorial divider rhythm as the rest of the page. */
 main:has(#international-impact)>.content-section .prose>.title-feature{
   padding-top:28px;
