@@ -438,6 +438,10 @@ main>.content-section.results-publications{padding-top:0}
   .results-publications .publication-year-link{
     font-size:14px;
   }
+  .results-publications-heading .highlight{
+    padding-top:25px;
+    padding-bottom:25px;
+  }
 }
 
 @media(max-width:768px){
@@ -605,31 +609,16 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 main:has(.join-opportunities) .join-opportunities .join-item:last-child{border-bottom:0!important}
 
 /* Homepage section boundaries: wide rules close the same editorial modules used on inner pages. */
-.home-section-divider{
-  margin-top:0;
-}
-@media(max-width:768px){
-  .home-hero~.section:has(.home-section-divider){
-    padding-bottom:0;
-  }
-  .home-hero~.section:has(.home-section-divider)>.container{
-    padding-bottom:0;
-  }
-}
+.home-section-divider{margin-top:0}
+.home-hero~.section:has(.home-section-divider){padding-bottom:0}
 /* The wide boundary replaces any short final rule at the same hierarchy. */
-.home-hero~.section:has(.home-section-divider) .research-grid{
-  border-bottom:0;
+.home-hero~.section:has(.home-section-divider) .research-grid{border-bottom:0}
+@media(min-width:769px){
+  .home-hero~.section:has(.home-section-divider) .challenge:nth-last-child(-n+2){border-bottom:0}
 }
 @media(max-width:768px){
-  .home-hero~.section:has(.home-section-divider) .research:last-child{
-    border-bottom:0;
-  }
+  .home-hero~.section:has(.home-section-divider) .research:last-child{border-bottom:0}
 }
 @media(min-width:1025px){
-  .home-hero~.section:has(.home-section-divider) .partner:nth-last-child(-n+2){
-    border-bottom:0;
-  }
-  .home-hero~.section:has(.home-section-divider) .update-item:last-child{
-    border-bottom:0;
-  }
+  .home-hero~.section:has(.home-section-divider) .partner:nth-last-child(-n+2){border-bottom:0}
 }
