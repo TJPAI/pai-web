@@ -59,25 +59,37 @@
     const target=document.getElementById(id);
     if(!target||!target.classList.contains('anchor-target')) return;
     const header=document.querySelector('.site-header');
-    const align=()=>{
-      const headerBottom=header?header.getBoundingClientRect().bottom:0;
-      const targetTop=target.getBoundingClientRect().top;
-      instantScroll(window.scrollY+targetTop-headerBottom);
-    };
+    const headerBottom=header?header.getBoundingClientRect().bottom:0;
+    const targetTop=target.getBoundingClientRect().top;
+    instantScroll(window.scrollY+targetTop-headerBottom);
+  };
+
+  const scheduleHashAlign=()=>{
     requestAnimationFrame(()=>{
-      align();
-      requestAnimationFrame(align);
+      requestAnimationFrame(alignHashTarget);
     });
+    setTimeout(alignHashTarget,80);
   };
 
   forceTargetTop();
   restoreReturnScroll();
-  alignHashTarget();
+  scheduleHashAlign();
   addEventListener('pageshow',event=>{
     restoreReturnScroll(event);
-    alignHashTarget();
+    scheduleHashAlign();
   },{passive:true});
-  addEventListener('hashchange',alignHashTarget,{passive:true});
+  addEventListener('hashchange',scheduleHashAlign,{passive:true});
+
+  // site.js swaps <main> during lightweight navigation. pushState does not fire
+  // hashchange, so align again after the swap and after site.js default hash scroll.
+  if(document.body&&'MutationObserver' in window){
+    new MutationObserver(mutations=>{
+      const mainChanged=mutations.some(mutation=>
+        [...mutation.addedNodes].some(node=>node.nodeType===1&&node.matches?.('main'))
+      );
+      if(mainChanged) scheduleHashAlign();
+    }).observe(document.body,{childList:true});
+  }
 
   document.addEventListener('click',event=>{
     if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey) return;
