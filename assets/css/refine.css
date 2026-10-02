@@ -200,6 +200,25 @@ main>.page-hero{
   border-bottom:0;
 }
 
+/* Shared inner-page list divider system: first top rule + per-row bottom rule. */
+:is(
+  #international-impact .detail-block,
+  .join-opportunities .join-item,
+  .contact-grid .contact-card,
+  main>:is(.results-achievements,.results-publications) .highlight
+){
+  border-top:0;
+  border-bottom:1px solid var(--line);
+}
+:is(
+  #international-impact .detail-block:first-of-type,
+  .join-opportunities .join-item:first-child,
+  .contact-grid .contact-card:first-child,
+  main>:is(.results-achievements,.results-publications) .highlight:first-child
+){
+  border-top:1px solid var(--line);
+}
+
 /* About intro prose: use the same editorial divider rhythm as the rest of the page. */
 main:has(#international-impact)>.content-section .prose>.title-feature{
   padding-top:28px;
@@ -256,7 +275,6 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 
   #international-impact .section-head{margin-bottom:36px}
   #international-impact .detail-block{grid-template-columns:minmax(220px,260px) minmax(0,1fr);gap:36px;padding:25px 0}
-  #international-impact .detail-block:last-child{border-bottom:1px solid var(--line)}
   #international-impact .detail-block h3{margin:0;line-height:1.45}
   #international-impact .detail-block p{margin:0;max-width:39em}
 
@@ -272,7 +290,6 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
   .contact-grid{display:block}
   .contact-grid>div{display:contents}
   .contact-grid .contact-card{row-gap:6px}
-  .contact-grid .contact-card:last-child{border-bottom:1px solid var(--line)}
   .contact-grid .contact-card .eyebrow{grid-column:1;grid-row:1;margin:2px 0 0}
   .contact-grid .contact-card .title-item{grid-column:1;grid-row:2;margin:0;line-height:1.35}
   .contact-grid .contact-card p{grid-column:2;margin:0;max-width:46em;font-size:15px;line-height:1.75}
