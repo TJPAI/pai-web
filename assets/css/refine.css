@@ -103,13 +103,13 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
 .divider-wide{
   border-bottom:0!important;
 }
-.divider-wide .divider-short-list::after{
+.divider-wide .divider-short-list::before{
   content:"";
   display:block;
   grid-column:1 / -1;
   width:100vw;
   margin-left:calc(50% - 50vw);
-  border-bottom:1px solid var(--line);
+  border-top:1px solid var(--line);
 }
 .page-hero.divider-wide{
   border-bottom:1px solid var(--line)!important;
