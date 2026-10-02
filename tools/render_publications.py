@@ -13,6 +13,7 @@ for name in ('publications.json', 'publications-archive.json'):
     items.extend(json.loads((ROOT / 'data' / name).read_text(encoding='utf-8')))
 items.sort(key=lambda item: -item['year'])
 groups = {}
+VISIBLE_DEFAULT = 2
 for item in items:
     groups.setdefault(item['year'], []).append(item)
 
@@ -25,21 +26,21 @@ for language, page in (('zh', 'publications.html'), ('en', 'en/publications.html
     parts.append('<div class="publication-toolbar" data-pub-enhancement hidden><nav class="publication-years" aria-label="' + ('Publication years' if en else '论文年份') + '">')
     for year in groups:
         parts.append(f'<button type="button" class="publication-year-link" data-pub-year-jump="{year}">{year}</button>')
-    if any(len(pubs) > 3 for pubs in groups.values()):
-        parts.append('<button type="button" class="publication-year-link pub-toggle-all" data-pub-toggle-all="1" aria-expanded="true">' + ('Collapse' if en else '收起') + '</button>')
+    if any(len(pubs) > VISIBLE_DEFAULT for pubs in groups.values()):
+        parts.append('<button type="button" class="publication-year-link pub-toggle-all" data-pub-toggle-all="1" aria-expanded="false">' + ('Expand all' if en else '展开全部') + '</button>')
     parts.append('</nav></div>')
     for year, pubs in groups.items():
         count = f'{len(pubs)} publication' + ('s' if len(pubs) != 1 else '') if en else f'{len(pubs)} 篇论文'
-        parts.append(f'<section class="pub-group" id="pub-year-{year}" data-year="{year}" data-expanded="true"><div class="pub-year-row"><h2 class="pub-year">{year}</h2><span>{count}</span></div>')
+        parts.append(f'<section class="pub-group" id="pub-year-{year}" data-year="{year}" data-expanded="false"><div class="pub-year-row"><h2 class="pub-year">{year}</h2><span>{count}</span></div>')
         for index, pub in enumerate(pubs):
             key = esc(pub.get('doi') or pub['title'])
-            parts.append(f'<article class="pub" data-pub-extra="{int(index >= 3)}" data-publication-key="{key}"><h3 class="title-item">{esc(pub["title"])}</h3><p class="pub-authors">{esc(pub["authors"])}</p><p class="pub-venue">{esc(pub["venue"])} · {year}</p>')
+            parts.append(f'<article class="pub" data-pub-extra="{int(index >= VISIBLE_DEFAULT)}" data-publication-key="{key}"><h3 class="title-item">{esc(pub["title"])}</h3><p class="pub-authors">{esc(pub["authors"])}</p><p class="pub-venue">{esc(pub["venue"])} · {year}</p>')
             if pub.get('doi'):
                 doi = quote(pub['doi'].strip(), safe="/!~*'()")
                 parts.append(f'<div class="pub-actions"><a href="https://doi.org/{esc(doi)}" target="_blank" rel="noopener noreferrer">DOI ↗</a></div>')
             parts.append('</article>')
-        if len(pubs) > 3:
-            parts.append(f'<button type="button" class="pub-toggle" data-pub-toggle="{year}" data-pub-enhancement hidden aria-expanded="true">' + ('Show less ↑' if en else '收起 ↑') + '</button>')
+        if len(pubs) > VISIBLE_DEFAULT:
+            parts.append(f'<button type="button" class="pub-toggle" data-pub-toggle="{year}" data-pub-enhancement hidden aria-expanded="false">' + (f'View all {len(pubs)} ↓' if en else f'展开全部 {len(pubs)} 篇 ↓') + '</button>')
         parts.append('</section>')
     parts.append('<button type="button" class="pub-back-top" data-pub-back-top="1" data-pub-enhancement hidden>' + ('↑ Top' if en else '↑ 顶部') + '</button>')
     parts.append('<!-- publications:end --></div>')
