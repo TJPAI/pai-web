@@ -258,14 +258,12 @@ main:has(#international-impact)>.content-section .prose>.title-feature:not(:firs
 }
 
 /* Keep full-width section separators visually tied to the content they close. */
-main:has(#international-impact)>:is(#collaboration,#international-impact){
-  padding-bottom:28px;
-}
+main:has(#international-impact)>:is(.content-section,#overview,#collaboration,#international-impact),
 main:has(.join-opportunities)>.join-opportunities{
   padding-bottom:28px;
 }
 @media(max-width:768px){
-  main:has(#international-impact)>:is(#collaboration,#international-impact),
+  main:has(#international-impact)>:is(.content-section,#overview,#collaboration,#international-impact),
   main:has(.join-opportunities)>.join-opportunities{
     padding-bottom:22px;
   }
