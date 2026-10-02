@@ -376,6 +376,7 @@ main>.results-publications .results-publications-heading .highlight{
 .results-achievements{padding:70px 0 0;border-bottom:0}
 .results-achievements .highlights{margin-top:28px}
 .results-achievements .highlight{padding-top:22px;padding-bottom:22px}
+main>.content-section.results-publications{padding-top:0}
 .results-publications{padding-top:0}
 .results-publications-heading{margin-top:0}
 .results-publications-heading{
@@ -417,6 +418,7 @@ main>.results-publications .results-publications-heading .highlight{
 
 @media(max-width:768px){
   .results-achievements{padding:56px 0 0}
+  main>.content-section.results-publications{padding-top:0}
   .results-publications{padding-top:0}
 }
 
