@@ -471,14 +471,6 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 /* First-section content starts on the same item rhythm as following rows. */
 .page-contact .contact-grid{margin-top:0!important}
 
-/* Keep partner lists visible when no separate mobile summary exists. */
-@media(max-width:768px){
-  .partner:not(:has(.partner-inline)) p{display:block;font-size:15px;line-height:1.6;color:var(--muted)}
-}
-@media(min-width:769px){
-  .partner:not(:has(p)) .partner-inline{display:block;font-size:18px;line-height:1.9;color:#313846}
-}
-
 /* Parallel card summaries reserve the same rows, including short entries. */
 @media(min-width:769px){
   .team-grid .person .research-line,
@@ -637,7 +629,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 /* First item rhythm: section boundaries must not add a second layer of top spacing. */
 .page-results>.results-achievements,
 .page-join>.join-opportunities,
-.page-inner:has(.contact-grid)>.content-section{
+.page-contact>.content-section{
   padding-top:0!important;
 }
 .page-research>.research-direction:not(:last-child){
