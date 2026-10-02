@@ -86,11 +86,6 @@
   main>.research-direction .direction-id{margin-bottom:18px}
   main>.research-direction .direction-keywords{margin-top:20px;margin-bottom:0}
 
-  /* About: match the English standalone heading to the Chinese section-head baseline. */
-  #international-impact .platform-heading{
-    --platform-heading-offset:calc(var(--title-eyebrow-size)*1.2 + 10px);
-    margin:var(--platform-heading-offset) 0 36px;
-  }
   main:has(>.page-hero) #media-coverage .media-coverage{margin-top:24px}
   main:has(>.page-hero) #media-coverage .media-summary{margin:0 0 24px}
 
