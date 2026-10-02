@@ -247,6 +247,16 @@ main:has(#international-impact) #collaboration .partner-grid{
   }
 }
 
+/* About first intro heading uses the same line-to-title distance as later intro headings. */
+main:has(#international-impact)>.content-section{
+  padding-top:28px!important;
+}
+@media(max-width:768px){
+  main:has(#international-impact)>.content-section{
+    padding-top:22px!important;
+  }
+}
+
 /* About intro prose: use the same editorial divider rhythm as the rest of the page. */
 main:has(#international-impact)>.content-section .prose>.title-feature{
   padding-top:28px;
@@ -618,17 +628,28 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 /* Final Join opportunity closes without an internal short divider. */
 main:has(.join-opportunities) .join-opportunities .join-item:last-child{border-bottom:0!important}
 
-/* Homepage section boundaries: wide rules close the same editorial modules used on inner pages. */
-.home-section-divider{margin-top:0}
-.home-hero~.section:has(.home-section-divider){padding-bottom:0}
-/* The wide boundary replaces any short final rule at the same hierarchy. */
-.home-hero~.section:has(.home-section-divider) .research-grid{border-bottom:0}
-@media(min-width:769px){
-  .home-hero~.section:has(.home-section-divider) .challenge:nth-last-child(-n+2){border-bottom:0}
+
+/* Collaboration Platforms keeps short rules only between rows; the section border owns the close. */
+.home-hero~.section.selected-updates .update-item:last-child{
+  border-bottom:0!important;
 }
+
+/* Homepage primary modules own their full-width lower boundary. */
+.home-hero~.section:has(.challenge-grid),
+.home-hero~.section:has(.research-grid),
+.home-hero~.section:has(.partner-grid),
+.home-hero~.section.selected-updates,
+.home-hero~.section.home-media-section{
+  border-bottom:1px solid var(--line);
+}
+/* Remove short closing rules only where they would duplicate the section boundary. */
+.home-hero~.section:has(.research-grid) .research-grid{border-bottom:0}
 @media(max-width:768px){
-  .home-hero~.section:has(.home-section-divider) .research:last-child{border-bottom:0}
+  .home-hero~.section:has(.research-grid) .research:last-child{border-bottom:0}
+}
+@media(min-width:769px){
+  .home-hero~.section:has(.challenge-grid) .challenge:nth-last-child(-n+2){border-bottom:0}
 }
 @media(min-width:1025px){
-  .home-hero~.section:has(.home-section-divider) .partner:nth-last-child(-n+2){border-bottom:0}
+  .home-hero~.section:has(.partner-grid) .partner:nth-last-child(-n+2){border-bottom:0}
 }
