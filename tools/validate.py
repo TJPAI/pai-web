@@ -239,7 +239,7 @@ for html in (ROOT/'en').rglob('html'):
         errors.append(str(html.relative_to(ROOT))+': unexpected Chinese text in English page')
 
 # Architectural guardrails: one behavior runtime and one deterministic presentation entry point.
-site_js=(ROOT/'assets/js/site.js').read_text(encoding='utf-8')
+# site_js already loaded above
 for banned,reason in [
     ('stopImmediatePropagation','event handlers should not suppress unrelated handlers'),
     ('caches.keys(','page runtime must not select Service Worker caches directly'),
@@ -264,7 +264,7 @@ for required in ('assets/css/refine-base.css','assets/css/app-core.css','assets/
         errors.append(f'{required}: missing shared style layer')
 
 # Lightweight-navigation reliability guardrail.
-site_js=(ROOT/'assets/js/site.js').read_text(encoding='utf-8')
+# site_js already loaded above
 for required in ('history.pushState','popstate','DOMParser','currentMain.replaceWith','eligiblePageLink'):
     if required not in site_js:
         errors.append(f'assets/js/site.js: lightweight navigation contract missing ({required})')
