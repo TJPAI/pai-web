@@ -38,7 +38,7 @@
     ]:
     [
       ['关于我们','/about.html'],['研究团队','/team.html'],['研究方向','/research.html'],
-      ['研究成果','/publications.html'],['人才招聘','/join.html'],['联系我们','/contact.html']
+      ['研究成果','/publications.html'],['加入我们','/join.html'],['联系我们','/contact.html']
     ];
 
   const sectionForPath=path=>{
