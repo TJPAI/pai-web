@@ -176,7 +176,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 @media(prefers-reduced-motion:reduce){.home-achievement-story img{transition:none}.home-achievement-story a:hover img{transform:none}}
 .home-achievements-more{margin-top:26px}
 .home-platform-more{margin-top:28px}
-.home-media-section{border-top:1px solid var(--line)}
+.home-media-section{border-top:0}
 .home-media-section .media-coverage{margin-top:0}
 @media(max-width:768px){
   .home-achievement-stories{grid-template-columns:1fr;gap:16px}
@@ -190,7 +190,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .home-media-section .media-title{font-size:13px;line-height:1.5;color:#46505E}
 .home-media-section .media-meta{color:#9098A4}
 .home-media-section .media-more{margin-top:18px}
-.home-media-section+.join{border-top:1px solid var(--line);padding-top:154px;padding-bottom:158px}
+.home-media-section+.join{border-top:0;padding-top:154px;padding-bottom:158px}
 .home-media-section+.join h2{max-width:720px;margin-top:14px;margin-bottom:28px}
 @media(max-width:768px){
   .home-media-section{padding-top:62px;padding-bottom:58px}
@@ -398,7 +398,7 @@ main>.results-publications .results-publications-heading .highlight{
 
 /* Research Results page: items 01-06 form one continuous achievement sequence. */
 .results-achievements{padding:70px 0 0;border-bottom:0}
-.results-achievements .highlights{margin-top:28px}
+.results-achievements .highlights{margin-top:0}
 .results-achievements .highlight{padding-top:22px;padding-bottom:22px}
 main>.content-section.results-publications{padding-top:0}
 .results-publications{padding-top:0}
@@ -438,6 +438,10 @@ main>.content-section.results-publications{padding-top:0}
   .results-publications .publication-year-link{
     font-size:14px;
   }
+  .results-publications-heading .highlight{
+    padding-top:25px;
+    padding-bottom:25px;
+  }
 }
 
 @media(max-width:768px){
@@ -452,12 +456,8 @@ main>.page-hero:has(+ .results-achievements){padding-bottom:36px!important}
   main>.page-hero:has(+ .results-achievements){padding-bottom:28px!important}
 }
 
-/* First-section divider rhythm: keep both rules, but bring them into a consistent close pair. */
-:is(main:has(.contact-grid)>.content-section,main:has(.join-opportunities)>.join-opportunities,main>.page-hero:has(+ .results-achievements)+.results-achievements){padding-top:40px!important}
+/* First-section content starts on the same item rhythm as following rows. */
 main:has(.contact-grid) .contact-grid{margin-top:0!important}
-@media(max-width:768px){
-  :is(main:has(.contact-grid)>.content-section,main:has(.join-opportunities)>.join-opportunities,main>.page-hero:has(+ .results-achievements)+.results-achievements){padding-top:28px!important}
-}
 
 /* Keep partner lists visible when no separate mobile summary exists. */
 @media(max-width:768px){
@@ -565,6 +565,16 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
 }
 
 
+/* First item rhythm: section boundaries must not add a second layer of top spacing. */
+main:has(>.page-hero)>.results-achievements,
+main:has(>.page-hero)>.join-opportunities,
+main:has(>.page-hero):has(.contact-grid)>.content-section{
+  padding-top:0!important;
+}
+main>.research-direction:not(:last-child){
+  padding-bottom:0!important;
+}
+
 /* Research editorial sections: separate directions with whitespace, not divider chrome. */
 main>.research-direction{
   border-top:0;
@@ -597,3 +607,18 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 
 /* Final Join opportunity closes without an internal short divider. */
 main:has(.join-opportunities) .join-opportunities .join-item:last-child{border-bottom:0!important}
+
+/* Homepage section boundaries: wide rules close the same editorial modules used on inner pages. */
+.home-section-divider{margin-top:0}
+.home-hero~.section:has(.home-section-divider){padding-bottom:0}
+/* The wide boundary replaces any short final rule at the same hierarchy. */
+.home-hero~.section:has(.home-section-divider) .research-grid{border-bottom:0}
+@media(min-width:769px){
+  .home-hero~.section:has(.home-section-divider) .challenge:nth-last-child(-n+2){border-bottom:0}
+}
+@media(max-width:768px){
+  .home-hero~.section:has(.home-section-divider) .research:last-child{border-bottom:0}
+}
+@media(min-width:1025px){
+  .home-hero~.section:has(.home-section-divider) .partner:nth-last-child(-n+2){border-bottom:0}
+}
