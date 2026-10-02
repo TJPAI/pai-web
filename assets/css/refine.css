@@ -205,6 +205,8 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 #international-impact .detail-block p{font-size:15px;line-height:1.72;color:var(--muted);font-weight:400}
 @media(max-width:768px){
   #international-impact .platform-heading{margin-top:52px}
+  #international-impact .detail-block{border-top:1px solid var(--line)}
+  #international-impact .detail-block:last-child{border-bottom:1px solid var(--line)}
   #international-impact .detail-block p{font-size:14px;line-height:1.65}
 }
 
