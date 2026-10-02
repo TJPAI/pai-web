@@ -360,13 +360,21 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 .results-publications-heading .highlight{
   padding-top:22px;
   padding-bottom:22px;
-  border-bottom:0;
+  border-top:0!important;
+  border-bottom:0!important;
+}
+
+/* Static publication HTML stays collapsed before JS enhancement; all paper text remains in source for indexing. */
+[data-publications-static="1"] .pub[data-pub-extra="1"].is-collapsed{
+  display:none;
 }
 
 /* Publication year navigation: one lower rule only, with slightly stronger emphasis. */
 .results-publications .publication-toolbar{
-  border-top:0;
+  border-top:0!important;
   border-bottom:1px solid var(--line);
+  box-shadow:none;
+  outline:0;
 }
 .results-publications .publication-year-link{
   color:#4B5563;
