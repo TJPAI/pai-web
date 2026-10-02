@@ -348,6 +348,30 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
   main:has(.join-opportunities) .join-opportunities .join-item:last-child{border-bottom:0}
 }
 
+/* Results 01–06 share one list rhythm across desktop and mobile. */
+main>:is(.results-achievements,.results-publications) .highlight{
+  border-top:0!important;
+  border-left:0!important;
+}
+main>.results-achievements .highlight{
+  border-bottom:1px solid var(--line);
+}
+main>.results-achievements .highlight:first-child{
+  border-top:0!important;
+}
+main>.results-publications .results-publications-heading .highlight{
+  border-bottom:0!important;
+}
+@media(max-width:768px){
+  main>:is(.results-achievements,.results-publications) .highlight,
+  main>:is(.results-achievements,.results-publications) .highlight:nth-child(odd),
+  main>:is(.results-achievements,.results-publications) .highlight:nth-child(even){
+    grid-template-columns:42px minmax(0,1fr);
+    gap:10px;
+    padding:25px 0;
+  }
+}
+
 /* Research Results page: items 01-06 form one continuous achievement sequence. */
 .results-achievements{padding:70px 0 0;border-bottom:0}
 .results-achievements .highlights{margin-top:28px}
