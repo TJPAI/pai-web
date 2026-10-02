@@ -176,7 +176,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 @media(prefers-reduced-motion:reduce){.home-achievement-story img{transition:none}.home-achievement-story a:hover img{transform:none}}
 .home-achievements-more{margin-top:26px}
 .home-platform-more{margin-top:28px}
-.home-media-section{border-top:1px solid var(--line)}
+.home-media-section{border-top:0}
 .home-media-section .media-coverage{margin-top:0}
 @media(max-width:768px){
   .home-achievement-stories{grid-template-columns:1fr;gap:16px}
@@ -190,7 +190,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .home-media-section .media-title{font-size:13px;line-height:1.5;color:#46505E}
 .home-media-section .media-meta{color:#9098A4}
 .home-media-section .media-more{margin-top:18px}
-.home-media-section+.join{border-top:1px solid var(--line);padding-top:154px;padding-bottom:158px}
+.home-media-section+.join{border-top:0;padding-top:154px;padding-bottom:158px}
 .home-media-section+.join h2{max-width:720px;margin-top:14px;margin-bottom:28px}
 @media(max-width:768px){
   .home-media-section{padding-top:62px;padding-bottom:58px}
