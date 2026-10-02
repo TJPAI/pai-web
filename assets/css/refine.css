@@ -452,12 +452,8 @@ main>.page-hero:has(+ .results-achievements){padding-bottom:36px!important}
   main>.page-hero:has(+ .results-achievements){padding-bottom:28px!important}
 }
 
-/* First-section divider rhythm: keep both rules, but bring them into a consistent close pair. */
-:is(main:has(.contact-grid)>.content-section,main:has(.join-opportunities)>.join-opportunities,main>.page-hero:has(+ .results-achievements)+.results-achievements){padding-top:40px!important}
+/* First-section content starts on the same item rhythm as following rows. */
 main:has(.contact-grid) .contact-grid{margin-top:0!important}
-@media(max-width:768px){
-  :is(main:has(.contact-grid)>.content-section,main:has(.join-opportunities)>.join-opportunities,main>.page-hero:has(+ .results-achievements)+.results-achievements){padding-top:28px!important}
-}
 
 /* Keep partner lists visible when no separate mobile summary exists. */
 @media(max-width:768px){
@@ -565,6 +561,16 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
 }
 
 
+/* First item rhythm: section boundaries must not add a second layer of top spacing. */
+main:has(>.page-hero)>.results-achievements,
+main:has(>.page-hero)>.join-opportunities,
+main:has(>.page-hero):has(.contact-grid)>.content-section{
+  padding-top:0!important;
+}
+main>.research-direction:not(:last-child){
+  padding-bottom:0!important;
+}
+
 /* Research editorial sections: separate directions with whitespace, not divider chrome. */
 main>.research-direction{
   border-top:0;
@@ -597,3 +603,33 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 
 /* Final Join opportunity closes without an internal short divider. */
 main:has(.join-opportunities) .join-opportunities .join-item:last-child{border-bottom:0!important}
+
+/* Homepage section boundaries: wide rules close the same editorial modules used on inner pages. */
+.home-section-divider{
+  margin-top:0;
+}
+@media(max-width:768px){
+  .home-hero~.section:has(.home-section-divider){
+    padding-bottom:0;
+  }
+  .home-hero~.section:has(.home-section-divider)>.container{
+    padding-bottom:0;
+  }
+}
+/* The wide boundary replaces any short final rule at the same hierarchy. */
+.home-hero~.section:has(.home-section-divider) .research-grid{
+  border-bottom:0;
+}
+@media(max-width:768px){
+  .home-hero~.section:has(.home-section-divider) .research:last-child{
+    border-bottom:0;
+  }
+}
+@media(min-width:1025px){
+  .home-hero~.section:has(.home-section-divider) .partner:nth-last-child(-n+2){
+    border-bottom:0;
+  }
+  .home-hero~.section:has(.home-section-divider) .update-item:last-child{
+    border-bottom:0;
+  }
+}
