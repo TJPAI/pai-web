@@ -238,22 +238,21 @@ main:has(#international-impact) #collaboration .partner-grid{
   border-bottom:0!important;
 }
 
-/* Short dividers belong only to repeated content rows. */
+/* Short dividers belong only to repeated content rows.
+   Mobile uses one shared row model; desktop keeps each layout's grid geometry. */
 .divider-short-list{
   border-top:0!important;
   border-bottom:0!important;
 }
-.divider-short-list>:is(.challenge,.research,.partner,.update-item,.media-item,.highlight,.join-item),
-.divider-short-list .contact-card,
-#international-impact.divider-short-list .detail-block{
-  border-top:0!important;
-  border-bottom:1px solid var(--line)!important;
+@media(max-width:768px){
+  .divider-short-list>:is(.challenge,.research,.partner,.update-item,.media-item,.highlight,.join-item),
+  .divider-short-list .contact-card,
+  #international-impact.divider-short-list .detail-block{
+    border-top:0!important;
+    border-bottom:1px solid var(--line)!important;
+  }
 }
-.divider-short-list.no-final-divider>:last-child{
-  border-bottom:0!important;
-}
-/* A wide section close replaces the final short close at the same hierarchy. */
-.divider-wide .divider-short-list>:last-child{
+.divider-short-list.no-final-divider>.join-item:last-child{
   border-bottom:0!important;
 }
 
