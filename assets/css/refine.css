@@ -74,6 +74,12 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
   main:has(#international-impact) #collaboration .partner p{font-size:16px;line-height:1.78;color:#394150}
 }
 
+@media(min-width:1025px){
+  main:has(#international-impact) #collaboration .partner:nth-last-child(-n+2){
+    border-bottom:0;
+  }
+}
+
 /* Homepage collaboration platforms: keep the three institutions equal, but present them as editorial rows instead of another three-column card grid. */
 @media(min-width:1025px){
   .selected-updates .updates-grid{display:block;border-top:1px solid var(--line)}
@@ -341,6 +347,7 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
   }
   .join-opportunities .join-item .title-item{margin:0}
   .join-opportunities .join-item p{margin:0}
+  main:has(.join-opportunities) .join-opportunities .join-item:last-child{border-bottom:0}
 }
 
 /* Research Results page: items 01-06 form one continuous achievement sequence. */
