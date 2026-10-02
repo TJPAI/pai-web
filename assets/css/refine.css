@@ -195,12 +195,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   .home-media-section+.join h2{margin-bottom:24px}
 }
 
-/* Inner-page heroes flow directly into their content systems; avoid redundant full-width dividers. */
-main>.page-hero{
-  border-bottom:0;
+/* Inner-page divider hierarchy: full-width rules separate top-level sections. */
+main:has(>.page-hero)>section{
+  border-bottom:1px solid var(--line);
 }
 
-/* Shared inner-page list divider system: first top rule + per-row bottom rule. */
+/* Shared inner-page list divider system: per-row bottom rules only. */
 :is(
   #international-impact .detail-block,
   .join-opportunities .join-item,
@@ -210,21 +210,10 @@ main>.page-hero{
   border-top:0;
   border-bottom:1px solid var(--line);
 }
-:is(
-  #international-impact .section-summary + .detail-block,
-  .join-opportunities .join-item:first-child,
-  .contact-grid>div:first-child>.contact-card:first-child,
-  main>.results-achievements .highlight:first-child
-){
-  border-top:1px solid var(--line);
-}
 @media(max-width:768px){
   main:has(#international-impact) #collaboration .partner{
     border-top:0;
     border-bottom:1px solid var(--line);
-  }
-  main:has(#international-impact) #collaboration .partner:first-child{
-    border-top:1px solid var(--line);
   }
 }
 
