@@ -299,11 +299,12 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 .team-grid .person .role{margin:0;color:#7D8693;font-size:13px;line-height:1.45}
 .team-grid .person .research-line{margin:11px 0 0;min-height:0;color:#303744;font-weight:620}
 .team-grid .person .bio-short{margin:8px 0 0;color:#7B8492}
+.team-grid .person :is(.role,.research-line,.bio-short){margin-bottom:0}
 .team-grid .person .person-link{display:inline-block;margin-top:11px;font-weight:620;color:#4B5563}
 .team-grid .person .person-link:hover{text-decoration:underline;text-underline-offset:3px}
 @media(min-width:769px){
   .team-grid .person h3{margin-top:18px}
-  .team-grid .person .research-line{margin-top:14px;font-size:14px;line-height:1.55}
+  main:has(>.page-hero) .team-grid .person .research-line{margin-top:14px;font-size:14px;line-height:1.55}
   .team-grid .person .bio-short{margin-top:9px;font-size:13px;line-height:1.65}
   .team-grid .person .person-link{margin-top:13px;font-size:12px}
 }
@@ -313,6 +314,17 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
   .team-grid .person .research-line{margin-top:10px}
   .team-grid .person .bio-short{margin-top:7px}
   .team-grid .person .person-link{margin-top:10px}
+}
+
+/* Join context: one whitespace rhythm for all three background sections on phones. */
+@media(max-width:768px){
+  .join-context .section-head,
+  .join-context .section-head:last-of-type{
+    margin-bottom:40px;
+  }
+  .join-context .btn{
+    margin-top:-10px;
+  }
 }
 
 /* Shared desktop editorial-row skeleton for About platforms, Join context, and Contact. */
