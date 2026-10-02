@@ -147,6 +147,44 @@ for prefix in ('','en/'):
     if len(re.findall(r'class="[^"]*\bresearch-title\b[^"]*"',home))!=3: errors.append(f'{prefix}index.html: expected exactly 3 canonical research-title elements')
     if len(re.findall(r'class="[^"]*\bresearch-title\b[^"]*"',detail))!=3: errors.append(f'{prefix}research.html: expected exactly 3 canonical research-title elements')
 
+# Shared runtime navigation is authoritative for labels/targets after page load.
+# Static desktop headers are the no-JS fallback; keep them synchronized so a wording
+# change cannot silently drift between direct-entry markup and renderChrome().
+site_js=(ROOT/'assets/js/site.js').read_text(encoding='utf-8')
+runtime_nav={}
+for lang, marker in (
+    ('en', r"const navItems=lang=>lang==='en'\?\s*\[(.*?)\]\s*:\s*\["),
+    ('zh', r"const navItems=lang=>lang==='en'\?[\s\S]*?\]\s*:\s*\[(.*?)\]\s*;"),
+):
+    match=re.search(marker, site_js, re.S)
+    if not match:
+        errors.append(f'assets/js/site.js: could not parse {lang} runtime navigation')
+        continue
+    runtime_nav[lang]=re.findall(r"\['([^']+)','([^']+)'\]", match.group(1))
+
+def static_desktop_nav(rel):
+    text=(ROOT/rel).read_text(encoding='utf-8')
+    match=re.search(r'<nav\b[^>]*class=["\'][^"\']*\bnav-links\b[^"\']*["\'][^>]*>(.*?)</nav>', text, re.I|re.S)
+    if not match:
+        return []
+    return [
+        (re.sub(r'<[^>]+>','', label).strip(), href)
+        for href,label in re.findall(r'<a\b[^>]*href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', match.group(1), re.I|re.S)
+        if re.sub(r'<[^>]+>','', label).strip() not in ('EN','中文')
+    ]
+
+for rel in ('index.html','about.html','team.html','research.html','publications.html','join.html','contact.html'):
+    expected=[(label, href.lstrip('/')) for label,href in runtime_nav.get('zh',[])]
+    actual=static_desktop_nav(rel)
+    if actual!=expected:
+        errors.append(f'{rel}: static desktop navigation labels/targets drift from assets/js/site.js')
+
+for rel in ('en/index.html','en/about.html','en/team.html','en/research.html','en/publications.html','en/join.html','en/contact.html'):
+    expected=[(label, href.removeprefix('/en/')) for label,href in runtime_nav.get('en',[])]
+    actual=static_desktop_nav(rel)
+    if actual!=expected:
+        errors.append(f'{rel}: static desktop navigation labels/targets drift from assets/js/site.js')
+
 # Critical detail-link contracts: these links must follow the current information architecture.
 contracts={
     'index.html':[
@@ -201,7 +239,7 @@ for html in (ROOT/'en').rglob('html'):
         errors.append(str(html.relative_to(ROOT))+': unexpected Chinese text in English page')
 
 # Architectural guardrails: one behavior runtime and one deterministic presentation entry point.
-site_js=(ROOT/'assets/js/site.js').read_text(encoding='utf-8')
+# site_js already loaded above
 for banned,reason in [
     ('stopImmediatePropagation','event handlers should not suppress unrelated handlers'),
     ('caches.keys(','page runtime must not select Service Worker caches directly'),
@@ -226,7 +264,7 @@ for required in ('assets/css/refine-base.css','assets/css/app-core.css','assets/
         errors.append(f'{required}: missing shared style layer')
 
 # Lightweight-navigation reliability guardrail.
-site_js=(ROOT/'assets/js/site.js').read_text(encoding='utf-8')
+# site_js already loaded above
 for required in ('history.pushState','popstate','DOMParser','currentMain.replaceWith','eligiblePageLink'):
     if required not in site_js:
         errors.append(f'assets/js/site.js: lightweight navigation contract missing ({required})')
