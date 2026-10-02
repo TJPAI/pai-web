@@ -47,31 +47,31 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
 
 /* Homepage vertical rhythm follows content density: quick metrics, steady collaboration, spacious visual work. */
 @media(min-width:769px){
-  .home-hero~.section:has(.numbers){padding-top:98px;padding-bottom:100px}
-  .home-hero~.section:has(.numbers) .section-head{margin-bottom:42px}
-  .home-hero~.section:has(.partner-grid){padding-top:112px;padding-bottom:114px}
-  .home-hero~.section:has(.partner-grid) .section-head{margin-bottom:46px}
-  .home-hero~.section:has(.home-achievement-stories){padding-top:132px;padding-bottom:130px}
-  .home-hero~.section:has(.home-achievement-stories) .section-head{margin-bottom:50px}
+  .home-numbers{padding-top:98px;padding-bottom:100px}
+  .home-numbers .section-head{margin-bottom:42px}
+  .home-partners{padding-top:112px;padding-bottom:114px}
+  .home-partners .section-head{margin-bottom:46px}
+  .home-achievements{padding-top:132px;padding-bottom:130px}
+  .home-achievements .section-head{margin-bottom:50px}
 }
 
 /* Shared 2×2 partner-index skeleton; homepage and About keep their own density. */
 @media(min-width:1025px){
-  :is(.home-hero~.section,main:has(#international-impact) #collaboration) .partner-grid{grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
-  :is(.home-hero~.section,main:has(#international-impact) #collaboration) .partner{border-left:0;border-top:0;border-bottom:1px solid var(--line)}
-  :is(.home-hero~.section,main:has(#international-impact) #collaboration) .partner:nth-child(even){border-left:1px solid var(--line)}
+  :is(.home-partners,.page-about #collaboration) .partner-grid{grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
+  :is(.home-partners,.page-about #collaboration) .partner{border-left:0;border-top:0;border-bottom:1px solid var(--line)}
+  :is(.home-partners,.page-about #collaboration) .partner:nth-child(even){border-left:1px solid var(--line)}
 
-  .home-hero~.section .partner{padding:28px 34px 30px 0}
-  .home-hero~.section .partner:nth-child(even){padding-left:34px;padding-right:0}
-  .home-hero~.section .partner:nth-child(n+3){padding-top:30px}
-  .home-hero~.section .partner h3{margin-bottom:14px}
-  .home-hero~.section .partner p{font-size:17px;line-height:1.8;color:#394150}
+  .home-partners .partner{padding:28px 34px 30px 0}
+  .home-partners .partner:nth-child(even){padding-left:34px;padding-right:0}
+  .home-partners .partner:nth-child(n+3){padding-top:30px}
+  .home-partners .partner h3{margin-bottom:14px}
+  .home-partners .partner p{font-size:17px;line-height:1.8;color:#394150}
 
-  main:has(#international-impact) #collaboration .partner{padding:30px 38px 32px 0}
-  main:has(#international-impact) #collaboration .partner:nth-child(even){padding-left:38px;padding-right:0}
-  main:has(#international-impact) #collaboration .partner:nth-child(n+3){padding-top:32px}
-  main:has(#international-impact) #collaboration .partner h3{margin-bottom:15px}
-  main:has(#international-impact) #collaboration .partner p{font-size:16px;line-height:1.78;color:#394150}
+  .page-about #collaboration .partner{padding:30px 38px 32px 0}
+  .page-about #collaboration .partner:nth-child(even){padding-left:38px;padding-right:0}
+  .page-about #collaboration .partner:nth-child(n+3){padding-top:32px}
+  .page-about #collaboration .partner h3{margin-bottom:15px}
+  .page-about #collaboration .partner p{font-size:16px;line-height:1.78;color:#394150}
 }
 
 /* Homepage collaboration platforms: keep the three institutions equal, but present them as editorial rows instead of another three-column card grid. */
@@ -98,26 +98,21 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
 
 /* Compact media coverage index: factual third-party coverage, visually secondary to research outcomes. */
 :is(.media-summary,.section-summary){max-width:760px;margin:-18px 0 30px;color:var(--muted);font-size:14px;line-height:1.75}
-/* Unified divider system: wide = level-1 boundary; short = internal content boundary.
-   Repeated-content sections close immediately after their short-divider list. */
+/* Unified divider system: divider-wide is an explicit full-viewport rule; divider-short-list owns internal row rules. */
 .divider-wide{
-  border-bottom:0!important;
-}
-.divider-wide .divider-short-list::before{
-  content:"";
   display:block;
-  grid-column:1 / -1;
   width:100vw;
+  height:0;
   margin-left:calc(50% - 50vw);
+  border:0;
   border-top:1px solid var(--line);
 }
 .page-hero.divider-wide{
-  border-bottom:1px solid var(--line)!important;
-}
-.container>.divider-wide{
-  width:100vw;
-  margin-left:calc(50% - 50vw);
-  border-bottom:1px solid var(--line)!important;
+  width:auto;
+  height:auto;
+  margin-left:0;
+  border-top:0;
+  border-bottom:1px solid var(--line);
 }
 .media-coverage{margin-top:34px}
 .media-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:0}
@@ -137,20 +132,20 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
 
 /* Homepage mobile rhythm — compact but still editorial */
 @media(max-width:768px){
-  .home-hero~.section{padding-top:72px;padding-bottom:72px}
-  .home-hero~.section .section-head{margin-bottom:34px}
-  .home-hero~.section:has(.numbers){padding-top:60px;padding-bottom:62px}
-  .home-hero~.section:has(.numbers) .section-head{margin-bottom:30px}
-  .home-hero~.section:has(.partner-grid){padding-top:68px;padding-bottom:70px}
-  .home-hero~.section:has(.partner-grid) .section-head{margin-bottom:32px}
-  .home-hero~.section:has(.home-achievement-stories){padding-top:82px;padding-bottom:80px}
-  .home-hero~.section:has(.home-achievement-stories) .section-head{margin-bottom:38px}
-  .home-hero~.section .challenge{padding-top:28px;padding-bottom:29px}
-  .home-hero~.section .research{padding-top:36px;padding-bottom:40px}
-  .home-hero~.section .partner{padding-top:21px!important;padding-bottom:21px!important}
-  .home-hero~.section .highlight,.home-hero~.section .highlight:nth-child(odd),.home-hero~.section .highlight:nth-child(even){padding-top:24px;padding-bottom:24px}
-  .home-hero~.section .impact{padding-top:39px;padding-bottom:41px}
-  .home-hero~.join{padding-top:108px;padding-bottom:108px}
+  .page-home>.section{padding-top:72px;padding-bottom:72px}
+  .page-home>.section .section-head{margin-bottom:34px}
+  .home-numbers{padding-top:60px;padding-bottom:62px}
+  .home-numbers .section-head{margin-bottom:30px}
+  .home-partners{padding-top:68px;padding-bottom:70px}
+  .home-partners .section-head{margin-bottom:32px}
+  .home-achievements{padding-top:82px;padding-bottom:80px}
+  .home-achievements .section-head{margin-bottom:38px}
+  .page-home>.section .challenge{padding-top:28px;padding-bottom:29px}
+  .page-home>.section .research{padding-top:36px;padding-bottom:40px}
+  .home-partners .partner{padding-top:21px!important;padding-bottom:21px!important}
+  .page-home>.section .highlight,.page-home>.section .highlight:nth-child(odd),.page-home>.section .highlight:nth-child(even){padding-top:24px;padding-bottom:24px}
+  .page-home>.section .impact{padding-top:39px;padding-bottom:41px}
+  .page-home>.join{padding-top:108px;padding-bottom:108px}
 }
 
 /* Mobile WebView text autosizing guard. WeChat on iOS can enlarge Chinese text after layout. */
@@ -216,122 +211,96 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   .home-media-section+.join h2{margin-bottom:24px}
 }
 
-main:has(.join-opportunities) .join-opportunities .join-grid{
+.page-join .join-opportunities .join-grid{
   border-top:0;
   border-bottom:0;
 }
-main:has(.join-opportunities)>.join-context{
+.page-join>.join-context{
   border-top:0;
 }
 
-main:has(#international-impact) #collaboration .partner-grid{
+.page-about #collaboration .partner-grid{
   border-top:0;
 }
 
-/* Explicit short-divider ownership. Horizontal rules belong to list items, never to section inference. */
-.divider-short-list{
-  border-top:0!important;
-  border-bottom:0!important;
-}
-.divider-short-list :is(.partner,.update-item,.media-item,.join-item,.contact-card,.detail-block){
-  border-top:0;
-  border-bottom:1px solid var(--line);
-}
-.divider-short-list.no-final-divider :is(.partner,.update-item,.media-item,.join-item,.contact-card,.detail-block):last-child{
-  border-bottom:0!important;
-}
-/* Mobile stacked lists use the same ownership rule. */
-@media(max-width:768px){
-  .divider-short-list :is(.partner,.update-item,.media-item,.join-item,.contact-card,.detail-block){
-    border-top:0!important;
-  }
-}
-/* Grid layouts may keep vertical separators, but the final horizontal close belongs to divider-wide. */
-.divider-wide.divider-short-list :is(.partner,.update-item,.media-item,.join-item,.contact-card,.detail-block):last-child{
-  border-bottom:0!important;
-}
-
-/* Short dividers belong only to repeated content rows. */
+/* Explicit short-divider ownership: repeated rows own short rules; page/section boundaries never infer them. */
 .divider-short-list{
   border-top:0!important;
   border-bottom:0!important;
 }
 .divider-short-list>:is(.challenge,.research,.partner,.update-item,.media-item,.highlight,.join-item),
 .divider-short-list .contact-card,
-#international-impact.divider-short-list .detail-block{
+.divider-short-list .detail-block{
   border-top:0!important;
   border-bottom:1px solid var(--line)!important;
 }
-.divider-short-list.no-final-divider>:last-child{
-  border-bottom:0!important;
-}
-/* A wide section close replaces the final short close at the same hierarchy. */
-.divider-wide .divider-short-list>:last-child{
+.divider-short-list.no-final-divider>:last-child,
+.divider-short-list.no-final-divider :is(.contact-card,.detail-block):last-child{
   border-bottom:0!important;
 }
 
 /* About first intro heading uses the same line-to-title distance as later intro headings. */
-main:has(#international-impact)>.content-section{
+.page-about>.content-section{
   padding-top:28px!important;
 }
 @media(max-width:768px){
-  main:has(#international-impact)>.content-section{
+  .page-about>.content-section{
     padding-top:22px!important;
   }
 }
 
 /* About intro prose: use the same editorial divider rhythm as the rest of the page. */
-main:has(#international-impact)>.content-section .prose>.title-feature{
+.page-about>.content-section .prose>.title-feature{
   padding-top:28px;
   border-top:1px solid var(--line);
 }
-main:has(#international-impact)>.content-section .prose>.title-feature:first-child{
+.page-about>.content-section .prose>.title-feature:first-child{
   margin-top:0;
   padding-top:0;
   border-top:0;
 }
-main:has(#international-impact)>.content-section .prose>.title-feature:not(:first-child){
+.page-about>.content-section .prose>.title-feature:not(:first-child){
   margin-top:36px;
 }
 @media(max-width:768px){
-  main:has(#international-impact)>.content-section .prose>.title-feature{
+  .page-about>.content-section .prose>.title-feature{
     padding-top:22px;
   }
-  main:has(#international-impact)>.content-section .prose>.title-feature:not(:first-child){
+  .page-about>.content-section .prose>.title-feature:not(:first-child){
     margin-top:28px;
   }
 }
 
 /* Join ends directly at its full-width section boundary. */
-main:has(.join-opportunities)>.join-opportunities{
+.page-join>.join-opportunities{
   padding-bottom:0;
 }
 
 /* About page: achievements live on Research Results; external media closes the About narrative. */
-main:has(#media-coverage):has(#international-impact){display:flex;flex-direction:column}
-main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
+.page-about{display:flex;flex-direction:column}
+.page-about>#achievements{display:none}
 
 /* Platform content and order live in the bilingual HTML, not generated CSS. */
 #international-impact>.container{display:flex;flex-direction:column}
 #international-impact .detail-block p{font-size:15px;line-height:1.72;color:var(--muted);font-weight:400}
 @media(max-width:768px){
-  main:has(#international-impact) :is(#collaboration .partner,#international-impact .detail-block){
+  .page-about :is(#collaboration .partner,#international-impact .detail-block){
     padding:22px 0;
     margin-top:0;
     border-left:0;
   }
-  main:has(#international-impact) :is(#collaboration .partner,#international-impact .detail-block) h3{
+  .page-about :is(#collaboration .partner,#international-impact .detail-block) h3{
     margin-bottom:8px;
   }
   #international-impact .detail-block p{font-size:14px;line-height:1.65}
 }
 
 /* Inner-list first rows use the same distance from their upper divider as following rows. */
-main:has(#international-impact) #media-coverage .media-coverage{
+.page-about #media-coverage .media-coverage{
   margin-top:0;
 }
 @media(max-width:768px){
-  main:has(.contact-grid) .contact-grid{
+  .page-contact .contact-grid{
     gap:0!important;
   }
 }
@@ -347,12 +316,12 @@ main:has(#international-impact) #media-coverage .media-coverage{
 .team-grid .person .person-link:hover{text-decoration:underline;text-underline-offset:3px}
 @media(min-width:769px){
   .team-grid .person h3{margin-top:18px}
-  main:has(>.page-hero) .team-grid .person .research-line{margin-top:14px;font-size:14px;line-height:1.55}
+  .page-inner .team-grid .person .research-line{margin-top:14px;font-size:14px;line-height:1.55}
   .team-grid .person .bio-short{margin-top:9px;font-size:13px;line-height:1.65}
   .team-grid .person .person-link{margin-top:13px;font-size:12px}
 }
 @media(max-width:768px){
-  main:has(>.page-hero) .team-grid{row-gap:38px}
+  .page-inner .team-grid{row-gap:38px}
   .team-grid .person h3{margin-top:14px}
   .team-grid .person .research-line{margin-top:10px}
   .team-grid .person .bio-short{margin-top:7px}
@@ -412,27 +381,27 @@ main:has(#international-impact) #media-coverage .media-coverage{
   }
   .join-opportunities .join-item .title-item{margin:0}
   .join-opportunities .join-item p{margin:0}
-  main:has(.join-opportunities) .join-opportunities .join-item:last-child{border-bottom:0}
+  .page-join .join-opportunities .join-item:last-child{border-bottom:0}
 }
 
 /* Results 01–06 share one list rhythm across desktop and mobile. */
-main>:is(.results-achievements,.results-publications) .highlight{
+.page-results>:is(.results-achievements,.results-publications) .highlight{
   border-top:0!important;
   border-left:0!important;
 }
-main>.results-achievements .highlight{
+.page-results>.results-achievements .highlight{
   border-bottom:1px solid var(--line);
 }
-main>.results-achievements .highlight:first-child{
+.page-results>.results-achievements .highlight:first-child{
   border-top:0!important;
 }
-main>.results-publications .results-publications-heading .highlight{
+.page-results>.results-publications .results-publications-heading .highlight{
   border-bottom:0!important;
 }
 @media(max-width:768px){
-  main>:is(.results-achievements,.results-publications) .highlight,
-  main>:is(.results-achievements,.results-publications) .highlight:nth-child(odd),
-  main>:is(.results-achievements,.results-publications) .highlight:nth-child(even){
+  .page-results>:is(.results-achievements,.results-publications) .highlight,
+  .page-results>:is(.results-achievements,.results-publications) .highlight:nth-child(odd),
+  .page-results>:is(.results-achievements,.results-publications) .highlight:nth-child(even){
     grid-template-columns:42px minmax(0,1fr);
     gap:10px;
     padding:25px 0;
@@ -443,7 +412,7 @@ main>.results-publications .results-publications-heading .highlight{
 .results-achievements{padding:70px 0 0;border-bottom:0}
 .results-achievements .highlights{margin-top:0}
 .results-achievements .highlight{padding-top:22px;padding-bottom:22px}
-main>.content-section.results-publications{padding-top:0}
+.page-results>.results-publications{padding-top:0}
 .results-publications{padding-top:0}
 .results-publications-heading{margin-top:0}
 .results-publications-heading{
@@ -489,26 +458,18 @@ main>.content-section.results-publications{padding-top:0}
 
 @media(max-width:768px){
   .results-achievements{padding:56px 0 0}
-  main>.content-section.results-publications{padding-top:0}
+  .page-results>.results-publications{padding-top:0}
   .results-publications{padding-top:0}
 }
 
 /* Research Results final rhythm: keep 01 comfortably separated from the intro, keep 05→06 continuous. */
-main>.page-hero:has(+ .results-achievements){padding-bottom:36px!important}
+.page-results>.page-hero{padding-bottom:36px!important}
 @media(max-width:768px){
-  main>.page-hero:has(+ .results-achievements){padding-bottom:28px!important}
+  .page-results>.page-hero{padding-bottom:28px!important}
 }
 
 /* First-section content starts on the same item rhythm as following rows. */
-main:has(.contact-grid) .contact-grid{margin-top:0!important}
-
-/* Keep partner lists visible when no separate mobile summary exists. */
-@media(max-width:768px){
-  .partner:not(:has(.partner-inline)) p{display:block;font-size:15px;line-height:1.6;color:var(--muted)}
-}
-@media(min-width:769px){
-  .partner:not(:has(p)) .partner-inline{display:block;font-size:18px;line-height:1.9;color:#313846}
-}
+.page-contact .contact-grid{margin-top:0!important}
 
 /* Parallel card summaries reserve the same rows, including short entries. */
 @media(min-width:769px){
@@ -607,7 +568,7 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
   }
 
   /* Homepage research reads as capability identity, not a second challenge list. */
-  .home-hero~.section .research-identity{
+  .page-home .research-grid .research-identity{
     display:grid;
     grid-template-columns:28px max-content minmax(0,1fr);
     column-gap:9px;
@@ -615,17 +576,17 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
     margin-bottom:20px;
     letter-spacing:0;
   }
-  .home-hero~.section .research-identity>.research-index{
+  .page-home .research-grid .research-identity>.research-index{
     display:block;
     margin:3px 0 0;
     font-size:12px;
     line-height:1;
     color:#929BA8;
   }
-  .home-hero~.section .research-identity>.research-code-main{
+  .page-home .research-grid .research-identity>.research-code-main{
     display:contents;
   }
-  .home-hero~.section .research-identity>.research-code-main>span{
+  .page-home .research-grid .research-identity>.research-code-main>span{
     font-size:25px;
     line-height:1;
     font-weight:680;
@@ -633,7 +594,7 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
     color:var(--ink);
     white-space:nowrap;
   }
-  .home-hero~.section .research-identity>.research-code-main>.research-expansion{
+  .page-home .research-grid .research-identity>.research-code-main>.research-expansion{
     margin-top:1px;
     font-size:10.5px;
     line-height:1.3;
@@ -642,7 +603,7 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
   }
 
   /* Give visual work a clearer mid-page transition without adding decoration. */
-  .home-hero~.section:has(.home-achievement-stories){
+  .home-achievements{
     padding-top:92px;
   }
 
@@ -666,28 +627,28 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
 
 
 /* First item rhythm: section boundaries must not add a second layer of top spacing. */
-main:has(>.page-hero)>.results-achievements,
-main:has(>.page-hero)>.join-opportunities,
-main:has(>.page-hero):has(.contact-grid)>.content-section{
+.page-results>.results-achievements,
+.page-join>.join-opportunities,
+.page-contact>.content-section{
   padding-top:0!important;
 }
-main>.research-direction:not(:last-child){
+.page-research>.research-direction:not(:last-child){
   padding-bottom:0!important;
 }
 
 /* Research editorial sections: separate directions with whitespace, not divider chrome. */
-main>.research-direction{
+.page-research>.research-direction{
   border-top:0;
   border-bottom:0;
 }
 @media(min-width:769px){
-  main:has(>.page-hero)>.content-section.research-direction{
+  .page-research>.research-direction{
     padding-top:60px;
     padding-bottom:60px;
   }
 }
 @media(max-width:768px){
-  main:has(>.page-hero)>.content-section.research-direction{
+  .page-research>.research-direction{
     padding-top:40px;
     padding-bottom:42px;
   }
@@ -705,43 +666,43 @@ main>.research-direction{
 }
 html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 
-/* When a section owns a wide close, remove short rules from its final visual row.
-   These selectors describe shared list layouts, not individual pages. */
-.divider-wide .divider-short-list>:last-child{
-  border-bottom:0!important;
-}
-.divider-wide .research-grid{
-  border-bottom:0;
-}
-
-/* Phone layouts are stacked: only the final item is in the final visual row. */
+/* Final visual rows do not draw a closing short rule. */
 @media(max-width:768px){
-  .divider-wide .divider-short-list>:last-child{
+  :is(.challenge-grid,.research-grid,.partner-grid,.updates-grid,.media-list).divider-short-list>:last-child{
     border-bottom:0!important;
   }
 }
-
-/* Tablet/desktop two-column grids. */
-@media(min-width:769px){
-  .divider-wide :is(.challenge-grid,.partner-grid)>:nth-last-child(-n+2){
-    border-bottom:0!important;
-  }
-}
-
-/* On tablet, Collaboration Platforms is still a three-column grid. */
 @media(min-width:769px) and (max-width:1024px){
-  .divider-wide .updates-grid>:nth-last-child(-n+3){
+  .challenge-grid.divider-short-list>:nth-last-child(-n+2),
+  .partner-grid.divider-short-list>:nth-last-child(-n+2){
+    border-bottom:0!important;
+  }
+  .research-grid.divider-short-list>:last-child,
+  .media-list.divider-short-list>:last-child{
+    border-bottom:0!important;
+  }
+  .updates-grid.divider-short-list>:nth-last-child(-n+3){
+    border-bottom:0!important;
+  }
+}
+@media(min-width:1025px) and (max-width:1099px){
+  .challenge-grid.divider-short-list>:nth-last-child(-n+2),
+  .partner-grid.divider-short-list>:nth-last-child(-n+2){
+    border-bottom:0!important;
+  }
+  :is(.research-grid,.updates-grid,.media-list).divider-short-list>:last-child{
+    border-bottom:0!important;
+  }
+}
+@media(min-width:1100px){
+  .challenge-grid.divider-short-list>:nth-last-child(-n+2),
+  .partner-grid.divider-short-list>:nth-last-child(-n+2),
+  .media-list.divider-short-list>:nth-last-child(-n+2){
+    border-bottom:0!important;
+  }
+  .research-grid.divider-short-list>:nth-last-child(-n+3),
+  .updates-grid.divider-short-list>:last-child{
     border-bottom:0!important;
   }
 }
 
-/* Wide desktop: Research is one three-column row; Media is two columns.
-   Collaboration Platforms becomes an editorial one-column list at 1025px+. */
-@media(min-width:1100px){
-  .divider-wide .research-grid>:nth-last-child(-n+3){
-    border-bottom:0!important;
-  }
-  .divider-wide .media-list>:nth-last-child(-n+2){
-    border-bottom:0!important;
-  }
-}
