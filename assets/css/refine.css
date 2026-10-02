@@ -227,7 +227,7 @@ main:has(#international-impact) #collaboration .partner-grid{
   border-top:0;
 }
 
-/* Shared inner-page list divider system: per-row bottom rules only. */
+/* Editorial-list dividers: short rules separate repeated items; full-width rules stay at section boundaries. */
 :is(
   #international-impact .detail-block,
   .join-opportunities .join-item,
@@ -293,14 +293,26 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
   #international-impact .detail-block p{font-size:14px;line-height:1.65}
 }
 
-/* People cards: preserve equal faculty weight, but make research identity easier to scan than biography text. */
+/* People profile-list: one internal rhythm, content-driven card heights. */
+.team-grid .person{padding-bottom:0}
+.team-grid .person h3{margin:16px 0 4px}
+.team-grid .person .role{margin:0;color:#7D8693;font-size:13px;line-height:1.45}
+.team-grid .person .research-line{margin:11px 0 0;min-height:0;color:#303744;font-weight:620}
+.team-grid .person .bio-short{margin:8px 0 0;color:#7B8492}
+.team-grid .person .person-link{display:inline-block;margin-top:11px;font-weight:620;color:#4B5563}
+.team-grid .person .person-link:hover{text-decoration:underline;text-underline-offset:3px}
 @media(min-width:769px){
-  .team-grid .person h3{margin:18px 0 5px}
-  .team-grid .person .role{font-size:13px;line-height:1.45;color:#7D8693}
-  .team-grid .person .research-line{margin:16px 0 0;min-height:0;font-size:14px;line-height:1.55;font-weight:620;color:#303744}
-  .team-grid .person .bio-short{margin:10px 0 0;font-size:13px;line-height:1.65;color:#7B8492}
-  .team-grid .person .person-link{margin-top:14px;font-size:12px;font-weight:620;color:#4B5563}
-  .team-grid .person .person-link:hover{text-decoration:underline;text-underline-offset:3px}
+  .team-grid .person h3{margin-top:18px}
+  .team-grid .person .research-line{margin-top:14px;font-size:14px;line-height:1.55}
+  .team-grid .person .bio-short{margin-top:9px;font-size:13px;line-height:1.65}
+  .team-grid .person .person-link{margin-top:13px;font-size:12px}
+}
+@media(max-width:768px){
+  main:has(>.page-hero) .team-grid{row-gap:38px}
+  .team-grid .person h3{margin-top:14px}
+  .team-grid .person .research-line{margin-top:10px}
+  .team-grid .person .bio-short{margin-top:7px}
+  .team-grid .person .person-link{margin-top:10px}
 }
 
 /* Shared desktop editorial-row skeleton for About platforms, Join context, and Contact. */
@@ -314,8 +326,8 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 
   .join-context>.container{display:flex;flex-direction:column}
   :is(.join-context .section-head,.contact-grid .contact-card){grid-template-columns:minmax(220px,280px) minmax(0,1fr);column-gap:42px;padding:27px 0}
-  .join-context .section-head{row-gap:5px;margin:0;border-top:1px solid var(--line)}
-  .join-context .section-head:last-of-type{border-bottom:1px solid var(--line)}
+  .join-context .section-head{row-gap:5px;margin:0;border-top:0}
+  .join-context .section-head:last-of-type{border-bottom:0}
   .join-context .section-head .eyebrow{grid-column:1;margin:2px 0 0}
   .join-context .section-head h2{grid-column:1;margin:8px 0 0;font-size:24px;line-height:1.25}
   .join-context .section-head p{grid-column:2;grid-row:1 / span 2;margin:0;max-width:46em;font-size:15px;line-height:1.78;color:#4A5563}
@@ -540,6 +552,24 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
   }
 }
 
+
+/* Research editorial sections: separate directions with whitespace, not divider chrome. */
+main>.research-direction{
+  border-top:0;
+  border-bottom:0;
+}
+@media(min-width:769px){
+  main:has(>.page-hero)>.content-section.research-direction{
+    padding-top:60px;
+    padding-bottom:60px;
+  }
+}
+@media(max-width:768px){
+  main:has(>.page-hero)>.content-section.research-direction{
+    padding-top:40px;
+    padding-bottom:42px;
+  }
+}
 
 /* Research direction facts: structure existing content without adding card chrome. */
 .direction-facts{margin-top:24px;border-top:1px solid var(--line)}
