@@ -99,21 +99,20 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
 /* Compact media coverage index: factual third-party coverage, visually secondary to research outcomes. */
 :is(.media-summary,.section-summary){max-width:760px;margin:-18px 0 30px;color:var(--muted);font-size:14px;line-height:1.75}
 /* Unified divider system: wide = level-1 boundary; short = internal content boundary.
-   Section dividers close the content itself, not the section's trailing whitespace. */
+   Repeated-content sections close immediately after their short-divider list. */
 .divider-wide{
   border-bottom:0!important;
 }
-:is(.section,.content-section).divider-wide>.container::after{
+.divider-wide .divider-short-list::after{
   content:"";
   display:block;
-  width:100%;
+  grid-column:1 / -1;
+  width:100vw;
+  margin-left:calc(50% - 50vw);
   border-bottom:1px solid var(--line);
 }
 .page-hero.divider-wide{
   border-bottom:1px solid var(--line)!important;
-}
-.page-hero.divider-wide>.container::after{
-  content:none;
 }
 .container>.divider-wide{
   width:100vw;
