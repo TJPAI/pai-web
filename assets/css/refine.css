@@ -605,6 +605,63 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
     text-box-trim:trim-start;
     text-box-edge:cap alphabetic;
   }
+
+  /* Homepage research reads as capability identity, not a second challenge list. */
+  .home-hero~.section .research-identity{
+    display:grid;
+    grid-template-columns:28px max-content minmax(0,1fr);
+    column-gap:9px;
+    align-items:start;
+    margin-bottom:20px;
+    letter-spacing:0;
+  }
+  .home-hero~.section .research-identity>.research-index{
+    display:block;
+    margin:3px 0 0;
+    font-size:12px;
+    line-height:1;
+    color:#929BA8;
+  }
+  .home-hero~.section .research-identity>.research-code-main{
+    display:contents;
+  }
+  .home-hero~.section .research-identity>.research-code-main>span{
+    font-size:25px;
+    line-height:1;
+    font-weight:680;
+    letter-spacing:-.02em;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .home-hero~.section .research-identity>.research-code-main>.research-expansion{
+    margin-top:1px;
+    font-size:10.5px;
+    line-height:1.3;
+    font-weight:500;
+    color:#697586;
+  }
+
+  /* Give visual work a clearer mid-page transition without adding decoration. */
+  .home-hero~.section:has(.home-achievement-stories){
+    padding-top:92px;
+  }
+
+  /* Platform names carry the hierarchy; category labels stay secondary. */
+  .selected-updates .update-item h3{
+    font-size:17px;
+    line-height:1.45;
+    font-weight:650;
+  }
+  .selected-updates .update-meta{
+    font-size:12px;
+    font-weight:560;
+    color:#7D8794;
+  }
+
+  /* Let the final CTA read as a deliberate close to the homepage. */
+  .home-media-section+.join{
+    padding-top:132px;
+  }
 }
 
 
