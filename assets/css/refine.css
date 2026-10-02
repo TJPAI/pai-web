@@ -74,12 +74,6 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
   main:has(#international-impact) #collaboration .partner p{font-size:16px;line-height:1.78;color:#394150}
 }
 
-@media(min-width:1025px){
-  main:has(#international-impact) #collaboration .partner:nth-last-child(-n+2){
-    border-bottom:0;
-  }
-}
-
 /* Homepage collaboration platforms: keep the three institutions equal, but present them as editorial rows instead of another three-column card grid. */
 @media(min-width:1025px){
   .selected-updates .updates-grid{display:block;border-top:1px solid var(--line)}
@@ -104,8 +98,16 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
 
 /* Compact media coverage index: factual third-party coverage, visually secondary to research outcomes. */
 :is(.media-summary,.section-summary){max-width:760px;margin:-18px 0 30px;color:var(--muted);font-size:14px;line-height:1.75}
+main:has(#international-impact) :is(#collaboration,#international-impact,#media-coverage) :is(.section-summary,.media-summary)::after{
+  content:"";
+  display:block;
+  width:100vw;
+  margin-left:calc(50% - 50vw);
+  margin-top:30px;
+  border-bottom:1px solid var(--line);
+}
 .media-coverage{margin-top:34px}
-.media-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
+.media-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:0}
 .media-item{display:grid;grid-template-columns:118px minmax(0,1fr);gap:16px;align-items:start;padding:15px 0;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}
 .media-item:nth-child(odd){padding-right:24px}
 .media-item:nth-child(even){padding-left:24px;border-left:1px solid var(--line)}
@@ -115,6 +117,9 @@ html[lang^="en"] .eyebrow{text-transform:uppercase}
 .media-more{margin-top:22px}
 @media(max-width:768px){
   :is(.media-summary,.section-summary){margin:-14px 0 24px;font-size:13px;line-height:1.7}
+  main:has(#international-impact) :is(#collaboration,#international-impact,#media-coverage) :is(.section-summary,.media-summary)::after{
+    margin-top:24px;
+  }
   .media-list{grid-template-columns:1fr}
   .media-item{grid-template-columns:98px minmax(0,1fr);gap:12px;padding:14px 0!important;border-left:0!important}
   .media-title{font-size:13px}
@@ -207,7 +212,7 @@ main>.page-hero{
 }
 
 /* About keeps full-width separators after its major narrative sections. */
-main:has(#international-impact)>:is(.content-section,#overview,#collaboration,#international-impact){
+main:has(#international-impact)>:is(.content-section,#overview){
   border-bottom:1px solid var(--line);
 }
 
@@ -234,7 +239,6 @@ main:has(.join-opportunities)>.join-context{
   border-top:0;
   border-bottom:1px solid var(--line);
 }
-#international-impact .detail-block:last-child,
 .join-opportunities .join-item:last-child{
   border-bottom:0;
 }
@@ -242,9 +246,6 @@ main:has(.join-opportunities)>.join-context{
   main:has(#international-impact) #collaboration .partner{
     border-top:0;
     border-bottom:1px solid var(--line);
-  }
-  main:has(#international-impact) #collaboration .partner:last-child{
-    border-bottom:0;
   }
 }
 
@@ -270,8 +271,7 @@ main:has(#international-impact)>.content-section .prose>.title-feature:not(:firs
   }
 }
 
-/* Sections ending in internal row dividers hand off directly to the full-width boundary rule. */
-main:has(#international-impact)>:is(#collaboration,#international-impact),
+/* Join ends directly at its full-width section boundary. */
 main:has(.join-opportunities)>.join-opportunities{
   padding-bottom:0;
 }
@@ -356,6 +356,14 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 .results-achievements .highlight{padding-top:22px;padding-bottom:22px}
 .results-publications{padding-top:0}
 .results-publications-heading{margin-top:0}
+.results-publications-heading{
+  border-top:0!important;
+}
+.results-publications-heading .highlight{
+  padding-top:22px;
+  padding-bottom:22px;
+}
+
 @media(max-width:768px){
   .results-achievements{padding:56px 0 0}
   .results-publications{padding-top:0}
@@ -491,3 +499,6 @@ main:has(.contact-grid) .contact-grid{margin-top:0!important}
   .direction-facts strong{font-size:12px;letter-spacing:.06em}
 }
 html[lang="en"] .direction-facts strong{letter-spacing:.01em}
+
+/* Final Join opportunity closes without an internal short divider. */
+main:has(.join-opportunities) .join-opportunities .join-item:last-child{border-bottom:0!important}
