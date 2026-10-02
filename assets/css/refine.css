@@ -304,7 +304,7 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 .team-grid .person .person-link:hover{text-decoration:underline;text-underline-offset:3px}
 @media(min-width:769px){
   .team-grid .person h3{margin-top:18px}
-  .team-grid .person .research-line{margin-top:14px;font-size:14px;line-height:1.55}
+  main:has(>.page-hero) .team-grid .person .research-line{margin-top:14px;font-size:14px;line-height:1.55}
   .team-grid .person .bio-short{margin-top:9px;font-size:13px;line-height:1.65}
   .team-grid .person .person-link{margin-top:13px;font-size:12px}
 }
