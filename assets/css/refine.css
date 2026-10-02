@@ -200,7 +200,7 @@ main:has(>.page-hero)>section{
   border-bottom:1px solid var(--line);
 }
 
-/* Shared inner-page list divider system: first top rule + per-row bottom rule. */
+/* Shared inner-page list divider system: per-row bottom rules only. */
 :is(
   #international-impact .detail-block,
   .join-opportunities .join-item,
