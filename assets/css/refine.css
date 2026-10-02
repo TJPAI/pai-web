@@ -629,6 +629,11 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 main:has(.join-opportunities) .join-opportunities .join-item:last-child{border-bottom:0!important}
 
 
+/* Collaboration Platforms keeps short rules only between rows; the section border owns the close. */
+.home-hero~.section.selected-updates .update-item:last-child{
+  border-bottom:0!important;
+}
+
 /* Homepage primary modules own their full-width lower boundary. */
 .home-hero~.section:has(.challenge-grid),
 .home-hero~.section:has(.research-grid),
