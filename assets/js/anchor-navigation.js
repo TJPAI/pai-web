@@ -51,9 +51,33 @@
     });
   };
 
+  const alignHashTarget=()=>{
+    const hash=location.hash;
+    if(!hash||hash==='#main-content') return;
+    let id;
+    try{ id=decodeURIComponent(hash.slice(1)); }catch(_e){ id=hash.slice(1); }
+    const target=document.getElementById(id);
+    if(!target||!target.classList.contains('anchor-target')) return;
+    const header=document.querySelector('.site-header');
+    const align=()=>{
+      const headerBottom=header?header.getBoundingClientRect().bottom:0;
+      const targetTop=target.getBoundingClientRect().top;
+      instantScroll(window.scrollY+targetTop-headerBottom);
+    };
+    requestAnimationFrame(()=>{
+      align();
+      requestAnimationFrame(align);
+    });
+  };
+
   forceTargetTop();
   restoreReturnScroll();
-  addEventListener('pageshow',restoreReturnScroll,{passive:true});
+  alignHashTarget();
+  addEventListener('pageshow',event=>{
+    restoreReturnScroll(event);
+    alignHashTarget();
+  },{passive:true});
+  addEventListener('hashchange',alignHashTarget,{passive:true});
 
   document.addEventListener('click',event=>{
     if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey) return;
