@@ -257,14 +257,6 @@ main:has(#international-impact)>.content-section .prose>.title-feature:not(:firs
 main:has(#international-impact)>:is(#collaboration,#international-impact){
   padding-bottom:0;
 }
-main:has(#international-impact)>:is(#collaboration,#international-impact)>.container{
-  padding-bottom:76px;
-}
-@media(max-width:768px){
-  main:has(#international-impact)>:is(#collaboration,#international-impact)>.container{
-    padding-bottom:76px;
-  }
-}
 
 /* About page: achievements live on Research Results; external media closes the About narrative. */
 main:has(#media-coverage):has(#international-impact){display:flex;flex-direction:column}
