@@ -215,6 +215,29 @@ main:has(#international-impact) #collaboration .partner-grid{
   border-top:0;
 }
 
+/* Explicit short-divider ownership. Horizontal rules belong to list items, never to section inference. */
+.divider-short-list{
+  border-top:0!important;
+  border-bottom:0!important;
+}
+.divider-short-list :is(.challenge,.research,.partner,.update-item,.media-item,.join-item,.contact-card,.detail-block){
+  border-top:0;
+  border-bottom:1px solid var(--line);
+}
+.divider-short-list.no-final-divider :is(.challenge,.research,.partner,.update-item,.media-item,.join-item,.contact-card,.detail-block):last-child{
+  border-bottom:0!important;
+}
+/* Mobile stacked lists use the same ownership rule. */
+@media(max-width:768px){
+  .divider-short-list :is(.challenge,.research,.partner,.update-item,.media-item,.join-item,.contact-card,.detail-block){
+    border-top:0!important;
+  }
+}
+/* Grid layouts may keep vertical separators, but the final horizontal close belongs to divider-wide. */
+.divider-wide.divider-short-list :is(.challenge,.research,.partner,.update-item,.media-item,.join-item,.contact-card,.detail-block):last-child{
+  border-bottom:0!important;
+}
+
 /* Editorial-list dividers: short rules separate repeated items; full-width rules stay at section boundaries. */
 :is(
   #international-impact .detail-block,
