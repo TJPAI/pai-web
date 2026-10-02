@@ -34,7 +34,9 @@ for language, page in (('zh', 'publications.html'), ('en', 'en/publications.html
         parts.append(f'<section class="pub-group" id="pub-year-{year}" data-year="{year}" data-expanded="false"><div class="pub-year-row"><h2 class="pub-year">{year}</h2><span>{count}</span></div>')
         for index, pub in enumerate(pubs):
             key = esc(pub.get('doi') or pub['title'])
-            parts.append(f'<article class="pub" data-pub-extra="{int(index >= VISIBLE_DEFAULT)}" data-publication-key="{key}"><h3 class="title-item">{esc(pub["title"])}</h3><p class="pub-authors">{esc(pub["authors"])}</p><p class="pub-venue">{esc(pub["venue"])} · {year}</p>')
+            extra = index >= VISIBLE_DEFAULT
+            class_name = 'pub is-collapsed' if extra else 'pub'
+            parts.append(f'<article class="{class_name}" data-pub-extra="{int(extra)}" data-publication-key="{key}"><h3 class="title-item">{esc(pub["title"])}</h3><p class="pub-authors">{esc(pub["authors"])}</p><p class="pub-venue">{esc(pub["venue"])} · {year}</p>')
             if pub.get('doi'):
                 doi = quote(pub['doi'].strip(), safe="/!~*'()")
                 parts.append(f'<div class="pub-actions"><a href="https://doi.org/{esc(doi)}" target="_blank" rel="noopener noreferrer">DOI ↗</a></div>')
