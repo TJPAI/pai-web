@@ -316,6 +316,17 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
   .team-grid .person .person-link{margin-top:10px}
 }
 
+/* Join context: one whitespace rhythm for all three background sections on phones. */
+@media(max-width:768px){
+  .join-context .section-head,
+  .join-context .section-head:last-of-type{
+    margin-bottom:40px;
+  }
+  .join-context .btn{
+    margin-top:-10px;
+  }
+}
+
 /* Shared desktop editorial-row skeleton for About platforms, Join context, and Contact. */
 @media(min-width:1025px){
   :is(#international-impact .detail-block,.join-context .section-head,.contact-grid .contact-card){display:grid;align-items:start}
