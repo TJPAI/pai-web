@@ -559,13 +559,13 @@ main>.research-direction{
   border-bottom:0;
 }
 @media(min-width:769px){
-  main>.research-direction{
+  main:has(>.page-hero)>.content-section.research-direction{
     padding-top:60px;
     padding-bottom:60px;
   }
 }
 @media(max-width:768px){
-  main>.content-section.research-direction{
+  main:has(>.page-hero)>.content-section.research-direction{
     padding-top:40px;
     padding-bottom:42px;
   }
