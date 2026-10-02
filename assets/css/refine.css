@@ -293,6 +293,16 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
   #international-impact .detail-block p{font-size:14px;line-height:1.65}
 }
 
+/* Inner-list first rows use the same distance from their upper divider as following rows. */
+main:has(#international-impact) #media-coverage .media-coverage{
+  margin-top:0;
+}
+@media(max-width:768px){
+  main:has(.contact-grid) .contact-grid{
+    gap:0!important;
+  }
+}
+
 /* People profile-list: one internal rhythm, content-driven card heights. */
 .team-grid .person{padding-bottom:0}
 .team-grid .person h3{margin:16px 0 4px}
