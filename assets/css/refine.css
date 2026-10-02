@@ -195,9 +195,27 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   .home-media-section+.join h2{margin-bottom:24px}
 }
 
-/* Inner-page divider hierarchy: full-width rules separate top-level sections. */
-main:has(>.page-hero)>section{
+/* Inner-page divider hierarchy: page-specific full-width separators. */
+main>.page-hero{
   border-bottom:1px solid var(--line);
+}
+
+/* About keeps full-width separators after its major narrative sections. */
+main:has(#international-impact)>:is(.content-section,#overview,#collaboration,#international-impact){
+  border-bottom:1px solid var(--line);
+}
+
+/* Join keeps a full-width separator between opportunities and contextual information. */
+main:has(.join-opportunities)>.join-opportunities{
+  border-bottom:1px solid var(--line);
+}
+
+main:has(.join-opportunities) .join-opportunities .join-grid{
+  border-top:0;
+  border-bottom:0;
+}
+main:has(.join-opportunities)>.join-context{
+  border-top:0;
 }
 
 /* Shared inner-page list divider system: per-row bottom rules only. */
@@ -224,6 +242,8 @@ main:has(#international-impact)>.content-section .prose>.title-feature{
 }
 main:has(#international-impact)>.content-section .prose>.title-feature:first-child{
   margin-top:0;
+  padding-top:0;
+  border-top:0;
 }
 main:has(#international-impact)>.content-section .prose>.title-feature:not(:first-child){
   margin-top:36px;
@@ -235,6 +255,11 @@ main:has(#international-impact)>.content-section .prose>.title-feature:not(:firs
   main:has(#international-impact)>.content-section .prose>.title-feature:not(:first-child){
     margin-top:28px;
   }
+}
+
+/* Keep About major-section separators close to the content they close. */
+main:has(#international-impact)>:is(#collaboration,#international-impact){
+  padding-bottom:0;
 }
 
 /* About page: achievements live on Research Results; external media closes the About narrative. */
