@@ -4,7 +4,7 @@
   const prefix=new URL('.',document.currentScript.src).pathname.replace(/\/assets\/js\/$/,'');
   const root=path=>`${prefix}${path}`;
   const absolute=path=>new URL(root(path),location.origin).href;
-  const PUB_VISIBLE_DEFAULT=3;
+  const PUB_VISIBLE_DEFAULT=2;
 
   const normalizedPath=(pathname=location.pathname)=>{
     let path=pathname||'/';
@@ -948,7 +948,7 @@
     const en=publicationLanguage()==='en';
     button.dataset.open=allOpen?'true':'false';
     button.setAttribute('aria-expanded',allOpen?'true':'false');
-    button.textContent=allOpen?(en?'Collapse':'收起'):(en?'All':'全部');
+    button.textContent=allOpen?(en?'Collapse':'收起'):(en?'Expand all':'展开全部');
   };
 
   const updateBackTopVisibility=()=>{
