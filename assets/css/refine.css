@@ -257,9 +257,16 @@ main:has(#international-impact)>.content-section .prose>.title-feature:not(:firs
   }
 }
 
-/* Keep About major-section separators close to the content they close. */
-main:has(#international-impact)>:is(#collaboration,#international-impact){
-  padding-bottom:0;
+/* Keep full-width section separators visually tied to the content they close. */
+main:has(#international-impact)>:is(.content-section,#overview,#collaboration,#international-impact),
+main:has(.join-opportunities)>.join-opportunities{
+  padding-bottom:28px;
+}
+@media(max-width:768px){
+  main:has(#international-impact)>:is(.content-section,#overview,#collaboration,#international-impact),
+  main:has(.join-opportunities)>.join-opportunities{
+    padding-bottom:22px;
+  }
 }
 
 /* About page: achievements live on Research Results; external media closes the About narrative. */
