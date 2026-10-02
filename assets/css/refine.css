@@ -212,6 +212,10 @@ main:has(.join-opportunities)>.join-opportunities{
 
 main:has(.join-opportunities) .join-opportunities .join-grid{
   border-top:0;
+  border-bottom:0;
+}
+main:has(.join-opportunities)>.join-context{
+  border-top:0;
 }
 
 /* Shared inner-page list divider system: per-row bottom rules only. */
