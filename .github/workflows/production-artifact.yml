@@ -2,8 +2,6 @@ name: Build production server artifact
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
 
 permissions:
   contents: read
