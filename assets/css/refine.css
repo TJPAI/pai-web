@@ -195,8 +195,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   .home-media-section+.join h2{margin-bottom:24px}
 }
 
-/* About hero flows directly into the narrower intro prose; avoid a redundant full-width divider. */
-main:has(#international-impact)>.page-hero{
+/* Inner-page heroes flow directly into their content systems; avoid redundant full-width dividers. */
+main>.page-hero{
   border-bottom:0;
 }
 
