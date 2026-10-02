@@ -360,6 +360,27 @@ main:has(#media-coverage):has(#international-impact)>#achievements{display:none}
 .results-publications-heading .highlight{
   padding-top:22px;
   padding-bottom:22px;
+  border-bottom:0;
+}
+
+/* Publication year navigation: one lower rule only, with slightly stronger emphasis. */
+.results-publications .publication-toolbar{
+  border-top:0;
+  border-bottom:1px solid var(--line);
+}
+.results-publications .publication-year-link{
+  color:#4B5563;
+  font-weight:650;
+  font-size:15px;
+}
+.results-publications .pub-toggle-all{
+  color:var(--ink);
+  font-weight:650;
+}
+@media(max-width:768px){
+  .results-publications .publication-year-link{
+    font-size:14px;
+  }
 }
 
 @media(max-width:768px){
