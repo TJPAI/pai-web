@@ -71,6 +71,25 @@
     setTimeout(alignHashTarget,80);
   };
 
+  // iOS Safari owns gestures that start at the physical screen edge. Those
+  // gestures drive browser history, while site.js deliberately ignores the
+  // first 32px for its own page swipe. On popstate site.js focuses the restored
+  // page destination with a temporary tabindex=-1; Safari renders that focus as
+  // a large blue rectangle after an edge Back/Forward gesture. Browser-history
+  // navigation should restore the page without leaving that transient focus.
+  let historyFocusCleanupUntil=0;
+  addEventListener('popstate',()=>{
+    historyFocusCleanupUntil=performance.now()+2000;
+  },{passive:true});
+  document.addEventListener('focusin',event=>{
+    if(performance.now()>historyFocusCleanupUntil) return;
+    const target=event.target;
+    if(!(target instanceof HTMLElement)||!target.closest('main')||target.getAttribute('tabindex')!=='-1') return;
+    requestAnimationFrame(()=>{
+      if(document.activeElement===target) target.blur();
+    });
+  },true);
+
   forceTargetTop();
   restoreReturnScroll();
   scheduleHashAlign();
