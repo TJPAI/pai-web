@@ -15,8 +15,9 @@ Engineering priority:
 - Publications: `data/publications.json` and `data/publications-archive.json`.
 - Faculty pages: `people/` and `en/people/`.
 - Environment/domain settings: `config/site.json`.
+- Production server build: `tools/package_boda.py`.
 
-Do not create a second source of truth for domain names, research terminology, shared navigation, or asset versions.
+Do not create a second source of truth for domain names, research terminology, shared navigation, asset versions, or the production server build sequence.
 
 ## 2. Bilingual content
 
@@ -102,7 +103,7 @@ Existing focus/skip-link accessibility styles live in `app-core.css`; avoid addi
 
 ## 9. Runtime preparation
 
-`tools/prepare_runtime.py` currently applies a small set of deployment-only optimizations that have already been validated in Pages and the production dry run:
+`tools/prepare_runtime.py` currently applies a small set of deployment-only optimizations that have already been validated in Pages and the production packager:
 
 - early root-page English preference redirect before heavy homepage assets load;
 - mobile-only orbit initialization;
@@ -157,17 +158,17 @@ Production target:
 
 The committed/default `active_environment` remains `preview`. Preview intentionally blocks search indexing and is deployed automatically by GitHub Pages.
 
-Do **not** change `active_environment` on `main` simply to build production. Both the continuous production dry run and the manual production-artifact workflow select the production profile only inside their isolated CI workspaces.
+Do **not** change `active_environment` on `main` simply to build production. `tools/package_boda.py` copies the repository to a temporary build tree and selects the production profile only there. Both the continuous dry run and the manual artifact workflow invoke this same packager.
 
-The production profile prepares canonical/hreflang/Open Graph/structured-data URLs, sitemap, robots policy and share URLs for `ai.tongji.edu.cn`. `prepare_site_urls.py` may create a `CNAME` as part of the generic production transform, but the official server-package workflow removes that GitHub Pages-only file before packaging.
+The production profile prepares canonical/hreflang/Open Graph/structured-data URLs, sitemap, robots policy and share URLs for `ai.tongji.edu.cn`. The generic production transform may create a `CNAME`, but `tools/package_boda.py` removes that GitHub Pages-only file before creating the institutional server ZIP.
 
 Do **not** manually search-and-replace Preview URLs across every HTML file for cutover.
 
-The official server package is built by `.github/workflows/production-artifact.yml` and uploaded as `pai-web-production.zip`. DNS, HTTPS, the institutional server/site-management platform and any platform-required `index.jsp` wrapper remain external to the repository.
+The official server package is produced by `tools/package_boda.py`; `.github/workflows/production-artifact.yml` is only a thin manual wrapper that uploads the resulting `pai-web-production.zip`. DNS, HTTPS, the institutional server/site-management platform and any platform-required `index.jsp` wrapper remain external to the repository.
 
 ## 14. Validation and release
 
-The normal Pages workflow validates and deploys Preview and also runs a separate full production-server dry run. Together they cover:
+The normal Pages workflow validates and deploys Preview and also invokes the same production packager used for formal release. Together they cover:
 
 - Python syntax;
 - shared head consistency;
@@ -186,14 +187,15 @@ The normal Pages workflow validates and deploys Preview and also runs a separate
 - deploy-time CSS bundling and content-hash stamping;
 - public-artifact boundaries;
 - production-domain robots/sitemap markers;
-- absence of Preview URLs and `geosketch-mvp` from the production server artifact.
+- absence of Preview URLs, `CNAME` and `geosketch-mvp` from the production server artifact;
+- production ZIP integrity.
 
 For an official release, run **Build production server artifact** from the intended release commit and deploy the resulting `pai-web-production.zip` through the institutional hosting process.
 
 Formal release flow:
 
 1. make small, factual changes;
-2. let Preview and production dry-run validators pass;
+2. let Preview and production packager validation pass;
 3. verify Chinese + English and mobile + desktop behavior;
 4. verify iPhone Safari for homepage image/animation/navigation changes;
 5. build and deploy the validated production server package;
