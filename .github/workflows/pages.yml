@@ -86,7 +86,7 @@ jobs:
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
 
   production-dry-run:
-    name: Validate production build
+    name: Validate production server build
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -153,11 +153,15 @@ jobs:
         run: python tools/normalize_asset_versions.py
       - name: Stage production public artifact
         run: python tools/prepare_public_artifact.py
+      - name: Remove GitHub Pages-only CNAME from server artifact
+        run: rm -f _site/CNAME
       - name: Validate production public artifact
         run: python tools/validate_public_artifact.py
-      - name: Verify production artifact markers
+      - name: Verify production server artifact markers
         run: |
-          test "$(cat _site/CNAME)" = "ai.tongji.edu.cn"
+          test ! -e _site/CNAME
+          test ! -e _site/geosketch-mvp
           grep -Fxq "Allow: /" _site/robots.txt
           grep -Fxq "Sitemap: https://ai.tongji.edu.cn/sitemap.xml" _site/robots.txt
           grep -Fq "https://ai.tongji.edu.cn/" _site/sitemap.xml
+          ! grep -R "https://tjpai.github.io/pai-web/" _site --include='*.html' --include='*.xml' --include='*.txt'
