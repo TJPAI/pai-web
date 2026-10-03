@@ -29,6 +29,8 @@ jobs:
         run: python -m py_compile tools/*.py
       - name: Validate environment matrix
         run: python tools/validate_environment_matrix.py
+      - name: Validate production preflight
+        run: python tools/check_production_readiness.py --preflight
       - name: Validate shared head template
         run: python tools/sync_shared_head.py --check
       - name: Render crawlable publications
