@@ -71,13 +71,6 @@
     setTimeout(alignHashTarget,80);
   };
 
-  // Programmatic page destinations use tabindex=-1 only as a temporary focus
-  // target. Keep that focus behavior for accessibility, but never paint the
-  // large Safari focus rectangle used for these non-interactive page targets.
-  const transientFocusStyle=document.createElement('style');
-  transientFocusStyle.textContent='main [tabindex="-1"]:focus{outline:none!important;box-shadow:none!important}';
-  document.head.appendChild(transientFocusStyle);
-
   forceTargetTop();
   restoreReturnScroll();
   scheduleHashAlign();
