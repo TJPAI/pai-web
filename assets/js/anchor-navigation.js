@@ -71,21 +71,12 @@
     setTimeout(alignHashTarget,80);
   };
 
-  // iOS Safari owns gestures that start at the physical screen edge. Those
-  // gestures drive browser history, while site.js deliberately ignores the
-  // first 32px for its own page swipe. On popstate site.js focuses the restored
-  // page destination with a temporary tabindex=-1; release that transient focus
-  // synchronously during focusin so Safari never gets a paint frame for it.
-  let historyFocusCleanupUntil=0;
-  addEventListener('popstate',()=>{
-    historyFocusCleanupUntil=performance.now()+2000;
-  },{passive:true});
-  document.addEventListener('focusin',event=>{
-    if(performance.now()>historyFocusCleanupUntil) return;
-    const target=event.target;
-    if(!(target instanceof HTMLElement)||!target.closest('main')||target.getAttribute('tabindex')!=='-1') return;
-    if(document.activeElement===target) target.blur();
-  },true);
+  // Programmatic page destinations use tabindex=-1 only as a temporary focus
+  // target. Keep that focus behavior for accessibility, but never paint the
+  // large Safari focus rectangle used for these non-interactive page targets.
+  const transientFocusStyle=document.createElement('style');
+  transientFocusStyle.textContent='main [tabindex="-1"]:focus{outline:none!important;box-shadow:none!important}';
+  document.head.appendChild(transientFocusStyle);
 
   forceTargetTop();
   restoreReturnScroll();
