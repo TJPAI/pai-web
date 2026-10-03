@@ -36,11 +36,13 @@ The repository intentionally has two delivery paths with different purposes.
 8. stages an explicit `_site/` public tree;
 9. uploads and deploys only that public tree to GitHub Pages.
 
-The same workflow also performs a separate, non-deploying production-server dry run on every `main` push. That job temporarily selects the production profile in an isolated checkout and proves that the official-server artifact can be built successfully.
+The same workflow also performs a separate, non-deploying production-server dry run on every `main` push. That job calls `tools/package_boda.py` and proves that the exact production-server package can be built successfully.
 
 ### Production: validated server package
 
-`.github/workflows/production-artifact.yml` is a manual `workflow_dispatch` workflow for the official server. It temporarily selects the production profile, runs the strict production checks, builds the same optimized `_site/` tree, removes the GitHub Pages-only `CNAME`, and uploads:
+`tools/package_boda.py` is the single source of truth for the official production-server build. It works in a temporary copy of the repository, selects the production profile there, runs the strict production validation/build sequence, removes the GitHub Pages-only `CNAME`, enforces the server artifact boundary, and creates the ZIP without modifying Preview source state.
+
+`.github/workflows/production-artifact.yml` is a thin manual `workflow_dispatch` wrapper around that packager. It uploads:
 
 `pai-web-production.zip`
 
@@ -60,7 +62,7 @@ The committed/default mode remains:
 
 Preview uses `https://tjpai.github.io/pai-web/` and blocks indexing. Production is preconfigured for `https://ai.tongji.edu.cn/` and enables indexing.
 
-For the official server package, do **not** change `active_environment` on `main`. The production artifact workflow switches only its isolated CI workspace to production, leaving the Preview source state unchanged.
+For the official server package, do **not** change `active_environment` on `main`. `tools/package_boda.py` switches only its temporary build copy to production, leaving the Preview source state unchanged.
 
 Do not manually search-and-replace Preview URLs across HTML, sitemap or robots files.
 
@@ -74,7 +76,7 @@ Generated deployment outputs are ignored by Git (`_site/`, the CSS bundle, gener
 
 ## Validation
 
-The Preview Pages workflow continuously validates both the live Preview build and a full production-server dry run. Checks include:
+The Preview Pages workflow continuously validates both the live Preview build and the same production-server packager used for formal release. Checks include:
 
 - Python tooling syntax;
 - shared first-paint template consistency;
@@ -82,7 +84,7 @@ The Preview Pages workflow continuously validates both the live Preview build an
 - accessibility contracts;
 - web manifest and icon dimensions;
 - environment-aware SEO contracts;
-- strict production readiness in the production dry run;
+- strict production readiness;
 - homepage Safari image contracts;
 - CTA links and Outputs terminology;
 - share metadata;
@@ -90,6 +92,7 @@ The Preview Pages workflow continuously validates both the live Preview build an
 - shared navigation asset references;
 - source cache-key consistency;
 - prepared runtime syntax;
-- public-artifact boundaries and production-domain markers.
+- public-artifact boundaries and production-domain markers;
+- production ZIP integrity.
 
 See `MAINTENANCE.md` for maintenance rules and `PRODUCTION_CUTOVER.md` for the production-server checklist.

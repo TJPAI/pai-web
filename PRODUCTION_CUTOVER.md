@@ -28,26 +28,33 @@ Production profile:
 - indexing: enabled
 - configured host: `ai.tongji.edu.cn`
 
-Do **not** change `active_environment` on `main` merely to build the official server package. The production artifact workflow switches only its isolated CI workspace to production, so the GitHub Pages Preview can remain stable.
+Do **not** change `active_environment` on `main` merely to build the official server package. `tools/package_boda.py` copies the repository to a temporary build tree and selects production only there, so the GitHub Pages Preview remains unchanged.
 
 Do not manually search-and-replace Preview URLs across HTML files, sitemap or robots.
 
-## Continuous production dry run
+## Single production build implementation
 
-Every normal Pages deployment also runs a separate `Validate production server build` job. It temporarily selects the production profile and validates the complete production build without publishing it.
-
-The dry run covers:
+`tools/package_boda.py` is the source of truth for the official server build. It performs the full production validation and build sequence, including:
 
 - strict production readiness;
 - canonical / hreflang / Open Graph / JSON-LD URLs;
 - production `robots.txt` and `sitemap.xml`;
+- publication rendering;
 - share metadata;
+- JavaScript syntax checks;
 - runtime preparation;
 - CSS bundling and content-hash stamping;
-- `_site/` public-artifact boundaries;
-- removal of Preview-domain URLs;
+- `_site/` public-artifact validation;
+- removal of the GitHub Pages-only `CNAME`;
 - exclusion of `geosketch-mvp`;
-- server-artifact behavior without a `CNAME` file.
+- removal of Preview-domain references;
+- ZIP integrity validation.
+
+Both the continuous production dry run and the manual release workflow call this same packager. There is no second production build recipe in the workflow YAML.
+
+## Continuous production dry run
+
+Every normal Pages deployment runs a separate `Validate production server build` job. It calls `tools/package_boda.py` and discards the resulting temporary ZIP after validation.
 
 A red production dry-run job should be treated as a release blocker even if Preview still deploys successfully.
 
@@ -57,17 +64,11 @@ Run the GitHub Actions workflow:
 
 **Build production server artifact**
 
-This manual workflow:
+This manual workflow is intentionally thin:
 
-1. checks out the current repository state;
-2. renders crawlable publication HTML;
-3. switches only the CI workspace to the production profile;
-4. runs the strict production readiness and validation pipeline;
-5. creates the optimized `_site/` tree;
-6. removes the GitHub Pages-only `CNAME` file;
-7. asserts the production-domain and artifact-boundary contracts;
-8. packages the result as `pai-web-production.zip`;
-9. uploads the ZIP as a GitHub Actions artifact for 30 days.
+1. checks out the exact repository commit;
+2. runs `python tools/package_boda.py --output pai-web-production.zip`;
+3. uploads `pai-web-production.zip` as a GitHub Actions artifact for 30 days.
 
 The ZIP contents, not the repository root, are the production web files to deploy.
 
@@ -108,13 +109,11 @@ After the production package is deployed, verify:
 
 ## Automated checks
 
-The normal Pages workflow continuously checks Preview and a complete production-server dry run. The manual production-artifact workflow repeats the strict production build before packaging.
+The normal Pages workflow continuously checks Preview and invokes the same production packager used for formal release. The manual production-artifact workflow invokes that packager again before uploading the ZIP.
 
-The strict production readiness command remains:
+For direct local verification, use:
 
-`python tools/check_production_readiness.py`
-
-It is run after the CI workspace has selected the production profile.
+`python tools/package_boda.py --output pai-web-production.zip`
 
 ## Content/infrastructure items requiring factual confirmation
 
