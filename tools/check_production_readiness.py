@@ -1,22 +1,32 @@
 #!/usr/bin/env python3
-"""Check production prerequisites that are not ordinary Preview-source state.
+"""Check production prerequisites without changing the active site environment.
+
+Default mode is strict cutover validation and requires active_environment=production.
+Use --preflight while Preview remains active to continuously validate the production
+profile and source invariants that must survive a later cutover.
 
 Generated production URLs/robots/sitemap/CNAME are owned by prepare_site_urls.py and
-validate_seo_contracts.py after the environment switch. This check therefore validates
-the selected production configuration plus source invariants that must survive cutover.
+validate_seo_contracts.py after the environment switch.
 """
 import re
 import sys
 
 from site_config import ROOT, CONFIG
 
+allowed_args = {'--preflight'}
+unknown_args = set(sys.argv[1:]) - allowed_args
+if unknown_args:
+    raise SystemExit(f"Unknown argument(s): {', '.join(sorted(unknown_args))}")
+
+preflight = '--preflight' in sys.argv[1:]
 errors = []
 active = CONFIG['active_environment']
 environments = CONFIG['environments']
 production = environments.get('production') or {}
 preview = environments.get('preview') or {}
 
-if active != 'production':
+# Strict mode is the final cutover gate. Preflight deliberately leaves Preview active.
+if not preflight and active != 'production':
     errors.append('config/site.json active_environment is not production')
 if production.get('base_url') != 'https://ai.tongji.edu.cn/':
     errors.append('production base_url must be https://ai.tongji.edu.cn/')
@@ -66,10 +76,15 @@ for rel in (
         errors.append(f'{rel}: required production source asset is missing')
 
 if errors:
-    print('Production readiness check FAILED:')
+    mode = 'preflight' if preflight else 'strict cutover'
+    print(f'Production readiness {mode} FAILED:')
     for error in errors:
         print('ERROR:', error)
     sys.exit(1)
 
-print('Production readiness source/config prerequisites passed.')
-print('Next: run prepare_site_urls.py and validate_seo_contracts.py, then verify DNS, HTTPS and GitHub Pages Custom domain externally.')
+if preflight:
+    print(f'Production readiness preflight passed while active_environment={active!r}.')
+    print('Production profile and source invariants are ready for a future cutover.')
+else:
+    print('Production readiness strict cutover check passed.')
+    print('Next: run prepare_site_urls.py and validate_seo_contracts.py, then verify DNS, HTTPS and GitHub Pages Custom domain externally.')
