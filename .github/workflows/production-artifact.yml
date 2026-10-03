@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
 
@@ -27,6 +27,9 @@ jobs:
 
       - name: Validate shared head template
         run: python tools/sync_shared_head.py --check
+
+      - name: Render crawlable publications
+        run: python tools/render_publications.py
 
       - name: Validate site content
         run: python tools/validate.py
@@ -112,6 +115,8 @@ jobs:
           test ! -e _site/geosketch-mvp
           test ! -e _site/CNAME
           grep -R "https://ai.tongji.edu.cn/" _site/index.html _site/en/index.html >/dev/null
+          grep -Fxq "Allow: /" _site/robots.txt
+          grep -Fxq "Sitemap: https://ai.tongji.edu.cn/sitemap.xml" _site/robots.txt
           ! grep -R "https://tjpai.github.io/pai-web/" _site --include='*.html' --include='*.xml' --include='*.txt'
 
       - name: Package production site
