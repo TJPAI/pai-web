@@ -84,3 +84,80 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
+
+  production-dry-run:
+    name: Validate production build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Select production profile in isolated workspace
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('config/site.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          data['active_environment'] = 'production'
+          path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          PY
+      - name: Validate tooling syntax
+        run: python -m py_compile tools/*.py
+      - name: Validate environment matrix
+        run: python tools/validate_environment_matrix.py
+      - name: Validate strict production readiness
+        run: python tools/check_production_readiness.py
+      - name: Validate shared head template
+        run: python tools/sync_shared_head.py --check
+      - name: Render crawlable publications
+        run: python tools/render_publications.py
+      - name: Validate site content
+        run: python tools/validate.py
+      - name: Validate accessibility contracts
+        run: python tools/validate_accessibility.py
+      - name: Validate secure public links
+        run: python tools/validate_secure_links.py
+      - name: Validate manifest and icons
+        run: python tools/validate_manifest.py
+      - name: Prepare production URLs and crawl policy
+        run: python tools/prepare_site_urls.py
+      - name: Validate production SEO contracts
+        run: python tools/validate_seo_contracts.py
+      - name: Validate homepage assets
+        run: python tools/validate_home_assets.py
+      - name: Validate CTA links
+        run: python tools/validate_cta_links.py
+      - name: Validate Outputs label
+        run: python tools/validate_outputs_label.py
+      - name: Prepare production share metadata
+        run: python tools/prepare_share_logo.py
+      - name: Validate share metadata
+        run: python tools/validate_share_metadata.py
+      - name: Validate site runtime syntax
+        run: node --check assets/js/site.js && node --check assets/js/home-logo.js && node --check sw.js && node --check assets/js/anchor-navigation.js
+      - name: Validate navigation script references
+        run: python tools/sync_navigation_scripts.py --check
+      - name: Validate shared asset cache keys
+        run: python tools/normalize_asset_versions.py --check
+      - name: Prepare deployment runtime
+        run: python tools/prepare_runtime.py
+      - name: Validate prepared runtime syntax
+        run: node --check assets/js/site.js
+      - name: Bundle CSS for production artifact
+        run: python tools/prepare_css_bundle.py
+      - name: Stamp production asset cache keys
+        run: python tools/normalize_asset_versions.py
+      - name: Stage production public artifact
+        run: python tools/prepare_public_artifact.py
+      - name: Validate production public artifact
+        run: python tools/validate_public_artifact.py
+      - name: Verify production artifact markers
+        run: |
+          test "$(cat _site/CNAME)" = "ai.tongji.edu.cn"
+          grep -Fxq "Allow: /" _site/robots.txt
+          grep -Fxq "Sitemap: https://ai.tongji.edu.cn/sitemap.xml" _site/robots.txt
+          grep -Fq "https://ai.tongji.edu.cn/" _site/sitemap.xml
