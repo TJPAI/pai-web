@@ -1,0 +1,9 @@
+/* Faculty detail photos preserve the source image without cropping. */
+.page-person-detail .person-detail>.person-photo{
+  width:100%;
+  height:auto;
+  max-height:none;
+  aspect-ratio:auto;
+  object-fit:contain;
+  object-position:center;
+}
