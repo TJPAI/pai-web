@@ -122,3 +122,13 @@
   .home-achievement-story figcaption{min-height:0}
 
 }
+
+/* Faculty detail: preserve each portrait's native aspect ratio without cropping. */
+.page-person-detail .person-detail>.person-photo{
+  width:100%;
+  height:auto;
+  max-height:none;
+  aspect-ratio:auto;
+  object-fit:contain;
+  object-position:center;
+}
