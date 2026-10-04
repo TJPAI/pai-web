@@ -123,12 +123,15 @@
 
 }
 
-/* Faculty detail: preserve each portrait's native aspect ratio without cropping. */
-.page-person-detail .person-detail>.person-photo{
+/* Faculty photos: overview cards and detail pages share the native source ratio, without cropping. */
+:is(.team-grid img.person-photo,.page-person-detail .person-detail>.person-photo){
+  display:block;
   width:100%;
-  height:auto;
-  max-height:none;
-  aspect-ratio:auto;
-  object-fit:contain;
-  object-position:center;
+  height:auto!important;
+  max-height:none!important;
+  aspect-ratio:auto!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  background:#f2f3f5;
+  border:1px solid var(--line);
 }
