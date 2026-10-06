@@ -1,0 +1,107 @@
+name: Apply approved SAGIN copy
+
+on:
+  push:
+    branches:
+      - content/add-sagin-positioning
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: content/add-sagin-positioning
+      - name: Apply the 12 approved copy edits
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def edit(path, replacements):
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              for old, new in replacements:
+                  count = text.count(old)
+                  if count != 1:
+                      raise SystemExit(f'{path}: expected 1 match, got {count}: {old[:100]!r}')
+                  text = text.replace(old, new, 1)
+              p.write_text(text, encoding='utf-8')
+
+          edit('index.html', [
+              (
+                  '<h2 class="title-section">我们解决什么问题</h2></div><div class="divider-wide"',
+                  '<h2 class="title-section">我们解决什么问题</h2></div><p class="section-summary">面向地下、隧道、低空及空天地一体等复杂与极限环境，构建高精感知、可靠连接与可信协同能力。</p><div class="divider-wide"'
+              ),
+              (
+                  '<h2 class="title-section">三大研究方向</h2></div><div class="divider-wide"',
+                  '<h2 class="title-section">三大研究方向</h2></div><p class="section-summary">面向地下、低空与空天地一体等跨域复杂场景，贯通感知、连接与可信协同。</p><div class="divider-wide"'
+              ),
+              (
+                  '<h2 class="title-section">合作网络</h2></div><div class="divider-wide"',
+                  '<h2 class="title-section">合作网络</h2></div><p class="section-summary">面向低空与空天地协同场景，联合高校、科研机构与产业伙伴推进多平台感知、组网与智能协同验证。</p><div class="divider-wide"'
+              ),
+          ])
+
+          edit('about.html', [
+              (
+                  '<p>面向复杂与极限环境，围绕通信–感知–计算–智能融合，构建精准感知、可靠连接与智能可信协同能力。</p>',
+                  '<p>同济大学 PAI 研究中心面向地下、隧道、低空、空天地一体等复杂与极限环境，聚焦高精定位与感知、鲁棒通信与组网、智能信息处理与可信协同，致力于构建可靠、可信、智能的复杂环境信息系统能力。</p>'
+              ),
+          ])
+
+          edit('research.html', [
+              (
+                  '<strong>关键技术</strong><span>跨介质通信 · 透地通信 · 鲁棒传输 · 协同组网 · 可靠连接</span>',
+                  '<strong>关键技术</strong><span>跨介质通信 · 应急通信 · 空天地一体网络 · 群体协同组网</span>'
+              ),
+              (
+                  '<strong>关键技术</strong><span>人工智能 · AI智能体 · 强化学习 · 联邦学习 · 复杂网络 · 区块链</span>',
+                  '<strong>关键技术</strong><span>多智能体协同 · 空天地多平台协同 · 联邦学习 · 隐私计算与可信协同</span>'
+              ),
+          ])
+
+          edit('en/index.html', [
+              (
+                  '<h2 class="title-section">Problems We Address</h2></div><div class="divider-wide"',
+                  '<h2 class="title-section">Problems We Address</h2></div><p class="section-summary">For complex and extreme environments spanning underground spaces, tunnels, low-altitude airspace, and space–air–ground integrated scenarios, we develop capabilities in precise sensing, reliable connectivity, and trusted collaboration.</p><div class="divider-wide"'
+              ),
+              (
+                  '<h2 class="title-section">Three Research Directions</h2></div><div class="divider-wide"',
+                  '<h2 class="title-section">Three Research Directions</h2></div><p class="section-summary">Across underground, low-altitude, and space–air–ground integrated environments, we connect sensing, communications, and trusted collaboration into a unified system capability.</p><div class="divider-wide"'
+              ),
+              (
+                  '<h2 class="title-section">Collaboration Network</h2></div><div class="divider-wide"',
+                  '<h2 class="title-section">Collaboration Network</h2></div><p class="section-summary">For low-altitude and space–air–ground collaborative scenarios, we work with universities, research institutes, and industry partners on multi-platform sensing, networking, and intelligent coordination.</p><div class="divider-wide"'
+              ),
+          ])
+
+          edit('en/about.html', [
+              (
+                  '<p>PAI Research Center advances integrated sensing, communication, computing, and intelligence for complex and extreme environments.</p>',
+                  '<p>PAI Research Center at Tongji University addresses complex and extreme environments spanning underground spaces, tunnels, low-altitude airspace, and space–air–ground integrated scenarios. We focus on precise localization and sensing, robust communications and networking, intelligent information processing, and trusted collaboration, with the goal of building reliable, trustworthy, and intelligent information-system capabilities for challenging environments.</p>'
+              ),
+          ])
+
+          edit('en/research.html', [
+              (
+                  '<strong>Enabling Technologies</strong><span>cross-media communication · through-the-earth communication · robust transmission · cooperative networking · reliable connectivity</span>',
+                  '<strong>Enabling Technologies</strong><span>Cross-medium communications · Emergency communications · Space–Air–Ground Integrated Networks · Cooperative networking</span>'
+              ),
+              (
+                  '<strong>Enabling Technologies</strong><span>artificial intelligence · AI agents · reinforcement learning · federated learning · complex networks · blockchain</span>',
+                  '<strong>Enabling Technologies</strong><span>Multi-agent collaboration · Space–Air–Ground multi-platform coordination · Federated learning · Privacy-preserving and trusted collaboration</span>'
+              ),
+          ])
+          PY
+      - name: Remove one-off workflow and commit
+        run: |
+          rm .github/workflows/apply-sagin-copy-once.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m "Add space-air-ground research positioning"
+          git push origin HEAD:content/add-sagin-positioning
