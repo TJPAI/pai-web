@@ -1,0 +1,47 @@
+name: Apply special-media SAGIN copy
+
+on:
+  push:
+    branches:
+      - content/update-special-media-sagin
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: content/update-special-media-sagin
+      - name: Update About copy in Chinese and English
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          replacements = {
+            'about.html': (
+              '地下、煤矿、水下、冰层等特殊介质中的可靠通信与组网',
+              '地下、煤矿等特殊介质及空天地一体场景的可靠通信与组网'
+            ),
+            'en/about.html': (
+              'reliable communications and networking in underground, mining, underwater, ice-covered and other challenging environments',
+              'reliable communications and networking in underground and mining media, as well as space–air–ground integrated scenarios'
+            ),
+          }
+          for path, (old, new) in replacements.items():
+            p = Path(path)
+            text = p.read_text(encoding='utf-8')
+            if text.count(old) != 1:
+              raise SystemExit(f'{path}: expected exactly one match, got {text.count(old)}')
+            p.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+      - name: Remove one-off workflow and commit
+        run: |
+          rm .github/workflows/apply-special-media-sagin-copy.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m "Update special-media and SAGIN scenario wording"
+          git push origin HEAD:content/update-special-media-sagin
