@@ -4,6 +4,7 @@
   const RETURN_KEY='pai-home-cta-return-v1';
   const TOP_KEY='pai-home-cta-target-top-v1';
   const PHOTO_KEY='pai-faculty-photo-end-v1';
+  const isMobileViewport=()=>window.matchMedia('(max-width:768px)').matches;
   const cleanHref=value=>{
     try{
       const url=new URL(value,location.href);
@@ -55,6 +56,10 @@
   const alignFacultyPhotoEnd=()=>{
     const marker=readJson(PHOTO_KEY);
     if(!marker||marker.href!==cleanHref(location.href)) return;
+    if(!isMobileViewport()){
+      clearKey(PHOTO_KEY);
+      return;
+    }
     const photo=document.querySelector('.page-person-detail .person-detail>.person-photo');
     if(!photo) return;
     if(!photo.complete){
@@ -121,12 +126,16 @@
     }).observe(document.body,{childList:true});
   }
 
-  // Enter faculty profiles from the People page at the rendered bottom edge of
-  // that person's portrait. Direct profile loads keep their normal page-top entry.
+  // On mobile, enter faculty profiles from the People page at the rendered bottom
+  // edge of that person's portrait. Desktop keeps the original profile entry.
   document.addEventListener('click',event=>{
     if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey) return;
     const link=event.target.closest&&event.target.closest('a.person-link[href]');
     if(!link||!document.querySelector('main.page-people')) return;
+    if(!isMobileViewport()){
+      clearKey(PHOTO_KEY);
+      return;
+    }
     let url;
     try{ url=new URL(link.href,location.href); }catch(_e){ return; }
     if(url.origin!==location.origin) return;
