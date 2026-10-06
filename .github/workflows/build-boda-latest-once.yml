@@ -1,0 +1,25 @@
+name: Build latest Boda package once
+
+on:
+  push:
+    branches:
+      - build/boda-latest-20261006
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Build and validate production server package
+        run: python tools/package_boda.py --output pai-web-production.zip
+      - name: Upload production artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pai-web-production
+          path: pai-web-production.zip
+          if-no-files-found: error
+          retention-days: 30
