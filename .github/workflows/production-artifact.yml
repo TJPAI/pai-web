@@ -2,6 +2,9 @@ name: Build production server artifact
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - build/boda-20261006
 
 permissions:
   contents: read
