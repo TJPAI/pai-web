@@ -458,7 +458,10 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 @media(max-width:768px){
   .results-achievements{padding:56px 0 0}
-  .page-results>.results-publications{padding-top:0}
+  /* app-core gives generic mobile content sections 68px top padding;
+     Results 06 is a continuation of items 01–05, so it must start directly
+     after item 05's divider and rely only on the highlight's row padding. */
+  main.page-results>.content-section.results-publications{padding-top:0!important}
   .results-publications{padding-top:0}
 }
 
