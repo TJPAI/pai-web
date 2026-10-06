@@ -67,6 +67,9 @@ main [id]{scroll-margin-top:73px}
   .research .research-title,.research-direction .research-title{width:auto;max-width:13em;margin:0 0 20px;padding:0}
 }
 
+/* Homepage research indices: same visual weight/size as PNL, IoT-NG and AIBI; muted color keeps hierarchy. */
+.page-home .research-identity>.research-index{font-weight:700}
+
 /* About page links */
 #international-impact .impact-link{color:inherit;text-decoration:none}
 #international-impact .impact-link:hover,#international-impact .impact-link:focus-visible{text-decoration:underline;text-underline-offset:3px}
