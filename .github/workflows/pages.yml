@@ -27,6 +27,8 @@ jobs:
           persist-credentials: false
       - name: Validate tooling syntax
         run: python -m py_compile tools/*.py
+      - name: Validate repository hygiene
+        run: python tools/validate_repository_hygiene.py
       - name: Validate environment matrix
         run: python tools/validate_environment_matrix.py
       - name: Validate production preflight
@@ -58,7 +60,7 @@ jobs:
       - name: Validate share metadata
         run: python tools/validate_share_metadata.py
       - name: Validate site runtime syntax
-        run: node --check assets/js/site.js && node --check assets/js/home-logo.js && node --check sw.js && node --check assets/js/anchor-navigation.js
+        run: node --check assets/js/site.js && node --check sw.js && node --check assets/js/anchor-navigation.js
       - name: Validate navigation script references
         run: python tools/sync_navigation_scripts.py --check
       - name: Validate shared asset cache keys
