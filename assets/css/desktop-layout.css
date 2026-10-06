@@ -1,5 +1,5 @@
 /* Desktop layout density — keep wide-screen reading focused without changing mobile presentation. */
-@media(min-width:1100px){
+@media(min-width:1025px){
   :root{
     --desktop-wide:1180px;
     --desktop-hero:1080px;
