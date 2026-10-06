@@ -552,15 +552,13 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   .media-list .media-item>.media-title{font-size:14px;line-height:1.65}
 }
 
-/* Phone research labels share a visible top edge despite their different type sizes. */
+/* Research identity is one visual row: index, acronym and two-line expansion share a common vertical center. */
 @media(max-width:768px){
-  .research-identity{align-items:start}
+  .research-identity{align-items:center}
   .research-identity>.research-index,
   .research-identity>.research-code-main>span,
   .research-identity>.research-code-main>.research-expansion{
-    align-self:start;margin-top:0;padding-top:0;
-    text-box-trim:trim-start;
-    text-box-edge:cap alphabetic;
+    align-self:center;margin-top:0;padding-top:0;
   }
 
   /* Homepage research reads as capability identity, not a second challenge list. */
@@ -568,13 +566,13 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     display:grid;
     grid-template-columns:28px max-content minmax(0,1fr);
     column-gap:9px;
-    align-items:start;
+    align-items:center;
     margin-bottom:20px;
     letter-spacing:0;
   }
   .page-home .research-grid .research-identity>.research-index{
     display:block;
-    margin:3px 0 0;
+    margin:0;
     color:#929BA8;
   }
   .page-home .research-grid .research-identity>.research-code-main{
@@ -586,7 +584,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     white-space:nowrap;
   }
   .page-home .research-grid .research-identity>.research-code-main>.research-expansion{
-    margin-top:1px;
+    margin-top:0;
     font-weight:500;
     color:#697586;
   }
@@ -688,6 +686,7 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 
 /* Canonical research identity size lock — final cascade */
 .research-identity{
+  align-items:center;
   --research-label-size:28px;
   --research-index-size:30px;
   --research-expansion-size:12px;
@@ -711,8 +710,13 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
   line-height:1!important;
   font-weight:var(--research-label-weight)!important;
   color:#8B94A2!important;
+  align-self:center;
+  margin-top:0!important;
 }
+.research-identity>.research-code-main>span{align-self:center;margin-top:0!important}
 .research-identity>.research-code-main>.research-expansion{
+  align-self:center;
+  margin-top:0!important;
   font-size:var(--research-expansion-size)!important;
   line-height:var(--research-expansion-line)!important;
 }
