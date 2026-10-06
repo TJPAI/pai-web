@@ -76,7 +76,7 @@
     margin-left:max(24px,calc((100% - var(--desktop-main))/2));
   }
   /* The publication canvas must not change width when JavaScript inserts the list. */
-  .page-inner>.results-publications{
+  .page-inner:not(.page-person-detail)>.results-publications{
     padding-top:0;
   }
 
