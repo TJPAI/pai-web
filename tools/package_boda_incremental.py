@@ -23,6 +23,7 @@ BUNDLED_CSS_SOURCES = {
     "assets/css/desktop-layout.css",
 }
 DIRECT_PUBLIC_FILES = {"robots.txt", "sitemap.xml", "site.json", "sw.js"}
+PUBLICATION_DATA = {"data/publications.json", "data/publications-archive.json"}
 IGNORED_PREFIXES = (".github/",)
 IGNORED_FILES = {
     ".gitignore",
@@ -69,8 +70,8 @@ def classify(base: str) -> tuple[list[str], list[str]]:
             deploy.add(path)
         elif path in DIRECT_PUBLIC_FILES:
             deploy.add(path)
-        elif path in {"data/publications.json", "data/publications-archive.json"}:
-            deploy.update({"publications.html", "en/publications.html"})
+        elif path in PUBLICATION_DATA:
+            deploy.update({path, "publications.html", "en/publications.html"})
         elif path.startswith(("tools/", "config/", "templates/", "data/")):
             unsafe.append(row)
         elif path.startswith("geosketch-mvp/"):
@@ -88,8 +89,12 @@ parser.add_argument("--manifest", type=Path)
 args = parser.parse_args()
 
 # Fail early if the reference does not exist locally.
-subprocess.run(["git", "rev-parse", "--verify", f"{args.base}^{{commit}}"], cwd=ROOT, check=True,
-               stdout=subprocess.DEVNULL)
+subprocess.run(
+    ["git", "rev-parse", "--verify", f"{args.base}^{{commit}}"],
+    cwd=ROOT,
+    check=True,
+    stdout=subprocess.DEVNULL,
+)
 
 deploy_files, unsafe_changes = classify(args.base)
 if unsafe_changes:
