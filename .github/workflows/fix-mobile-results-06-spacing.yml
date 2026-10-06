@@ -1,0 +1,32 @@
+name: Fix mobile results 06 spacing
+on:
+  push:
+    branches: [fix/mobile-results-06-spacing]
+permissions:
+  contents: write
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/mobile-results-06-spacing
+      - name: Fix Results 06 mobile section spacing
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/css/refine.css')
+          s=p.read_text()
+          old='''@media(max-width:768px){\n  .results-achievements{padding:56px 0 0}\n  .page-results>.results-publications{padding-top:0}\n  .results-publications{padding-top:0}\n}\n'''
+          new='''@media(max-width:768px){\n  .results-achievements{padding:56px 0 0}\n  /* app-core gives generic mobile content sections 68px top padding;\n     Results 06 is a continuation of items 01–05, so it must start directly\n     after item 05's divider and rely only on the highlight's row padding. */\n  main.page-results>.content-section.results-publications{padding-top:0!important}\n  .results-publications{padding-top:0}\n}\n'''
+          assert old in s, 'target results mobile spacing block not found'
+          p.write_text(s.replace(old,new,1))
+          PY
+          python tools/validate.py
+          python tools/validate_accessibility.py
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add assets/css/refine.css
+          git commit -m "Align mobile Results 06 spacing"
+          git push
