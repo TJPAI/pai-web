@@ -1,0 +1,33 @@
+name: Fix mobile research identity gap
+on:
+  push:
+    branches: [fix/mobile-research-index-gap]
+permissions:
+  contents: write
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/mobile-research-index-gap
+      - name: Fix mobile homepage research spacing
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/css/refine.css')
+          s=p.read_text()
+          old='''  .page-home .research-grid .research-identity{\n    display:grid;\n    grid-template-columns:28px max-content minmax(0,1fr);\n    column-gap:9px;\n    align-items:center;\n    margin-bottom:20px;\n    letter-spacing:0;\n  }'''
+          new='''  .page-home .research-grid .research-identity{\n    display:grid;\n    grid-template-columns:max-content max-content minmax(0,1fr);\n    column-gap:11px;\n    align-items:center;\n    margin-bottom:20px;\n    letter-spacing:0;\n  }'''
+          assert old in s
+          p.write_text(s.replace(old,new,1))
+          PY
+          python tools/validate_repository_hygiene.py
+          python tools/validate.py
+          python tools/validate_accessibility.py
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add assets/css/refine.css
+          git commit -m "Fix mobile research index spacing"
+          git push
