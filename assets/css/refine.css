@@ -368,7 +368,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 }
 
 /* Desktop opportunities: give long English role names the same generous column as Chinese. */
-@media(min-width:1100px){
+@media(min-width:1025px){
   .join-opportunities .join-grid{grid-template-columns:1fr;border-bottom:0}
   .join-opportunities .join-item{
     display:grid;
@@ -694,7 +694,7 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
     border-bottom:0!important;
   }
 }
-@media(min-width:1100px){
+@media(min-width:1025px){
   .challenge-grid.divider-short-list>:nth-last-child(-n+2),
   .partner-grid.divider-short-list>:nth-last-child(-n+2),
   .media-list.divider-short-list>:nth-last-child(-n+2){
