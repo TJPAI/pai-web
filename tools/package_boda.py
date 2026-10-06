@@ -57,6 +57,7 @@ with tempfile.TemporaryDirectory(prefix='pai-boda-') as temporary:
         cwd=build,
         check=True,
     )
+    run_python(build, 'validate_repository_hygiene.py')
     run_python(build, 'validate_environment_matrix.py')
     run_python(build, 'check_production_readiness.py')
     run_python(build, 'sync_shared_head.py', '--check')
@@ -75,7 +76,6 @@ with tempfile.TemporaryDirectory(prefix='pai-boda-') as temporary:
     run_node_check(
         build,
         'assets/js/site.js',
-        'assets/js/home-logo.js',
         'assets/js/anchor-navigation.js',
         'sw.js',
     )
