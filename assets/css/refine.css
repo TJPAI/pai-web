@@ -706,3 +706,44 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
   }
 }
 
+/* Canonical research identity size lock — final cascade */
+.research-identity{
+  --research-label-size:28px;
+  --research-expansion-size:12px;
+  --research-expansion-line:1.15;
+  --research-label-weight:650;
+}
+.research-direction .research-identity{
+  --research-label-size:36px;
+  --research-expansion-size:15px;
+}
+.research-identity>.research-index,
+.research-identity>.research-code-main>span{
+  font-size:var(--research-label-size)!important;
+  line-height:1!important;
+  font-weight:var(--research-label-weight)!important;
+}
+.research-identity>.research-index{color:#8B94A2!important}
+.research-identity>.research-code-main>.research-expansion{
+  font-size:var(--research-expansion-size)!important;
+  line-height:var(--research-expansion-line)!important;
+}
+@media(min-width:769px) and (max-width:1099px){
+  .page-home .research-identity{
+    --research-label-size:24px;
+    --research-expansion-size:11px;
+  }
+}
+@media(max-width:768px){
+  .page-home .research-identity{
+    --research-label-size:25px;
+    --research-expansion-size:10.5px;
+    --research-expansion-line:1.18;
+    --research-label-weight:680;
+  }
+  .research-direction .research-identity{
+    --research-label-size:17px;
+    --research-expansion-size:8px;
+    --research-expansion-line:1.05;
+  }
+}
