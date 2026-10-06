@@ -1,0 +1,38 @@
+name: Tune research index visual size once
+on:
+  push:
+    branches: [fix/research-index-visual-size]
+permissions:
+  contents: write
+jobs:
+  tune:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/research-index-visual-size
+      - name: Tune index glyph size
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/css/refine.css')
+          s=p.read_text()
+          old='''.research-identity>.research-index,\n.research-identity>.research-code-main>span{\n  font-size:var(--research-label-size)!important;\n  line-height:1!important;\n  font-weight:var(--research-label-weight)!important;\n}\n.research-identity>.research-index{color:#8B94A2!important}\n'''
+          new='''.research-identity>.research-code-main>span{\n  font-size:var(--research-label-size)!important;\n  line-height:1!important;\n  font-weight:var(--research-label-weight)!important;\n}\n/* Numerals render optically smaller than the letter labels at the same CSS size.\n   Give 01/02/03 a small optical correction while keeping the same baseline rhythm. */\n.research-identity>.research-index{\n  font-size:var(--research-index-size,var(--research-label-size))!important;\n  line-height:1!important;\n  font-weight:var(--research-label-weight)!important;\n  color:#8B94A2!important;\n}\n'''
+          assert old in s
+          s=s.replace(old,new,1)
+          s=s.replace('''  --research-label-size:28px;\n  --research-expansion-size:12px;''','''  --research-label-size:28px;\n  --research-index-size:30px;\n  --research-expansion-size:12px;''',1)
+          s=s.replace('''  --research-label-size:36px;\n  --research-expansion-size:15px;''','''  --research-label-size:36px;\n  --research-index-size:38px;\n  --research-expansion-size:15px;''',1)
+          s=s.replace('''    --research-label-size:24px;\n    --research-expansion-size:11px;''','''    --research-label-size:24px;\n    --research-index-size:26px;\n    --research-expansion-size:11px;''',1)
+          s=s.replace('''    --research-label-size:25px;\n    --research-expansion-size:10.5px;''','''    --research-label-size:25px;\n    --research-index-size:27px;\n    --research-expansion-size:10.5px;''',1)
+          s=s.replace('''    --research-label-size:17px;\n    --research-expansion-size:8px;''','''    --research-label-size:17px;\n    --research-index-size:18px;\n    --research-expansion-size:8px;''',1)
+          p.write_text(s)
+          PY
+          python tools/validate.py
+          python tools/validate_accessibility.py
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add assets/css/refine.css
+          git commit -m "Optically match research indices to code labels"
+          git push
