@@ -1,0 +1,35 @@
+name: Remove About final divider once
+on:
+  push:
+    branches: [fix/about-last-divider]
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/about-last-divider
+      - name: Remove final divider after About intro block
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for name in ['about.html','en/about.html']:
+              p=Path(name)
+              s=p.read_text()
+              old='</p></div><div class="divider-wide" aria-hidden="true"></div></section><section class="section soft" id="overview">'
+              new='</p></div></section><section class="section soft" id="overview">'
+              if old not in s:
+                  raise SystemExit(f'expected pattern missing in {name}')
+              p.write_text(s.replace(old,new,1))
+          PY
+      - name: Remove this one-off workflow and commit
+        run: |
+          rm .github/workflows/remove-about-last-divider-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add about.html en/about.html .github/workflows/remove-about-last-divider-once.yml
+          git commit -m 'Remove final divider from About intro section'
+          git push
