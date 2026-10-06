@@ -1,61 +1,19 @@
 (function(){
   'use strict';
 
-  const prefix=new URL('.',document.currentScript.src).pathname.replace(/\/assets\/js\/$/,'');
-  const HOME_PATHS=new Set(['/','/index.html','/en/','/en/index.html']);
-  const LOGO_PATH='M 93.8,88.8 L 597.8,88.9 L 632.9,91.0 L 666.3,97.3 L 697.8,108.2 L 727.2,124.0 L 750.1,141.1 L 775.3,166.1 L 792.4,189.0 L 808.3,218.4 L 817.7,244.6 L 823.5,272.1 L 825.5,307.1 L 822.2,341.7 L 813.6,374.2 L 800.0,404.5 L 781.5,432.8 L 757.5,458.6 L 730.5,480.3 L 701.1,496.4 L 659.1,510.9 L 607.7,517.1 L 266.0,517.8 L 225.1,520.4 L 197.8,527.0 L 167.7,541.3 L 140.6,562.5 L 121.6,584.4 L 109.8,603.5 L 98.8,629.0 L 93.1,650.6 L 89.7,679.2 L 90.0,900.3 L 92.1,929.5 L 96.3,951.7 L 103.5,972.7 L 114.6,992.1 L 129.4,1010.0 L 146.8,1025.4 L 165.8,1037.4 L 186.1,1046.4 L 213.2,1053.3 L 236.2,1055.2 L 270.4,1051.6 L 302.8,1042.7 L 333.1,1029.0 L 356.4,1012.8 L 899.6,453.2 L 917.7,439.4 L 942.6,427.1 L 969.6,419.7 L 998.1,416.6 L 1026.8,418.7 L 1059.3,427.1 L 1084.1,439.6 L 1102.3,453.7 L 1611.0,980.8 L 1649.8,1016.9 L 1673.7,1031.7 L 1699.2,1042.6 L 1726.1,1050.1 L 1748.8,1053.3 L 1766.0,1053.8 L 1788.5,1050.8 L 1809.9,1044.5 L 1829.8,1034.7 L 1857.1,1013.9 L 1878.8,987.1 L 1892.3,956.7 L 1898.3,923.2 L 1899.8,881.8 L 1899.8,89.8';
-
-  let scheduled=false;
-
-  const normalizedPath=()=>{
-    let path=location.pathname||'/';
-    if(prefix&&(path===prefix||path.startsWith(prefix+'/'))) path=path.slice(prefix.length)||'/';
-    return path;
-  };
-  const isHome=()=>HOME_PATHS.has(normalizedPath());
-
-  const makeLogo=()=>{
-    const ns='http://www.w3.org/2000/svg';
-    const svg=document.createElementNS(ns,'svg');
-    svg.classList.add('pai-logo-motion');
-    svg.setAttribute('viewBox','0 0 1990.6 1147.6');
-    svg.setAttribute('fill','none');
-    svg.setAttribute('aria-hidden','true');
-    const path=document.createElementNS(ns,'path');
-    path.setAttribute('d',LOGO_PATH);
-    path.setAttribute('fill','none');
-    path.setAttribute('stroke','#000');
-    path.setAttribute('stroke-width','43');
-    path.setAttribute('stroke-linecap','round');
-    path.setAttribute('stroke-linejoin','round');
-    svg.appendChild(path);
-    return svg;
+  const clearHomeLogo=()=>{
+    document.querySelectorAll('.home-hero .hero-art').forEach(host=>{
+      host.replaceChildren();
+      host.removeAttribute('data-pai-logo-static');
+      host.classList.remove('pai-logo-motion-host','pai-logo-motion-ready','pai-logo-motion-exit','pai-logo-motion-hidden');
+    });
   };
 
-  const initHomeLogo=(force=false)=>{
-    scheduled=false;
-    if(!isHome()) return;
-    const host=document.querySelector('.home-hero .hero-art');
-    if(!host||(!force&&host.dataset.paiLogoStatic==='1')) return;
-    host.dataset.paiLogoStatic='1';
-    host.classList.add('pai-logo-motion-host','pai-logo-motion-ready');
-    host.classList.remove('pai-logo-motion-exit','pai-logo-motion-hidden');
-    host.replaceChildren(makeLogo());
-  };
+  window.initHomeLogo=clearHomeLogo;
 
-  const schedule=()=>{
-    if(scheduled) return;
-    scheduled=true;
-    initHomeLogo(false);
-  };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',clearHomeLogo,{once:true});
+  else clearHomeLogo();
 
-  window.initHomeLogo=initHomeLogo;
-
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',schedule,{once:true});
-  else schedule();
-
-  // Keep the static mark present after lightweight in-page navigation swaps the homepage markup.
-  new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});
-
-  addEventListener('pageshow',event=>{if(event.persisted) initHomeLogo(true);});
+  // Lightweight navigation can reinsert homepage markup; keep the former logo slot empty.
+  new MutationObserver(clearHomeLogo).observe(document.body,{childList:true,subtree:true});
 })();
