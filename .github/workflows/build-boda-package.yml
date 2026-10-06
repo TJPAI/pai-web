@@ -1,0 +1,21 @@
+name: Build Boda deployment package
+on:
+  push:
+    branches: [build/boda-2026-10-07]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build and validate Boda package
+        run: python tools/package_boda.py --output pai-web-boda-2026-10-07.zip
+      - name: Upload Boda artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pai-web-boda-2026-10-07
+          path: pai-web-boda-2026-10-07.zip
+          if-no-files-found: error
+          retention-days: 30
