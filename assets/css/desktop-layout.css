@@ -1,3 +1,15 @@
+/* Desktop header: keep logo and primary navigation together on every non-mobile viewport.
+   This must not depend on the 1025px wide-layout breakpoint because browser zoom changes CSS viewport width. */
+@media(min-width:769px){
+  .site-header .nav{
+    justify-content:flex-start;
+    gap:0;
+  }
+  .site-header .nav-links{
+    margin-left:clamp(24px,3vw,36px);
+  }
+}
+
 /* Desktop layout density — keep wide-screen reading focused without changing mobile presentation. */
 @media(min-width:1025px){
   :root{
@@ -11,15 +23,6 @@
   .site-header .container,
   .site-footer .container{
     max-width:var(--desktop-wide);
-  }
-
-  /* Keep desktop navigation anchored beside the logo across OS/browser font metrics and zoom levels. */
-  .site-header .nav{
-    justify-content:flex-start;
-    gap:0;
-  }
-  .site-header .nav-links{
-    margin-left:36px;
   }
 
   /* Keep the hero relationship visible as one composition instead of two distant islands. */
