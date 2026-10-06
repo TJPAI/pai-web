@@ -14,7 +14,7 @@ jobs:
           ref: cleanup/remove-dead-code-and-platform-divider
       - name: Apply cleanup
         run: python tools/cleanup_dead_code_once.py
-      - name: Remove one-off workflow
+      - name: Remove one-off workflow locally
         run: rm .github/workflows/cleanup-dead-code-once.yml
       - name: Repair hygiene validator
         run: |
@@ -59,10 +59,11 @@ jobs:
           node --check assets/js/anchor-navigation.js
           node --check sw.js
           python tools/package_boda.py --output /tmp/pai-web-production.zip
-      - name: Commit cleanup
+      - name: Commit non-workflow cleanup
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add -A
+          git reset .github/workflows
           git commit -m "Remove dead code and terminal platform divider"
           git push
