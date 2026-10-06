@@ -84,7 +84,11 @@ with tempfile.TemporaryDirectory(prefix='pai-boda-') as temporary:
     run_python(build, 'prepare_runtime.py')
     run_node_check(build, 'assets/js/site.js')
     run_python(build, 'prepare_css_bundle.py')
-    run_python(build, 'normalize_asset_versions.py')
+
+    # Boda is updated incrementally during normal maintenance. Keep the source-level
+    # asset query tokens stable instead of rewriting every HTML page when one CSS/JS
+    # file changes. The server's normal Last-Modified/ETag revalidation handles the
+    # replaced asset; a full release remains available when a cache reset is needed.
     run_python(build, 'prepare_public_artifact.py')
 
     site = build / '_site'
