@@ -564,8 +564,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   /* Homepage research reads as capability identity, not a second challenge list. */
   .page-home .research-grid .research-identity{
     display:grid;
-    grid-template-columns:28px max-content minmax(0,1fr);
-    column-gap:9px;
+    grid-template-columns:max-content max-content minmax(0,1fr);
+    column-gap:11px;
     align-items:center;
     margin-bottom:20px;
     letter-spacing:0;
