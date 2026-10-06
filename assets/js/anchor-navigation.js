@@ -3,6 +3,7 @@
 
   const RETURN_KEY='pai-home-cta-return-v1';
   const TOP_KEY='pai-home-cta-target-top-v1';
+  const PHOTO_KEY='pai-faculty-photo-end-v1';
   const cleanHref=value=>{
     try{
       const url=new URL(value,location.href);
@@ -51,6 +52,30 @@
     });
   };
 
+  const alignFacultyPhotoEnd=()=>{
+    const marker=readJson(PHOTO_KEY);
+    if(!marker||marker.href!==cleanHref(location.href)) return;
+    const photo=document.querySelector('.page-person-detail .person-detail>.person-photo');
+    if(!photo) return;
+    if(!photo.complete){
+      photo.addEventListener('load',scheduleFacultyPhotoEnd,{once:true});
+      return;
+    }
+    const header=document.querySelector('.site-header');
+    const headerBottom=header?header.getBoundingClientRect().bottom:0;
+    const photoBottom=photo.getBoundingClientRect().bottom;
+    instantScroll(window.scrollY+photoBottom-headerBottom);
+    clearKey(PHOTO_KEY);
+  };
+
+  const scheduleFacultyPhotoEnd=()=>{
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(alignFacultyPhotoEnd);
+    });
+    setTimeout(alignFacultyPhotoEnd,80);
+    setTimeout(alignFacultyPhotoEnd,240);
+  };
+
   const alignHashTarget=()=>{
     const hash=location.hash;
     if(!hash||hash==='#main-content') return;
@@ -74,22 +99,39 @@
   forceTargetTop();
   restoreReturnScroll();
   scheduleHashAlign();
+  scheduleFacultyPhotoEnd();
   addEventListener('pageshow',event=>{
     restoreReturnScroll(event);
     scheduleHashAlign();
+    scheduleFacultyPhotoEnd();
   },{passive:true});
   addEventListener('hashchange',scheduleHashAlign,{passive:true});
 
   // site.js swaps <main> during lightweight navigation. pushState does not fire
-  // hashchange, so align again after the swap and after site.js default hash scroll.
+  // hashchange, so align again after the swap and after site.js default positioning.
   if(document.body&&'MutationObserver' in window){
     new MutationObserver(mutations=>{
       const mainChanged=mutations.some(mutation=>
         [...mutation.addedNodes].some(node=>node.nodeType===1&&node.matches?.('main'))
       );
-      if(mainChanged) scheduleHashAlign();
+      if(mainChanged){
+        scheduleHashAlign();
+        scheduleFacultyPhotoEnd();
+      }
     }).observe(document.body,{childList:true});
   }
+
+  // Enter faculty profiles from the People page at the rendered bottom edge of
+  // that person's portrait. Direct profile loads keep their normal page-top entry.
+  document.addEventListener('click',event=>{
+    if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey) return;
+    const link=event.target.closest&&event.target.closest('a.person-link[href]');
+    if(!link||!document.querySelector('main.page-people')) return;
+    let url;
+    try{ url=new URL(link.href,location.href); }catch(_e){ return; }
+    if(url.origin!==location.origin) return;
+    writeJson(PHOTO_KEY,{href:cleanHref(url.href)});
+  },true);
 
   document.addEventListener('click',event=>{
     if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey) return;
