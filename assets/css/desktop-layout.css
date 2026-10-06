@@ -13,6 +13,15 @@
     max-width:var(--desktop-wide);
   }
 
+  /* Keep desktop navigation anchored beside the logo across OS/browser font metrics and zoom levels. */
+  .site-header .nav{
+    justify-content:flex-start;
+    gap:0;
+  }
+  .site-header .nav-links{
+    margin-left:36px;
+  }
+
   /* Keep the hero relationship visible as one composition instead of two distant islands. */
   .home-hero>.container{
     max-width:var(--desktop-hero);
