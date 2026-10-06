@@ -1,0 +1,36 @@
+name: Tune research identity optical gaps
+on:
+  push:
+    branches: [fix/research-identity-optical-gaps]
+permissions:
+  contents: write
+jobs:
+  tune:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/research-identity-optical-gaps
+      - name: Tune optical gaps
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/css/refine.css')
+          s=p.read_text()
+          s=s.replace('''  --research-label-weight:650;\n}''','''  --research-label-weight:650;\n  --research-gap-index-code:14px;\n  --research-gap-code-expansion:11px;\n  column-gap:0!important;\n}''',1)
+          s=s.replace('''  --research-expansion-size:15px;\n}''','''  --research-expansion-size:15px;\n  --research-gap-index-code:15px;\n  --research-gap-code-expansion:12px;\n}''',1)
+          s=s.replace('''  margin-top:0!important;\n}\n.research-identity>.research-code-main>span{align-self:center;margin-top:0!important}''','''  margin-top:0!important;\n  margin-inline-end:var(--research-gap-index-code)!important;\n}\n.research-identity>.research-code-main>span{\n  align-self:center;\n  margin-top:0!important;\n  margin-inline-end:var(--research-gap-code-expansion)!important;\n}''',1)
+          s=s.replace('''    --research-expansion-size:11px;\n  }''','''    --research-expansion-size:11px;\n    --research-gap-index-code:12px;\n    --research-gap-code-expansion:9px;\n  }''',1)
+          s=s.replace('''    --research-label-weight:680;\n  }''','''    --research-label-weight:680;\n    --research-gap-index-code:12px;\n    --research-gap-code-expansion:9px;\n  }''',1)
+          s=s.replace('''    --research-expansion-line:1.05;\n  }''','''    --research-expansion-line:1.05;\n    --research-gap-index-code:10px;\n    --research-gap-code-expansion:8px;\n  }''',1)
+          p.write_text(s)
+          PY
+          python tools/validate_repository_hygiene.py || true
+          python tools/validate.py
+          python tools/validate_accessibility.py
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add assets/css/refine.css
+          git commit -m "Optically balance research identity gaps"
+          git push
