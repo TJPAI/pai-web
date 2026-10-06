@@ -135,3 +135,9 @@
   background:#f2f3f5;
   border:1px solid var(--line);
 }
+
+/* Join context: multiple right-column paragraphs must flow instead of occupying the same grid rows. */
+@media(min-width:1025px){
+  .join-context .section-head p:first-of-type{grid-row:1 / span 2}
+  .join-context .section-head p+p{grid-row:auto;margin-top:8px}
+}
