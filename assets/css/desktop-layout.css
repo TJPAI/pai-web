@@ -1,3 +1,8 @@
+/* Full-viewport divider rules intentionally reach the viewport edges. On Windows Chrome,
+   classic scrollbars can make 100vw slightly wider than the visible page; clip only that
+   unintended root-level horizontal overflow without affecting vertical scrolling. */
+html,body{overflow-x:clip}
+
 /* Desktop header: keep logo and primary navigation together on every non-mobile viewport.
    This must not depend on the 1025px wide-layout breakpoint because browser zoom changes CSS viewport width. */
 @media(min-width:769px){
