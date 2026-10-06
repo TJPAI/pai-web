@@ -1,0 +1,31 @@
+name: Fix homepage title wrapping once
+on:
+  push:
+    branches: ["fix/home-title-no-auto-wrap"]
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Keep homepage display title on explicit lines only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/css/refine.css')
+          s=p.read_text()
+          old='@media(max-width:768px){.home-hero .title-display{white-space:nowrap!important}}'
+          new='.home-hero .title-display{white-space:nowrap!important}'
+          assert s.count(old)==1, s.count(old)
+          p.write_text(s.replace(old,new))
+          PY
+          rm .github/workflows/fix-home-title-wrap-once.yml
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/css/refine.css .github/workflows/fix-home-title-wrap-once.yml
+          git commit -m "Keep homepage hero title on explicit lines"
+          git push
