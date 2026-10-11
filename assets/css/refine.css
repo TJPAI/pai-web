@@ -465,11 +465,6 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   .results-publications{padding-top:0}
 }
 
-/* Research Results final rhythm: keep 01 comfortably separated from the intro, keep 05→06 continuous. */
-.page-results>.page-hero{padding-bottom:36px!important}
-@media(max-width:768px){
-  .page-results>.page-hero{padding-bottom:28px!important}
-}
 
 /* First-section content starts on the same item rhythm as following rows. */
 .page-contact .contact-grid{margin-top:0!important}
