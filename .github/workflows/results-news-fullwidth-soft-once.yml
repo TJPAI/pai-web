@@ -29,13 +29,14 @@ jobs:
           s = s.replace('.results-news{margin-top:24px;padding-top:18px}', '.results-news{margin-top:24px;padding:18px 0}', 1)
           p.write_text(s, encoding='utf-8')
           PY
+      - name: Remove temporary workflow before validation
+        run: rm .github/workflows/results-news-fullwidth-soft-once.yml
       - name: Validate hygiene and diff
         run: |
           python tools/validate_repository_hygiene.py
           git diff --check
-      - name: Commit final change and remove temporary workflow
+      - name: Commit final change
         run: |
-          rm .github/workflows/results-news-fullwidth-soft-once.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/css/refine.css .github/workflows/results-news-fullwidth-soft-once.yml
