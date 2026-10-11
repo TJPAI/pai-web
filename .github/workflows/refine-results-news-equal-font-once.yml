@@ -1,0 +1,46 @@
+name: Refine results news equal font once
+
+on:
+  push:
+    branches:
+      - refine/results-news-equal-font
+    paths:
+      - .github/workflows/refine-results-news-equal-font-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refine/results-news-equal-font
+      - name: Apply equal date and text typography
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('assets/css/refine.css')
+          s = p.read_text()
+          old = '.results-news-row time{color:#8B94A2;font-size:13px;line-height:1.55;font-variant-numeric:tabular-nums;position:static;top:auto}'
+          new = '.results-news-row time{color:#8B94A2;font-size:14px;line-height:1.55;font-weight:500;font-variant-numeric:tabular-nums;position:static;top:auto}'
+          assert old in s
+          s = s.replace(old, new, 1)
+          old = '  .results-news-row time{font-size:10px;line-height:1.45}\n  .results-news-row span{font-size:11.5px;line-height:1.48;font-weight:520;color:#303744}'
+          new = '  .results-news-row time{font-size:11.5px;line-height:1.48}\n  .results-news-row span{font-size:11.5px;line-height:1.48;font-weight:520;color:#303744}'
+          assert old in s
+          s = s.replace(old, new, 1)
+          old = '  .results-news-row span{font-size:11px}\n}'
+          new = '  .results-news-row time,.results-news-row span{font-size:11px}\n}'
+          assert old in s
+          s = s.replace(old, new, 1)
+          p.write_text(s)
+          PY
+          rm .github/workflows/refine-results-news-equal-font-once.yml
+          python tools/validate_repository_hygiene.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/css/refine.css .github/workflows/refine-results-news-equal-font-once.yml
+          git commit -m "Match latest-news date and text size"
+          git push origin HEAD:refine/results-news-equal-font
