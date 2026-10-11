@@ -10,7 +10,6 @@ permissions:
 
 jobs:
   apply:
-    if: github.event.head_commit.message != 'Refine results news mobile layout'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,27 +20,20 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-
           zh = Path('publications.html')
           en = Path('en/publications.html')
           css = Path('assets/css/refine.css')
-
           z = zh.read_text(encoding='utf-8')
           e = en.read_text(encoding='utf-8')
           c = css.read_text(encoding='utf-8')
-
           old_zh = '<a class="results-news-row" href="https://doi.org/10.1109/TVT.2026.3721188" target="_blank" rel="noopener noreferrer"><time datetime="2026">2026</time><span>透地磁感应通信研究发表于 IEEE Transactions on Vehicular Technology</span></a><div class="results-news-row"><time datetime="2025-06">2025.06</time><span>IEEE Global Blockchain Conference 2025 在上海举办</span></div>'
           new_zh = '<a class="results-news-row" href="https://doi.org/10.1109/TWC.2026.3667951" target="_blank" rel="noopener noreferrer"><time datetime="2026">2026</time><span>Hexin Feng 等去中心化联邦学习研究发表于 IEEE TWC</span></a><a class="results-news-row" href="https://doi.org/10.1109/TWC.2026.3659648" target="_blank" rel="noopener noreferrer"><time datetime="2026">2026</time><span>Hanfu Zhang 等 IRS 辅助通感一体研究发表于 IEEE TWC</span></a>'
           old_en = '<a class="results-news-row" href="https://doi.org/10.1109/TVT.2026.3721188" target="_blank" rel="noopener noreferrer"><time datetime="2026">2026</time><span>Through-the-Earth magnetic induction study published in IEEE Transactions on Vehicular Technology</span></a><div class="results-news-row"><time datetime="2025-06">2025.06</time><span>IEEE Global Blockchain Conference 2025 held in Shanghai</span></div>'
           new_en = '<a class="results-news-row" href="https://doi.org/10.1109/TWC.2026.3667951" target="_blank" rel="noopener noreferrer"><time datetime="2026">2026</time><span>Hexin Feng et al. publish decentralized federated learning study in IEEE TWC</span></a><a class="results-news-row" href="https://doi.org/10.1109/TWC.2026.3659648" target="_blank" rel="noopener noreferrer"><time datetime="2026">2026</time><span>Hanfu Zhang et al. publish IRS-assisted ISAC study in IEEE TWC</span></a>'
-
-          if z.count(old_zh) != 1:
-              raise SystemExit(f'zh news anchor count {z.count(old_zh)}')
-          if e.count(old_en) != 1:
-              raise SystemExit(f'en news anchor count {e.count(old_en)}')
+          assert z.count(old_zh) == 1
+          assert e.count(old_en) == 1
           z = z.replace(old_zh, new_zh, 1)
           e = e.replace(old_en, new_en, 1)
-
           old_css = '''@media(max-width:768px){
   .page-results .page-hero>.container.std{grid-template-columns:minmax(0,.84fr) minmax(0,1.16fr);column-gap:18px}
   .page-results .page-hero>.container.std>.title-page{font-size:clamp(38px,10.5vw,52px)}
@@ -74,10 +66,8 @@ jobs:
   .results-news-row{grid-template-columns:36px minmax(0,1fr);gap:5px}
   .results-news-row span{font-size:10px}
 }'''
-          if c.count(old_css) != 1:
-              raise SystemExit(f'css anchor count {c.count(old_css)}')
+          assert c.count(old_css) == 1
           c = c.replace(old_css, new_css, 1)
-
           zh.write_text(z, encoding='utf-8')
           en.write_text(e, encoding='utf-8')
           css.write_text(c, encoding='utf-8')
