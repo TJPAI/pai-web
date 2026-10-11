@@ -809,7 +809,7 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 
 /* Results hero latest-news panel */
 .page-results .page-hero>.container.std{display:block}
-.page-results .page-hero{padding-bottom:0;border-bottom:0}
+.page-results.page-inner>.page-hero{padding-bottom:0;border-bottom:0}
 .page-results .results-achievements .highlights{border-top:0}
 .results-news{
   position:relative;
