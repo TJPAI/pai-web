@@ -1,0 +1,38 @@
+name: Fix results news top alignment once
+
+on:
+  push:
+    branches:
+      - refine/results-news-top-align
+    paths:
+      - .github/workflows/fix-results-news-top-align-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refine/results-news-top-align
+      - name: Apply top alignment
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('assets/css/refine.css')
+          s = p.read_text()
+          s = s.replace('  align-items:baseline;\n', '  align-items:start;\n', 1)
+          s = s.replace('position:relative;top:1px', 'position:static;top:auto', 1)
+          p.write_text(s)
+          PY
+          python tools/validate_repository_hygiene.py
+      - name: Remove temporary workflow and commit
+        run: |
+          rm .github/workflows/fix-results-news-top-align-once.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/css/refine.css .github/workflows/fix-results-news-top-align-once.yml
+          git commit -m "Top-align latest-news dates and text"
+          git push origin HEAD:refine/results-news-top-align
