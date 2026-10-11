@@ -817,8 +817,9 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 .results-news{
   min-width:0;
   margin-top:34px;
-  padding-top:24px;
+  padding:24px;
   border-top:1px solid var(--line);
+  background:var(--soft);
 }
 .results-news h2{margin:0 0 8px;font-size:18px;line-height:1.25;font-weight:560;letter-spacing:-.01em;color:#4F5968}
 .results-news-list{border-top:0}
