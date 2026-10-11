@@ -1,0 +1,42 @@
+name: Results desktop gap once
+
+on:
+  push:
+    branches: [refine/results-desktop-hero-gap-specificity]
+
+permissions:
+  contents: write
+
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: refine/results-desktop-hero-gap-specificity
+      - name: Raise Results hero override specificity
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('assets/css/refine.css')
+          s = p.read_text(encoding='utf-8')
+          old = '.page-results .page-hero{padding-bottom:0;border-bottom:0}\n'
+          new = '.page-results.page-inner>.page-hero{padding-bottom:0;border-bottom:0}\n'
+          if old not in s:
+              raise SystemExit('Expected Results hero rule not found')
+          s = s.replace(old, new, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Remove temporary workflow before validation
+        run: rm .github/workflows/results-desktop-gap-once.yml
+      - name: Validate hygiene and diff
+        run: |
+          python tools/validate_repository_hygiene.py
+          git diff --check
+      - name: Commit final change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/css/refine.css .github/workflows/results-desktop-gap-once.yml
+          git commit -m "Fix desktop Results first-item spacing"
+          git push origin HEAD:refine/results-desktop-hero-gap-specificity
