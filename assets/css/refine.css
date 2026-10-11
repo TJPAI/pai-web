@@ -828,7 +828,7 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
   position:absolute;
   z-index:-1;
   top:0;
-  bottom:0;
+  bottom:-74px;
   left:50%;
   width:100vw;
   transform:translateX(-50%);
@@ -855,6 +855,7 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
   .page-results .page-hero>.container.std>p{font-size:clamp(13px,3.7vw,17px);line-height:1.55}
   .page-results .page-hero{padding-bottom:56px}
   .results-news{margin-top:28px;padding:20px 0}
+  .results-news::before{bottom:-56px}
   .results-news h2{margin-bottom:4px;font-size:15px;font-weight:560;color:#4F5968}
   .results-news-row{grid-template-columns:50px minmax(0,1fr);gap:8px;padding:8px 0}
   .results-news-row time{font-size:11.5px;line-height:1.48}
