@@ -1,0 +1,65 @@
+name: Update Erwu Liu profile content
+on:
+  push:
+    branches: [content/update-erwu-liu-profile]
+permissions:
+  contents: write
+jobs:
+  update:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: content/update-erwu-liu-profile
+      - name: Update bilingual Erwu Liu content
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          replacements = {
+              'en/team.html': [
+                  (
+                      'Professor at Tongji University and IET Fellow, working on communications, localization, sensing and trusted intelligence.',
+                      'Research interests include localization and sensing, resilient wireless communications and networking, and trusted distributed intelligence.'
+                  )
+              ],
+              'en/people/erwu-liu.html': [
+                  (
+                      'Wireless communications and IoT, localization and sensing, integrated sensing and communication, federated and reinforcement learning, complex networks, blockchain and trusted intelligence.',
+                      'Resilient wireless communications and networking, localization and sensing, integrated sensing and communication, federated and reinforcement learning, and trusted distributed intelligence.'
+                  ),
+                  (
+                      'Professor at Tongji University and Director of PAI Research Center. He is also a professor at the Shanghai Science Center for Intelligent Autonomous Systems and Director of the Shanghai Engineering Research Center for Blockchain and Services. He previously worked at Alcatel-Lucent Bell Labs and Imperial College London. He serves as Editor-in-Chief of IET Blockchain and contributes to international platforms including the IEEE Blockchain Technical Community and the IEEE Global Blockchain Conference.',
+                      'Professor at Tongji University, IET Fellow, Director of PAI Research Center, and Director of the Shanghai Engineering Research Center for Blockchain and Services. He is also a professor at the Shanghai Science Center for Intelligent Autonomous Systems. He previously worked at Alcatel-Lucent Bell Labs and Imperial College London. He is the Founding Editor-in-Chief of IET Blockchain, and the Founding General Chair of the IEEE Global Blockchain Conference. He served as Technical Program Committee Co-Chair of the IEEE Future Networks World Forum in 2024 and 2025. He is Community Development Co-Chair of the IEEE Blockchain Technical Community (BCTC), Co-Lead of IEEE BCTC in the Asia-Pacific region, and Head in China. He has published more than 150 papers and has more than 80 patents granted or pending.'
+                  )
+              ],
+              'people/erwu-liu.html': [
+                  (
+                      '无线通信 / 物联网、通感一体、定位与感知、联邦学习 / 强化学习、复杂网络、区块链与可信智能。',
+                      '韧性无线通信与组网、定位与感知、通感一体、联邦学习与强化学习、可信分布式智能。'
+                  ),
+                  (
+                      '同济大学教授，上海自主智能无人系统科学中心教授，上海区块链应用服务工程技术研究中心主任。曾工作于阿尔卡特朗讯贝尔实验室、伦敦帝国理工学院。担任《IET Blockchain》期刊主编，并长期参与 IEEE 区块链技术社区及 IEEE 全球区块链大会等国际平台建设。',
+                      '同济大学教授，上海自主智能无人系统科学中心教授。IET Fellow，PAI研究中心负责人，上海区块链应用服务工程技术研究中心主任。曾工作于阿尔卡特朗讯贝尔实验室、伦敦帝国理工学院。担任《IET Blockchain》期刊创刊主编，IEEE 区块链技术社区亚太区暨中国区负责人，首届IEEE 全球区块链大会（GBC）总主席，IEEE未来网络世界论坛（FNWF）技术委员会共同主席等。发表论文150余篇，发明专利80余项。'
+                  )
+              ]
+          }
+
+          for filename, pairs in replacements.items():
+              path = Path(filename)
+              text = path.read_text(encoding='utf-8')
+              for old, new in pairs:
+                  count = text.count(old)
+                  if count != 1:
+                      raise SystemExit(f'{filename}: expected 1 match, got {count}: {old[:80]}')
+                  text = text.replace(old, new, 1)
+              path.write_text(text, encoding='utf-8')
+          PY
+          python tools/validate.py
+          python tools/validate_accessibility.py
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add en/team.html en/people/erwu-liu.html people/erwu-liu.html
+          git commit -m "Update Erwu Liu profile content"
+          git push
