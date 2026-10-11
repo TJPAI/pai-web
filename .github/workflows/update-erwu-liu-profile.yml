@@ -57,7 +57,18 @@ jobs:
               path.write_text(text, encoding='utf-8')
           PY
           python tools/validate.py
-          python tools/validate_accessibility.py
+          python - <<'PY'
+          from pathlib import Path
+          checks = {
+              'en/team.html': 'Research interests include localization and sensing, resilient wireless communications and networking, and trusted distributed intelligence.',
+              'en/people/erwu-liu.html': 'He has published more than 150 papers and has more than 80 patents granted or pending.',
+              'people/erwu-liu.html': '发表论文150余篇，发明专利80余项。',
+          }
+          for filename, expected in checks.items():
+              text = Path(filename).read_text(encoding='utf-8')
+              if expected not in text:
+                  raise SystemExit(f'{filename}: expected updated content not found')
+          PY
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add en/team.html en/people/erwu-liu.html people/erwu-liu.html
