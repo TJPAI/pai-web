@@ -53,6 +53,8 @@ jobs:
         run: python tools/validate_home_assets.py
       - name: Validate CTA links
         run: python tools/validate_cta_links.py
+      - name: Validate bilingual industry enquiry subjects
+        run: python tools/validate_industry_enquiries.py
       - name: Validate Outputs label
         run: python tools/validate_outputs_label.py
       - name: Prepare logo share metadata
