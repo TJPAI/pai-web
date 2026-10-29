@@ -967,12 +967,6 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 .page-results .industry-six-rows .industry-link{padding-top:3px;margin-top:2px}
 }
 
-/* English-only technology cards: fixed two-line headings and five-line summaries. */
-html[lang="en"] .page-results .industry-six-rows .industry-card .title-item{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;min-height:calc(1.42em * 2);max-height:calc(1.42em * 2);line-height:1.42}
-html[lang="en"] .page-results .industry-six-rows .industry-summary{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;line-clamp:5;overflow:hidden;min-height:calc(1.58em * 5);max-height:calc(1.58em * 5);line-height:1.58;margin-bottom:6px}
-html[lang="en"] .page-results .industry-six-rows .industry-link{margin-top:2px;padding-top:4px}
-@media(max-width:768px){html[lang="en"] .page-results .industry-six-rows .industry-summary{min-height:calc(1.48em * 5);max-height:calc(1.48em * 5);line-height:1.48}}
-
 /* Chinese technology summaries: never truncate source-backed descriptions. */
 html[lang="zh-CN"] .page-results .industry-six-rows .industry-summary{
  display:block;overflow:visible;-webkit-line-clamp:unset;line-clamp:unset;
@@ -995,20 +989,10 @@ html[lang="zh-CN"] .page-results .industry-six-rows .industry-summary{
 .page-results .results-industry .industry-all .industry-grid{margin-bottom:0!important}
 .page-results .results-publications{padding-top:0!important}
 .page-results .results-publications-heading{margin-top:0!important}
-/* English card copy occupies two title lines + five description lines, without clipping. */
+/* English card title: two-line space; final summary rules below govern descriptions. */
 html[lang="en"] .page-results .industry-six-rows .industry-card .title-item{
  display:block;overflow:visible;-webkit-line-clamp:unset;line-clamp:unset;
  min-height:calc(1.42em * 2);max-height:none;line-height:1.42;
-}
-html[lang="en"] .page-results .industry-six-rows .industry-summary{
- display:block;overflow:visible;-webkit-line-clamp:unset;line-clamp:unset;
- min-height:calc(1.58em * 5);max-height:none;line-height:1.58;
-}
-@media(max-width:768px){
- .page-results .results-industry .industry-all{padding-bottom:22px!important}
- html[lang="en"] .page-results .industry-six-rows .industry-summary{
-  min-height:calc(1.48em * 5);max-height:none;line-height:1.48;
- }
 }
 
 /* Tighten the gap between section 06 introduction and first photo row. */
@@ -1074,22 +1058,6 @@ html[lang="zh-CN"] .page-results .industry-six-rows .industry-summary{
 html[lang="zh-CN"] .page-results .industry-six-rows .industry-meta{
   margin-top:0!important;
   margin-bottom:4px;
-}
-
-/* Mobile English technology cards: exactly seven rendered text lines, no ellipsis. */
-@media(max-width:768px){
- html[lang="en"] .page-results .industry-six-rows .industry-summary{
-  display:-webkit-box!important;
-  -webkit-box-orient:vertical!important;
-  -webkit-line-clamp:7!important;
-  line-clamp:7!important;
-  overflow:hidden!important;
-  text-overflow:clip!important;
-  min-height:calc(1.48em * 7)!important;
-  max-height:calc(1.48em * 7)!important;
-  line-height:1.48!important;
-  margin-bottom:6px!important;
- }
 }
 
 /* Force latest-news title text red even when generic page-title rules override h2 color. */
