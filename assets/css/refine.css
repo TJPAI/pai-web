@@ -1110,3 +1110,15 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
   flex:0 0 auto!important;
   margin-block-end:2px!important;
 }
+
+/* Latest News: compact heading-side More/Less toggle and expandable rows. */
+.page-results .results-news-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:8px}
+.page-results .results-news-head h2{margin:0!important}
+.page-results .results-news-toggle{appearance:none;border:0;background:none;color:#BC2530;font:inherit;font-size:14px;font-weight:600;line-height:1.5;padding:4px 2px;cursor:pointer;white-space:nowrap}
+.page-results .results-news-toggle:hover{text-decoration:underline;text-underline-offset:3px}
+.page-results .results-news-toggle:focus-visible{outline:2px solid #BC2530;outline-offset:3px}
+.page-results .results-news-extra[hidden]{display:none!important}
+.page-results .results-news-list:not(.results-news-extra):has(+.results-news-extra:not([hidden])) .results-news-row:last-child{border-bottom:1px solid var(--line);padding-bottom:11px}
+.page-results .results-news-row-static{cursor:default}
+.page-results .results-news-extra .results-news-row:last-child{border-bottom:0}
+@media(max-width:768px){.page-results .results-news-head{margin-bottom:5px}.page-results .results-news-toggle{font-size:13px}}
