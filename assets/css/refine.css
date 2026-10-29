@@ -1023,3 +1023,15 @@ html[lang="en"] .page-results .industry-six-rows .industry-summary{
   display:block;overflow:visible;-webkit-line-clamp:unset;line-clamp:unset;
  }
 }
+
+/* 06 intro → photographs: remove generic content-section spacing, preserve 06/07 divider rhythm. */
+.page-results .results-industry .industry-category.industry-all{
+ padding-top:0!important;
+ margin-top:0!important;
+}
+.page-results .results-industry .results-industry-heading{
+ margin-bottom:2px!important;
+}
+.page-results .results-industry .industry-six-rows{
+ margin-top:0!important;
+}
