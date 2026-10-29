@@ -107,6 +107,12 @@ jobs:
           source=source.replace("'/en/publications.html','/en/join.html'","'/en/publications.html','/en/industry.html','/en/join.html'")
           js.write_text(source,encoding='utf-8')
           subprocess.run(['node','--check','assets/js/site.js'],check=True)
+          # Preserve Outputs active state and align this static desktop nav with the runtime list.
+          p=R/'en/publications.html'
+          t=p.read_text(encoding='utf-8')
+          nav='<nav class="nav-links" aria-label="Main navigation"><a href="about.html">About</a><a href="team.html">People</a><a href="research.html">Research</a><a class="active" href="publications.html">Outputs</a><a href="industry.html">Industry</a><a href="join.html">Join</a><a href="contact.html">Contact</a><a href="../publications.html">中文</a></nav>'
+          t=re.sub(r'<nav class="nav-links"[^>]*>.*?</nav>',lambda _:nav,t,count=1,flags=re.S)
+          p.write_text(t,encoding='utf-8')
           subprocess.run(['python','tools/validate.py'],check=True)
           subprocess.run(['git','diff','--check'],check=True)
           subprocess.run(['git','add','-A'],check=True)
