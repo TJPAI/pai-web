@@ -1075,3 +1075,19 @@ html[lang="zh-CN"] .page-results .industry-six-rows .industry-meta{
   margin-top:0!important;
   margin-bottom:4px;
 }
+
+/* Mobile English technology cards: exactly seven rendered text lines, no ellipsis. */
+@media(max-width:768px){
+ html[lang="en"] .page-results .industry-six-rows .industry-summary{
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:7!important;
+  line-clamp:7!important;
+  overflow:hidden!important;
+  text-overflow:clip!important;
+  min-height:calc(1.48em * 7)!important;
+  max-height:calc(1.48em * 7)!important;
+  line-height:1.48!important;
+  margin-bottom:6px!important;
+ }
+}
