@@ -972,3 +972,20 @@ html[lang="en"] .page-results .industry-six-rows .industry-card .title-item{disp
 html[lang="en"] .page-results .industry-six-rows .industry-summary{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;line-clamp:5;overflow:hidden;min-height:calc(1.58em * 5);max-height:calc(1.58em * 5);line-height:1.58;margin-bottom:6px}
 html[lang="en"] .page-results .industry-six-rows .industry-link{margin-top:2px;padding-top:4px}
 @media(max-width:768px){html[lang="en"] .page-results .industry-six-rows .industry-summary{min-height:calc(1.48em * 5);max-height:calc(1.48em * 5);line-height:1.48}}
+
+/* Chinese technology summaries: never truncate source-backed descriptions. */
+html[lang="zh-CN"] .page-results .industry-six-rows .industry-summary{
+ display:block;overflow:visible;-webkit-line-clamp:unset;line-clamp:unset;
+ min-height:calc(1.58em * 3);max-height:none;line-height:1.58;
+ overflow-wrap:anywhere;
+}
+@media(max-width:768px){
+ html[lang="zh-CN"] .page-results .industry-six-rows .industry-summary{
+  min-height:calc(1.48em * 3);max-height:none;line-height:1.48;
+ }
+}
+/* Match 06→07 spacing to the compact numbered achievements above. */
+.page-results .results-industry .industry-all{padding-bottom:0!important}
+.page-results .results-industry{padding-bottom:0!important}
+.page-results .results-publications{padding-top:0!important}
+.page-results .results-publications-heading{margin-top:0!important}
