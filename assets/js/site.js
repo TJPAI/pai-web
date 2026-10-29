@@ -35,11 +35,11 @@
   const navItems=lang=>lang==='en'?
     [
       ['About','/en/about.html'],['People','/en/team.html'],['Research','/en/research.html'],
-      ['Outputs','/en/publications.html'],['Industry','/en/industry.html'],['Join','/en/join.html'],['Contact','/en/contact.html']
+      ['Outputs','/en/publications.html'],['Join','/en/join.html'],['Contact','/en/contact.html']
     ]:
     [
       ['关于我们','/about.html'],['研究团队','/team.html'],['研究方向','/research.html'],
-      ['研究成果','/publications.html'],['产业合作','/industry.html'],['加入我们','/join.html'],['联系我们','/contact.html']
+      ['成果合作','/publications.html'],['加入我们','/join.html'],['联系我们','/contact.html']
     ];
 
   const sectionForPath=path=>{
@@ -531,8 +531,8 @@
   },{capture:true,passive:true});
 
   const swipePageOrder={
-    zh:['/','/about.html','/team.html','/research.html','/publications.html','/industry.html','/join.html','/contact.html'],
-    en:['/en/','/en/about.html','/en/team.html','/en/research.html','/en/publications.html','/en/industry.html','/en/join.html','/en/contact.html']
+    zh:['/','/about.html','/team.html','/research.html','/publications.html','/join.html','/contact.html'],
+    en:['/en/','/en/about.html','/en/team.html','/en/research.html','/en/publications.html','/en/join.html','/en/contact.html']
   };
 
   const SWIPE_EDGE_GUARD=32;

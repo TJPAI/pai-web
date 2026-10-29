@@ -874,3 +874,15 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 .page-industry .page-hero{padding-bottom:58px}.page-industry .industry-category{padding:64px 0 80px}.page-industry .industry-category:nth-of-type(odd){background:#F8F9FB}.industry-cta{padding:70px 0 90px}.industry-cta p{max-width:700px;color:var(--muted)}
 @media(max-width:1024px){.industry-featured{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:768px){.industry-home{padding:66px 0 72px}.industry-home .section-head{margin-bottom:24px}.industry-home .section-head p{font-size:14px}.industry-grid,.industry-featured{grid-template-columns:1fr;gap:22px}.industry-featured .industry-card{display:grid;grid-template-columns:112px minmax(0,1fr);gap:14px;padding-top:14px}.industry-featured .industry-visual{aspect-ratio:4/3;padding:10px}.industry-featured .industry-visual-hint{font-size:9px}.industry-featured .industry-card-body{padding:0}.industry-featured .industry-card .title-item{font-size:15px;margin-bottom:6px}.industry-featured .industry-card p{font-size:12px;line-height:1.52;margin-bottom:5px}.industry-featured .industry-card .industry-proof{font-size:11px}.industry-featured .industry-link{font-size:12px;margin-top:4px}.industry-group-title .title-section{font-size:20px}.page-industry .industry-category{padding:44px 0 56px}.industry-cta{padding:58px 0 70px}}
+
+/* Merged Outputs sections share the existing typography and divider system. */
+.results-jump-links{display:flex;gap:22px;flex-wrap:wrap;align-items:center;margin-top:28px;font-size:13px;color:#596577}
+.results-jump-links a{color:inherit;text-decoration:none;border-bottom:1px solid #B8C0CB;padding-bottom:6px}
+.results-jump-links a:hover{color:var(--ink);border-color:var(--ink)}
+.results-industry{padding-top:68px;border-top:1px solid var(--line)}
+.results-industry>.container>.section-head{margin-bottom:22px}
+.results-industry>.container>.section-head p{max-width:700px;color:var(--muted)}
+.page-results .results-industry .industry-category{padding:30px 0 66px}
+.page-results .results-industry .industry-category:nth-of-type(even){background:#F8F9FB}
+.page-results .results-industry .industry-cta{padding:54px 0 72px}
+@media(max-width:768px){.results-jump-links{gap:14px;margin-top:22px;font-size:12px}.results-industry{padding-top:48px}.page-results .results-industry .industry-category{padding:26px 0 46px}}
