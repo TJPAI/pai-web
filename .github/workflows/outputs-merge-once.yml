@@ -41,11 +41,11 @@ jobs:
            s=s.replace('<section class="results-achievements">','<section class="results-achievements" id="research-outputs">',1)
            s=s.replace('<section class="content-section results-publications">','<section class="content-section results-publications" id="papers">',1)
            # Keep existing 01-06 achievements and paper listing intact.
-           s=s.replace('<h1 class="title-page">Outputs</h1>','<h1 class="title-page">Research Outputs & Collaboration</h1>') if en else s.replace('<h1 class="title-page">研究成果</h1>','<h1 class="title-page">成果合作</h1>')
+           s=s.replace('<h1 class="title-page">Outputs</h1>','<h1 class="title-page">Outputs</h1>') if en else s.replace('<h1 class="title-page">研究成果</h1>','<h1 class="title-page">成果合作</h1>')
            olddesc='Selected research achievements and recent academic publications.' if en else '代表性科研成果与近年代表性学术论文。'
            newdesc='Research achievements, industry-ready technologies and academic publications.' if en else '代表性科研成果、产业化技术及近年代表性学术论文。'
            s=s.replace(olddesc,newdesc)
-           anchor='<nav class="results-jump-links" aria-label="'+('Outputs sections' if en else '成果合作板块')+'"><a href="#research-outputs">'+('Research results' if en else '研究成果')+'</a><a href="#industry">'+('Industry solutions' if en else '产业化技术')+'</a><a href="#papers">'+('Publications' if en else '代表性论文')+'</a></nav>'
+           anchor='<nav class="results-jump-links" aria-label="'+('Outputs sections' if en else '成果合作板块')+'"><a href="#research-outputs">'+('Research results' if en else '研究成果')+'</a><a href="#industry">'+('Industry solutions' if en else '产业化技术')+'</a><a href="#papers">'+('Papers' if en else '代表性论文')+'</a></nav>'
            s=s.replace('<aside class="results-news"',anchor+'<aside class="results-news"',1)
            publication.write_text(s,encoding='utf-8')
            # Existing URLs: redirect with anchor preservation while retaining no-JS fallback.
