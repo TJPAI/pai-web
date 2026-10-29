@@ -179,6 +179,20 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     button.setAttribute('aria-label',open?(en?'Close menu':'关闭菜单'):(en?'Open menu':'打开菜单'));
   };
 
+  // Delegated handler survives the lightweight page-navigation DOM replacement.
+  document.addEventListener('click',event=>{
+    const button=event.target.closest&&event.target.closest('.results-news-toggle');
+    if(!button) return;
+    const panel=button.closest('.results-news');
+    const extra=panel?.querySelector('.results-news-extra');
+    if(!extra) return;
+    const open=button.getAttribute('aria-expanded')!=='true';
+    extra.hidden=!open;
+    button.setAttribute('aria-expanded',String(open));
+    const en=(document.documentElement.lang||'').toLowerCase().startsWith('en');
+    button.textContent=open?(en?'Less':'收起'):(en?'More':'更多');
+  });
+
   document.addEventListener('click',event=>{
     const button=event.target.closest&&event.target.closest('.menu-btn');
     if(!button) return;
