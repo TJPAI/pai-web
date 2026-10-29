@@ -1,0 +1,52 @@
+name: Sync Outputs copy once
+on:
+  push:
+    branches: [feature/outputs-three-line-source-copy-20261030]
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: true
+      - name: Sync and validate
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python - <<'PY'
+          from pathlib import Path
+          import re,subprocess
+          p=Path("en/publications.html")
+          s=p.read_text(encoding="utf-8")
+          s=re.sub(r'<nav class="results-jump-links"[\s\S]*?</nav>',"",s)
+          values={
+          "port":"Custom drone scanning and RTK positioning improve port inventory; field-tested under force-6 gusts.",
+          "lidar":"Self-developed LiDAR mapping and localization; verified on heavy trucks and patrol robots.",
+          "navigation":"Sensor fusion enables indoor and outdoor navigation; served six consecutive CIIE exhibitions.",
+          "remote":"Non-invasive remote-driving retrofit retains manual controls; prototype validation completed.",
+          "earth":"Two-way magnetic communication through soil and rock; tested by multiple mining groups.",
+          "blasting":"Wireless underground command transmission reduces cable dependency; mining demonstrations completed.",
+          "gnn":"Graph neural networks accelerate physical simulation; deployed in automotive workflows for 15 months.",
+          "rom":"Deep learning and reduced-order models accelerate numerical simulation; laboratory tests completed.",
+          "avatar":"Audio-driven facial animation tested across scenarios, reaching 30 fps on a single GTX 3090.",
+          "did":"Blockchain and cryptography support digital identity at scale, including millions of accounts.",
+          "privacy":"Secure multiparty computation and federated learning support protected data collaboration in finance and healthcare.",
+          "finance":"Blockchain and graph analysis support risk supervision; reported deployment covered over 600 million transactions."
+          }
+          count=[0]
+          def rewrite(m):
+           count[0]+=1
+           return m.group(1)+values[m.group(2)]+m.group(3)
+          s=re.sub(r'(<article class="industry-card" id="tech-([^"]+)"[\s\S]*?<p class="industry-summary">)[^<]*(</p>)',rewrite,s)
+          assert count[0]==12
+          p.write_text(s,encoding="utf-8")
+          Path(".github/workflows/sync-output-copy-once.yml").unlink(missing_ok=True)
+          for args in (["python","tools/validate_repository_hygiene.py"],["python","tools/validate.py"],["python","tools/validate_outputs_label.py"],["python","tools/normalize_asset_versions.py","--check"],["git","diff","--check"]):
+           subprocess.run(args,check=True)
+          subprocess.run(["git","add","-A"],check=True)
+          subprocess.run(["git","commit","-m","Finish bilingual three-line industry summaries"],check=True)
+          subprocess.run(["git","push","origin","HEAD"],check=True)
+          
+          PY
