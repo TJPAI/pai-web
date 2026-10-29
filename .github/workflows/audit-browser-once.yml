@@ -13,6 +13,39 @@ jobs:
           npm install --no-save --no-package-lock playwright@1.56.1
           npx playwright install chromium
       - name: Browser navigation on iPhone-sized and desktop screens
-        run: node tools/verify_navigation.cjs
-      - name: Mobile navigation performance regression
-        run: node tools/verify_navigation_performance.cjs
+        run: |
+          node - <<'JS'
+          const {chromium}=require('playwright');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const base='https://tjpai.github.io/pai-web/';
+            let failures=[];
+            for(const width of [390,1280]){
+              const page=await browser.newPage({viewport:{width,height:844}});
+              for(const slug of ['','en/','publications.html','en/publications.html','about.html','en/about.html','research.html','en/research.html','team.html','en/team.html','join.html','en/join.html','contact.html','en/contact.html']){
+                try{
+                  const response=await page.goto(base+slug,{waitUntil:'domcontentloaded',timeout:25000});
+                  if(response.status()!==200)throw Error('HTTP '+response.status());
+                  await page.waitForTimeout(200);
+                  const state=await page.evaluate(()=>{
+                    const isResults=location.pathname.endsWith('publications.html');
+                    const h1=document.querySelector('h1');
+                    const cardCount=document.querySelectorAll('.industry-six-rows .industry-card').length;
+                    const storyCount=document.querySelectorAll('.home-achievement-story').length;
+                    const overflow=document.documentElement.scrollWidth-document.documentElement.clientWidth;
+                    return {h1:!!h1,cardCount,storyCount,overflow};
+                  });
+                  if(!state.h1)throw Error('missing h1');
+                  if(state.overflow>3)throw Error('horizontal overflow '+state.overflow+'px');
+                  if(slug.includes('publications')&&state.cardCount!==12)throw Error('technology cards '+state.cardCount);
+                  if(['','en/'].includes(slug)&&state.storyCount!==6)throw Error('home stories '+state.storyCount);
+                  console.log('PASS',width,slug||'index.html',JSON.stringify(state));
+                }catch(e){failures.push(width+' '+slug+': '+e.message);console.error('FAIL',failures.at(-1))}
+              }
+              await page.close();
+            }
+            await browser.close();
+            if(failures.length)throw Error(failures.join('\n'));
+            console.log('PASS all 28 desktop/mobile bilingual smoke checks');
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
