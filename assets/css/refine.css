@@ -1060,3 +1060,18 @@ html[lang="en"] .page-results .industry-six-rows .industry-summary{
   .page-results .results-news h2{color:#BC2530;font-weight:600;gap:8px}
   .page-results .results-news h2::before{height:18px;width:3px}
 }
+
+/* Chinese cards: place Applications directly after actual summary text, not reserved 3-line space. */
+html[lang="zh-CN"] .page-results .industry-six-rows .industry-summary{
+  min-height:0!important;
+  height:auto!important;
+  max-height:none!important;
+  margin-bottom:4px!important;
+  overflow:visible!important;
+  -webkit-line-clamp:unset!important;
+  line-clamp:unset!important;
+}
+html[lang="zh-CN"] .page-results .industry-six-rows .industry-meta{
+  margin-top:0!important;
+  margin-bottom:4px;
+}
