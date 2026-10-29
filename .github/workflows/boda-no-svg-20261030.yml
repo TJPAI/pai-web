@@ -1,0 +1,67 @@
+name: Boda Final Incremental 2026-10-30
+on:
+  push:
+    branches: [release/boda-no-svg-20261030]
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - name: Build final Boda incremental ZIP
+        shell: bash
+        run: |
+          python tools/package_boda.py --output /tmp/pai-web-full-production.zip
+          python - <<'PY'
+          import subprocess, zipfile, pathlib, hashlib
+          base='463a611ac4334df90ec3cfb3c6316bb8cb05b9d0'
+          head='5ceb8a70af37682026e79f6cb0377ce55a5236f7'
+          subprocess.run(['git','rev-parse','--verify',base+'^{commit}'],check=True,capture_output=True)
+          diffs=subprocess.check_output(['git','diff','--name-status',base+'...'+head],text=True).splitlines()
+          selected=set()
+          ignored=[]
+          for row in diffs:
+            status,*paths=row.split('\t')
+            path=paths[-1]
+            if status[0] in 'DR':raise SystemExit('Deletion/rename requires manual review: '+row)
+            if path.startswith('assets/images/technology/') and path.endswith('.svg'):\n              ignored.append(path)\n            elif path in {'assets/css/refine.css','assets/css/refine-base.css','assets/css/app-core.css','assets/css/typography.css','assets/css/desktop-layout.css'}:
+              selected.add('assets/css/refine-bundle.css')
+            elif path.endswith('.html') and not path.startswith(('templates/','geosketch-mvp/')):
+              selected.add(path)
+            elif path.startswith(('assets/images/','assets/icons/','assets/js/')):
+              selected.add(path)
+            elif path in {'robots.txt','sitemap.xml','site.json','sw.js'}:
+              selected.add(path)
+            elif path.startswith(('tools/','.github/','config/','templates/')):
+              ignored.append(path)
+            else:
+              raise SystemExit('Unclassified source change: '+row)
+          source=zipfile.ZipFile('/tmp/pai-web-full-production.zip')
+          missing=sorted(selected-set(source.namelist()))
+          if missing:raise SystemExit('Missing production files: '+str(missing))
+          out='pai-web-boda-final-no-svg-2026-10-30.zip'
+          with zipfile.ZipFile(out,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as target:
+            for path in sorted(selected):
+              target.writestr(path,source.read(path))
+          with zipfile.ZipFile(out) as z:
+            assert z.testzip() is None
+          manifest=['PAI WEB BODA FINAL INCREMENTAL, 2026-10-30','Base: '+base,'Head: '+head,
+                    'Files: '+str(len(selected)),'SHA256: '+hashlib.sha256(pathlib.Path(out).read_bytes()).hexdigest(),
+                    '','Upload the contents of this zip to the Boda website root, preserving paths.',
+                    'Overwrite listed files; do not delete other server files.',
+                    '','Included files:']+['- '+p for p in sorted(selected)]+['','Excluded tooling:']+['- '+p for p in sorted(ignored)]
+          pathlib.Path('pai-web-boda-final-incremental-2026-10-30-manifest.txt').write_text('\n'.join(manifest)+'\n',encoding='utf-8')
+          print('\n'.join(manifest))
+          PY
+      - name: Upload verified incremental package
+        uses: actions/upload-artifact@v4
+        with:
+          name: pai-web-boda-final-incremental-2026-10-30
+          path: |
+            pai-web-boda-final-incremental-2026-10-30.zip
+            pai-web-boda-final-incremental-2026-10-30-manifest.txt
+          if-no-files-found: error
+          retention-days: 30
