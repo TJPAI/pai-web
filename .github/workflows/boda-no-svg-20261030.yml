@@ -27,7 +27,8 @@ jobs:
             status,*paths=row.split('\t')
             path=paths[-1]
             if status[0] in 'DR':raise SystemExit('Deletion/rename requires manual review: '+row)
-            if path.startswith('assets/images/technology/') and path.endswith('.svg'):\n              ignored.append(path)
+            if path.startswith('assets/images/technology/') and path.endswith('.svg'):
+              ignored.append(path)
             elif path in {'assets/css/refine.css','assets/css/refine-base.css','assets/css/app-core.css','assets/css/typography.css','assets/css/desktop-layout.css'}:
               selected.add('assets/css/refine-bundle.css')
             elif path.endswith('.html') and not path.startswith(('templates/','geosketch-mvp/')):
