@@ -912,3 +912,12 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 .industry-photo{width:100%;aspect-ratio:16/9;background-color:#F3F6F8;background-repeat:no-repeat;background-position:center;background-size:cover}
 @media(max-width:768px){.page-results .industry-six-rows{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 13px}.page-results .industry-six-rows .industry-card .title-item{font-size:14px}.page-results .industry-six-rows .industry-card p{font-size:11.5px;line-height:1.5}.page-results .industry-six-rows .industry-card .industry-proof,.page-results .industry-six-rows .industry-card .industry-meta{font-size:11px}.page-results .industry-six-rows .industry-card-body{padding-top:12px}.page-results .industry-six-rows .industry-link{font-size:11px}}
 @media(max-width:480px){.page-results .industry-six-rows{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Results 05 → 06: one divider only, no duplicate boundary lines. */
+.page-results>.results-achievements .highlight:last-child{border-bottom:0!important}
+.page-results>.results-achievements{border-bottom:0!important}
+.page-results .results-industry{border-top:1px solid var(--line);padding-top:0}
+.page-results .results-industry .results-industry-heading{border-top:0!important;margin-bottom:24px}
+.page-results .results-industry .results-industry-heading .highlight{border-top:0!important}
+.page-results .results-industry .industry-all{padding-top:0}
+@media(max-width:768px){.page-results .results-industry .results-industry-heading{margin-bottom:18px}}
