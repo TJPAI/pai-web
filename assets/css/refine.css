@@ -1097,3 +1097,30 @@ html[lang="zh-CN"] .page-results .industry-six-rows .industry-meta{
 .page-results .results-news h2.title-item,
 .page-results .results-news h2.title-section,
 .page-results .results-news h2 * {color:#BC2530!important}
+
+
+/* English Outputs technology cards: max four lines, no reserved blank lines
+   between short summaries and their Enquiry links (mobile and desktop). */
+html[lang="en"] .page-results .industry-six-rows .industry-summary{
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:4!important;
+  line-clamp:4!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  min-height:0!important;
+  height:auto!important;
+  max-height:calc(1.58em * 4)!important;
+  line-height:1.58!important;
+  margin-bottom:3px!important;
+}
+html[lang="en"] .page-results .industry-six-rows .industry-link{
+  margin-top:0!important;
+  padding-top:0!important;
+}
+@media(max-width:768px){
+  html[lang="en"] .page-results .industry-six-rows .industry-summary{
+    max-height:calc(1.48em * 4)!important;
+    line-height:1.48!important;
+  }
+}
