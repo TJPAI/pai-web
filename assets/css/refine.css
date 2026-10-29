@@ -1124,3 +1124,21 @@ html[lang="en"] .page-results .industry-six-rows .industry-link{
     line-height:1.48!important;
   }
 }
+
+/* Outputs: keep Enquiry attached to the last visible sentence rather than the
+   bottom of an equal-height grid card. Alignment of the outer cards is retained. */
+html[lang="en"] .page-results .industry-six-rows .industry-card-body{
+  flex:0 0 auto!important;
+  justify-content:flex-start!important;
+  align-content:flex-start!important;
+}
+html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-link{
+  flex:0 0 auto!important;
+  align-self:flex-start!important;
+  margin-block-start:0!important;
+  padding-block-start:0!important;
+}
+html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-summary{
+  flex:0 0 auto!important;
+  margin-block-end:2px!important;
+}
