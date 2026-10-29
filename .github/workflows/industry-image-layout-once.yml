@@ -57,6 +57,12 @@ jobs:
             original=('../assets/images/technology/' if front.parent.name=='en' else 'assets/images/technology/')
             t=t.replace('src="'+original+filemap[key]+'_compressed.JPG"','src="'+original+key+'.svg" data-project-src="'+original+filemap[key]+'_compressed.JPG"')
            front.write_text(t,encoding='utf-8')
+          # Normalize any remaining image src references before repository integrity validation.
+          for front in (R/'index.html',R/'en/index.html'):
+           t=front.read_text(encoding='utf-8')
+           for key,photo in (('gnn','2455'),('privacy','2458')):
+            t=re.sub(r'(?<=src=")([^"]*?)'+photo+r'_compressed.JPG',lambda m:m.group(1)+key+'.svg',t)
+           front.write_text(t,encoding='utf-8')
           js=R/'assets/js/site.js'
           s=js.read_text(encoding='utf-8')
           s="""// Graceful fallback before uploaded project photos reach the preview repository.
