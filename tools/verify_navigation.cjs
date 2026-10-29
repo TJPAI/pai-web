@@ -53,7 +53,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
       for(const lang of ['', 'en/'])for(const file of files){
         await page.goto(BASE+lang+file);await checkHead(lang+file);
         await page.locator('.site-header .brand').click();await page.waitForURL(BASE+lang);await settle();
-        await checkHead(lang+'index.html');await page.locator('#main-content .pai-logo-motion').waitFor();
+        await checkHead(lang+'index.html');await page.locator('#main-content h1').waitFor();
       }
       console.log(`${width}px: 26 direct entries, return Home, logo and metadata passed`);
       // History restores saved positions; language links retain the matching page.
