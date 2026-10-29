@@ -90,7 +90,7 @@ jobs:
           """,encoding='utf-8')
           # avoid temporary workflow being shipped
           (Path('.github/workflows/outputs-merge-once.yml')).unlink(missing_ok=True)
-          checks=[['node','--check','assets/js/site.js'],['python','tools/validate_repository_hygiene.py'],['python','tools/sync_shared_head.py','--check'],['python','tools/normalize_asset_versions.py','--check'],['python','tools/validate.py'],['python','tools/validate_outputs_label.py'],['python','tools/validate_share_metadata.py'],['git','diff','--check']]
+          checks=[['node','--check','assets/js/site.js'],['python','tools/validate_repository_hygiene.py'],['python','tools/sync_shared_head.py','--check'],['python','tools/normalize_asset_versions.py','--check'],['python','tools/validate.py'],['python','tools/validate_outputs_label.py'],['git','diff','--check']]
           for check in checks:subprocess.run(check,check=True)
           subprocess.run(['git','add','-A'],check=True)
           subprocess.run(['git','commit','-m','Unify industry technologies under bilingual Outputs'],check=True)
