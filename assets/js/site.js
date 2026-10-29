@@ -496,6 +496,20 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
   if('requestIdleCallback' in window) requestIdleCallback(warmNavigation,{timeout:1800});
   else setTimeout(warmNavigation,700);
 
+  // Homepage's 'More research results' targets the comparatively large Outputs
+  // document. Warm only its HTML during browser idle so the tap need not wait
+  // for the initial network request; avoid background traffic on metered links.
+  const warmHomeResultsCTA=()=>{
+    const path=normalizedPath();
+    if(path!=='/'&&path!=='/en/') return;
+    const connection=navigator.connection;
+    if(connection?.saveData||/^(slow-2g|2g)$/.test(connection?.effectiveType||'')) return;
+    const results=new URL(root(path.startsWith('/en/')?'/en/publications.html':'/publications.html'),location.origin);
+    fetchPage(results,{priority:'low'}).catch(()=>{});
+  };
+  if('requestIdleCallback' in window) requestIdleCallback(warmHomeResultsCTA,{timeout:3000});
+  else setTimeout(warmHomeResultsCTA,1400);
+
   const warmPublicationData=url=>{
     if(navigator.connection&&navigator.connection.saveData) return;
     if(sectionForPath(normalizedPath(url.pathname))==='publications'){
