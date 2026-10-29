@@ -20,6 +20,7 @@
     '/research.html':'/en/research.html',
     '/team.html':'/en/team.html',
     '/publications.html':'/en/publications.html',
+    '/industry.html':'/en/industry.html',
     '/join.html':'/en/join.html',
     '/contact.html':'/en/contact.html',
     '/people/erwu-liu.html':'/en/people/erwu-liu.html',
@@ -34,11 +35,11 @@
   const navItems=lang=>lang==='en'?
     [
       ['About','/en/about.html'],['People','/en/team.html'],['Research','/en/research.html'],
-      ['Outputs','/en/publications.html'],['Join','/en/join.html'],['Contact','/en/contact.html']
+      ['Outputs','/en/publications.html'],['Industry','/en/industry.html'],['Join','/en/join.html'],['Contact','/en/contact.html']
     ]:
     [
       ['关于我们','/about.html'],['研究团队','/team.html'],['研究方向','/research.html'],
-      ['研究成果','/publications.html'],['加入我们','/join.html'],['联系我们','/contact.html']
+      ['研究成果','/publications.html'],['产业合作','/industry.html'],['加入我们','/join.html'],['联系我们','/contact.html']
     ];
 
   const sectionForPath=path=>{
@@ -47,6 +48,7 @@
     if(path.endsWith('/team.html')||path==='/team.html') return 'team';
     if(path.endsWith('/research.html')||path==='/research.html') return 'research';
     if(path.endsWith('/publications.html')||path==='/publications.html') return 'publications';
+    if(path.endsWith('/industry.html')||path==='/industry.html') return 'industry';
     if(path.endsWith('/join.html')||path==='/join.html') return 'join';
     if(path.endsWith('/contact.html')||path==='/contact.html') return 'contact';
     return '';
@@ -529,8 +531,8 @@
   },{capture:true,passive:true});
 
   const swipePageOrder={
-    zh:['/','/about.html','/team.html','/research.html','/publications.html','/join.html','/contact.html'],
-    en:['/en/','/en/about.html','/en/team.html','/en/research.html','/en/publications.html','/en/join.html','/en/contact.html']
+    zh:['/','/about.html','/team.html','/research.html','/publications.html','/industry.html','/join.html','/contact.html'],
+    en:['/en/','/en/about.html','/en/team.html','/en/research.html','/en/publications.html','/en/industry.html','/en/join.html','/en/contact.html']
   };
 
   const SWIPE_EDGE_GUARD=32;
