@@ -989,3 +989,24 @@ html[lang="zh-CN"] .page-results .industry-six-rows .industry-summary{
 .page-results .results-industry{padding-bottom:0!important}
 .page-results .results-publications{padding-top:0!important}
 .page-results .results-publications-heading{margin-top:0!important}
+
+/* Equal 05→06 and 06→07 divider rhythm; measure the gap from final text to divider. */
+.page-results .results-industry .industry-all{padding-bottom:22px!important}
+.page-results .results-industry .industry-all .industry-grid{margin-bottom:0!important}
+.page-results .results-publications{padding-top:0!important}
+.page-results .results-publications-heading{margin-top:0!important}
+/* English card copy occupies two title lines + five description lines, without clipping. */
+html[lang="en"] .page-results .industry-six-rows .industry-card .title-item{
+ display:block;overflow:visible;-webkit-line-clamp:unset;line-clamp:unset;
+ min-height:calc(1.42em * 2);max-height:none;line-height:1.42;
+}
+html[lang="en"] .page-results .industry-six-rows .industry-summary{
+ display:block;overflow:visible;-webkit-line-clamp:unset;line-clamp:unset;
+ min-height:calc(1.58em * 5);max-height:none;line-height:1.58;
+}
+@media(max-width:768px){
+ .page-results .results-industry .industry-all{padding-bottom:22px!important}
+ html[lang="en"] .page-results .industry-six-rows .industry-summary{
+  min-height:calc(1.48em * 5);max-height:none;line-height:1.48;
+ }
+}
