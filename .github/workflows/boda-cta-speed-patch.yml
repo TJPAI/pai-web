@@ -1,0 +1,35 @@
+name: Boda CTA speed patch only
+on:
+  push:
+    branches: [release/boda-cta-speed-only-20261030]
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Build and verify Boda production asset
+        run: |
+          python tools/package_boda.py --output /tmp/pai-web-boda-full.zip
+          python - <<'PY'
+          import zipfile,hashlib,pathlib
+          source=zipfile.ZipFile('/tmp/pai-web-boda-full.zip')
+          asset='assets/js/site.js'
+          data=source.read(asset)
+          assert b'warmHomeResultsCTA' in data
+          out='pai-web-boda-cta-speed-patch-2026-10-30.zip'
+          with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as target:
+            target.writestr(asset,data)
+          with zipfile.ZipFile(out) as test:
+            assert test.namelist()==[asset]
+            assert test.testzip() is None
+          print('PATCH_FILE:',asset)
+          print('PATCH_BYTES:',len(data))
+          print('PATCH_SHA256:',hashlib.sha256(pathlib.Path(out).read_bytes()).hexdigest())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pai-web-boda-cta-speed-patch-2026-10-30
+          path: pai-web-boda-cta-speed-patch-2026-10-30.zip
+          retention-days: 30
