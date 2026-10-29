@@ -886,3 +886,17 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 .page-results .results-industry .industry-category:nth-of-type(even){background:#F8F9FB}
 .page-results .results-industry .industry-cta{padding:54px 0 72px}
 @media(max-width:768px){.results-jump-links{gap:14px;margin-top:22px;font-size:12px}.results-industry{padding-top:48px}.page-results .results-industry .industry-category{padding:26px 0 46px}}
+
+/* Five selected achievements: three in first row, two in second row on desktop. */
+.home-achievement-stories{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.home-achievement-story:nth-child(3) img{aspect-ratio:16/9;object-position:center}
+.home-achievement-story:nth-child(n+4) img{aspect-ratio:16/9;object-fit:cover}
+.home-achievement-story:nth-child(n+4) figcaption{min-height:150px}
+.industry-all .industry-six-rows{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 24px}
+.industry-visual-image{padding:0;background:#F3F6F8}
+.industry-visual-image img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:16/9}
+.results-industry-heading{margin-bottom:28px}
+.results-industry-heading .highlight{border-bottom:0!important;padding-left:0!important}
+.page-results .results-industry .industry-all{padding:12px 0 56px;background:transparent}
+@media(max-width:768px){.home-achievement-stories{grid-template-columns:1fr 1fr;gap:12px}.home-achievement-story:nth-child(n+4) figcaption{min-height:0}.industry-all .industry-six-rows{grid-template-columns:1fr;gap:24px}}
+@media(max-width:480px){.home-achievement-stories{grid-template-columns:1fr}.industry-all .industry-six-rows{grid-template-columns:1fr}}
