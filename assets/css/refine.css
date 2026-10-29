@@ -1091,3 +1091,9 @@ html[lang="zh-CN"] .page-results .industry-six-rows .industry-meta{
   margin-bottom:6px!important;
  }
 }
+
+/* Force latest-news title text red even when generic page-title rules override h2 color. */
+.page-results .results-news h2,
+.page-results .results-news h2.title-item,
+.page-results .results-news h2.title-section,
+.page-results .results-news h2 * {color:#BC2530!important}
