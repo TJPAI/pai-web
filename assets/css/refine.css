@@ -1010,3 +1010,16 @@ html[lang="en"] .page-results .industry-six-rows .industry-summary{
   min-height:calc(1.48em * 5);max-height:none;line-height:1.48;
  }
 }
+
+/* Tighten the gap between section 06 introduction and first photo row. */
+.page-results .results-industry .results-industry-heading{margin-bottom:8px!important}
+.page-results .results-industry .industry-all{padding-top:0!important}
+.page-results .results-industry .industry-all .industry-grid{margin-top:0!important}
+/* Reserve seven readable lines for English descriptions on two-column phones.
+   Preserve natural wrapping: never crop or ellipsize supplied project evidence. */
+@media(max-width:768px){
+ html[lang="en"] .page-results .industry-six-rows .industry-summary{
+  min-height:calc(1.48em * 7);max-height:none;line-height:1.48;
+  display:block;overflow:visible;-webkit-line-clamp:unset;line-clamp:unset;
+ }
+}
