@@ -48,7 +48,7 @@ jobs:
             root='../assets/images/technology/' if prefix else 'assets/images/technology/'
             old='<img src="'+root+id+'.svg" width="800" height="450"'
             assert old in s,(prefix,id)
-            s=s.replace(old,'<img src="'+root+filemap[id]+'_compressed.JPG" data-fallback="'+root+id+'.svg" width="800" height="450"',1)
+           s=s.replace(old,'<img src="'+root+id+'.svg" data-project-src="'+root+filemap[id]+'_compressed.JPG" width="800" height="450"',1)
            home.write_text(s,encoding='utf-8')
           js=R/'assets/js/site.js'
           s=js.read_text(encoding='utf-8')
