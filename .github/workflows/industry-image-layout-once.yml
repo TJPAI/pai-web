@@ -50,6 +50,13 @@ jobs:
             assert old in s,(prefix,id)
            s=s.replace(old,'<img src="'+root+id+'.svg" data-project-src="'+root+filemap[id]+'_compressed.JPG" width="800" height="450"',1)
            home.write_text(s,encoding='utf-8')
+          # All homepage images must remain local/valid even before the uploaded JPG files arrive.
+          for front in (R/'index.html',R/'en/index.html'):
+           t=front.read_text(encoding='utf-8')
+           for key in ('gnn','privacy'):
+            original=('../assets/images/technology/' if front.parent.name=='en' else 'assets/images/technology/')
+            t=t.replace('src="'+original+filemap[key]+'_compressed.JPG"','src="'+original+key+'.svg" data-project-src="'+original+filemap[key]+'_compressed.JPG"')
+           front.write_text(t,encoding='utf-8')
           js=R/'assets/js/site.js'
           s=js.read_text(encoding='utf-8')
           s="""// Graceful fallback before uploaded project photos reach the preview repository.
