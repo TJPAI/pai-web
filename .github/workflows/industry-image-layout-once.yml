@@ -35,7 +35,7 @@ jobs:
             assert old,(id,'visual absent')
             root='../assets/images/technology/' if prefix else 'assets/images/technology/'
             name=filemap[id]
-          new='<div class="industry-visual industry-visual-image"><div class="industry-photo" role="img" aria-label="'+('Technology project illustration' if prefix else '成果项目配图')+'" style="background-image:url('+root+name+'_compressed.JPG),url('+root+id+'.svg)"></div></div>'
+            new='<div class="industry-visual industry-visual-image"><div class="industry-photo" role="img" aria-label="'+('Technology project illustration' if prefix else '成果项目配图')+'" style="background-image:url('+root+name+'_compressed.JPG),url('+root+id+'.svg)"></div></div>'
             lookup[id]=card.replace(old.group(0),new)
            start=s.index('<div class="industry-grid industry-six-rows">')+len('<div class="industry-grid industry-six-rows">')
            end=s.index('</div></div></section>',start)
