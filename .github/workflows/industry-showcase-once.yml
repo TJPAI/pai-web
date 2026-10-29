@@ -1,0 +1,106 @@
+name: Build PAI industry showcase once
+on:
+  push:
+    branches:
+      - feature/industry-technology-showcase-20261030
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: true
+      - name: Author and validate pages
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f .github/workflows/industry-showcase-once.yml
+          python - <<'PY'
+          from pathlib import Path
+          import re,html,subprocess
+          R=Path('.')
+          rows=[
+          ("port",0,"港口车辆无人机智能盘点系统","Drone-Based Port Vehicle Inventory","自主无人机扫描与RTK/惯导定位，帮助大型港口货场高效完成车辆资产盘点。","Drone and RTK/inertial positioning for vehicle inventory across large ports and yards.","已完成港口实地测试，具备小规模部署能力。","Port field tests completed; small-scale deployment feasible.","港口、物流园、露天货场","Ports, logistics yards","部署、定制、数据服务","Deployment, customization, data services"),
+          ("lidar",0,"激光雷达高精度定位系统","LiDAR Positioning System","为工业车辆和移动机器人提供建图、轨迹复用及可靠定位。","Mapping, reusable routes and robust localization for vehicles and mobile robots.","重型卡车和机器人多场景验证，完成连续运行测试。","Field-tested on heavy trucks and mobile robots, including continuous operation.","工厂、园区、移动机器人","Factories, campuses, robotics","系统集成、许可、联合开发","Integration, licensing, co-development"),
+          ("remote",0,"车辆非侵入式远程驾驶改造套件","Non-Invasive Remote Driving Retrofit","保留原车人工驾驶功能，为现有车辆加装远程驾驶能力。","Adds remote-driving functions to existing vehicles without removing manual control.","已完成原理及原型测试，需逐车型验证适配与安全。","Prototype tested; vehicle-specific safety validation remains necessary.","封闭园区、港口、矿区","Controlled sites, ports, mines","车型适配、联合测试","Vehicle adaptation, joint testing"),
+          ("navigation",0,"“导路者”融合定位与导航系统","DWELT Indoor–Outdoor Navigation","面向超大型空间的室内外融合定位、跨层导航和AR导览。","Indoor–outdoor positioning, multilevel wayfinding and AR guidance for large venues.","连续服务六届中国国际进口博览会。","Deployed at six consecutive China International Import Expos.","展馆、园区、地下空间","Exhibition venues, campuses, underground areas","SDK、工程部署、联合开发","SDK, deployment, co-development"),
+          ("earth",1,"小型化无线透地双向通信系统","Compact Through-the-Earth Communications","实现土壤、岩石等复杂介质阻隔下的双向通信与组网。","Two-way communication through challenging underground media.","在多个煤矿集团完成通信验证，实际距离依介质条件而定。","Validated at multiple mining groups; range depends on conditions.","矿山、地下设施、应急救援","Mines, underground facilities, emergency response","许可、联合研发、现场验证","Licensing, co-development, field trials"),
+          ("blasting",1,"无线透地遥控爆破通信技术","Through-the-Earth Blasting Communications","针对专业矿山作业研发透地指令传输技术，减少有线连接依赖。","Through-the-earth command transmission for qualified professional mining operations.","材料记载完成煤矿示范与露天矿应用；部署须遵循资质及安全要求。","Reported mining demonstrations and application; qualified, regulated use only.","具备资质的矿山作业","Qualified mining operations","合规评估、技术许可","Compliance review, licensing"),
+          ("gnn",1,"AI物理仿真代理模型","AI Surrogate for Physical Simulation","利用图神经网络加速工程数值仿真，缩短设计迭代周期。","Graph neural-network surrogate models accelerate engineering simulation.","在汽车零部件企业的真实流程中连续运行15个月。","Reported 15 months of continuous operation at an automotive supplier.","汽车零部件、力学、工程设计","Automotive components, mechanics, engineering","SDK、工程集成、联合开发","SDK, integration, co-development"),
+          ("rom",1,"快速实时计算与仿真加速模型","Fast Reduced-Order Simulation","融合深度学习与降阶数值计算，加速流体和多物理场预测。","Combines deep learning and reduced-order numerics for faster simulation.","已完成实验室原型和数值验证，工程化效果需按具体场景评估。","Laboratory prototype and numerical validation completed.","流体、热管理、设计优化","Fluids, thermal systems, design","算法集成、联合开发","Algorithm integration, co-development"),
+          ("did",2,"区块链可信数字身份系统","Blockchain-Based Digital Identity","为多机构、多终端提供可信身份管理与认证能力。","Trusted identity management and authentication across institutions and devices.","材料记载已规模化应用并支持千万级账户实体，范围待项目核实。","Reported scaled deployments with millions of account entities; scope to be confirmed.","金融、工业互联网、能源","Finance, industrial IoT, energy","DID SDK、平台集成","DID SDK, platform integration"),
+          ("privacy",2,"隐私计算与可信数据协同平台","Privacy Computing & Data Collaboration","融合多方安全计算与联邦学习，支持跨机构数据协同。","Secure multiparty computation and federated learning for multi-party data collaboration.","材料记载已在金融、医疗等领域开展项目应用。","Reported applications in finance and healthcare.","金融风控、医疗、政务","Finance, healthcare, public sector","平台部署、行业定制","Platform deployment, customization"),
+          ("finance",2,"金融区块链生态安全监管平台","Financial Blockchain Risk Supervision","结合区块链和图分析技术，实现实体识别、风险监测和预警。","Blockchain and graph analytics for entity identification and risk monitoring.","材料记载支撑6亿余笔交易且运行一年以上，具体口径待核实。","Reported support for 600M+ transactions over one year; scope to be confirmed.","金融监管、仓单、结算","Finance, warehouse receipts, settlements","平台集成、联合研发","Platform integration, co-development"),
+          ("avatar",2,"音频驱动实时数字人唇形合成","Real-Time Audio-Driven Digital Avatars","根据语音实时生成数字人口型与表情，用于互动展示和内容生产。","Real-time audio-to-lip animation for interactive avatars and content.","已完成原型及多场景测试，材料记载GTX 3090实现30fps。","Prototype tested; reported 30 fps rendering on a GTX 3090.","数字客服、教育、虚拟展馆","Digital services, education, exhibitions","SDK/API、定制开发","SDK/API, customization")
+          ]
+          cats=[("智能感知与自主系统","Smart Sensing & Autonomous Systems"),("特殊环境通信与工业智能","Challenging-Environment Communications & Industrial AI"),("可信数字基础设施与AI应用","Trusted Digital Infrastructure & AI Applications")]
+          featured={"port","navigation","earth","lidar","gnn","did"}
+          def card(x,en,small=False):
+           id,ci,cn,eng,val,veng,proof,peng,apps,aeng,coop,ceng=x
+           title=eng if en else cn
+           link=("industry.html#tech-"+id) if small else ("mailto:lingtang@tongji.edu.cn?subject="+("PAI%20Industry%20Collaboration%3A%20" if en else "PAI%20") + id)
+           return f'<article class="industry-card" id="tech-{id}"><div class="industry-visual"><span class="industry-visual-index">{id.upper()}</span><span class="industry-visual-hint">{"Project image to be added" if en else "成果图片待添加"}</span></div><div class="industry-card-body"><h3 class="title-item">{html.escape(title)}</h3><p class="industry-value">{html.escape(veng if en else val)}</p><p class="industry-proof">{html.escape(peng if en else proof)}</p>'+('' if small else f'<p class="industry-meta"><b>{"Applications" if en else "应用"}</b> {html.escape(aeng if en else apps)}</p><p class="industry-meta"><b>{"Collaboration" if en else "合作"}</b> {html.escape(ceng if en else coop)}</p>')+f'<a class="industry-link" href="{link}">{"View technology" if small and en else "了解技术" if small else "Discuss collaboration" if en else "咨询合作"} →</a></div></article>'
+          def home_section(en):
+           return '<section class="section industry-home" id="industry-home"><div class="container"><div class="section-head"><div class="eyebrow">TECHNOLOGY & INDUSTRY</div><h2 class="title-section">'+('Technology for Industry' if en else '可产业化技术')+'</h2><p>'+('Research-based technologies for field validation, integration and deployment.' if en else '面向产业真实需求，提供可验证、可集成的技术与联合开发机会。')+'</p></div><div class="industry-grid industry-featured">'+''.join(card(x,en,True) for x in rows if x[0] in featured)+'</div><p class="industry-more"><a class="text-link" href="industry.html#main-content">'+('Explore all 12 technologies →' if en else '查看全部12项技术与合作方式 →')+'</a></p></div></section>'
+          def add_nav(s,en,depth):
+           link='../industry.html' if depth else 'industry.html'
+           label='Industry' if en else '产业合作'
+           # standard in-page nav and footer; preserve existing navigation order and active class elsewhere
+           return re.sub(r'(<a(?: class="active")? href="(?:\.\./)?publications\.html">[^<]*</a>)',lambda m:m.group(1)+f'<a href="{link}">{label}</a>',s)
+          for f in list(R.glob('*.html'))+list((R/'en').glob('*.html'))+list((R/'people').glob('*.html'))+list((R/'en/people').glob('*.html')):
+           if f.name=='404.html': continue
+           en=f.parts[0]=='en'
+           depth='people' in f.parts
+           s=f.read_text(encoding='utf-8')
+           s=add_nav(s,en,depth)
+           if f.as_posix() in ('index.html','en/index.html'):
+            mark='<section class="section selected-updates"'
+            assert s.count(mark)==1,(f,mark)
+            s=s.replace(mark,home_section(en)+mark,1)
+           f.write_text(s,encoding='utf-8')
+          def new_page(en):
+           f=R/('en/contact.html' if en else 'contact.html')
+           s=f.read_text(encoding='utf-8')
+           s=re.sub(r'<title>[^<]+</title>','<title>'+('Technology & Industry Collaboration' if en else '技术成果与产业合作')+' | PAI Research Center</title>',s,count=1)
+           domain='https://ai.tongji.edu.cn/'
+           s=re.sub(r'<link rel="canonical" href="[^"]*">',f'<link rel="canonical" href="{domain}{"en/" if en else ""}industry.html">',s,count=1)
+           for lang,target in [('zh-CN','industry.html'),('en','en/industry.html'),('x-default','industry.html')]:
+            s=re.sub(r'<link rel="alternate" hreflang="'+lang+r'" href="[^"]*">',f'<link rel="alternate" hreflang="{lang}" href="{domain}{target}">',s,count=1)
+           s=re.sub(r'<meta property="og:url" content="[^"]*">',f'<meta property="og:url" content="{domain}{"en/" if en else ""}industry.html">',s,count=1)
+           s=s.replace('href="../contact.html">中文','href="../industry.html">中文') if en else s.replace('href="en/contact.html">EN','href="en/industry.html">EN')
+           s=s.replace('<a class="active" href="contact.html">','<a href="contact.html">')
+           s=s.replace('<a href="industry.html">'+('Industry' if en else '产业合作')+'</a>','<a class="active" href="industry.html">'+('Industry' if en else '产业合作')+'</a>',1)
+           inner='<main id="main-content" class="page-inner page-industry"><section class="page-hero"><div class="container std"><div class="eyebrow">TECHNOLOGY & INDUSTRY</div><h1 class="title-page">'+('Technology & Industry Collaboration' if en else '技术成果与产业合作')+'</h1><p>'+('Research-driven solutions for field validation, licensing and co-development.' if en else '将科研成果转化为可验证、可集成、可部署的行业技术方案。')+'</p></div></section>'
+           for i,(cncat,encat) in enumerate(cats):
+            inner+=f'<section class="content-section industry-category" id="category-{i+1}"><div class="container std"><div class="industry-group-title"><span>0{i+1}</span><h2 class="title-section">{encat if en else cncat}</h2></div><div class="industry-grid">' + ''.join(card(x,en) for x in rows if x[1]==i)+'</div></div></section>'
+           inner+='<section class="section industry-cta"><div class="container std"><div class="eyebrow">COLLABORATE WITH PAI</div><h2 class="title-section">'+('Discuss a Pilot or Partnership' if en else '探讨场景验证与产业合作')+'</h2><p>'+('Technical fit, deployment conditions and compliance requirements are evaluated for each project.' if en else '欢迎提供应用场景。具体技术适配、部署条件及合规要求以项目评估为准。')+'</p><a class="text-link" href="contact.html#main-content">'+('Contact the Research Center →' if en else '联系研究中心 →')+'</a></div></section></main>'
+           s=re.sub(r'<main id="main-content".*?</main>',lambda _:inner,s,flags=re.S,count=1)
+           s=re.sub(r'<meta name="description" content="[^"]*">',f'<meta name="description" content="{"PAI Research Center technology solutions for industry collaboration." if en else "同济大学PAI研究中心12项可产业化技术与合作机会。"}">',s,count=1)
+           (R/('en/industry.html' if en else 'industry.html')).write_text(s,encoding='utf-8')
+          new_page(False);new_page(True)
+          css=R/'assets/css/refine.css'
+          css.write_text(css.read_text(encoding='utf-8')+"""
+          /* Industry showcase: source content, real project imagery can replace placeholders later. */
+          .industry-home{padding:96px 0 104px}.industry-home .section-head{margin-bottom:34px}.industry-home .section-head p{color:var(--muted);max-width:720px;font-size:16px}
+          .industry-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 24px}.industry-featured{grid-template-columns:repeat(3,minmax(0,1fr))}
+          .industry-card{border-top:1px solid var(--line);min-width:0}.industry-visual{aspect-ratio:16/9;background:#F4F6F8;display:flex;flex-direction:column;justify-content:space-between;padding:16px 18px;color:#8B94A2}.industry-visual-index{font-size:11px;letter-spacing:.16em;font-weight:650}.industry-visual-hint{font-size:12px}
+          .industry-card-body{padding:17px 0 8px}.industry-card .title-item{margin:0 0 10px;font-size:19px;line-height:1.42}.industry-card p{margin:0 0 9px;font-size:14px;line-height:1.68}.industry-card .industry-value{color:#303744}.industry-card .industry-proof{color:#647084;font-size:13px}.industry-card .industry-meta{color:#647084;font-size:12.5px}.industry-card .industry-meta b{color:#3B4655;margin-right:6px}
+          .industry-link{display:inline-block;margin-top:8px;color:#35445B;font-size:13px;font-weight:650;text-decoration:underline;text-decoration-color:#B7BEC9;text-underline-offset:5px}.industry-more{text-align:right;margin:26px 0 0}
+          .industry-group-title{display:flex;align-items:baseline;gap:18px;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:28px}.industry-group-title span{color:#8B94A2;font-size:13px}.industry-group-title .title-section{margin:0;font-size:27px}
+          .page-industry .page-hero{padding-bottom:58px}.page-industry .industry-category{padding:64px 0 80px}.page-industry .industry-category:nth-of-type(odd){background:#F8F9FB}.industry-cta{padding:70px 0 90px}.industry-cta p{max-width:700px;color:var(--muted)}
+          @media(max-width:1024px){.industry-featured{grid-template-columns:repeat(2,minmax(0,1fr))}}
+          @media(max-width:768px){.industry-home{padding:66px 0 72px}.industry-home .section-head{margin-bottom:24px}.industry-home .section-head p{font-size:14px}.industry-grid,.industry-featured{grid-template-columns:1fr;gap:22px}.industry-featured .industry-card{display:grid;grid-template-columns:112px minmax(0,1fr);gap:14px;padding-top:14px}.industry-featured .industry-visual{aspect-ratio:4/3;padding:10px}.industry-featured .industry-visual-hint{font-size:9px}.industry-featured .industry-card-body{padding:0}.industry-featured .industry-card .title-item{font-size:15px;margin-bottom:6px}.industry-featured .industry-card p{font-size:12px;line-height:1.52;margin-bottom:5px}.industry-featured .industry-card .industry-proof{font-size:11px}.industry-featured .industry-link{font-size:12px;margin-top:4px}.industry-group-title .title-section{font-size:20px}.page-industry .industry-category{padding:44px 0 56px}.industry-cta{padding:58px 0 70px}}
+          """,encoding='utf-8')
+          subprocess.run(['python','tools/validate_repository_hygiene.py'],check=True)
+          subprocess.run(['python','tools/sync_shared_head.py','--check'],check=True)
+          subprocess.run(['python','tools/normalize_asset_versions.py','--check'],check=True)
+          subprocess.run(['python','tools/validate.py'],check=True)
+          subprocess.run(['git','diff','--check'],check=True)
+          subprocess.run(['git','add','-A'],check=True)
+          subprocess.run(['git','commit','-m','Add bilingual industry collaboration showcase and 12 technologies'],check=True)
+          subprocess.run(['git','push','origin','HEAD'],check=True)
+          
+          PY
