@@ -61,9 +61,9 @@ jobs:
       - name: Upload verified incremental package
         uses: actions/upload-artifact@v4
         with:
-          name: pai-web-boda-final-incremental-2026-10-30
+          name: pai-web-boda-final-no-svg-2026-10-30
           path: |
-            pai-web-boda-final-incremental-2026-10-30.zip
-            pai-web-boda-final-incremental-2026-10-30-manifest.txt
+            pai-web-boda-final-no-svg-2026-10-30.zip
+            pai-web-boda-final-no-svg-2026-10-30-manifest.txt
           if-no-files-found: error
           retention-days: 30
