@@ -1,0 +1,79 @@
+name: Update industry image layouts once
+on:
+  push:
+    branches: [feature/industry-grid-real-image-paths-20261030]
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: true
+      - name: Modify and validate layouts
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python - <<'PY'
+          from pathlib import Path
+          import re,subprocess
+          R=Path('.')
+          filemap={'port':'2449','remote':'2450','navigation':'2451','earth':'2452','blasting':'2453','avatar':'2454','gnn':'2455','rom':'2456','did':'2457','privacy':'2458','finance':'2459','lidar':'2460'}
+          order=['port','lidar','navigation','remote','earth','blasting','gnn','rom','avatar','did','privacy','finance']
+          for prefix in ('','en/'):
+           pub=R/(prefix+'publications.html')
+           home=R/(prefix+'index.html')
+           s=pub.read_text(encoding='utf-8')
+           cards=re.findall(r'<article class="industry-card".*?</article>',s,re.S)
+           assert len(cards)==12,len(cards)
+           lookup={re.search(r'id="tech-([^"]+)"',card).group(1):card for card in cards}
+           assert set(lookup)==set(order)
+           for id,card in lookup.items():
+            old=re.search(r'<div class="industry-visual industry-visual-image">.*?</div>',card,re.S)
+            assert old,(id,'visual absent')
+            root='../assets/images/technology/' if prefix else 'assets/images/technology/'
+            name=filemap[id]
+            new='<div class="industry-visual industry-visual-image"><div class="industry-photo" role="img" aria-label="'+('Technology project illustration' if prefix else '成果项目配图')+'" style="background-image:url(\\''+root+name+'_compressed.JPG\\'),url(\\''+root+id+'.svg\\')"></div></div>'
+            lookup[id]=card.replace(old.group(0),new)
+           start=s.index('<div class="industry-grid industry-six-rows">')+len('<div class="industry-grid industry-six-rows">')
+           end=s.index('</div></div></section>',start)
+           s=s[:start]+''.join(lookup[id] for id in order)+s[end:]
+           assert s.count('<article class="industry-card"')==12
+           pub.write_text(s,encoding='utf-8')
+           # Homepage includes two new visuals, updated from the same image sources.
+           s=home.read_text(encoding='utf-8')
+           for id in ('gnn','privacy'):
+            root='../assets/images/technology/' if prefix else 'assets/images/technology/'
+            old='<img src="'+root+id+'.svg" width="800" height="450"'
+            assert old in s,(prefix,id)
+            s=s.replace(old,'<img src="'+root+filemap[id]+'_compressed.JPG" data-fallback="'+root+id+'.svg" width="800" height="450"',1)
+           home.write_text(s,encoding='utf-8')
+          js=R/'assets/js/site.js'
+          s=js.read_text(encoding='utf-8')
+          s="""// Graceful fallback before uploaded project photos reach the preview repository.
+          document.addEventListener('error',function(event){var el=event.target;if(el&&el.tagName==='IMG'&&el.dataset&&el.dataset.fallback){var fallback=el.dataset.fallback;delete el.dataset.fallback;el.src=fallback;}},true);
+          """+s
+          js.write_text(s,encoding='utf-8')
+          css=R/'assets/css/refine.css'
+          css.write_text(css.read_text(encoding='utf-8')+"""
+          /* Twelve industry technologies: 3 × 4 desktop; 2 × 6 mobile. */
+          .page-results .industry-six-rows{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 22px}
+          .page-results .industry-six-rows .industry-card .title-item{font-size:17px;line-height:1.4}
+          .page-results .industry-six-rows .industry-card p{font-size:13px;line-height:1.62}
+          .page-results .industry-six-rows .industry-card .industry-proof,.page-results .industry-six-rows .industry-card .industry-meta{font-size:12px}
+          .page-results .industry-six-rows .industry-card-body{display:flex;flex-direction:column}
+          .page-results .industry-six-rows .industry-card{display:flex;flex-direction:column}
+          .page-results .industry-six-rows .industry-link{margin-top:auto;padding-top:12px}
+          .industry-photo{width:100%;aspect-ratio:16/9;background-color:#F3F6F8;background-repeat:no-repeat;background-position:center;background-size:cover}
+          @media(max-width:768px){.page-results .industry-six-rows{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 13px}.page-results .industry-six-rows .industry-card .title-item{font-size:14px}.page-results .industry-six-rows .industry-card p{font-size:11.5px;line-height:1.5}.page-results .industry-six-rows .industry-card .industry-proof,.page-results .industry-six-rows .industry-card .industry-meta{font-size:11px}.page-results .industry-six-rows .industry-card-body{padding-top:12px}.page-results .industry-six-rows .industry-link{font-size:11px}}
+          @media(max-width:480px){.page-results .industry-six-rows{grid-template-columns:repeat(2,minmax(0,1fr))}}
+          """,encoding='utf-8')
+          (R/'.github/workflows/industry-image-layout-once.yml').unlink(missing_ok=True)
+          for cmd in [['python','tools/validate_repository_hygiene.py'],['python','tools/sync_shared_head.py','--check'],['python','tools/normalize_asset_versions.py','--check'],['python','tools/validate.py'],['python','tools/validate_outputs_label.py'],['node','--check','assets/js/site.js'],['git','diff','--check']]:subprocess.run(cmd,check=True)
+          subprocess.run(['git','add','-A'],check=True)
+          subprocess.run(['git','commit','-m','Arrange 12 technologies into responsive three/two-column grids with real image mapping'],check=True)
+          subprocess.run(['git','push','origin','HEAD'],check=True)
+          
+          PY
