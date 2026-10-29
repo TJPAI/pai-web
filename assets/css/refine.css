@@ -966,3 +966,9 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 .page-results .industry-six-rows .industry-meta{margin-bottom:4px}
 .page-results .industry-six-rows .industry-link{padding-top:3px;margin-top:2px}
 }
+
+/* English-only technology cards: fixed two-line headings and five-line summaries. */
+html[lang="en"] .page-results .industry-six-rows .industry-card .title-item{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;min-height:calc(1.42em * 2);max-height:calc(1.42em * 2);line-height:1.42}
+html[lang="en"] .page-results .industry-six-rows .industry-summary{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;line-clamp:5;overflow:hidden;min-height:calc(1.58em * 5);max-height:calc(1.58em * 5);line-height:1.58;margin-bottom:6px}
+html[lang="en"] .page-results .industry-six-rows .industry-link{margin-top:2px;padding-top:4px}
+@media(max-width:768px){html[lang="en"] .page-results .industry-six-rows .industry-summary{min-height:calc(1.48em * 5);max-height:calc(1.48em * 5);line-height:1.48}}
