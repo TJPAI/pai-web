@@ -921,3 +921,34 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 .page-results .results-industry .results-industry-heading .highlight{border-top:0!important}
 .page-results .results-industry .industry-all{padding-top:0}
 @media(max-width:768px){.page-results .results-industry .results-industry-heading{margin-bottom:18px}}
+
+
+/* Results page 06/07: align section separators with the short 02–05 rules. */
+.page-results .results-industry{
+  border-top:0!important;
+}
+.page-results .results-industry .results-industry-heading{
+  border-top:0!important;
+}
+.page-results .results-industry .results-industry-heading .highlight{
+  border-top:1px solid var(--line)!important;
+}
+.page-results .results-publications .results-publications-heading{
+  border-top:0!important;
+}
+.page-results .results-publications .results-publications-heading .highlight{
+  border-top:1px solid var(--line)!important;
+}
+
+/* Equal-height technology cards: preserve all content and align cooperation links. */
+.page-results .industry-six-rows{
+  grid-auto-rows:1fr;
+  align-items:stretch;
+}
+.page-results .industry-six-rows .industry-card{
+  height:100%;
+  min-height:0;
+}
+.page-results .industry-six-rows .industry-card-body{
+  flex:1 1 auto;
+}
