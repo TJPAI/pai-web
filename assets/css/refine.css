@@ -952,3 +952,17 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 .page-results .industry-six-rows .industry-card-body{
   flex:1 1 auto;
 }
+
+/* Compact industry cards: one three-line summary, one line per metadata row. */
+.page-results .industry-six-rows .industry-card-body{display:flex;flex-direction:column;gap:0;padding-top:12px;padding-bottom:0}
+.page-results .industry-six-rows .industry-card .title-item{margin:0 0 8px}
+.page-results .industry-six-rows .industry-summary{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;min-height:calc(1.58em * 3);max-height:calc(1.58em * 3);line-height:1.58;margin:0 0 8px}
+.page-results .industry-six-rows .industry-meta{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.5;margin:0 0 5px}
+.page-results .industry-six-rows .industry-link{margin-top:3px;padding-top:4px;align-self:flex-start}
+@media(max-width:768px){
+.page-results .industry-six-rows .industry-card-body{padding-top:10px}
+.page-results .industry-six-rows .industry-card .title-item{margin-bottom:6px}
+.page-results .industry-six-rows .industry-summary{min-height:calc(1.48em * 3);max-height:calc(1.48em * 3);line-height:1.48;margin-bottom:6px}
+.page-results .industry-six-rows .industry-meta{margin-bottom:4px}
+.page-results .industry-six-rows .industry-link{padding-top:3px;margin-top:2px}
+}
