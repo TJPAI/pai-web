@@ -1,3 +1,5 @@
+// Graceful fallback before uploaded project photos reach the preview repository.
+document.addEventListener('error',function(event){var el=event.target;if(el&&el.tagName==='IMG'&&el.dataset&&el.dataset.fallback){var fallback=el.dataset.fallback;delete el.dataset.fallback;el.src=fallback;}},true);
 (function(){
   'use strict';
 
