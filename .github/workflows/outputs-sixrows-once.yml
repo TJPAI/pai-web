@@ -1,0 +1,109 @@
+name: Outputs six rows once
+on:
+  push:
+    branches: [feature/outputs-5stories-12cards-20261030]
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: true
+      - name: Generate and validate layouts
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python - <<'PY'
+          from pathlib import Path
+          import re,html,subprocess
+          R=Path('.')
+          for en in (False,True):
+           prefix='en/' if en else ''
+           home=R/(prefix+'index.html')
+           pub=R/(prefix+'publications.html')
+           s=home.read_text(encoding='utf-8')
+           block=re.search(r'<section class="section industry-home" id="industry-home">.*?</section>',s,re.S)
+           assert block,(prefix,'home industry block missing')
+           s=s[:block.start()]+s[block.end():]
+           asset='../assets/images/technology/' if en else 'assets/images/technology/'
+           figuredata=[
+           ('gnn','AI Surrogate for Physical Simulation' if en else 'AI物理仿真代理模型',
+            'Deployed in an automotive supplier’s engineering workflow for 15 months.' if en else '以图神经网络加速工程仿真，已在汽车零部件企业连续运行15个月。'),
+           ('privacy','Privacy Computing & Trusted Data Collaboration' if en else '隐私计算与可信数据协同平台',
+            'Enables privacy-preserving inter-organizational data collaboration.' if en else '支持跨机构数据安全协同，已在金融、医疗等领域开展项目应用。')
+          ]
+           figures=''.join(f'<figure class="home-achievement-story"><a href="publications.html#tech-{id}"><img src="{asset}{id}.svg" width="800" height="450" alt="{html.escape(title)}技术示意图" loading="lazy"><figcaption><strong>{html.escape(title)}</strong><span>{html.escape(descr)}</span><small>{"Technology illustration" if en else "技术示意图"}</small></figcaption></a></figure>' for id,title,descr in figuredata)
+           match=re.search(r'<div class="home-achievement-stories">(.*?)</div><div class="home-achievements-more">',s,re.S)
+           assert match
+           s=s[:match.end(1)]+figures+s[match.end(1):]
+           home.write_text(s,encoding='utf-8')
+           s=pub.read_text(encoding='utf-8')
+           # Whole industry block is kept where it stands after achievements 01-05
+           s=s.replace('<div class="results-industry" id="industry">','<div class="results-industry" id="industry"><div class="container std"><div class="highlights results-industry-heading"><article class="highlight"><div class="num item-index">06</div><div><h2 class="title-item">'+('Industry Technologies' if en else '产业化技术')+'</h2><p>'+('12 technologies for collaboration and deployment.' if en else '12项可产业化技术，面向实际场景开展技术合作。')+'</p></div></article></div></div>',1)
+           assert 'results-industry-heading' in s
+           s=s.replace('<div class="num item-index">06</div><div><h2 class="title-item">'+('Selected Academic Publications' if en else '代表性学术论文'),'<div class="num item-index">07</div><div><h2 class="title-item">'+('Selected Academic Publications' if en else '代表性学术论文'),1)
+           assert '<div class="num item-index">07</div>' in s
+           # Show precisely six rows of two without splitting into separate 4-item category sections.
+           # Reuse original cards and descriptive data, but render as one continuous grid.
+           items=re.findall(r'<article class="industry-card".*?</article>',s,re.S)
+           assert len(items)==12,(prefix,len(items))
+           # Replace placeholder with 12 unique technical illustration assets.
+           for item in items:
+            id=re.search(r'id="tech-([^"]+)"',item).group(1)
+            old=re.search(r'<div class="industry-visual">.*?</div>',item,re.S)
+            assert old
+            new='<div class="industry-visual industry-visual-image"><img src="'+asset+id+'.svg" width="800" height="450" alt="'+('Technology illustration' if en else '技术示意图')+'" loading="lazy"></div>'
+            s=s.replace(item,item.replace(old.group(0),new),1)
+           # Grab exactly 12 revised cards; replace category group stack with one six-row grid.
+           items2=re.findall(r'<article class="industry-card".*?</article>',s,re.S)
+           assert len(items2)==12
+           start=s.index('<section class="content-section industry-category"')
+           end=s.index('<section class="section industry-cta"',start)
+           s=s[:start]+'<section class="content-section industry-category industry-all"><div class="container std"><div class="industry-grid industry-six-rows">'+''.join(items2)+'</div></div></section>'+s[end:]
+           assert s.count('<article class="industry-card"')==12
+           pub.write_text(s,encoding='utf-8')
+          # Draw twelve semantically distinct, restrained technical SVG schematics, not photographs.
+          names=['port','lidar','remote','navigation','earth','blasting','gnn','rom','did','privacy','finance','avatar']
+          base=R/'assets/images/technology';base.mkdir(parents=True,exist_ok=True)
+          for i,id in enumerate(names):
+           x=105+(i%4)*16
+           # Unique network/topology silhouettes with a common visual language.
+           if id in ('gnn','rom'):
+            motif='<path d="M120 280 C210 120 300 360 405 210 S585 135 680 245" fill="none" stroke="#728DA2" stroke-width="10"/><path d="M120 320 C235 160 340 380 455 250 S590 210 680 290" fill="none" stroke="#B1C4D0" stroke-width="8"/>'
+           elif id in ('privacy','did','finance'):
+            motif='<path d="M400 120 L545 180 V280 C545 360 475 420 400 455 C325 420 255 360 255 280 V180Z" fill="none" stroke="#6C879C" stroke-width="11"/><circle cx="400" cy="274" r="36" fill="none" stroke="#96AFBE" stroke-width="10"/><path d="M400 307V350" stroke="#96AFBE" stroke-width="12"/>'
+           elif id in ('earth','blasting'):
+            motif='<path d="M110 230 Q400 160 690 230 M110 310 Q400 240 690 310 M110 390 Q400 320 690 390" fill="none" stroke="#BDC9D0" stroke-width="11"/><path d="M340 95 Q400 45 460 95 M300 115 Q400 5 500 115" fill="none" stroke="#66869A" stroke-width="12"/><circle cx="400" cy="250" r="23" fill="#66869A"/>'
+           elif id in ('avatar',):
+            motif='<circle cx="390" cy="198" r="83" fill="none" stroke="#7896AA" stroke-width="10"/><path d="M260 420 Q260 300 390 300 Q520 300 520 420" fill="none" stroke="#7896AA" stroke-width="12"/><path d="M355 245 Q390 275 425 245" fill="none" stroke="#B1C4D0" stroke-width="10"/>'
+           else:
+            motif='<rect x="175" y="210" width="450" height="195" rx="36" fill="none" stroke="#7695A8" stroke-width="11"/><path d="M250 210 L310 135 H500 L550 210" fill="none" stroke="#7695A8" stroke-width="10"/><circle cx="275" cy="410" r="33" fill="#D7E3E9"/><circle cx="520" cy="410" r="33" fill="#D7E3E9"/><path d="M400 120v-50 M320 140l-35-40 M480 140l35-40" stroke="#9FB7C4" stroke-width="9"/>'
+           svg=f'<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450"><rect width="800" height="450" fill="#F3F6F8"/><g opacity=".65"><path d="M70 75H730M70 375H730" stroke="#DEE5EA" stroke-width="2"/><path d="M70 75V375M730 75V375" stroke="#DEE5EA" stroke-width="2"/></g>{motif}<text x="70" y="420" fill="#8195A4" font-family="Arial,sans-serif" font-size="16" letter-spacing="3">PAI · TECHNOLOGY ILLUSTRATION</text></svg>'
+           (base/(id+'.svg')).write_text(svg,encoding='utf-8')
+          css=R/'assets/css/refine.css'
+          css.write_text(css.read_text(encoding='utf-8')+"""
+          /* Five selected achievements: three in first row, two in second row on desktop. */
+          .home-achievement-stories{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+          .home-achievement-story:nth-child(3) img{aspect-ratio:16/9;object-position:center}
+          .home-achievement-story:nth-child(n+4) img{aspect-ratio:16/9;object-fit:cover}
+          .home-achievement-story:nth-child(n+4) figcaption{min-height:150px}
+          .industry-all .industry-six-rows{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 24px}
+          .industry-visual-image{padding:0;background:#F3F6F8}
+          .industry-visual-image img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:16/9}
+          .results-industry-heading{margin-bottom:28px}
+          .results-industry-heading .highlight{border-bottom:0!important;padding-left:0!important}
+          .page-results .results-industry .industry-all{padding:12px 0 56px;background:transparent}
+          @media(max-width:768px){.home-achievement-stories{grid-template-columns:1fr 1fr;gap:12px}.home-achievement-story:nth-child(n+4) figcaption{min-height:0}.industry-all .industry-six-rows{grid-template-columns:1fr;gap:24px}}
+          @media(max-width:480px){.home-achievement-stories{grid-template-columns:1fr}.industry-all .industry-six-rows{grid-template-columns:1fr}}
+          """,encoding='utf-8')
+          (R/'.github/workflows/outputs-sixrows-once.yml').unlink(missing_ok=True)
+          for cmd in [['python','tools/validate_repository_hygiene.py'],['python','tools/sync_shared_head.py','--check'],['python','tools/normalize_asset_versions.py','--check'],['python','tools/validate.py'],['python','tools/validate_outputs_label.py'],['git','diff','--check']]:
+           subprocess.run(cmd,check=True)
+          subprocess.run(['git','add','-A'],check=True)
+          subprocess.run(['git','commit','-m','Refine homepage to five achievements and Outputs to twelve illustrated industry technologies'],check=True)
+          subprocess.run(['git','push','origin','HEAD'],check=True)
+          
+          PY
