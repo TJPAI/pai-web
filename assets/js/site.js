@@ -22,7 +22,6 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     '/research.html':'/en/research.html',
     '/team.html':'/en/team.html',
     '/publications.html':'/en/publications.html',
-    '/industry.html':'/en/industry.html',
     '/join.html':'/en/join.html',
     '/contact.html':'/en/contact.html',
     '/people/erwu-liu.html':'/en/people/erwu-liu.html',
@@ -50,7 +49,6 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     if(path.endsWith('/team.html')||path==='/team.html') return 'team';
     if(path.endsWith('/research.html')||path==='/research.html') return 'research';
     if(path.endsWith('/publications.html')||path==='/publications.html') return 'publications';
-    if(path.endsWith('/industry.html')||path==='/industry.html') return 'industry';
     if(path.endsWith('/join.html')||path==='/join.html') return 'join';
     if(path.endsWith('/contact.html')||path==='/contact.html') return 'contact';
     return '';
