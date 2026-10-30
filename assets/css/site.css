@@ -70,8 +70,24 @@ button{font:inherit}
 @media print{.site-header,.site-footer,.btn,.menu-btn{display:none!important}.page-hero,.content-section{padding:24px 0}body{color:#000}.container{width:100%;max-width:none}}
 
 
-/* Current page uses a full-width highlighted menu row; menu remains in normal flow. */
+/* Full-bleed mobile navigation row interaction. All states share one hit area. */
 @media(max-width:768px){
   .site-header .mobile-menu.open{position:static;height:auto;max-height:none;overflow:visible;box-shadow:none;background:transparent}
-  .mobile-menu a.active,.mobile-menu a[aria-current="page"]{display:block;background:#F1F4F8;color:inherit;font-weight:650;border-left:0;border-radius:0;margin-left:-24px;margin-right:-24px;padding-left:24px;padding-right:24px}
+  .site-header .mobile-menu a{
+    position:relative;display:block;margin-left:-24px;margin-right:-24px;
+    padding-left:24px;padding-right:24px;border-radius:0;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .site-header .mobile-menu a:active,
+  .site-header .mobile-menu a.active,
+  .site-header .mobile-menu a[aria-current="page"]{
+    background:#F1F4F8;color:inherit;
+  }
+  .site-header .mobile-menu a.active,
+  .site-header .mobile-menu a[aria-current="page"]{font-weight:650}
+  .site-header .mobile-menu a:active::before,
+  .site-header .mobile-menu a.active::before,
+  .site-header .mobile-menu a[aria-current="page"]::before{
+    content:"";position:absolute;inset:-2px 0;z-index:-1;background:#F1F4F8;
+  }
 }
