@@ -1127,3 +1127,30 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
 .site-header .nav-updates-hint{color:#BC2530;font-size:.86em;font-weight:600;white-space:nowrap}
 .site-header .nav-links a:has(.nav-updates-hint){white-space:nowrap}
 @media(max-width:768px){.site-header .mobile-menu .nav-updates-hint{font-size:.87em}}
+
+
+/* Link discoverability: deliberately limited to the four requested surfaces. */
+.home-achievement-story a figcaption strong::after{
+  content:" ↗";color:#315D90;font-size:.92em;font-weight:600;
+}
+.selected-updates .update-item h3 a,
+.page-about .detail-block[class*="platform-"] h3 a{
+  color:#315D90;text-decoration:underline;text-decoration-thickness:1px;
+  text-underline-offset:3px;text-decoration-color:#8CA9C7;
+}
+.home-media-coverage .media-item .media-title,
+.page-about .media-coverage .media-item .media-title,
+.page-results .results-news-row[href] > span:last-child{
+  color:#315D90;text-decoration:underline;text-decoration-thickness:1px;
+  text-underline-offset:3px;text-decoration-color:#A4BAD0;
+}
+.home-media-coverage .media-item:hover .media-title,
+.page-about .media-coverage .media-item:hover .media-title,
+.page-results .results-news-row[href]:hover > span:last-child,
+.selected-updates .update-item h3 a:hover,
+.page-about .detail-block[class*="platform-"] h3 a:hover{
+  color:#23456E;text-decoration-color:currentColor;
+}
+.site-footer .footer-links a[aria-current="page"]{
+  color:#315D90;font-weight:650;
+}
