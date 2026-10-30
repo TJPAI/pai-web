@@ -89,14 +89,7 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     const path=normalizedPath();
     const lang=path.startsWith('/en/')?'en':'zh';
     const active=sectionForPath(path);
-    const items=navItems(lang);
-    const languageLabel=lang==='en'?'中文':'EN';
     const languageHref=counterpartWithContext(path);
-    const markup=items.map(([label,href])=>{
-      const key=sectionForPath(href);
-      const displayLabel=key==='publications'?`${label} <span class="nav-updates-hint">${lang==='en'?'(latest updates)':'（最新动态）'}</span>`:label;
-      return `<a${key===active?' class="active" aria-current="page"':''} href="${root(href)}">${displayLabel}</a>`;
-    }).join('')+`<a href="${root(languageHref)}">${languageLabel}</a>`;
 
     const header=document.querySelector('.site-header');
     if(header){
@@ -110,12 +103,10 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
         header.appendChild(mobile);
       }
 
-      const needsRebuild=header.dataset.paiLang!==lang||!nav||!nav.querySelector('a')||!mobile.querySelector('a');
-      if(needsRebuild){
-        if(nav) nav.innerHTML=markup;
-        mobile.innerHTML=markup;
-        header.dataset.paiLang=lang;
-      }else{
+      // Static page navigation is the source of truth for menu labels and links.
+      // Only fill a missing mobile menu from its desktop counterpart.
+      if(!mobile.querySelector('a')&&nav) mobile.innerHTML=nav.innerHTML;
+      {
         const syncLinks=container=>{
           if(!container) return;
           [...container.querySelectorAll('a')].forEach(link=>{
@@ -414,6 +405,16 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
 
       const incomingMain=document.importNode(nextMain,true);
       currentMain.replaceWith(incomingMain);
+      // Keep navigation labels in sync with the destination static HTML.
+      const currentHeader=document.querySelector('.site-header');
+      const targetHeader=next.querySelector('.site-header');
+      if(currentHeader&&targetHeader){
+        for(const selector of ['.nav-links','.mobile-menu']){
+          const from=currentHeader.querySelector(selector);
+          const to=targetHeader.querySelector(selector);
+          if(from&&to) from.innerHTML=to.innerHTML;
+        }
+      }
       // Lightweight navigation also swaps the authoritative footer from the target page.
       const currentFooter=document.querySelector('.site-footer');
       const targetFooter=next.querySelector('.site-footer');
