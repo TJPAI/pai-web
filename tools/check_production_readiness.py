@@ -60,7 +60,7 @@ for rel in ('index.html', 'en/index.html'):
     if len(gallery) != 2:
         errors.append(f'{rel}: missing achievement gallery')
         continue
-    gallery = gallery[1].split('</div>', 1)[0]
+    gallery = gallery[1].split('</section>', 1)[0]
     images = re.findall(r'<img\\b[^>]+>', gallery, re.I)
     if len(images) != 6:
         errors.append(f'{rel}: expected six achievement gallery images')
