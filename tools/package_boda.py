@@ -57,6 +57,7 @@ with tempfile.TemporaryDirectory(prefix='pai-boda-') as temporary:
         cwd=build,
         check=True,
     )
+    run_python(build, 'render_shared_chrome.py')
     run_python(build, 'validate_repository_hygiene.py')
     run_python(build, 'validate_environment_matrix.py')
     run_python(build, 'check_production_readiness.py')
