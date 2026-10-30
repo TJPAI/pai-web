@@ -1,0 +1,501 @@
+{
+  "schema_version": 1,
+  "default_visible": 5,
+  "items": [
+    {
+      "date": "2026-09",
+      "zh": {
+        "text": "Ming Jiang 等 DePIN 综述发表于 IEEE COMST",
+        "url": "https://doi.org/10.1109/COMST.2026.3729997"
+      },
+      "en": {
+        "text": "Ming Jiang et al. publish DePIN survey in IEEE COMST",
+        "url": "https://doi.org/10.1109/COMST.2026.3729997"
+      }
+    },
+    {
+      "date": "2026-09",
+      "zh": {
+        "text": "国际长寿峰会创始人José Luis Cordeiro博士来访",
+        "url": null
+      },
+      "en": {
+        "text": "Visit by Dr. José Luis Cordeiro, founder of the International Longevity Summit",
+        "url": null
+      }
+    },
+    {
+      "date": "2026-07",
+      "zh": {
+        "text": "Xinyu Qu 等异构联邦学习隐私聚合研究发表于 IEEE TNSE",
+        "url": "https://doi.org/10.1109/TNSE.2026.3710233"
+      },
+      "en": {
+        "text": "Xinyu Qu et al. publish privacy-preserving aggregation in heterogeneous federated learning in TNSE",
+        "url": "https://doi.org/10.1109/TNSE.2026.3710233"
+      }
+    },
+    {
+      "date": "2026-05",
+      "zh": {
+        "text": "联合国大会主席理事会通用人工智能高级别专家组组长Jerome Glenn来访",
+        "url": null
+      },
+      "en": {
+        "text": "Visit by Jerome Glenn, Chair of the High-Level Expert Panel on AGI convened by the UN Council of Presidents of the General Assembly",
+        "url": null
+      }
+    },
+    {
+      "date": "2026-03",
+      "zh": {
+        "text": "Hexin Feng 等去中心化联邦学习研究发表于 IEEE TWC",
+        "url": "https://doi.org/10.1109/TWC.2026.3667951"
+      },
+      "en": {
+        "text": "Hexin Feng et al. publish decentralized federated learning study in IEEE TWC",
+        "url": "https://doi.org/10.1109/TWC.2026.3667951"
+      }
+    },
+    {
+      "date": "2026-01",
+      "zh": {
+        "text": "Hanfu Zhang 等 IRS 辅助通感一体研究发表于 IEEE TWC",
+        "url": "https://doi.org/10.1109/TWC.2026.3659648"
+      },
+      "en": {
+        "text": "Hanfu Zhang et al. publish IRS-assisted ISAC study in IEEE TWC",
+        "url": "https://doi.org/10.1109/TWC.2026.3659648"
+      }
+    },
+    {
+      "date": "2026-01",
+      "zh": {
+        "text": "Honglei Ma 等透地磁感应通信与组网综述研究发表于 IEEE COMST",
+        "url": "https://doi.org/10.1109/COMST.2025.3623258"
+      },
+      "en": {
+        "text": "Honglei Ma et al. publish survey of through-the-earth magnetic communications in COMST",
+        "url": "https://doi.org/10.1109/COMST.2025.3623258"
+      }
+    },
+    {
+      "date": "2025-11",
+      "zh": {
+        "text": "IEEE未来网络世界论坛（FNWF）召开",
+        "url": "https://fnwf2025.ieee.org"
+      },
+      "en": {
+        "text": "IEEE Future Networks World Forum (FNWF) held",
+        "url": "https://fnwf2025.ieee.org"
+      }
+    },
+    {
+      "date": "2025-10",
+      "zh": {
+        "text": "Wenzheng Tang 等区块链联邦学习博弈激励研究发表于 IEEE TMC",
+        "url": "https://doi.org/10.1109/TMC.2025.3567355"
+      },
+      "en": {
+        "text": "Wenzheng Tang et al. publish game-theoretic incentives for blockchain federated learning in TMC",
+        "url": "https://doi.org/10.1109/TMC.2025.3567355"
+      }
+    },
+    {
+      "date": "2025-10",
+      "zh": {
+        "text": "Hexin Feng 等空中聚合联邦学习隐私与精度优化研究发表于 IEEE TIFS",
+        "url": "https://doi.org/10.1109/TIFS.2025.3620108"
+      },
+      "en": {
+        "text": "Hexin Feng et al. publish privacy–accuracy optimization for over-the-air federated learning in TIFS",
+        "url": "https://doi.org/10.1109/TIFS.2025.3620108"
+      }
+    },
+    {
+      "date": "2025-10",
+      "zh": {
+        "text": "Yuan Zhang 等GNSS/5G融合定位故障检测研究发表于 IEEE TWC",
+        "url": "https://doi.org/10.1109/TWC.2025.3625223"
+      },
+      "en": {
+        "text": "Yuan Zhang et al. publish GNSS/5G positioning fault detection in TWC",
+        "url": "https://doi.org/10.1109/TWC.2025.3625223"
+      }
+    },
+    {
+      "date": "2025-08",
+      "zh": {
+        "text": "新加坡工程院院士Tony Quek教授来访",
+        "url": null
+      },
+      "en": {
+        "text": "Visit by Professor Tony Quek, Fellow of the Academy of Engineering, Singapore",
+        "url": null
+      }
+    },
+    {
+      "date": "2025-08",
+      "zh": {
+        "text": "Hanfu Zhang 等RIS辅助OFDM高精定位研究发表于 IEEE TWC",
+        "url": "https://doi.org/10.1109/TWC.2025.3557935"
+      },
+      "en": {
+        "text": "Hanfu Zhang et al. publish RIS-aided OFDM localization in TWC",
+        "url": "https://doi.org/10.1109/TWC.2025.3557935"
+      }
+    },
+    {
+      "date": "2025-06",
+      "zh": {
+        "text": "IEEE全球区块链大会（GBC）召开",
+        "url": "https://www.ieee-gbc.org.cn"
+      },
+      "en": {
+        "text": "IEEE Global Blockchain Conference (GBC) held",
+        "url": "https://www.ieee-gbc.org"
+      }
+    },
+    {
+      "date": "2025-06",
+      "zh": {
+        "text": "Zhe Xing 等通感一体测向误差与性能优化研究发表于 IEEE TWC",
+        "url": "https://doi.org/10.1109/TWC.2025.3575651"
+      },
+      "en": {
+        "text": "Zhe Xing et al. publish ISAC optimization under direction-estimation errors in TWC",
+        "url": "https://doi.org/10.1109/TWC.2025.3575651"
+      }
+    },
+    {
+      "date": "2025-06",
+      "zh": {
+        "text": "Heju Li 等RIS辅助联邦边缘学习研究发表于 IEEE TCCN",
+        "url": "https://doi.org/10.1109/TCCN.2025.3578472"
+      },
+      "en": {
+        "text": "Heju Li et al. publish RIS-assisted federated edge learning in TCCN",
+        "url": "https://doi.org/10.1109/TCCN.2025.3578472"
+      }
+    },
+    {
+      "date": "2025-05",
+      "zh": {
+        "text": "Jie Wang 等惯导与单目深度融合室内定位研究发表于 IEEE TIM",
+        "url": "https://doi.org/10.1109/TIM.2025.3568978"
+      },
+      "en": {
+        "text": "Jie Wang et al. publish inertial and monocular depth indoor localization in TIM",
+        "url": "https://doi.org/10.1109/TIM.2025.3568978"
+      }
+    },
+    {
+      "date": "2025-04",
+      "zh": {
+        "text": "Yuan Zhang 等5G无人机协同定位研究发表于 IEEE TWC",
+        "url": "https://doi.org/10.1109/TWC.2025.3532411"
+      },
+      "en": {
+        "text": "Yuan Zhang et al. publish cooperative UAV localization in 5G networks in TWC",
+        "url": "https://doi.org/10.1109/TWC.2025.3532411"
+      }
+    },
+    {
+      "date": "2025-03",
+      "zh": {
+        "text": "Zongtai Li 等近场IRS相移强化学习优化研究发表于 IEEE TSP",
+        "url": "https://doi.org/10.1109/TSP.2025.3545164"
+      },
+      "en": {
+        "text": "Zongtai Li et al. publish reinforcement learning for near-field IRS phase shifts in TSP",
+        "url": "https://doi.org/10.1109/TSP.2025.3545164"
+      }
+    },
+    {
+      "date": "2025-02",
+      "zh": {
+        "text": "Pengcheng Sun 等RIS无线联邦学习非理想聚合研究发表于 IEEE TCOM",
+        "url": "https://doi.org/10.1109/TCOMM.2024.3450605"
+      },
+      "en": {
+        "text": "Pengcheng Sun et al. publish RIS wireless federated learning with imperfect aggregation in TCOM",
+        "url": "https://doi.org/10.1109/TCOMM.2024.3450605"
+      }
+    },
+    {
+      "date": "2024-12",
+      "zh": {
+        "text": "Yuanzhe Geng 等双跳协作通信性能与成本优化研究发表于 IEEE TCCN",
+        "url": "https://doi.org/10.1109/TCCN.2024.3400516"
+      },
+      "en": {
+        "text": "Yuanzhe Geng et al. publish performance–cost optimization for two-hop relays in TCCN",
+        "url": "https://doi.org/10.1109/TCCN.2024.3400516"
+      }
+    },
+    {
+      "date": "2024-11",
+      "zh": {
+        "text": "上海交大武庆庆副教授来访",
+        "url": null
+      },
+      "en": {
+        "text": "Visit by Associate Professor Qingqing Wu from Shanghai Jiao Tong University",
+        "url": null
+      }
+    },
+    {
+      "date": "2024-10",
+      "zh": {
+        "text": "Honglei Ma 等磁感应网络快衰落与功率优化研究发表于 IEEE TWC",
+        "url": "https://doi.org/10.1109/TWC.2024.3425473"
+      },
+      "en": {
+        "text": "Honglei Ma et al. publish fast fading and power optimization in magnetic networks in TWC",
+        "url": "https://doi.org/10.1109/TWC.2024.3425473"
+      }
+    },
+    {
+      "date": "2024-07",
+      "zh": {
+        "text": "IEEE主席Thomas Coughlin博士来访",
+        "url": "https://news.tongji.edu.cn/info/1003/87921.htm"
+      },
+      "en": {
+        "text": "Visit by IEEE President Dr. Thomas Coughlin",
+        "url": "https://news.tongji.edu.cn/info/1003/87921.htm"
+      }
+    },
+    {
+      "date": "2024-04",
+      "zh": {
+        "text": "Shuyan Hu 等固定翼无人机视觉目标跟踪研究发表于 IEEE TITS",
+        "url": "https://doi.org/10.1109/TITS.2024.3386105"
+      },
+      "en": {
+        "text": "Shuyan Hu et al. publish visual target tracking with fixed-wing UAVs in TITS",
+        "url": "https://doi.org/10.1109/TITS.2024.3386105"
+      }
+    },
+    {
+      "date": "2024-01",
+      "zh": {
+        "text": "Shuyan Hu 等OFDMA灵活聚合联邦学习研究发表于 IEEE TWC",
+        "url": "https://doi.org/10.1109/TWC.2023.3334691"
+      },
+      "en": {
+        "text": "Shuyan Hu et al. publish flexible aggregation for OFDMA federated learning in TWC",
+        "url": "https://doi.org/10.1109/TWC.2023.3334691"
+      }
+    },
+    {
+      "date": "2023-11",
+      "zh": {
+        "text": "连续六届技术保障进博会",
+        "url": "https://news.tongji.edu.cn/info/1003/85619.htm"
+      },
+      "en": {
+        "text": "Technical support provided for six consecutive China International Import Expos",
+        "url": "https://news.tongji.edu.cn/info/1003/85619.htm"
+      }
+    },
+    {
+      "date": "2023-05",
+      "zh": {
+        "text": "东南大学王承祥教授报告",
+        "url": null
+      },
+      "en": {
+        "text": "Seminar by Professor Cheng-Xiang Wang of Southeast University",
+        "url": null
+      }
+    },
+    {
+      "date": "2023-05",
+      "zh": {
+        "text": "挪威工程院院士容淳铭教授报告",
+        "url": null
+      },
+      "en": {
+        "text": "Seminar by Professor Chunming Rong, Member of the Norwegian Academy of Technological Sciences",
+        "url": null
+      }
+    },
+    {
+      "date": "2023-05",
+      "zh": {
+        "text": "Yan Liu 等免许可频谱超低时延接入研究发表于 IEEE JSAC",
+        "url": "https://doi.org/10.1109/JSAC.2023.3280982"
+      },
+      "en": {
+        "text": "Yan Liu et al. publish URLLC access in unlicensed spectrum in JSAC",
+        "url": "https://doi.org/10.1109/JSAC.2023.3280982"
+      }
+    },
+    {
+      "date": "2023-04",
+      "zh": {
+        "text": "IET主席Bob Cryan教授来访",
+        "url": "https://see.tongji.edu.cn/info/1143/11413.htm"
+      },
+      "en": {
+        "text": "Visit by Professor Bob Cryan, President of the IET",
+        "url": "https://see.tongji.edu.cn/info/1143/11413.htm"
+      }
+    },
+    {
+      "date": "2023-04",
+      "zh": {
+        "text": "Yan Liu 等6G超可靠低时延机器学习综述研究发表于 IEEE WC",
+        "url": "https://doi.org/10.1109/MWC.006.2200407"
+      },
+      "en": {
+        "text": "Yan Liu et al. publish overview of machine learning for 6G URLLC in WC",
+        "url": "https://doi.org/10.1109/MWC.006.2200407"
+      }
+    },
+    {
+      "date": "2023-02",
+      "zh": {
+        "text": "Rui Wang 等IRS辅助联合定位通信研究发表于 IEEE TCOM",
+        "url": "https://doi.org/10.1109/TCOMM.2023.3249227"
+      },
+      "en": {
+        "text": "Rui Wang et al. publish IRS-assisted joint localization and communication in TCOM",
+        "url": "https://doi.org/10.1109/TCOMM.2023.3249227"
+      }
+    },
+    {
+      "date": "2023-02",
+      "zh": {
+        "text": "Zhe Xing 等RIS通感一体波束赋形研究发表于 IEEE TCOM",
+        "url": "https://doi.org/10.1109/TCOMM.2023.3244246"
+      },
+      "en": {
+        "text": "Zhe Xing et al. publish beamforming for RIS-enabled ISAC in TCOM",
+        "url": "https://doi.org/10.1109/TCOMM.2023.3244246"
+      }
+    },
+    {
+      "date": "2022-08",
+      "zh": {
+        "text": "Heju Li 等RIS联邦学习一比特聚合研究发表于 IEEE TWC",
+        "url": "https://doi.org/10.1109/TWC.2022.3198881"
+      },
+      "en": {
+        "text": "Heju Li et al. publish one-bit aggregation in RIS federated learning in TWC",
+        "url": "https://doi.org/10.1109/TWC.2022.3198881"
+      }
+    },
+    {
+      "date": "2022-02",
+      "zh": {
+        "text": "Jie Wang 等视障人士室内出行辅助系统综述研究发表于 IEEE THMS",
+        "url": "https://doi.org/10.1109/THMS.2021.3121645"
+      },
+      "en": {
+        "text": "Jie Wang et al. publish survey of indoor navigation assistance for visually impaired people in THMS",
+        "url": "https://doi.org/10.1109/THMS.2021.3121645"
+      }
+    },
+    {
+      "date": "2022-01",
+      "zh": {
+        "text": "Yuanzhe Geng 等双跳中继强化学习选择与功率优化研究发表于 IEEE TCOM",
+        "url": "https://doi.org/10.1109/TCOMM.2021.3119689"
+      },
+      "en": {
+        "text": "Yuanzhe Geng et al. publish reinforcement learning for relay selection and power optimization in TCOM",
+        "url": "https://doi.org/10.1109/TCOMM.2021.3119689"
+      }
+    },
+    {
+      "date": "2022-01",
+      "zh": {
+        "text": "Yan Liu 等免授权NOMA超可靠低时延优化研究发表于 IEEE JSAC",
+        "url": "https://doi.org/10.1109/JSAC.2022.3143264"
+      },
+      "en": {
+        "text": "Yan Liu et al. publish grant-free NOMA optimization for URLLC in JSAC",
+        "url": "https://doi.org/10.1109/JSAC.2022.3143264"
+      }
+    },
+    {
+      "date": "2020-07",
+      "zh": {
+        "text": "《IET Blockchain》期刊正式启动",
+        "url": "https://news.tongji.edu.cn/info/1003/74328.htm"
+      },
+      "en": {
+        "text": "IET Blockchain journal officially launched",
+        "url": "https://news.tongji.edu.cn/info/1003/74328.htm"
+      }
+    },
+    {
+      "date": "2019-11",
+      "zh": {
+        "text": "央视报道团队研发的第二届进博会AR导航系统",
+        "url": "https://tv.cctv.com/v/v1/VIDEWMSICpz1YFdyGCUAeHR4191108.html"
+      },
+      "en": {
+        "text": "CCTV reports on the team's AR navigation system for the second CIIE",
+        "url": "https://tv.cctv.com/v/v1/VIDEWMSICpz1YFdyGCUAeHR4191108.html"
+      }
+    },
+    {
+      "date": "2018-11",
+      "zh": {
+        "text": "央视报道团队研发的首届进博会定位导航系统",
+        "url": "https://tv.cctv.com/v/v1/VIDEUmqHHSWcAe2mUESVHjWJ181031.html"
+      },
+      "en": {
+        "text": "CCTV reports on the team's positioning and navigation system for the first CIIE",
+        "url": "https://tv.cctv.com/v/v1/VIDEUmqHHSWcAe2mUESVHjWJ181031.html"
+      }
+    },
+    {
+      "date": "2018-10",
+      "zh": {
+        "text": "DWELT技术获中国“互联网+”大学生创新创业大赛金奖",
+        "url": "https://news.tongji.edu.cn/info/1002/53992.htm"
+      },
+      "en": {
+        "text": "DWELT technology wins gold at China's Internet+ Student Innovation and Entrepreneurship Competition",
+        "url": "https://news.tongji.edu.cn/info/1002/53992.htm"
+      }
+    },
+    {
+      "date": "2018-07",
+      "zh": {
+        "text": "和图灵奖Whitfield Diffie博士交流",
+        "url": null
+      },
+      "en": {
+        "text": "Research exchange with Turing Award laureate Dr. Whitfield Diffie",
+        "url": null
+      }
+    },
+    {
+      "date": "2016-04",
+      "zh": {
+        "text": "获得微软室内定位技术大赛冠军",
+        "url": "https://news.tongji.edu.cn/info/1003/51073.htm"
+      },
+      "en": {
+        "text": "Champion of the Microsoft Indoor Localization Competition",
+        "url": "https://news.tongji.edu.cn/info/1003/51073.htm"
+      }
+    },
+    {
+      "date": "2014-04",
+      "zh": {
+        "text": "光明日报报道团队研制的透地通信设备",
+        "url": "https://epaper.gmw.cn/gmrb/html/2014-04/27/nw.D110000gmrb_20140427_4-04.htm"
+      },
+      "en": {
+        "text": "Guangming Daily reports on the team's through-the-earth communication equipment",
+        "url": "https://epaper.gmw.cn/gmrb/html/2014-04/27/nw.D110000gmrb_20140427_4-04.htm"
+      }
+    }
+  ]
+}
