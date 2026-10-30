@@ -64,3 +64,7 @@ for _page in ('publications.html', 'en/publications.html'):
     _news = _html.split('<aside class="results-news"', 1)[1].split('</aside>', 1)[0]
     assert _news.count('https://doi.org/') >= 24
     assert ('等论文发表于' if not _page.startswith('en/') else '— TWC paper published') not in _news
+
+_js = _Path('assets/js/site.js').read_text(encoding='utf-8')
+assert '<div class="brand"><strong>PAI Research Center</strong><span>Tongji University</span></div>' in _js, 'Runtime footer must match static two-line brand'
+assert '<div class="brand"><strong>PAI</strong><span>PAI Research Center · Tongji University</span></div>' not in _js, 'Runtime footer must not restore stale branding'
