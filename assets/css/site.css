@@ -70,16 +70,8 @@ button{font:inherit}
 @media print{.site-header,.site-footer,.btn,.menu-btn{display:none!important}.page-hero,.content-section{padding:24px 0}body{color:#000}.container{width:100%;max-width:none}}
 
 
-/* Current route in the hamburger menu (Home deliberately has no selection). */
-.mobile-menu a.active,.mobile-menu a[aria-current="page"]{color:#175E9E;font-weight:750;padding-left:12px;border-left:3px solid #175E9E}
-
-/* Mobile navigation is a viewport overlay, not a block that exposes the footer. */
+/* Current page uses a full-width highlighted menu row; menu remains in normal flow. */
 @media(max-width:768px){
-  .site-header .mobile-menu.open{
-    position:absolute;top:100%;left:0;right:0;
-    height:100dvh;max-height:calc(100dvh - 50px);
-    overflow-y:auto;overscroll-behavior:contain;
-    background:#fff;box-shadow:0 12px 18px rgba(0,0,0,.06);
-    z-index:60;
-  }
+  .site-header .mobile-menu.open{position:static;height:auto;max-height:none;overflow:visible;box-shadow:none;background:transparent}
+  .mobile-menu a.active,.mobile-menu a[aria-current="page"]{display:block;background:#EAF2FD;color:#175E9E;font-weight:750;padding-left:14px;border-left:0;border-radius:6px}
 }
