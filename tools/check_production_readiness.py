@@ -61,14 +61,14 @@ for rel in ('index.html', 'en/index.html'):
         errors.append(f'{rel}: missing achievement gallery')
         continue
     gallery = gallery[1].split('</section>', 1)[0]
-    images = re.findall(r'<img\\b[^>]+>', gallery, re.I)
+    images = re.findall(r'<img\b[^>]+>', gallery, re.I)
     if len(images) != 6:
         errors.append(f'{rel}: expected six achievement gallery images')
     for match in images:
         for attribute in ('loading="lazy"', 'decoding="async"', 'fetchpriority="low"'):
             if attribute not in match:
                 errors.append(f'{rel}: gallery image missing {attribute}')
-        if not re.search(r'\\bwidth="\\d+"', match) or not re.search(r'\\bheight="\\d+"', match):
+        if not re.search(r'\bwidth="\d+"', match) or not re.search(r'\bheight="\d+"', match):
             errors.append(f'{rel}: gallery image lacks dimensions')
 
 # Source assets needed to serve the production artifact, including the full-logo share card.
