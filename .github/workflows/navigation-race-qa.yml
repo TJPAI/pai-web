@@ -15,6 +15,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: node --check assets/js/site.js && node --check tools/verify_navigation_race.cjs
       - run: PAI_BROWSER=chromium node tools/verify_navigation_race.cjs
+      - run: PAI_BROWSER=chromium node tools/verify_current_ui.cjs
   webkit:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -24,3 +25,4 @@ jobs:
       - run: npx playwright install --with-deps webkit
       - run: node --check assets/js/site.js && node --check tools/verify_navigation_race.cjs
       - run: PAI_BROWSER=webkit node tools/verify_navigation_race.cjs
+      - run: PAI_BROWSER=webkit node tools/verify_current_ui.cjs
