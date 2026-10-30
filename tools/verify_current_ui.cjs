@@ -68,7 +68,7 @@ const BASE='https://tjpai.github.io/pai-web/',ROOT=path.resolve(__dirname,'..');
      }
    }
    assert.deepEqual(errs,[]);
-   console.log('PASS',process.env.PAI_BROWSER||'chromium',width,'both languages: menu hint + color, news 5/16 expand/collapse, overflow, no JS exceptions');
+   console.log('PASS',process.env.PAI_BROWSER||'chromium',width,'both languages: menu hint + color, news 5/45 expand/collapse, overflow, no JS exceptions');
    await ctx.close();
   }
  } finally{await browser.close();}
