@@ -52,14 +52,24 @@ for rel in ('data/publications.json', 'data/publications-archive.json'):
     if '"pdf"' in text:
         errors.append(f'{rel}: contains a forbidden publication PDF field')
 
-# Production must preserve the Safari-safe homepage image contract.
+# Achievement gallery images are below the first viewport. Keep their dimensions
+# and defer their network/decode work until they approach the viewport.
 for rel in ('index.html', 'en/index.html'):
-    text = (ROOT / rel).read_text(encoding='utf-8')
-    for match in re.findall(r'<img\b[^>]*assets/images/home/[^>]+>', text, re.I):
-        if not re.search(r'\bloading=["\']eager["\']', match, re.I):
-            errors.append(f'{rel}: homepage image is not eager-loaded')
-        if not re.search(r'\bdecoding=["\']sync["\']', match, re.I):
-            errors.append(f'{rel}: homepage image is not synchronously decoded')
+    source = (ROOT / rel).read_text(encoding='utf-8')
+    gallery = source.split('<div class="home-achievement-stories">', 1)
+    if len(gallery) != 2:
+        errors.append(f'{rel}: missing achievement gallery')
+        continue
+    gallery = gallery[1].split('</div>', 1)[0]
+    images = re.findall(r'<img\\b[^>]+>', gallery, re.I)
+    if len(images) != 6:
+        errors.append(f'{rel}: expected six achievement gallery images')
+    for match in images:
+        for attribute in ('loading="lazy"', 'decoding="async"', 'fetchpriority="low"'):
+            if attribute not in match:
+                errors.append(f'{rel}: gallery image missing {attribute}')
+        if not re.search(r'\\bwidth="\\d+"', match) or not re.search(r'\\bheight="\\d+"', match):
+            errors.append(f'{rel}: gallery image lacks dimensions')
 
 # Source assets needed to serve the production artifact, including the full-logo share card.
 for rel in (
