@@ -283,7 +283,7 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     const key=url.href.split('#')[0];
     if(pageCache.has(key)) return Promise.resolve(pageCache.get(key));
     if(pageRequests.has(key)) return pageRequests.get(key);
-    const request=fetch(key,{credentials:'same-origin',priority}).then(async response=>{
+    const request=Promise.resolve().then(()=>fetch(key,{credentials:'same-origin',priority})).then(async response=>{
       if(!response.ok) throw new Error('page unavailable');
       const html=await response.text();
       pageCache.set(key,html);
@@ -370,8 +370,12 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     target.focus({preventScroll:true});
   };
 
+  let pendingHistoryNavigation=null;
   const applyPage=async(url,{historyMode='push',preserveScrollY=null,readingContext=null,transitionDirection=0,gestureOffset=0,focusDestination=false}={})=>{
-    if(navigating) return;
+    if(navigating){
+      if(historyMode==='none') pendingHistoryNavigation={url:new URL(url.href),preserveScrollY,focusDestination};
+      return;
+    }
     if(scrollSaveTimer!==null){
       clearTimeout(scrollSaveTimer);
       scrollSaveTimer=null;
@@ -408,6 +412,8 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
         {transform:`translate3d(${shift}px,0,0)`,opacity:.9}
       ],{duration:105,easing:'cubic-bezier(.4,0,1,1)',fill:'forwards'});
 
+      // A popstate during the outgoing transition makes this navigation obsolete.
+      if(pendingHistoryNavigation) return;
       const destinationScroll=Number.isFinite(preserveScrollY)?preserveScrollY:0;
       if(historyMode==='push') history.pushState({pai:true,scrollY:destinationScroll},'',url.href);
       else if(historyMode==='replace') history.replaceState({pai:true,scrollY:destinationScroll},'',url.href);
@@ -467,8 +473,11 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       const preservedPublicationYears=readingContext?.expandedYears||[...next.querySelectorAll('.pub-group[data-expanded="true"]')]
         .map(section=>section.dataset.year).filter(Boolean);
       await initPublications(preservedPublicationYears);
+      // Never persist scroll/history state for a superseded target.
+      if(pendingHistoryNavigation) return;
       setTimeout(()=>warmNavigation(),80);
       await new Promise(resolve=>requestAnimationFrame(resolve));
+      if(pendingHistoryNavigation) return;
       if(readingContext){
         restoreReadingPosition(readingContext.position);
         const y=rememberPageScroll(normalizedPath(url.pathname),window.scrollY);
@@ -501,6 +510,15 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       setTimeout(()=>warmSwipeNeighbors(),40);
     }finally{
       navigating=false;
+      if(pendingHistoryNavigation){
+        const pending=pendingHistoryNavigation;
+        pendingHistoryNavigation=null;
+        const liveUrl=new URL(location.href);
+        // Browser history is authoritative: never replay an obsolete URL.
+        const destination=liveUrl.href===pending.url.href?pending.url:liveUrl;
+        const scroll=liveUrl.href===pending.url.href?pending.preserveScrollY:Number.isFinite(history.state?.scrollY)?history.state.scrollY:0;
+        queueMicrotask(()=>applyPage(destination,{historyMode:'none',preserveScrollY:scroll,focusDestination:true}).catch(()=>location.reload()));
+      }
     }
   };
 
