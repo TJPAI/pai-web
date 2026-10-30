@@ -29,6 +29,10 @@ jobs:
           set -o pipefail
           node tools/verify_current_ui.cjs 2>&1 | tee webkit-verify-current-ui.log
       - name: Run WebKit swipe tests
+        # Independent suite: run even if the UI smoke step failed, so one
+        # run always reports both suites instead of hiding the second
+        # behind the first. The job still fails overall on any failure.
+        if: always()
         run: |
           set -o pipefail
           node tools/verify_webkit_swipe.cjs 2>&1 | tee webkit-verify-swipe.log
