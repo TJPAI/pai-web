@@ -67,7 +67,7 @@ for _page in ('publications.html', 'en/publications.html'):
 
 _js = _Path('assets/js/site.js').read_text(encoding='utf-8')
 assert "footer.innerHTML=" not in _js, 'Runtime must not regenerate footer HTML'
-assert "currentFooter.replaceWith(document.importNode(targetFooter,true))" in _js, 'Lightweight navigation must swap the destination footer'
+assert "currentFooter.replaceWith(incomingFooter)" in _js, 'Lightweight navigation must swap the destination footer'
 assert "targetFooter=next.querySelector('.site-footer')" in _js, 'Destination footer must come from destination HTML'
 assert '<div class="brand"><strong>PAI</strong><span>PAI Research Center · Tongji University</span></div>' not in _js, 'Runtime must not contain stale footer branding'
 
