@@ -10,6 +10,16 @@ assert "hint.textContent=lang==='en'?'(latest updates)':'（最新动态）'" in
 assert "for(const selector of ['.nav-links','.mobile-menu'])" in js, "Destination static menus must be copied when navigating"
 assert ".site-header .nav-updates-hint" in css
 assert "results-news-toggle" in js and "extra.hidden=!open" in js
+# Outside-click dismissal must be registered globally, not inside initOrbitMenu.
+outside_marker = "// Dismiss either navigation menu when tapping outside its interactive surface."
+assert js.count(outside_marker) == 1
+assert js.index(outside_marker) < js.index("const initOrbitMenu=()=>")
+outside_block = js[js.index(outside_marker):js.index("const initOrbitMenu=()=>")]
+assert "document.addEventListener('click',event=>" in outside_block
+assert "!target.closest('.mobile-menu,.menu-btn')" in outside_block
+assert "!target.closest('.pai-orbit-wheel,.pai-orbit-toggle')" in outside_block
+assert "setMobileMenu(false)" in outside_block and "closeOrbitMenu()" in outside_block
+assert "  };\n  initOrbitMenu();\n\n})();" in js, "Keep deployment runtime orbit bootstrap compatible"
 class NewsParser(HTMLParser):
     def __init__(self):
         super().__init__()
