@@ -70,3 +70,7 @@ assert "footer.innerHTML=" not in _js, 'Runtime must not regenerate footer HTML'
 assert "currentFooter.replaceWith(document.importNode(targetFooter,true))" in _js, 'Lightweight navigation must swap the destination footer'
 assert "targetFooter=next.querySelector('.site-footer')" in _js, 'Destination footer must come from destination HTML'
 assert '<div class="brand"><strong>PAI</strong><span>PAI Research Center · Tongji University</span></div>' not in _js, 'Runtime must not contain stale footer branding'
+
+assert "nav.innerHTML=markup" not in _js, 'Runtime must not regenerate static desktop navigation'
+assert "mobile.innerHTML=markup" not in _js, 'Runtime must not regenerate static mobile navigation'
+assert "for(const selector of ['.nav-links','.mobile-menu'])" in _js, 'Navigation must be synchronized from destination HTML'
