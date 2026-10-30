@@ -412,6 +412,8 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
         {transform:`translate3d(${shift}px,0,0)`,opacity:.9}
       ],{duration:105,easing:'cubic-bezier(.4,0,1,1)',fill:'forwards'});
 
+      // A popstate during the outgoing transition makes this navigation obsolete.
+      if(pendingHistoryNavigation) return;
       const destinationScroll=Number.isFinite(preserveScrollY)?preserveScrollY:0;
       if(historyMode==='push') history.pushState({pai:true,scrollY:destinationScroll},'',url.href);
       else if(historyMode==='replace') history.replaceState({pai:true,scrollY:destinationScroll},'',url.href);
@@ -471,8 +473,11 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       const preservedPublicationYears=readingContext?.expandedYears||[...next.querySelectorAll('.pub-group[data-expanded="true"]')]
         .map(section=>section.dataset.year).filter(Boolean);
       await initPublications(preservedPublicationYears);
+      // Never persist scroll/history state for a superseded target.
+      if(pendingHistoryNavigation) return;
       setTimeout(()=>warmNavigation(),80);
       await new Promise(resolve=>requestAnimationFrame(resolve));
+      if(pendingHistoryNavigation) return;
       if(readingContext){
         restoreReadingPosition(readingContext.position);
         const y=rememberPageScroll(normalizedPath(url.pathname),window.scrollY);
