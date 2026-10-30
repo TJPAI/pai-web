@@ -147,43 +147,33 @@ for prefix in ('','en/'):
     if len(re.findall(r'class="[^"]*\bresearch-title\b[^"]*"',home))!=3: errors.append(f'{prefix}index.html: expected exactly 3 canonical research-title elements')
     if len(re.findall(r'class="[^"]*\bresearch-title\b[^"]*"',detail))!=3: errors.append(f'{prefix}research.html: expected exactly 3 canonical research-title elements')
 
-# Shared runtime navigation is authoritative for labels/targets after page load.
-# Static desktop headers are the no-JS fallback; keep them synchronized so a wording
-# change cannot silently drift between direct-entry markup and renderChrome().
+# Static HTML is the sole source for navigation copy and destination URLs.
+# Browser runtime copies menus from the destination page on lightweight navigation.
 site_js=(ROOT/'assets/js/site.js').read_text(encoding='utf-8')
-runtime_nav={}
-for lang, marker in (
-    ('en', r"const navItems=lang=>lang==='en'\?\s*\[(.*?)\]\s*:\s*\["),
-    ('zh', r"const navItems=lang=>lang==='en'\?[\s\S]*?\]\s*:\s*\[(.*?)\]\s*;"),
-):
-    match=re.search(marker, site_js, re.S)
-    if not match:
-        errors.append(f'assets/js/site.js: could not parse {lang} runtime navigation')
-        continue
-    runtime_nav[lang]=re.findall(r"\['([^']+)','([^']+)'\]", match.group(1))
+if "const navItems=lang" in site_js:
+    errors.append("assets/js/site.js: duplicate runtime navigation dictionary")
+if "for(const selector of ['.nav-links','.mobile-menu'])" not in site_js:
+    errors.append("assets/js/site.js: destination static navigation must be copied")
 
 def static_desktop_nav(rel):
     text=(ROOT/rel).read_text(encoding='utf-8')
-    match=re.search(r'<nav\b[^>]*class=["\'][^"\']*\bnav-links\b[^"\']*["\'][^>]*>(.*?)</nav>', text, re.I|re.S)
+    match=re.search(r'<nav\\b[^>]*class=["\\'][^"\\']*\\bnav-links\\b[^"\\']*["\\'][^>]*>(.*?)</nav>', text, re.I|re.S)
     if not match:
         return []
     return [
         (re.sub(r'<[^>]+>','', label).strip(), href)
-        for href,label in re.findall(r'<a\b[^>]*href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', match.group(1), re.I|re.S)
+        for href,label in re.findall(r'<a\\b[^>]*href=["\\']([^"\\']+)["\\'][^>]*>(.*?)</a>', match.group(1), re.I|re.S)
         if re.sub(r'<[^>]+>','', label).strip() not in ('EN','中文')
     ]
 
-for rel in ('index.html','about.html','team.html','research.html','publications.html','join.html','contact.html'):
-    expected=[(label, href.lstrip('/')) for label,href in runtime_nav.get('zh',[])]
-    actual=static_desktop_nav(rel)
-    if actual!=expected:
-        errors.append(f'{rel}: static desktop navigation labels/targets drift from assets/js/site.js')
-
-for rel in ('en/index.html','en/about.html','en/team.html','en/research.html','en/publications.html','en/join.html','en/contact.html'):
-    expected=[(label, href.removeprefix('/en/')) for label,href in runtime_nav.get('en',[])]
-    actual=static_desktop_nav(rel)
-    if actual!=expected:
-        errors.append(f'{rel}: static desktop navigation labels/targets drift from assets/js/site.js')
+for prefix in ('', 'en/'):
+    baseline=static_desktop_nav(prefix+'index.html')
+    if not baseline:
+        errors.append(f'{prefix}index.html: missing static navigation')
+    for filename in ('about.html','team.html','research.html','publications.html','join.html','contact.html'):
+        rel=prefix+filename
+        if static_desktop_nav(rel)!=baseline:
+            errors.append(f'{rel}: static desktop navigation differs from {prefix}index.html')
 
 # Critical detail-link contracts: these links must follow the current information architecture.
 contracts={
