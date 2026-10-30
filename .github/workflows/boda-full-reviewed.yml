@@ -1,0 +1,39 @@
+name: Boda reviewed full release 2026-10-30
+on:
+  push:
+    branches: [release/boda-full-reviewed-20261030]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Test navigation and news contract
+        run: python tools/validate_navigation_news.py
+      - name: Build complete Boda release
+        run: |
+          python tools/package_boda.py --output pai-web-boda-full-reviewed-2026-10-30.zip
+          python - <<'PY'
+          import hashlib,pathlib,zipfile
+          path=pathlib.Path('pai-web-boda-full-reviewed-2026-10-30.zip')
+          with zipfile.ZipFile(path) as z:
+            names=z.namelist()
+            assert z.testzip() is None
+            assert 'assets/js/site.js' in names
+            assert 'assets/css/refine-bundle.css' in names
+            assert 'publications.html' in names and 'en/publications.html' in names
+            assert b"High-Level Expert Panel" in z.read('en/publications.html')
+            assert b"successful large-scale mine trials" in z.read('en/publications.html')
+            assert b"hint.textContent=lang==='en'" in z.read('assets/js/site.js')
+            assert not any(n.startswith('.github/') for n in names)
+            assert not any(n.startswith('geosketch-mvp/') for n in names)
+            print('FILES:',len(names))
+            print('JPGs:',sum(n.endswith('.jpg') or n.endswith('.JPG') for n in names))
+            print('SHA256:',hashlib.sha256(path.read_bytes()).hexdigest())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pai-web-boda-full-reviewed-2026-10-30
+          path: pai-web-boda-full-reviewed-2026-10-30.zip
+          retention-days: 30
