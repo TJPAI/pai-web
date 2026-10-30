@@ -69,6 +69,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await click('research.html');
   await p.waitForURL(BASE+'research.html');
   await sleep(800);
+  await p.evaluate(()=>{window.__qaPopstateCount=0;window.addEventListener('popstate',()=>{window.__qaPopstateCount++},{capture:true});});
   for(let i=0;i<4;i++){
    await p.evaluate(()=>{history.back();setTimeout(()=>history.forward(),35);});
    await p.waitForFunction(()=>{
@@ -78,7 +79,8 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
      document.querySelector('main')?.style.transform==='';
    },null,{timeout:10000});
    await sleep(300);
-   const state=await p.evaluate(()=>({path:location.pathname,title:document.title,heading:document.querySelector('main h1')?.textContent?.trim()||''}));
+   const state=await p.evaluate(()=>({path:location.pathname,title:document.title,heading:document.querySelector('main h1')?.textContent?.trim()||'',popstates:window.__qaPopstateCount}));
+   assert.ok(state.popstates>=(i+1)*2,'history burst did not execute two popstate events '+JSON.stringify(state));
    assert.equal(state.path,'/pai-web/research.html');
    assert.ok(state.title.includes('研究')&&state.heading.includes('研究'),'history burst content mismatch '+JSON.stringify(state));
    console.log('PASS rapid popstate content identity',i+1);
