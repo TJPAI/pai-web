@@ -33,15 +33,6 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
   };
   const reverseLanguageMap=Object.fromEntries(Object.entries(languageMap).map(([zh,en])=>[en,zh]));
 
-  const navItems=lang=>lang==='en'?
-    [
-      ['About','/en/about.html'],['People','/en/team.html'],['Research','/en/research.html'],
-      ['Outputs','/en/publications.html'],['Join','/en/join.html'],['Contact','/en/contact.html']
-    ]:
-    [
-      ['关于我们','/about.html'],['研究团队','/team.html'],['研究方向','/research.html'],
-      ['成果合作','/publications.html'],['加入我们','/join.html'],['联系我们','/contact.html']
-    ];
 
   const sectionForPath=path=>{
     if(path.includes('/people/')) return 'team';
@@ -1173,7 +1164,13 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       const lang=en?'en':'zh';
       const languageLabel=en?'中文':'EN';
       const home=[en?'Home':'返回首页',en?'/en/':'/'];
-      return [home,...navItems(lang),[languageLabel,counterpartWithContext(normalizedPath())]];
+      // Orbit labels and links come from the active page's static header.
+      const links=[...document.querySelectorAll('.site-header .nav-links a')];
+      const pages=links.slice(0,-1).map(link=>[
+        (link.childNodes[0]?.textContent||link.textContent||'').trim(),
+        normalizedPath(new URL(link.href,location.href).pathname)
+      ]);
+      return [home,...pages,[languageLabel,counterpartWithContext(normalizedPath())]];
     };
 
     const sync=()=>{
