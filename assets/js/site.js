@@ -404,14 +404,25 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
 
       const incomingMain=document.importNode(nextMain,true);
       currentMain.replaceWith(incomingMain);
-      // Keep navigation labels in sync with the destination static HTML.
+      // Preserve the same Header and navigation nodes across lightweight routes.
+      // Only synchronize the seven link labels/targets from destination static HTML.
       const currentHeader=document.querySelector('.site-header');
       const targetHeader=next.querySelector('.site-header');
       if(currentHeader&&targetHeader){
         for(const selector of ['.nav-links','.mobile-menu']){
           const from=currentHeader.querySelector(selector);
           const to=targetHeader.querySelector(selector);
-          if(from&&to) from.innerHTML=to.innerHTML;
+          if(!from||!to) continue;
+          const existing=[...from.querySelectorAll(':scope > a')];
+          const desired=[...to.querySelectorAll(':scope > a')];
+          if(existing.length!==desired.length) continue;
+          existing.forEach((link,index)=>{
+            const target=desired[index];
+            const label=(target.textContent||'').trim();
+            const original=(link.textContent||'').replace(/\\s*[（(]latest updates[)）]$/,'').replace(/\\s*（最新动态）$/,'').trim();
+            if(original!==label) link.textContent=label;
+            link.setAttribute('href',target.getAttribute('href'));
+          });
         }
       }
       // Lightweight navigation also swaps the authoritative footer from the target page.
