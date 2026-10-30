@@ -1,0 +1,31 @@
+name: Boda mine wording patch
+on:
+  push:
+    branches: [release/boda-mine-wording-20261030]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Build production patch
+        run: |
+          python tools/package_boda.py --output /tmp/boda-full.zip
+          python - <<'PY'
+          import zipfile,hashlib,pathlib
+          p='en/publications.html'
+          out='pai-web-boda-mine-trials-wording-2026-10-30.zip'
+          with zipfile.ZipFile('/tmp/boda-full.zip') as source:
+            data=source.read(p)
+          assert b'successful large-scale mine trials.' in data
+          assert b'large-scale mine trials reported 100% success.' not in data
+          with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as z:z.writestr(p,data)
+          with zipfile.ZipFile(out) as z:
+            assert z.namelist()==[p] and z.testzip() is None
+          print('SHA256:',hashlib.sha256(pathlib.Path(out).read_bytes()).hexdigest())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pai-web-boda-mine-trials-wording-2026-10-30
+          path: pai-web-boda-mine-trials-wording-2026-10-30.zip
