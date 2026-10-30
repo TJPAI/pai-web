@@ -128,3 +128,10 @@ assert 'from.innerHTML=to.innerHTML' not in _js, 'Header DOM must not be rebuilt
 assert "target.childNodes[0]?.textContent" in _js, 'Header label must ignore updates hint children'
 assert "hints.forEach(node=>node.remove())" in _js, 'Old navigation hint nodes must be cleared on route transition'
 assert "hints.slice(1).forEach(node=>node.remove())" in _js, 'Navigation hint must not duplicate'
+
+# Mobile menu highlights must never overlay or obscure their own label text.
+_mobile_css=_Path('assets/css/site.css').read_text(encoding='utf-8')
+_mobile_block=_mobile_css.split('/* Mobile menu: identical full-width press/current state',1)[1]
+assert '.mobile-menu a:active::before' not in _mobile_block
+assert '.mobile-menu a.active::before' not in _mobile_block
+assert 'background:#F1F4F8' in _mobile_block and 'margin-left:-24px;margin-right:-24px' in _mobile_block
