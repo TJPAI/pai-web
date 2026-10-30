@@ -53,10 +53,21 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   // Inject synchronous fetch exception only for HTML warm requests after page load.
   await p.goto(BASE+'about.html');
   await p.evaluate(()=>{
+   window.__qaInjectedFetches=0;
    const original=window.fetch.bind(window);
-   window.fetch=(input,opts)=>{if(String(input).includes('/contact.html'))throw new TypeError('QA_SYNC_FETCH_INJECTED');return original(input,opts)};
+   window.fetch=(input,opts)=>{
+    if(String(input).includes('/contact.html')){
+     window.__qaInjectedFetches++;
+     throw new TypeError('QA_SYNC_FETCH_INJECTED');
+    }
+    return original(input,opts);
+   };
   });
+  // Cause a fresh non-interactive HTML prefetch by moving to a neighboring page.
+  await p.evaluate(()=>document.querySelector('.site-footer a[href="contact.html"]')?.dispatchEvent(new MouseEvent('mouseover',{bubbles:true})));
   await sleep(900);
+  const injected=await p.evaluate(()=>window.__qaInjectedFetches);
+  assert.ok(injected>0,'fault injection did not execute; test would be vacuous');
   assert.deepEqual(errors,[],'uncaught page errors: '+errors.join(' | '));
   console.log('PASS no uncaught page errors; engine='+ (process.env.PAI_BROWSER||'chromium'));
   await ctx.close();
