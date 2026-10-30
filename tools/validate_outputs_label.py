@@ -12,8 +12,8 @@ zh_outputs = (ROOT / 'publications.html').read_text(encoding='utf-8')
 en_outputs = (ROOT / 'en/publications.html').read_text(encoding='utf-8')
 
 # The public English label is Outputs while the stable URL remains publications.html.
-if not re.search(r"\['Outputs','/en/publications\.html'\]", site_js):
-    errors.append('assets/js/site.js: English navigation must label /en/publications.html as Outputs')
+if not re.search(r'<a[^>]*href="publications\.html"[^>]*>Outputs</a>', (ROOT / 'en/index.html').read_text(encoding='utf-8')):
+    errors.append('en/index.html: English static navigation must label publications.html as Outputs')
 
 for required, description in (
     (r'<title>Outputs\s*\|\s*PAI Research Center</title>', 'document title'),
