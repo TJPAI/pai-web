@@ -106,3 +106,18 @@ for _page, _gbc in (('index.html', 'https://ieee-gbc.org.cn/'), ('en/index.html'
 # Safari must not retain compositor transforms after a lightweight page transition.
 assert 'animation?.cancel()' in _js, 'Lightweight page animation must release its fill layer'
 assert "incomingFooter.style.transform=''" in _js, 'Replacement footer must not carry swipe transforms'
+
+# Footer menu is identical on every primary page within each language.
+import re as _re
+for _prefix, _names in (
+    ('', ['关于我们','研究团队','研究方向','成果合作','加入我们','联系我们','EN']),
+    ('en/', ['About','People','Research','Outputs','Join','Contact','中文']),
+):
+    for _name in ('index.html','about.html','team.html','research.html','publications.html','join.html','contact.html'):
+        _page = _Path(_prefix + _name)
+        _source = _page.read_text(encoding='utf-8')
+        _footer = _source.split('<footer ',1)[1].split('</footer>',1)[0]
+        _links = _footer.split('<div class="footer-links">',1)[1].split('</div>',1)[0]
+        _labels = _re.findall(r'<a[^>]*>(.*?)</a>',_links)
+        assert _labels == _names, (_page, _labels, _names)
+        assert _footer.index('class="footer-links"') < _footer.index('class="footer-contact"'), _page
