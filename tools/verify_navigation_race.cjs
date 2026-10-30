@@ -68,6 +68,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await sleep(900);
   const injected=await p.evaluate(()=>window.__qaInjectedFetches);
   assert.ok(injected>0,'fault injection did not execute; test would be vacuous');
+  console.log('PASS synchronous fetch fault injection triggered',injected,'time(s)');
   assert.deepEqual(errors,[],'uncaught page errors: '+errors.join(' | '));
   console.log('PASS no uncaught page errors; engine='+ (process.env.PAI_BROWSER||'chromium'));
   await ctx.close();
