@@ -153,6 +153,13 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     if(footer){
       const copyright=footer.querySelector('.footer-meta span');
       if(copyright) copyright.textContent='© '+new Date().getFullYear()+' PAI Research Center · Tongji University';
+      footer.querySelectorAll('.footer-links a').forEach(link=>{
+        let section='';
+        try{section=sectionForPath(normalizedPath(new URL(link.href,location.href).pathname));}catch(_e){}
+        const current=!!active&&section===active;
+        if(current) link.setAttribute('aria-current','page');
+        else link.removeAttribute('aria-current');
+      });
     }
   };
   renderChrome();
