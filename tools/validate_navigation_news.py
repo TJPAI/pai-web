@@ -50,3 +50,17 @@ for path in ('publications.html','en/publications.html'):
         assert '和IET首席执行官Nigel Fine共同宣布' not in pane
         assert '《IET Blockchain》期刊正式启动' in pane
 print('PASS: regular navigation and bilingual Latest News static contracts')
+
+# Guard the shared two-line footer brand and editorial news wording.
+from pathlib import Path as _Path
+for _page in list(_Path('.').glob('*.html')) + list(_Path('en').glob('*.html')) + list(_Path('people').glob('*.html')) + list(_Path('en/people').glob('*.html')):
+    _html = _page.read_text(encoding='utf-8')
+    if '<footer ' in _html:
+        assert '<strong>PAI Research Center</strong><span>Tongji University</span>' in _html, (_page, 'footer brand')
+for _page in ('publications.html', 'en/publications.html'):
+    _html = _Path(_page).read_text(encoding='utf-8')
+    assert 'DWELT定位项目获' not in _html and 'DWELT localization project wins' not in _html
+    assert ('DWELT technology wins gold' if _page.startswith('en/') else 'DWELT技术获') in _html
+    _news = _html.split('<aside class="results-news"', 1)[1].split('</aside>', 1)[0]
+    assert _news.count('https://doi.org/') >= 24
+    assert ('等论文发表于' if not _page.startswith('en/') else '— TWC paper published') not in _news
