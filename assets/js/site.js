@@ -377,10 +377,18 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
       const animateMain=async(node,keyframes,options)=>{
         if(!node||reduceMotion||!transitionDirection||typeof node.animate!=='function') return;
+        let animation;
         try{
-          const animation=node.animate(keyframes,options);
+          animation=node.animate(keyframes,options);
           await animation.finished;
         }catch(_e){}
+        finally{
+          // Safari may retain fill:both/forwards compositor layers after navigation.
+          // Clear the animation and leave the real DOM at its normal layout position.
+          try{animation?.cancel();}catch(_e){}
+          node.style.transform='';
+          node.style.opacity='';
+        }
       };
       const shift=transitionDirection>0?-18:18;
       const startShift=transitionDirection?Math.max(-18,Math.min(18,Number(gestureOffset)||0)):0;
@@ -409,7 +417,12 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       // Lightweight navigation also swaps the authoritative footer from the target page.
       const currentFooter=document.querySelector('.site-footer');
       const targetFooter=next.querySelector('.site-footer');
-      if(currentFooter&&targetFooter) currentFooter.replaceWith(document.importNode(targetFooter,true));
+      if(currentFooter&&targetFooter){
+        const incomingFooter=document.importNode(targetFooter,true);
+        incomingFooter.style.transform='';
+        incomingFooter.style.willChange='';
+        currentFooter.replaceWith(incomingFooter);
+      }
       document.title=next.title||document.title;
       syncPageHead(next);
       document.documentElement.lang=next.documentElement.lang||document.documentElement.lang;
