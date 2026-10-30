@@ -7,15 +7,19 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 (async()=>{
  const browser=await engine.launch({headless:true,...(engine===chromium?{args:['--no-sandbox']}:{})});
  try{
-  const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,locale:'zh-CN'});
-  await ctx.route(BASE+'**',route=>{
+  const newTestContext=async()=>{
+   const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,locale:'zh-CN'});
+   await context.route(BASE+'**',route=>{
    const u=new URL(route.request().url());let name=decodeURIComponent(u.pathname.slice('/pai-web/'.length));
    if(!name||name.endsWith('/'))name+='index.html';
    const file=path.resolve(ROOT,name);
    if(!file.startsWith(ROOT+path.sep)||!fs.existsSync(file))return route.fulfill({status:404,body:name});
    const type={'.html':'text/html','.js':'application/javascript','.css':'text/css','.json':'application/json','.jpg':'image/jpeg','.png':'image/png','.svg':'image/svg+xml','.webp':'image/webp'}[path.extname(file)]||'application/octet-stream';
    return route.fulfill({status:200,body:fs.readFileSync(file),contentType:type});
-  });
+   });
+   return context;
+  };
+  const ctx=await newTestContext();
   let p=await ctx.newPage();const errors=[];
   const trackErrors=page=>page.on('pageerror',e=>errors.push(e.message));
   trackErrors(p);
@@ -57,6 +61,11 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
    assert.ok(Math.abs(state.saved-350)<=2,'history scroll mismatch '+JSON.stringify(state));
    console.log('PASS burst-history iteration',k+1);
   }
+  // Isolate the fault-injection phase from the eight-history-iteration workload.
+  await ctx.close();
+  const faultCtx=await newTestContext();
+  p=await faultCtx.newPage();
+  trackErrors(p);
   // Inject synchronous fetch exception only for HTML warm requests after page load.
   await p.goto(BASE+'about.html');
   await p.evaluate(()=>{
@@ -78,6 +87,6 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   console.log('PASS synchronous fetch fault injection triggered',injected,'time(s)');
   assert.deepEqual(errors,[],'uncaught page errors: '+errors.join(' | '));
   console.log('PASS no uncaught page errors; engine='+ (process.env.PAI_BROWSER||'chromium'));
-  await ctx.close();
+  await faultCtx.close();
  }finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exitCode=1});
