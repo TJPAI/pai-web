@@ -33,7 +33,7 @@ for rel, (path, prefix) in pages.items():
         for attr in ('loading="lazy"', 'decoding="async"', 'fetchpriority="low"'):
             if attr not in tag:
                 errors.append(f'{rel}: {asset} must use {attr}')
-        if not re.search(r'\\bwidth="[0-9]+"', tag) or not re.search(r'\\bheight="[0-9]+"', tag):
+        if not re.search(r'\bwidth="[0-9]+"', tag) or not re.search(r'\bheight="[0-9]+"', tag):
             errors.append(f'{rel}: {asset} must retain intrinsic dimensions')
 
 if errors:
