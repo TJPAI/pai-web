@@ -40,6 +40,8 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
    await p.waitForURL(BASE+'research.html');
    await sleep(450);
    await p.evaluate(()=>scrollTo(0,350));await sleep(200);
+   const before=await p.evaluate(()=>({y:Math.round(scrollY),max:document.documentElement.scrollHeight-innerHeight}));
+   assert.ok(Math.abs(before.y-350)<=2,'test precondition failed: research cannot scroll to 350 '+JSON.stringify(before));
    await p.goBack();await p.waitForURL(BASE+'about.html');
    await p.goForward();await p.waitForURL(BASE+'research.html');
    await consistent('research.html');
