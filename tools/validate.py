@@ -405,4 +405,4 @@ if errors:
 
 print('Validation passed.')
 
-assert 'from.innerHTML=to.innerHTML' not in _js, 'Header DOM must not be rebuilt on route changes'
+assert 'from.innerHTML=to.innerHTML' not in site_js, 'Header DOM must not be rebuilt on route changes'
