@@ -1203,3 +1203,6 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
   font-weight:400;
   white-space:nowrap;
 }
+
+/* Latest News More/Less control: underline at rest as well as on hover. */
+.page-results .results-news-toggle{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
