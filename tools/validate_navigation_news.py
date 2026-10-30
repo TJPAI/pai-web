@@ -73,7 +73,7 @@ assert '<div class="brand"><strong>PAI</strong><span>PAI Research Center · Tong
 
 assert "nav.innerHTML=markup" not in _js, 'Runtime must not regenerate static desktop navigation'
 assert "mobile.innerHTML=markup" not in _js, 'Runtime must not regenerate static mobile navigation'
-assert "for(const selector of ['.nav-links','.mobile-menu'])" in _js, 'Navigation must be synchronized from destination HTML'
+assert "link.setAttribute('href',target.getAttribute('href'))" in _js, 'Header links must sync without replacing navigation DOM'
 
 # Canonical news records must produce the exact committed bilingual HTML.
 import subprocess as _subprocess
@@ -121,3 +121,5 @@ for _prefix, _names in (
         _labels = _re.findall(r'<a[^>]*>(.*?)</a>',_links)
         assert _labels == _names, (_page, _labels, _names)
         assert _footer.index('class="footer-links"') < _footer.index('class="footer-contact"'), _page
+
+assert 'from.innerHTML=to.innerHTML' not in _js, 'Header DOM must not be rebuilt on route changes'
