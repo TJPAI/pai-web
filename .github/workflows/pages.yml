@@ -27,6 +27,8 @@ jobs:
           persist-credentials: false
       - name: Validate tooling syntax
         run: python -m py_compile tools/*.py
+      - name: Render canonical bilingual header and footer
+        run: python tools/render_shared_chrome.py
       - name: Validate repository hygiene
         run: python tools/validate_repository_hygiene.py
       - name: Validate environment matrix
