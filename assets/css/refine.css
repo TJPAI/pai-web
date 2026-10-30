@@ -1186,3 +1186,20 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
   text-decoration-thickness:1px!important;
   text-underline-offset:4px!important;
 }
+
+
+/* Latest News: restore original text styling; only a quiet trailing arrow
+   distinguishes linked rows. Non-linked updates remain unchanged. */
+.page-results .results-news-row[href] > span:last-child,
+.page-results .results-news-row[href]:hover > span:last-child{
+  color:inherit!important;
+  text-decoration:none!important;
+}
+.page-results .results-news-row[href] > span:last-child::after{
+  content:" ↗";
+  display:inline;
+  color:inherit;
+  font-size:.88em;
+  font-weight:400;
+  white-space:nowrap;
+}
