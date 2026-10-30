@@ -92,3 +92,13 @@ for _page in list(_Path('.').glob('*.html')) + list(_Path('en').glob('*.html')):
     if 'class="footer-links"' in _footer and 'class="footer-contact"' in _footer:
         assert _footer.index('class="footer-links"') < _footer.index('class="footer-contact"'), (_page, 'menu must precede address')
         assert _footer.index('class="footer-contact"') > _footer.index('class="footer-links"'), (_page, 'footer column order')
+
+# Collaboration platform targets and homepage footer consistency.
+for _page, _gbc in (('index.html', 'https://ieee-gbc.org.cn/'), ('en/index.html', 'https://ieee-gbc.org/')):
+    _html = _Path(_page).read_text(encoding='utf-8')
+    for _url in ('https://ietresearch.onlinelibrary.wiley.com/journal/26341573', _gbc, 'https://blockchain.ieee.org/'):
+        assert f'href="{_url}"' in _html, (_page, _url)
+    _footer = _html.split('<footer ', 1)[1].split('</footer>', 1)[0]
+    assert 'class="footer-meta"' in _footer, (_page, 'copyright row')
+    assert 'class="footer-contact"' in _footer and 'lingtang@tongji.edu.cn' in _footer, (_page, 'footer contact')
+    assert _footer.index('class="footer-links"') < _footer.index('class="footer-contact"'), (_page, 'footer order')
