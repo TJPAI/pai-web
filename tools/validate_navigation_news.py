@@ -123,3 +123,8 @@ for _prefix, _names in (
         assert _footer.index('class="footer-links"') < _footer.index('class="footer-contact"'), _page
 
 assert 'from.innerHTML=to.innerHTML' not in _js, 'Header DOM must not be rebuilt on route changes'
+
+# SPA header reconciliation must not incorporate rendered news hints into base text.
+assert "target.childNodes[0]?.textContent" in _js, 'Header label must ignore updates hint children'
+assert "hints.forEach(node=>node.remove())" in _js, 'Old navigation hint nodes must be cleared on route transition'
+assert "hints.slice(1).forEach(node=>node.remove())" in _js, 'Navigation hint must not duplicate'
