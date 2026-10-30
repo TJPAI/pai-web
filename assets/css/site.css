@@ -84,7 +84,7 @@ button{font:inherit}
   .site-header .mobile-menu a[aria-current="page"]{
     background:#F1F4F8;color:inherit;
     border-bottom-color:transparent;
-    box-shadow:0 -1px 0 #F1F4F8;
+    box-shadow:0 -2px 0 #F1F4F8;
   }
   .site-header .mobile-menu a.active,
   .site-header .mobile-menu a[aria-current="page"]{font-weight:650}
@@ -93,5 +93,5 @@ button{font:inherit}
 /* Restore inset separators without narrowing the full-width selection background. */
 @media(max-width:768px){
  .site-header .mobile-menu a{border-bottom-color:transparent;background-image:linear-gradient(var(--line),var(--line));background-size:calc(100% - 48px) 1px;background-position:center bottom;background-repeat:no-repeat}
- .site-header .mobile-menu a:active,.site-header .mobile-menu a.active,.site-header .mobile-menu a[aria-current="page"]{background-image:none;box-shadow:0 -1px 0 #F1F4F8;z-index:1}
+ .site-header .mobile-menu a:active,.site-header .mobile-menu a.active,.site-header .mobile-menu a[aria-current="page"]{background-image:none;box-shadow:0 -2px 0 #F1F4F8;z-index:1}
 }
