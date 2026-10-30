@@ -1122,3 +1122,8 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
 .page-results .results-news-row-static{cursor:default}
 .page-results .results-news-extra .results-news-row:last-child{border-bottom:0}
 @media(max-width:768px){.page-results .results-news-head{margin-bottom:5px}.page-results .results-news-toggle{font-size:13px}}
+
+/* Regular navigation only: unobtrusive red Latest Updates qualifier. */
+.site-header .nav-updates-hint{color:#BC2530;font-size:.86em;font-weight:600;white-space:nowrap}
+.site-header .nav-links a:has(.nav-updates-hint){white-space:nowrap}
+@media(max-width:768px){.site-header .mobile-menu .nav-updates-hint{font-size:.87em}}
