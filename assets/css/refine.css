@@ -1154,3 +1154,35 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
 .site-footer .footer-links a[aria-current="page"]{
   color:#315D90;font-weight:650;
 }
+
+
+/* Requested refinement: About platform links must be visibly linked in both languages. */
+.page-about .detail-block.platform-journal .impact-link,
+.page-about .detail-block.platform-conference .impact-link,
+.page-about .detail-block.platform-community .impact-link,
+.page-about .detail-block.platform-center .impact-link{
+  color:#315D90!important;
+  text-decoration-line:underline!important;
+  text-decoration-style:solid!important;
+  text-decoration-thickness:1px!important;
+  text-underline-offset:3px!important;
+  text-decoration-color:#8CA9C7!important;
+}
+/* Outputs: Latest News links use an underline only; static news remains plain. */
+.page-results .results-news-row[href] > span:last-child,
+.page-results .results-news-row[href]:hover > span:last-child{
+  color:inherit!important;
+  text-decoration-line:underline!important;
+  text-decoration-color:currentColor!important;
+  text-decoration-thickness:1px!important;
+  text-underline-offset:3px!important;
+}
+/* Footer: current page is bold and underlined, never recolored. */
+.site-footer .footer-links a[aria-current="page"]{
+  color:inherit!important;
+  font-weight:700!important;
+  text-decoration-line:underline!important;
+  text-decoration-color:currentColor!important;
+  text-decoration-thickness:1px!important;
+  text-underline-offset:4px!important;
+}
