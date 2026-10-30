@@ -84,7 +84,7 @@ button{font:inherit}
   .site-header .mobile-menu a[aria-current="page"]{
     background:#F1F4F8;color:inherit;
     border-bottom-color:transparent;
-    box-shadow:0 -2px 0 #F1F4F8;
+    box-shadow:0 -3px 0 #F1F4F8;
   }
   .site-header .mobile-menu a.active,
   .site-header .mobile-menu a[aria-current="page"]{font-weight:650}
