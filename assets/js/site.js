@@ -114,7 +114,9 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
             // Static HTML already contains standard nav links; synchronize the
             // updates qualifier even when the navigation is not rebuilt.
             if(key==='publications'){
-              let hint=link.querySelector('.nav-updates-hint');
+              const hints=[...link.querySelectorAll('.nav-updates-hint')];
+              hints.slice(1).forEach(node=>node.remove());
+              let hint=hints[0];
               if(!hint){
                 hint=document.createElement('span');
                 hint.className='nav-updates-hint';
@@ -418,9 +420,13 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
           if(existing.length!==desired.length) continue;
           existing.forEach((link,index)=>{
             const target=desired[index];
-            const label=(target.textContent||'').trim();
-            const original=(link.textContent||'').replace(/\\s*[（(]latest updates[)）]$/,'').replace(/\\s*（最新动态）$/,'').trim();
-            if(original!==label) link.textContent=label;
+            // Qualifier is a separate decorative child, never part of the menu label.
+            // Repeated SPA transitions must not copy it into the next base label.
+            const label=(target.childNodes[0]?.textContent||target.textContent||'').trim();
+            const original=(link.childNodes[0]?.textContent||'').trim();
+            const hints=[...link.querySelectorAll('.nav-updates-hint')];
+            hints.forEach(node=>node.remove());
+            if(original!==label||link.childNodes.length!==1) link.textContent=label;
             link.setAttribute('href',target.getAttribute('href'));
           });
         }
