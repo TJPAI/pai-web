@@ -1207,9 +1207,13 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
 /* Latest News More/Less control: underline at rest as well as on hover. */
 .page-results .results-news-toggle{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 
-/* Desktop homepage: keep the first three featured-achievement cards equal-height. */
+/* Desktop: restore the original 3-image proportional widths/identical photo heights;
+   keep the next three achievements equal-width in their own row. */
 @media(min-width:769px){
-  .home-achievement-stories>.home-achievement-story:nth-child(-n+3){align-self:stretch;height:100%}
-  .home-achievement-stories>.home-achievement-story:nth-child(-n+3)>a{display:flex;flex-direction:column;height:100%}
-  .home-achievement-stories>.home-achievement-story:nth-child(-n+3) figcaption{flex:1}
+  .home-achievement-stories{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+  .home-achievement-stories>.home-achievement-story{min-width:0;flex:0 0 calc((100% - 40px)/3)}
+  .home-achievement-stories>.home-achievement-story:nth-child(1){flex-basis:calc((100% - 40px)*1.80961357/6.31015072)}
+  .home-achievement-stories>.home-achievement-story:nth-child(2){flex-basis:calc((100% - 40px)*2.40903388/6.31015072)}
+  .home-achievement-stories>.home-achievement-story:nth-child(3){flex-basis:calc((100% - 40px)*2.09150327/6.31015072)}
+  .home-achievement-stories>.home-achievement-story:nth-child(-n+3) img{height:auto!important;aspect-ratio:auto!important;object-fit:contain!important}
 }
