@@ -16,7 +16,7 @@ const BASE='https://tjpai.github.io/pai-web/',ROOT=path.resolve(__dirname,'..');
    const p=await ctx.newPage(),errs=[];p.on('pageerror',e=>errs.push(e.message));
    for(const [lang,label,word] of [['','（最新动态）','更多'],['en/','(latest updates)','More']]){
     await p.goto(BASE+lang+'index.html');
-    await p.locator('.site-header .nav-links a[href$="publications.html"] .nav-updates-hint').waitFor();
+    await p.locator('.site-header .nav-links a[href$="publications.html"] .nav-updates-hint').waitFor({state:'attached'});
     assert.equal((await p.locator('.site-header .nav-links .nav-updates-hint').first().textContent()).trim(),label);
     const first=p.locator('.site-header .nav-links a[href$="publications.html"]');
     assert.equal(await first.locator('.nav-updates-hint').evaluate(e=>getComputedStyle(e).color),'rgb(188, 37, 48)');
