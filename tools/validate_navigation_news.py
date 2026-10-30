@@ -56,7 +56,7 @@ from pathlib import Path as _Path
 for _page in list(_Path('.').glob('*.html')) + list(_Path('en').glob('*.html')) + list(_Path('people').glob('*.html')) + list(_Path('en/people').glob('*.html')):
     _html = _page.read_text(encoding='utf-8')
     if '<footer ' in _html:
-        assert '<strong>PAI Research Center</strong><span>Tongji University</span>' in _html, (_page, 'footer brand')
+        assert ('<strong>PAI Research Center</strong>' if str(_page).startswith('en/') else '<strong>PAI研究中心</strong>') in _html.split('<footer ',1)[1], (_page, 'footer brand')
 for _page in ('publications.html', 'en/publications.html'):
     _html = _Path(_page).read_text(encoding='utf-8')
     assert 'DWELT定位项目获' not in _html and 'DWELT localization project wins' not in _html
