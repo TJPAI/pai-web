@@ -35,6 +35,37 @@ const BASE='https://tjpai.github.io/pai-web/',ROOT=path.resolve(__dirname,'..');
     const overflow=await p.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
     assert.ok(overflow<=2,'horizontal overflow: '+overflow+' '+width+' '+lang);
    }
+   // Real navigation: internal link, Back/Forward and homepage research CTA.
+   for(const lang of ['', 'en/']){
+     await p.goto(BASE+lang+'index.html');
+     const cta=p.locator('.home-achievements-more a');
+     await cta.scrollIntoViewIfNeeded();
+     await cta.click();
+     await p.waitForURL(BASE+lang+'publications.html');
+     await p.locator('.results-news-toggle').waitFor();
+     await p.goBack();
+     await p.waitForURL(BASE+lang+'index.html');
+     await p.goForward();
+     await p.waitForURL(BASE+lang+'publications.html');
+     await p.locator('.results-news-toggle').waitFor();
+     if(width===390){
+       const menu=p.locator('.menu-btn');
+       await menu.click();
+       assert.equal(await menu.getAttribute('aria-expanded'),'true');
+       assert.equal(await p.locator('.mobile-menu.open').count(),1);
+       await menu.click();
+       assert.equal(await menu.getAttribute('aria-expanded'),'false');
+       const orbit=p.locator('.pai-orbit-toggle');
+       if(await orbit.count()){
+         await orbit.click();
+         await p.waitForTimeout(160);
+         await menu.click();
+         assert.equal(await p.locator('.pai-orbit.open').count(),0);
+         assert.equal(await orbit.getAttribute('aria-expanded'),'false');
+         await menu.click();
+       }
+     }
+   }
    assert.deepEqual(errs,[]);
    console.log('PASS',width,'both languages: menu hint + color, news 5/16 expand/collapse, overflow, no JS exceptions');
    await ctx.close();
