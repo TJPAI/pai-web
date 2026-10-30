@@ -21,7 +21,7 @@ jobs:
           with zipfile.ZipFile('pai-web-boda-paper-news-footer-2026-10-30.zip') as z:
             assert set(z.namelist())==set(files) and z.testzip() is None
             assert z.read('publications.html').count(b'10.1109/TWC.2025.3625223')==1
-            assert b'© 2026' in z.read('en/publications.html')
+            assert '© 2026'.encode('utf-8') in z.read('en/publications.html')
           PY
       - uses: actions/upload-artifact@v4
         with:
