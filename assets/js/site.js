@@ -1425,4 +1425,21 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
   };
   initOrbitMenu();
 
+  // Dismiss either navigation menu when tapping outside its interactive surface.
+  // Do not prevent the underlying page click, navigation, or orbit drag.
+  document.addEventListener('click',event=>{
+    const target=event.target;
+    if(!(target instanceof Element)) return;
+    const mobile=document.querySelector('.site-header .mobile-menu');
+    if(mobile?.classList.contains('open') &&
+       !target.closest('.mobile-menu,.menu-btn')){
+      setMobileMenu(false);
+    }
+    const orbit=document.querySelector('.pai-orbit');
+    if(orbit?.classList.contains('open') &&
+       !target.closest('.pai-orbit-wheel,.pai-orbit-toggle')){
+      closeOrbitMenu();
+    }
+  });
+
 })();
