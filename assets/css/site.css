@@ -83,11 +83,13 @@ button{font:inherit}
   .site-header .mobile-menu a[aria-current="page"]{
     background:#F1F4F8;color:inherit;
   }
+  .site-header .mobile-menu a:active,.site-header .mobile-menu a.active,.site-header .mobile-menu a[aria-current="page"]{isolation:isolate}
+  .site-header .mobile-menu a:active::before,.site-header .mobile-menu a.active::before,.site-header .mobile-menu a[aria-current="page"]::before{z-index:-1}
   .site-header .mobile-menu a.active,
   .site-header .mobile-menu a[aria-current="page"]{font-weight:650}
   .site-header .mobile-menu a:active::before,
   .site-header .mobile-menu a.active::before,
   .site-header .mobile-menu a[aria-current="page"]::before{
-    content:"";position:absolute;inset:-2px 0;z-index:-1;background:#F1F4F8;
+    content:"";position:absolute;inset:-2px 0;z-index:0;background:#F1F4F8;pointer-events:none;
   }
 }
