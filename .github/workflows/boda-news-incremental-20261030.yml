@@ -1,0 +1,41 @@
+name: Boda news incremental 2026-10-30
+on:
+  push:
+    branches: [release/boda-news-20261030]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Build and verify production delta
+        run: |
+          python tools/package_boda.py --output /tmp/boda-full.zip
+          python - <<'PY'
+          import zipfile,hashlib,pathlib,subprocess
+          base='029afc375e23e1c03414c3685327c87bc64366a1'
+          head='e1bfc54120b12e28ce4057a98eed529e333fd6b1'
+          changed=subprocess.check_output(['git','diff','--name-only',base+'...'+head],text=True).splitlines()
+          expected={'publications.html','en/publications.html','assets/css/refine.css','assets/js/site.js'}
+          assert set(changed)==expected,(changed,expected)
+          selected=['publications.html','en/publications.html','assets/css/refine-bundle.css','assets/js/site.js']
+          output='pai-web-boda-news-incremental-2026-10-30.zip'
+          with zipfile.ZipFile('/tmp/boda-full.zip') as source:
+            with zipfile.ZipFile(output,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as target:
+              for p in selected:target.writestr(p,source.read(p))
+          with zipfile.ZipFile(output) as z:
+            assert sorted(z.namelist())==sorted(selected) and z.testzip() is None
+            assert b'High-Level Expert Panel' in z.read('en/publications.html')
+            assert b'results-news-toggle' in z.read('assets/js/site.js')
+          sha=hashlib.sha256(pathlib.Path(output).read_bytes()).hexdigest()
+          print('INCREMENTAL_FILES',selected,'SHA256',sha)
+          pathlib.Path('pai-web-boda-news-incremental-manifest.txt').write_text('Base: '+base+'\nHead: '+head+'\nFiles:\n'+'\n'.join(selected)+'\nSHA256: '+sha+'\n',encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pai-web-boda-news-incremental-2026-10-30
+          path: |
+            pai-web-boda-news-incremental-2026-10-30.zip
+            pai-web-boda-news-incremental-manifest.txt
+          retention-days: 30
