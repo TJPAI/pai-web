@@ -15,3 +15,12 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: node --check assets/js/site.js && node --check tools/verify_navigation_race.cjs
       - run: PAI_BROWSER=chromium node tools/verify_navigation_race.cjs
+  webkit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - run: npm install --no-save playwright@1.56.1
+      - run: npx playwright install --with-deps webkit
+      - run: node --check assets/js/site.js && node --check tools/verify_navigation_race.cjs
+      - run: PAI_BROWSER=webkit node tools/verify_navigation_race.cjs
