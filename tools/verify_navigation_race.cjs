@@ -61,6 +61,28 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
    assert.ok(Math.abs(state.saved-350)<=2,'history scroll mismatch '+JSON.stringify(state));
    console.log('PASS burst-history iteration',k+1);
   }
+  // Stronger race: emit browser-history operations without awaiting SPA settle.
+  // Verify the *content identity* as well as the URL after the burst.
+  await p.close();
+  p=await ctx.newPage();trackErrors(p);
+  await p.goto(BASE+'about.html');
+  await click('research.html');
+  await p.waitForURL(BASE+'research.html');
+  await sleep(800);
+  for(let i=0;i<4;i++){
+   await p.evaluate(()=>{history.back();setTimeout(()=>history.forward(),35);});
+   await p.waitForFunction(()=>{
+    const title=document.title, heading=document.querySelector('main h1')?.textContent?.trim()||'';
+    return location.pathname==='/pai-web/research.html' &&
+     title.includes('研究') && heading.includes('研究') &&
+     document.querySelector('main')?.style.transform==='';
+   },null,{timeout:10000});
+   await sleep(300);
+   const state=await p.evaluate(()=>({path:location.pathname,title:document.title,heading:document.querySelector('main h1')?.textContent?.trim()||''}));
+   assert.equal(state.path,'/pai-web/research.html');
+   assert.ok(state.title.includes('研究')&&state.heading.includes('研究'),'history burst content mismatch '+JSON.stringify(state));
+   console.log('PASS rapid popstate content identity',i+1);
+  }
   // Isolate the fault-injection phase from the eight-history-iteration workload.
   await ctx.close();
   const faultCtx=await newTestContext();
