@@ -1206,3 +1206,10 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
 
 /* Latest News More/Less control: underline at rest as well as on hover. */
 .page-results .results-news-toggle{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+
+/* Desktop homepage: keep the first three featured-achievement cards equal-height. */
+@media(min-width:769px){
+  .home-achievement-stories>.home-achievement-story:nth-child(-n+3){align-self:stretch;height:100%}
+  .home-achievement-stories>.home-achievement-story:nth-child(-n+3)>a{display:flex;flex-direction:column;height:100%}
+  .home-achievement-stories>.home-achievement-story:nth-child(-n+3) figcaption{flex:1}
+}
