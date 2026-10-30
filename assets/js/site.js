@@ -1422,9 +1422,6 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     new MutationObserver(()=>{if(orbit.classList.contains('open'))sync();}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
     sync();
     paint();
-  };
-  initOrbitMenu();
-
   // Dismiss either navigation menu when tapping outside its interactive surface.
   // Do not prevent the underlying page click, navigation, or orbit drag.
   document.addEventListener('click',event=>{
@@ -1441,5 +1438,7 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       closeOrbitMenu();
     }
   });
+  };
+  initOrbitMenu();
 
 })();
