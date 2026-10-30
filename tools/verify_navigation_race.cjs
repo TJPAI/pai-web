@@ -38,7 +38,10 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
    await p.evaluate(()=>scrollTo(0,600));await sleep(200);
    await click('research.html');
    await p.waitForURL(BASE+'research.html');
-   await sleep(450);
+   // URL can update before the asynchronous SPA transition finishes on WebKit.
+   // Observe stability before setting the destination's remembered scroll.
+   await p.waitForFunction(()=>location.pathname.endsWith('/research.html') && document.querySelector('main h1')?.textContent?.includes('研究') && document.querySelector('main')?.style.willChange==='',null,{timeout:10000});
+   await sleep(700);
    await p.evaluate(()=>scrollTo(0,350));await sleep(200);
    const before=await p.evaluate(()=>({y:Math.round(scrollY),max:document.documentElement.scrollHeight-innerHeight}));
    assert.ok(Math.abs(before.y-350)<=2,'test precondition failed: research cannot scroll to 350 '+JSON.stringify(before));
