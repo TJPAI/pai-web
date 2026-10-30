@@ -15,4 +15,4 @@ jobs:
           npm install --no-save playwright@1.56.1
           npx playwright install --with-deps chromium
       - name: Run bilingual browser acceptance
-        run: node tools/verify_navigation.cjs
+        run: node tools/verify_current_ui.cjs
