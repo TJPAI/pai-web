@@ -12,7 +12,7 @@ items = data["items"]
 visible = data["default_visible"]
 assert visible == 5 and len(items) == 45
 assert len({(x["date"], x["zh"]["text"]) for x in items}) == len(items)
-assert all(re.fullmatch(r"\\d{4}-\\d{2}", x["date"]) for x in items)
+assert all(re.fullmatch(r"[0-9]{4}-[0-9]{2}", x["date"]) for x in items)
 assert [x["date"] for x in items] == sorted((x["date"] for x in items), reverse=True)
 
 def item_html(entry, lang):
