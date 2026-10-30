@@ -64,8 +64,9 @@ def render(relative,lang):
        f'<button class="menu-btn" aria-label="{button}" aria-expanded="false" aria-controls="mobile-navigation">☰</button>'
        f'</div><nav class="mobile-menu" id="mobile-navigation" aria-label="{mlabel}">'
        f'{"".join(mobilenav)}</nav></header>')
+    brand_name='PAI Research Center' if lang=='en' else 'PAI研究中心'
     footer=('<footer class="site-footer compact-footer"><div class="container"><div class="footer-grid">'
-       '<div><div class="brand"><strong>PAI Research Center</strong><span>Tongji University</span></div></div>'
+       f'<div><div class="brand"><strong>{brand_name}</strong><span>Tongji University</span></div></div>'
        f'<div class="footer-links">{"".join(footerlinks)}</div>'
        f'<div class="footer-contact">{ADDRESS[lang]}<br>'
        '<a href="mailto:lingtang@tongji.edu.cn">lingtang@tongji.edu.cn</a></div></div>'
