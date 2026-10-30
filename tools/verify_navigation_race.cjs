@@ -16,8 +16,9 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
    const type={'.html':'text/html','.js':'application/javascript','.css':'text/css','.json':'application/json','.jpg':'image/jpeg','.png':'image/png','.svg':'image/svg+xml','.webp':'image/webp'}[path.extname(file)]||'application/octet-stream';
    return route.fulfill({status:200,body:fs.readFileSync(file),contentType:type});
   });
-  const p=await ctx.newPage(),errors=[];
-  p.on('pageerror',e=>errors.push(e.message));
+  let p=await ctx.newPage();const errors=[];
+  const trackErrors=page=>page.on('pageerror',e=>errors.push(e.message));
+  trackErrors(p);
   await p.goto(BASE+'about.html');
   await p.evaluate(()=>{localStorage.setItem('pai-lang','zh');});
   const click=async href=>p.locator('.site-footer a[href="'+href+'"]').first().evaluate(a=>a.click());
@@ -34,6 +35,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   };
   // Exercise back and forward while an SPA transition is still active.
   for(let k=0;k<8;k++){
+   if(k>0){await p.close();p=await ctx.newPage();trackErrors(p);}
    await p.goto(BASE+'about.html');
    await p.evaluate(()=>scrollTo(0,600));await sleep(200);
    await click('research.html');
