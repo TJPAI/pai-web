@@ -1,0 +1,23 @@
+name: Build Boda full release with corrected footer
+on:
+  push:
+    branches:
+      - release/boda-footer-corrected-20261030
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Build validated production package
+        run: python tools/package_boda.py --output pai-web-production.zip
+      - name: Upload Boda ZIP
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pai-web-boda-footer-corrected-20261030
+          path: pai-web-production.zip
+          if-no-files-found: error
+          retention-days: 30
