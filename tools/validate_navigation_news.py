@@ -5,7 +5,7 @@ from html.parser import HTMLParser
 ROOT=Path(__file__).resolve().parents[1]
 js=(ROOT/'assets/js/site.js').read_text()
 css=(ROOT/'assets/css/refine.css').read_text()
-assert "link.querySelector('.nav-updates-hint')" in js, "Existing static header links must receive the news hint"
+assert "link.querySelectorAll('.nav-updates-hint')" in js, "Existing static header links must receive the news hint"
 assert "hint.textContent=lang==='en'?'(latest updates)':'（最新动态）'" in js
 assert "for(const selector of ['.nav-links','.mobile-menu'])" in js, "Destination static menus must be copied when navigating"
 assert ".site-header .nav-updates-hint" in css
