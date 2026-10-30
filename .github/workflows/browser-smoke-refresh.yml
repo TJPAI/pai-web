@@ -1,0 +1,18 @@
+name: Browser smoke regression
+on:
+  push:
+    branches: [qa/browser-smoke-refresh-20261030]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Run bilingual browser acceptance
+        run: node tools/verify_navigation.cjs
