@@ -1,0 +1,17 @@
+name: Extended browser navigation acceptance
+on:
+  push:
+    branches: [qa/navigation-extended-20261030]
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Run extended browser test
+        run: node tools/verify_current_ui.cjs
