@@ -40,7 +40,7 @@ for page in ROOT.rglob('*.html'):
     if 'geosketch-mvp' in page.parts or page.name == '404.html':
         continue
     html_source = page.read_text(encoding='utf-8')
-    if re.search(r'href=[\\"\\\'](?:\\.\\./)?(?:en/)?industry\\.html(?:[#?][^\\"\\\']*)?[\\"\\\']', html_source):
+    if any(marker in html_source for marker in ('href="industry.html"', "href='industry.html'", 'href="../industry.html"', "href='../industry.html'", 'href="en/industry.html"', "href='en/industry.html'")):
         errors.append(f'{page.relative_to(ROOT)}: links to retired industry page')
 if '/industry.html' in site_js or '/en/industry.html' in site_js:
     errors.append('assets/js/site.js: retired industry page must not remain in language routing')
