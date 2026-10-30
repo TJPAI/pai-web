@@ -82,3 +82,13 @@ _subprocess.run([_sys.executable, str(_Path('tools/render_latest_news.py')), '--
 
 assert 'const navItems=lang' not in _js, 'Orbit must not maintain a second translated menu list'
 assert "document.querySelectorAll('.site-header .nav-links a')" in _js, 'Orbit navigation must use source-page header links'
+
+# Footer order must agree across the bilingual site: brand, links, contact.
+for _page in list(_Path('.').glob('*.html')) + list(_Path('en').glob('*.html')):
+    _html = _page.read_text(encoding='utf-8')
+    if '<footer ' not in _html:
+        continue
+    _footer = _html.split('<footer ', 1)[1].split('</footer>', 1)[0]
+    if 'class="footer-links"' in _footer and 'class="footer-contact"' in _footer:
+        assert _footer.index('class="footer-links"') < _footer.index('class="footer-contact"'), (_page, 'menu must precede address')
+        assert _footer.index('class="footer-contact"') > _footer.index('class="footer-links"'), (_page, 'footer column order')
