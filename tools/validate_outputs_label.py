@@ -31,6 +31,20 @@ for path in (ROOT / 'en').rglob('*.html'):
 if 'outputs.html' in site_js or 'outputs.html' in en_outputs:
     errors.append('Outputs must keep the stable publications.html URL; outputs.html is not allowed')
 
+# Industry collaboration has been consolidated into Outputs. Do not recreate
+# retired standalone pages or send visitors to their obsolete URLs.
+for retired in ('industry.html', 'en/industry.html'):
+    if (ROOT / retired).exists():
+        errors.append(f'{retired}: retired page must not be published')
+for page in ROOT.rglob('*.html'):
+    if 'geosketch-mvp' in page.parts or page.name == '404.html':
+        continue
+    html_source = page.read_text(encoding='utf-8')
+    if re.search(r'href=[\\"\\\'](?:\\.\\./)?(?:en/)?industry\\.html(?:[#?][^\\"\\\']*)?[\\"\\\']', html_source):
+        errors.append(f'{page.relative_to(ROOT)}: links to retired industry page')
+if '/industry.html' in site_js or '/en/industry.html' in site_js:
+    errors.append('assets/js/site.js: retired industry page must not remain in language routing')
+
 # The visible publication range must be derived from the data, not manually drift.
 items = []
 for rel in ('data/publications.json', 'data/publications-archive.json'):
