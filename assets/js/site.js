@@ -163,15 +163,12 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       }
     }
 
+    // Footer HTML is authoritative. JavaScript only updates the copyright year.
+    // Do not rebuild footer.innerHTML: it hides edits made to source pages.
     const footer=document.querySelector('.site-footer');
     if(footer){
-      const links=items.map(([label,href])=>`<a href="${root(href)}">${label}</a>`).join('')+
-        `<a href="${root(languageHref)}">${languageLabel}</a>`;
-      const contact=lang==='en'?
-        `4800 Cao'an Highway, Jiading District, Shanghai<br>Tongji University Jiading Campus<br><a href="mailto:lingtang@tongji.edu.cn">lingtang@tongji.edu.cn</a>`:
-        `上海市嘉定区曹安公路4800号<br>同济大学嘉定校区智信馆<br><a href="mailto:lingtang@tongji.edu.cn">lingtang@tongji.edu.cn</a>`;
-      footer.classList.add('compact-footer');
-      footer.innerHTML=`<div class="container"><div class="footer-grid"><div><div class="brand"><strong>PAI Research Center</strong><span>Tongji University</span></div></div><div class="footer-links">${links}</div><div class="footer-contact">${contact}</div></div><div class="footer-meta"><span>© ${new Date().getFullYear()} PAI Research Center · Tongji University</span></div></div>`;
+      const copyright=footer.querySelector('.footer-meta span');
+      if(copyright) copyright.textContent='© '+new Date().getFullYear()+' PAI Research Center · Tongji University';
     }
   };
   renderChrome();
@@ -417,6 +414,10 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
 
       const incomingMain=document.importNode(nextMain,true);
       currentMain.replaceWith(incomingMain);
+      // Lightweight navigation also swaps the authoritative footer from the target page.
+      const currentFooter=document.querySelector('.site-footer');
+      const targetFooter=next.querySelector('.site-footer');
+      if(currentFooter&&targetFooter) currentFooter.replaceWith(document.importNode(targetFooter,true));
       document.title=next.title||document.title;
       syncPageHead(next);
       document.documentElement.lang=next.documentElement.lang||document.documentElement.lang;
