@@ -70,11 +70,12 @@ button{font:inherit}
 @media print{.site-header,.site-footer,.btn,.menu-btn{display:none!important}.page-hero,.content-section{padding:24px 0}body{color:#000}.container{width:100%;max-width:none}}
 
 
-/* Full-bleed mobile navigation row interaction. All states share one hit area. */
+/* Mobile menu: identical full-width press/current state, with no overlay pseudo-elements.
+   The 1px border belongs to each row; selected background replaces it safely. */
 @media(max-width:768px){
   .site-header .mobile-menu.open{position:static;height:auto;max-height:none;overflow:visible;box-shadow:none;background:transparent}
   .site-header .mobile-menu a{
-    position:relative;display:block;margin-left:-24px;margin-right:-24px;
+    display:block;position:relative;margin-left:-24px;margin-right:-24px;
     padding-left:24px;padding-right:24px;border-radius:0;
     -webkit-tap-highlight-color:transparent;
   }
@@ -82,14 +83,9 @@ button{font:inherit}
   .site-header .mobile-menu a.active,
   .site-header .mobile-menu a[aria-current="page"]{
     background:#F1F4F8;color:inherit;
+    border-bottom-color:transparent;
+    box-shadow:0 -1px 0 #F1F4F8;
   }
-  .site-header .mobile-menu a:active,.site-header .mobile-menu a.active,.site-header .mobile-menu a[aria-current="page"]{isolation:isolate}
-  .site-header .mobile-menu a:active::before,.site-header .mobile-menu a.active::before,.site-header .mobile-menu a[aria-current="page"]::before{z-index:-1}
   .site-header .mobile-menu a.active,
   .site-header .mobile-menu a[aria-current="page"]{font-weight:650}
-  .site-header .mobile-menu a:active::before,
-  .site-header .mobile-menu a.active::before,
-  .site-header .mobile-menu a[aria-current="page"]::before{
-    content:"";position:absolute;inset:-2px 0;z-index:0;background:#F1F4F8;pointer-events:none;
-  }
 }
