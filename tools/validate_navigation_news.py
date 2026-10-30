@@ -74,3 +74,8 @@ assert '<div class="brand"><strong>PAI</strong><span>PAI Research Center · Tong
 assert "nav.innerHTML=markup" not in _js, 'Runtime must not regenerate static desktop navigation'
 assert "mobile.innerHTML=markup" not in _js, 'Runtime must not regenerate static mobile navigation'
 assert "for(const selector of ['.nav-links','.mobile-menu'])" in _js, 'Navigation must be synchronized from destination HTML'
+
+# Canonical news records must produce the exact committed bilingual HTML.
+import subprocess as _subprocess
+import sys as _sys
+_subprocess.run([_sys.executable, str(_Path('tools/render_latest_news.py')), '--check'], check=True)
