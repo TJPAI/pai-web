@@ -1,0 +1,30 @@
+name: Synchronize shared chrome into source HTML
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/sync-shared-chrome-once.yml
+permissions:
+  contents: write
+jobs:
+  synchronize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: true
+      - name: Render canonical chrome in every page
+        run: |
+          python tools/render_shared_chrome.py
+          python tools/render_shared_chrome.py --check
+          python tools/validate.py
+          python tools/validate_navigation_news.py
+      - name: Commit synchronized HTML
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- '*.html' 'en/*.html' 'people/*.html' 'en/people/*.html'
+          if ! git diff --cached --quiet; then
+            git commit -m "Sync all static headers and footers from canonical template"
+            git push origin HEAD:main
+          fi
