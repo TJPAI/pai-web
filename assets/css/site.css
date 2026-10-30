@@ -73,5 +73,5 @@ button{font:inherit}
 /* Current page uses a full-width highlighted menu row; menu remains in normal flow. */
 @media(max-width:768px){
   .site-header .mobile-menu.open{position:static;height:auto;max-height:none;overflow:visible;box-shadow:none;background:transparent}
-  .mobile-menu a.active,.mobile-menu a[aria-current="page"]{display:block;background:#EAF2FD;color:#175E9E;font-weight:750;padding-left:14px;border-left:0;border-radius:6px}
+  .mobile-menu a.active,.mobile-menu a[aria-current="page"]{display:block;background:#F1F4F8;color:inherit;font-weight:650;padding-left:0;border-left:0;border-radius:6px}
 }
