@@ -416,6 +416,7 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       document.body.className=next.body.className;
 
       renderChrome();
+      scheduleContextPrefetch();
 
       const hasRequestedScroll=Number.isFinite(preserveScrollY);
       if(hasRequestedScroll){
@@ -504,29 +505,60 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     applyPage(new URL(location.href),{historyMode:'none',preserveScrollY:restoredY,focusDestination:true}).catch(()=>location.reload());
   });
 
-  // Background warming is limited to the language counterpart and swipe neighbors.
-  // Explicit user intent bypasses that small speculative set.
-  const warmNavigation=()=>{
-    if(navigator.connection&&navigator.connection.saveData) return;
-    const url=new URL(root(counterpartFor(normalizedPath())),location.origin);
-    fetchPage(url,{priority:'low'}).catch(()=>{});
+  // Speculative HTML prefetch uses the existing fetchPage cache and request dedup.
+  // Start only after initial paint; never warm target-page images.
+  const prefetchQueue=[];
+  const prefetchQueued=new Set();
+  let prefetchActive=0;
+  const canPrefetch=()=>{
+    const c=navigator.connection;
+    return !c?.saveData&&!/^(slow-2g|2g)$/.test(c?.effectiveType||'');
   };
-  if('requestIdleCallback' in window) requestIdleCallback(warmNavigation,{timeout:1800});
-  else setTimeout(warmNavigation,700);
-
-  // Homepage's 'More research results' targets the comparatively large Outputs
-  // document. Warm only its HTML during browser idle so the tap need not wait
-  // for the initial network request; avoid background traffic on metered links.
-  const warmHomeResultsCTA=()=>{
+  const drainPrefetch=()=>{
+    if(!canPrefetch()) return;
+    while(prefetchActive<2&&prefetchQueue.length){
+      const url=prefetchQueue.shift();
+      prefetchQueued.delete(url.href);
+      if(pageCache.has(url.href)||pageRequests.has(url.href)) continue;
+      prefetchActive++;
+      fetchPage(url,{priority:'low'}).catch(()=>{}).finally(()=>{
+        prefetchActive--;
+        drainPrefetch();
+      });
+    }
+  };
+  const queuePrefetch=href=>{
+    if(!canPrefetch()) return;
+    let url;
+    try{url=new URL(href,location.href);}catch(_e){return;}
+    url.hash='';
+    if(url.origin!==location.origin||!url.pathname.endsWith('.html')&&url.pathname!=='/'&& !url.pathname.endsWith('/en/'))return;
+    if(pageCache.has(url.href)||pageRequests.has(url.href)||prefetchQueued.has(url.href))return;
+    prefetchQueued.add(url.href);
+    prefetchQueue.push(url);
+    drainPrefetch();
+  };
+  const scheduleContextPrefetch=()=>{
     const path=normalizedPath();
-    if(path!=='/'&&path!=='/en/') return;
-    const connection=navigator.connection;
-    if(connection?.saveData||/^(slow-2g|2g)$/.test(connection?.effectiveType||'')) return;
-    const results=new URL(root(path.startsWith('/en/')?'/en/publications.html':'/publications.html'),location.origin);
-    fetchPage(results,{priority:'low'}).catch(()=>{});
+    const isHome=path==='/'||path==='/en/';
+    const isTeam=path.endsWith('/team.html');
+    if(!isHome&&!isTeam)return;
+    const links=isHome?
+      [...document.querySelectorAll('.site-header .nav-links a')]:
+      [...document.querySelectorAll('main a[href*="people/"]')];
+    const deferred=links.map(a=>a.href);
+    const run=()=>{if(normalizedPath()!==path)return;deferred.forEach(queuePrefetch);};
+    if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:2600});
+    else setTimeout(run,1100);
   };
-  if('requestIdleCallback' in window) requestIdleCallback(warmHomeResultsCTA,{timeout:3000});
-  else setTimeout(warmHomeResultsCTA,1400);
+  const warmNavigation=()=>{
+    if(!canPrefetch())return;
+    queuePrefetch(root(counterpartFor(normalizedPath())));
+  };
+  if('requestIdleCallback' in window)requestIdleCallback(warmNavigation,{timeout:3000});
+  else setTimeout(warmNavigation,1500);
+  if('requestIdleCallback' in window)requestIdleCallback(scheduleContextPrefetch,{timeout:2800});
+  else setTimeout(scheduleContextPrefetch,1200);
 
   const warmPublicationData=url=>{
     if(navigator.connection&&navigator.connection.saveData) return;
