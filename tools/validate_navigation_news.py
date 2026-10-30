@@ -102,3 +102,7 @@ for _page, _gbc in (('index.html', 'https://ieee-gbc.org.cn/'), ('en/index.html'
     assert 'class="footer-meta"' in _footer, (_page, 'copyright row')
     assert 'class="footer-contact"' in _footer and 'lingtang@tongji.edu.cn' in _footer, (_page, 'footer contact')
     assert _footer.index('class="footer-links"') < _footer.index('class="footer-contact"'), (_page, 'footer order')
+
+# Safari must not retain compositor transforms after a lightweight page transition.
+assert 'animation?.cancel()' in _js, 'Lightweight page animation must release its fill layer'
+assert "incomingFooter.style.transform=''" in _js, 'Replacement footer must not carry swipe transforms'
