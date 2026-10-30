@@ -105,32 +105,37 @@ async function assertCleanPage(page, label) {
   assert.equal(state.previewShells, 0, `${label}: leftover swipe preview shell`);
 }
 
-async function waitScrollY(page, expected, timeout = 5000) {
-  try {
-    await page.waitForFunction((y) => Math.abs(window.scrollY - y) <= 2, expected, { timeout });
-  } catch (e) {
-    const state = await page.evaluate(() => ({
-      url: location.pathname,
-      y: Math.round(scrollY),
-      hist: history.state,
-      ss: sessionStorage.getItem('pai-page-scroll-v1'),
-    }));
-    throw new Error(`scrollY did not reach ${expected}: ${JSON.stringify(state)}`);
+// Wait until scrollY has held the expected value for 400ms straight.
+// Plain waitScrollY is not enough: it returns the moment scrollToInstant
+// lands, but the SPA transition still has a trailing rAF + focus step and
+// `navigating` is still true; a goForward issued in that window is dropped
+// by the site's `navigating` guard (see report defect #2). The earlier
+// waitSettled helper (main.style.willChange === '') was wrong: after
+// replaceWith, the INCOMING main never had willChange set, so it read ''
+// mid-transition. Stability over time is the honest settle signal.
+async function waitScrollStable(page, expected, timeout = 8000) {
+  const start = Date.now();
+  let stableSince = 0;
+  let lastY = null;
+  while (Date.now() - start < timeout) {
+    const y = await page.evaluate(() => Math.round(window.scrollY));
+    const now = Date.now();
+    if (Math.abs(y - expected) <= 2) {
+      if (lastY === null || Math.abs(y - lastY) > 2) stableSince = now;
+      if (now - stableSince >= 400) return;
+    } else {
+      stableSince = 0;
+    }
+    lastY = y;
+    await sleep(50);
   }
-}
-
-// applyPage clears main's inline willChange only when the SPA transition
-// fully finishes (after the 105ms + 175ms animations). Waiting for it
-// before issuing the next history navigation avoids racing the site's
-// `navigating` guard, which drops a second navigation issued mid-transition.
-async function waitSettled(page, timeout = 5000) {
-  await page.waitForFunction(
-    () => {
-      const m = document.querySelector('main');
-      return !!m && m.style.willChange === '';
-    },
-    { timeout },
-  );
+  const state = await page.evaluate(() => ({
+    url: location.pathname,
+    y: Math.round(scrollY),
+    hist: history.state,
+    ss: sessionStorage.getItem('pai-page-scroll-v1'),
+  }));
+  throw new Error(`scrollY did not settle at ${expected}: ${JSON.stringify(state)}`);
 }
 
 (async () => {
@@ -307,12 +312,10 @@ async function waitSettled(page, timeout = 5000) {
       await sleep(400);
       await p.goBack();
       await p.waitForURL(BASE + 'about.html');
-      await waitScrollY(p, 600);
-      await waitSettled(p);
+      await waitScrollStable(p, 600);
       await p.goForward();
       await p.waitForURL(BASE + 'research.html');
-      await waitScrollY(p, 350);
-      await waitSettled(p);
+      await waitScrollStable(p, 350);
     });
 
     // 11. Desktop viewport: the same touch handler path still works at 1280px.
