@@ -157,12 +157,12 @@ if "for(const selector of ['.nav-links','.mobile-menu'])" not in site_js:
 
 def static_desktop_nav(rel):
     text=(ROOT/rel).read_text(encoding='utf-8')
-    match=re.search(r'<nav\\b[^>]*class=["\\'][^"\\']*\\bnav-links\\b[^"\\']*["\\'][^>]*>(.*?)</nav>', text, re.I|re.S)
+    match=re.search(r'<nav[^>]*class="[^"]*nav-links[^"]*"[^>]*>(.*?)</nav>', text, re.I|re.S)
     if not match:
         return []
     return [
         (re.sub(r'<[^>]+>','', label).strip(), href)
-        for href,label in re.findall(r'<a\\b[^>]*href=["\\']([^"\\']+)["\\'][^>]*>(.*?)</a>', match.group(1), re.I|re.S)
+        for href,label in re.findall(r'<a[^>]*href="([^"]+)"[^>]*>(.*?)</a>', match.group(1), re.I|re.S)
         if re.sub(r'<[^>]+>','', label).strip() not in ('EN','中文')
     ]
 
