@@ -1,7 +1,13 @@
 name: Browser smoke regression
 on:
   push:
-    branches: [qa/browser-smoke-refresh-20261030]
+    branches: [main]
+    paths:
+      - 'assets/js/**'
+      - 'assets/css/**'
+      - '*.html'
+      - 'en/**'
+      - 'tools/verify_current_ui.cjs'
   workflow_dispatch:
 permissions:
   contents: read
