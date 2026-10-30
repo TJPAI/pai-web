@@ -1262,11 +1262,15 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
         for(let i=steps;i>=0;i--) points.push(point(-half+2*half*i/steps,29));
         return `polygon(${points.join(',')})`;
       };
-      layout.forEach(({label,href,chars,charStep,span,center})=>{
-        markup.push(`<a class="pai-orbit-item" aria-label="${label}" href="${root(href)}" style="--item-angle:${center}deg;clip-path:${sectorClip(span)}"><span class="pai-orbit-sr">${label}</span></a>`);
+      const currentSection=sectionForPath(normalizedPath());
+      layout.forEach(({label,href,chars,charStep,span,center},index)=>{
+        // Home and language switch are never selected. Faculty profiles map to People.
+        const selected=index>0&&index<layout.length-1&&!!currentSection&&
+          sectionForPath(normalizedPath(new URL(root(href),location.origin).pathname))===currentSection;
+        markup.push(`<a class="pai-orbit-item${selected?' is-current':''}" ${selected?'aria-current="page" ':''}aria-label="${label}" href="${root(href)}" style="--item-angle:${center}deg;clip-path:${sectorClip(span)}"><span class="pai-orbit-sr">${label}</span></a>`);
         chars.forEach((ch,j)=>{
           const offset=(j-(chars.length-1)/2)*charStep;
-          markup.push(`<span class="pai-orbit-char" aria-hidden="true" style="--char-angle:${center+offset}deg">${ch}</span>`);
+          markup.push(`<span class="pai-orbit-char${selected?' is-current':''}" aria-hidden="true" style="--char-angle:${center+offset}deg">${ch}</span>`);
         });
       });
       wheel.innerHTML=markup.join('');
