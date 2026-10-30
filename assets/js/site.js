@@ -283,7 +283,7 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     const key=url.href.split('#')[0];
     if(pageCache.has(key)) return Promise.resolve(pageCache.get(key));
     if(pageRequests.has(key)) return pageRequests.get(key);
-    const request=fetch(key,{credentials:'same-origin',priority}).then(async response=>{
+    const request=Promise.resolve().then(()=>fetch(key,{credentials:'same-origin',priority})).then(async response=>{
       if(!response.ok) throw new Error('page unavailable');
       const html=await response.text();
       pageCache.set(key,html);
@@ -370,8 +370,12 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     target.focus({preventScroll:true});
   };
 
+  let pendingHistoryNavigation=null;
   const applyPage=async(url,{historyMode='push',preserveScrollY=null,readingContext=null,transitionDirection=0,gestureOffset=0,focusDestination=false}={})=>{
-    if(navigating) return;
+    if(navigating){
+      if(historyMode==='none') pendingHistoryNavigation={url:new URL(url.href),preserveScrollY,focusDestination};
+      return;
+    }
     if(scrollSaveTimer!==null){
       clearTimeout(scrollSaveTimer);
       scrollSaveTimer=null;
@@ -501,6 +505,15 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       setTimeout(()=>warmSwipeNeighbors(),40);
     }finally{
       navigating=false;
+      if(pendingHistoryNavigation){
+        const pending=pendingHistoryNavigation;
+        pendingHistoryNavigation=null;
+        const liveUrl=new URL(location.href);
+        // Browser history is authoritative: never replay an obsolete URL.
+        const destination=liveUrl.href===pending.url.href?pending.url:liveUrl;
+        const scroll=liveUrl.href===pending.url.href?pending.preserveScrollY:Number.isFinite(history.state?.scrollY)?history.state.scrollY:0;
+        queueMicrotask(()=>applyPage(destination,{historyMode:'none',preserveScrollY:scroll,focusDestination:true}).catch(()=>location.reload()));
+      }
     }
   };
 
