@@ -96,7 +96,8 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     const languageHref=counterpartWithContext(path);
     const markup=items.map(([label,href])=>{
       const key=sectionForPath(href);
-      return `<a${key===active?' class="active" aria-current="page"':''} href="${root(href)}">${label}</a>`;
+      const displayLabel=key==='publications'?`${label} <span class="nav-updates-hint">${lang==='en'?'(latest updates)':'（最新动态）'}</span>`:label;
+      return `<a${key===active?' class="active" aria-current="page"':''} href="${root(href)}">${displayLabel}</a>`;
     }).join('')+`<a href="${root(languageHref)}">${languageLabel}</a>`;
 
     const header=document.querySelector('.site-header');
