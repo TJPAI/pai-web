@@ -72,3 +72,14 @@ button{font:inherit}
 
 /* Current route in the hamburger menu (Home deliberately has no selection). */
 .mobile-menu a.active,.mobile-menu a[aria-current="page"]{color:#175E9E;font-weight:750;padding-left:12px;border-left:3px solid #175E9E}
+
+/* Mobile navigation is a viewport overlay, not a block that exposes the footer. */
+@media(max-width:768px){
+  .site-header .mobile-menu.open{
+    position:absolute;top:100%;left:0;right:0;
+    height:100dvh;max-height:calc(100dvh - 50px);
+    overflow-y:auto;overscroll-behavior:contain;
+    background:#fff;box-shadow:0 12px 18px rgba(0,0,0,.06);
+    z-index:60;
+  }
+}
