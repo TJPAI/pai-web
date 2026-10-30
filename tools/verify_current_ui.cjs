@@ -23,7 +23,7 @@ const BASE='https://tjpai.github.io/pai-web/',ROOT=path.resolve(__dirname,'..');
     await p.goto(BASE+lang+'publications.html');
     await p.locator('.results-news-toggle').waitFor();
     assert.equal(await p.locator('.results-news-list:not(.results-news-extra) .results-news-row').count(),5);
-    assert.equal(await p.locator('.results-news-extra .results-news-row').count(),16);
+    assert.equal(await p.locator('.results-news-extra .results-news-row').count(),40);
     assert.equal(await p.locator('.results-news-extra').isVisible(),false);
     await p.locator('.results-news-toggle').click();
     assert.equal(await p.locator('.results-news-extra').isVisible(),true);
