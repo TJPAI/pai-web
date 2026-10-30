@@ -1,0 +1,38 @@
+name: Boda nav updates incremental 2026-10-30
+on:
+  push:
+    branches: [release/boda-nav-latest-updates-20261030]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - name: Build and verify production delta
+        run: |
+          python tools/package_boda.py --output /tmp/boda-full.zip
+          python - <<'PY'
+          import zipfile,hashlib,pathlib,subprocess
+          base='e1bfc54120b12e28ce4057a98eed529e333fd6b1'
+          head='91f63170647c131478b2956c6d783953325bf678'
+          changed=subprocess.check_output(['git','diff','--name-only',base+'...'+head],text=True).splitlines()
+          assert set(changed)=={'assets/css/refine.css','assets/js/site.js'},changed
+          selected=['assets/css/refine-bundle.css','assets/js/site.js']
+          output='pai-web-boda-nav-latest-updates-2026-10-30.zip'
+          with zipfile.ZipFile('/tmp/boda-full.zip') as source,zipfile.ZipFile(output,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as target:
+            for path in selected:target.writestr(path,source.read(path))
+          with zipfile.ZipFile(output) as z:
+            assert sorted(z.namelist())==sorted(selected) and z.testzip() is None
+            assert b'nav-updates-hint' in z.read('assets/js/site.js')
+            assert b'(latest updates)' in z.read('assets/js/site.js')
+            assert b'nav-updates-hint' in z.read('assets/css/refine-bundle.css')
+          print('PATCH',selected,'SHA256',hashlib.sha256(pathlib.Path(output).read_bytes()).hexdigest())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pai-web-boda-nav-latest-updates-2026-10-30
+          path: pai-web-boda-nav-latest-updates-2026-10-30.zip
+          retention-days: 30
