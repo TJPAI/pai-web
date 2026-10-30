@@ -156,7 +156,8 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       footer.querySelectorAll('.footer-links a').forEach(link=>{
         let section='';
         try{section=sectionForPath(normalizedPath(new URL(link.href,location.href).pathname));}catch(_e){}
-        const current=!!active&&section===active;
+        const label=(link.textContent||'').trim();
+        const current=label!=='EN'&&label!=='中文'&&!!active&&section===active;
         if(current) link.setAttribute('aria-current','page');
         else link.removeAttribute('aria-current');
       });
