@@ -506,12 +506,44 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     return url;
   };
 
+  // Respond to touch/pointer-down rather than waiting for HTML fetch or animation.
+  // Preview only the selection; renderChrome remains authoritative after routing.
+  let pendingMobileSelection=null;
+  const previewMobileSelection=link=>{
+    if(!link?.closest('.mobile-menu')||!eligiblePageLink(link)) return;
+    const menu=link.closest('.mobile-menu');
+    const selected=[...menu.querySelectorAll(':scope > a')];
+    if(pendingMobileSelection?.menu===menu) pendingMobileSelection.restore();
+    const previous=selected.map(item=>({
+      item,active:item.classList.contains('active'),current:item.getAttribute('aria-current')
+    }));
+    selected.forEach(item=>{
+      const current=item===link;
+      item.classList.toggle('active',current);
+      if(current) item.setAttribute('aria-current','page');
+      else item.removeAttribute('aria-current');
+    });
+    pendingMobileSelection={menu,restore:()=>{
+      previous.forEach(({item,active,current})=>{
+        item.classList.toggle('active',active);
+        if(current===null)item.removeAttribute('aria-current');
+        else item.setAttribute('aria-current',current);
+      });
+      pendingMobileSelection=null;
+    }};
+  };
+  document.addEventListener('pointerdown',event=>{
+    if(event.button!==0)return;
+    previewMobileSelection(event.target.closest?.('.mobile-menu a'));
+  },{capture:true,passive:true});
+
   document.addEventListener('click',event=>{
     if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey) return;
     const link=event.target.closest&&event.target.closest('a');
     const url=eligiblePageLink(link);
     if(!url) return;
     event.preventDefault();
+    previewMobileSelection(link); // Also supports keyboard/synthetic clicks.
     const mobileMenu=link.closest('.mobile-menu');
     if(mobileMenu){
       setMobileMenu(false);
@@ -527,7 +559,10 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       options={preserveScrollY:destinationScrollForPath(normalizedPath(url.pathname))};
     }
     options={...options,focusDestination:event.detail===0};
-    applyPage(url,options).catch(()=>{ location.href=url.href; });
+    applyPage(url,options).then(()=>{pendingMobileSelection=null;}).catch(()=>{
+      pendingMobileSelection?.restore();
+      location.href=url.href;
+    });
   });
 
   addEventListener('popstate',event=>{
