@@ -79,3 +79,6 @@ assert "for(const selector of ['.nav-links','.mobile-menu'])" in _js, 'Navigatio
 import subprocess as _subprocess
 import sys as _sys
 _subprocess.run([_sys.executable, str(_Path('tools/render_latest_news.py')), '--check'], check=True)
+
+assert 'const navItems=lang' not in _js, 'Orbit must not maintain a second translated menu list'
+assert "document.querySelectorAll('.site-header .nav-links a')" in _js, 'Orbit navigation must use source-page header links'
