@@ -1,0 +1,44 @@
+name: WebKit Safari QA
+
+on:
+  push:
+    branches: [qa/webkit-safari-20261031]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  webkit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PAI_BROWSER: webkit
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright 1.56.1 and WebKit
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps webkit
+      - name: Run bilingual UI smoke tests on WebKit
+        run: |
+          set -o pipefail
+          node tools/verify_current_ui.cjs 2>&1 | tee webkit-verify-current-ui.log
+      - name: Run WebKit swipe tests
+        run: |
+          set -o pipefail
+          node tools/verify_webkit_swipe.cjs 2>&1 | tee webkit-verify-swipe.log
+      - name: Upload WebKit test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: webkit-qa-logs
+          path: |
+            webkit-verify-current-ui.log
+            webkit-verify-swipe.log
+          if-no-files-found: warn
+          retention-days: 30
