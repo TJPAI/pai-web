@@ -404,3 +404,5 @@ if errors:
     sys.exit(1)
 
 print('Validation passed.')
+
+assert 'from.innerHTML=to.innerHTML' not in _js, 'Header DOM must not be rebuilt on route changes'
