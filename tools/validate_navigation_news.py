@@ -66,5 +66,7 @@ for _page in ('publications.html', 'en/publications.html'):
     assert ('等论文发表于' if not _page.startswith('en/') else '— TWC paper published') not in _news
 
 _js = _Path('assets/js/site.js').read_text(encoding='utf-8')
-assert '<div class="brand"><strong>PAI Research Center</strong><span>Tongji University</span></div>' in _js, 'Runtime footer must match static two-line brand'
-assert '<div class="brand"><strong>PAI</strong><span>PAI Research Center · Tongji University</span></div>' not in _js, 'Runtime footer must not restore stale branding'
+assert "footer.innerHTML=" not in _js, 'Runtime must not regenerate footer HTML'
+assert "currentFooter.replaceWith(document.importNode(targetFooter,true))" in _js, 'Lightweight navigation must swap the destination footer'
+assert "targetFooter=next.querySelector('.site-footer')" in _js, 'Destination footer must come from destination HTML'
+assert '<div class="brand"><strong>PAI</strong><span>PAI Research Center · Tongji University</span></div>' not in _js, 'Runtime must not contain stale footer branding'
