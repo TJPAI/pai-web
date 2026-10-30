@@ -1,8 +1,9 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
-const {chromium}=require('playwright');
+const {chromium,webkit}=require('playwright');
+const engine=process.env.PAI_BROWSER==='webkit'?webkit:chromium;
 const BASE='https://tjpai.github.io/pai-web/',ROOT=path.resolve(__dirname,'..');
 (async()=>{
- const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+ const browser=await engine.launch({headless:true,args:['--no-sandbox']});
  try{
   for(const width of [390,1280]){
    const ctx=await browser.newContext({viewport:{width,height:844},locale:'zh-CN',isMobile:width===390,hasTouch:width===390});
