@@ -29,10 +29,12 @@ for rel, (path, prefix) in pages.items():
             errors.append(f'{rel}: expected exactly one homepage image reference to {src}; found {len(matches)}')
             continue
         tag = matches[0]
-        if not re.search(r'\bloading=["\']eager["\']', tag, re.I):
-            errors.append(f'{rel}: {asset} must remain loading="eager" for iPhone Safari stability')
-        if not re.search(r'\bdecoding=["\']sync["\']', tag, re.I):
-            errors.append(f'{rel}: {asset} must remain decoding="sync" for iPhone Safari stability')
+        # Gallery images are below the fold; protect the initial network budget.
+        for attr in ('loading="lazy"', 'decoding="async"', 'fetchpriority="low"'):
+            if attr not in tag:
+                errors.append(f'{rel}: {asset} must use {attr}')
+        if not re.search(r'\\bwidth="[0-9]+"', tag) or not re.search(r'\\bheight="[0-9]+"', tag):
+            errors.append(f'{rel}: {asset} must retain intrinsic dimensions')
 
 if errors:
     print('Homepage asset validation failed:')
@@ -40,4 +42,4 @@ if errors:
         print(f' - {error}')
     sys.exit(1)
 
-print('Homepage asset validation passed: source is Safari-safe eager/sync.')
+print('Homepage asset validation passed: gallery loading is deferred with stable dimensions.')
