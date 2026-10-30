@@ -171,7 +171,7 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
         `4800 Cao'an Highway, Jiading District, Shanghai<br>Tongji University Jiading Campus<br><a href="mailto:lingtang@tongji.edu.cn">lingtang@tongji.edu.cn</a>`:
         `上海市嘉定区曹安公路4800号<br>同济大学嘉定校区智信馆<br><a href="mailto:lingtang@tongji.edu.cn">lingtang@tongji.edu.cn</a>`;
       footer.classList.add('compact-footer');
-      footer.innerHTML=`<div class="container"><div class="footer-grid"><div><div class="brand"><strong>PAI</strong><span>PAI Research Center · Tongji University</span></div></div><div class="footer-links">${links}</div><div class="footer-contact">${contact}</div></div><div class="footer-meta"><span>© ${new Date().getFullYear()} PAI Research Center · Tongji University</span></div></div>`;
+      footer.innerHTML=`<div class="container"><div class="footer-grid"><div><div class="brand"><strong>PAI Research Center</strong><span>Tongji University</span></div></div><div class="footer-links">${links}</div><div class="footer-contact">${contact}</div></div><div class="footer-meta"><span>© ${new Date().getFullYear()} PAI Research Center · Tongji University</span></div></div>`;
     }
   };
   renderChrome();
