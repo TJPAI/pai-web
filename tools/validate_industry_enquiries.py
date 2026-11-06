@@ -8,6 +8,8 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 FULL_ENGLISH = {
     'port': 'Drone-Based Port Vehicle Inventory System',
+    'digital-twin-ai': 'Complex Equipment Simulation and Digital Twin AI Platform',
+    'embodied-brain': 'Multimodal Panoramic Perception Embodied AI Brain',
     'lidar': 'High-Precision LiDAR Localization System',
     'navigation': 'DWELT Integrated Positioning and Navigation System',
     'remote': 'Non-Invasive Vehicle Remote Driving Retrofit Kit',
@@ -24,8 +26,8 @@ errors = []
 for page, english in [('publications.html', False), ('en/publications.html', True)]:
     text = (ROOT / page).read_text(encoding='utf-8')
     cards = re.findall(r'<article class="industry-card" id="tech-([^"]+)">(.*?)</article>', text, re.S)
-    if len(cards) != 12:
-        errors.append(f'{page}: expected 12 technology cards, got {len(cards)}')
+    if len(cards) != len(FULL_ENGLISH):
+        errors.append(f'{page}: expected {len(FULL_ENGLISH)} technology cards, got {len(cards)}')
     for ident, card in cards:
         heading = re.search(r'<h3 class="title-item">([^<]+)</h3>', card)
         link = re.search(r'<a class="industry-link" href="([^"]+)">([^<]+)</a>', card)
@@ -47,4 +49,4 @@ for page, english in [('publications.html', False), ('en/publications.html', Tru
             errors.append(f'{page}:{ident}: unexpected enquiry label')
 if errors:
     raise SystemExit('\n'.join(errors))
-print('Validated all 24 localized technology enquiry subjects.')
+print(f'Validated all {2 * len(FULL_ENGLISH)} localized technology enquiry subjects.')
