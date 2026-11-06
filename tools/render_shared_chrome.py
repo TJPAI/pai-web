@@ -34,12 +34,12 @@ def render(relative,lang):
         actual=Path('en')/relative
         prefix='../' * len(actual.parent.parts)
         navbase=('../' if len(relative.parts)>1 else '')
-        counterpart=prefix + leaf
+        counterpart=prefix + ('' if leaf=='index.html' else leaf)
     else:
         actual=relative
         prefix='../' * len(actual.parent.parts)
         navbase=('../' if len(relative.parts)>1 else '')
-        counterpart=prefix + 'en/' + leaf
+        counterpart=prefix + 'en/' + ('' if leaf=='index.html' else leaf)
     active='team.html' if leaf.startswith('people/') else relative.name
     navlinks=[]
     mobilenav=[]
@@ -54,7 +54,7 @@ def render(relative,lang):
     navlinks.append(f'<a href="{counterpart}">{switch}</a>')
     mobilenav.append(f'<a href="{counterpart}">{switch}</a>')
     footerlinks.append(f'<a href="{counterpart}">{switch}</a>')
-    home=navbase+'index.html'
+    home=navbase or './'
     hlabel='Main navigation' if lang=='en' else '主导航'
     mlabel='Mobile navigation' if lang=='en' else '移动导航'
     button='Open menu' if lang=='en' else '打开菜单'
