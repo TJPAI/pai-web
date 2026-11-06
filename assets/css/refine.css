@@ -901,7 +901,7 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 @media(max-width:768px){.home-achievement-stories{grid-template-columns:1fr 1fr;gap:12px}.home-achievement-story:nth-child(n+4) figcaption{min-height:0}.industry-all .industry-six-rows{grid-template-columns:1fr;gap:24px}}
 @media(max-width:480px){.home-achievement-stories{grid-template-columns:1fr}.industry-all .industry-six-rows{grid-template-columns:1fr}}
 
-/* Twelve industry technologies: 3 × 4 desktop; 2 × 6 mobile. */
+/* Industry technologies: three columns on desktop, two columns on mobile; accommodates 14 cards. */
 .page-results .industry-six-rows{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 22px}
 .page-results .industry-six-rows .industry-card .title-item{font-size:17px;line-height:1.4}
 .page-results .industry-six-rows .industry-card p{font-size:13px;line-height:1.62}
