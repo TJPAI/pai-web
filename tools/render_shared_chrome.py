@@ -54,7 +54,7 @@ def render(relative,lang):
     navlinks.append(f'<a href="{counterpart}">{switch}</a>')
     mobilenav.append(f'<a href="{counterpart}">{switch}</a>')
     footerlinks.append(f'<a href="{counterpart}">{switch}</a>')
-    home=navbase+'./'
+    home=navbase or './'
     hlabel='Main navigation' if lang=='en' else '主导航'
     mlabel='Mobile navigation' if lang=='en' else '移动导航'
     button='Open menu' if lang=='en' else '打开菜单'
