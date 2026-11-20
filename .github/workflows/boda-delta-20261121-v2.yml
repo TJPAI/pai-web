@@ -2,7 +2,7 @@ name: Build verified Boda delta 2026-11-21 v2
 on:
   push:
     branches: [release/boda-incremental-20261121-865a-to-2bc3]
-    paths: [.github/workflows/boda-delta-20261121.yml]
+    paths: [.github/workflows/boda-delta-20261121-v2.yml]
 permissions:
   contents: read
 jobs:
