@@ -85,14 +85,16 @@ def ieee_reference(pub):
         publication += ', early access'
     # Apply standard IEEE volume, issue, page-range and year punctuation.
     details = re.sub(r'(?<=\d)-(?=\d)', '–', details)
-    parts = [
-        esc(ieee_authors(pub['authors'])),
-        '“' + esc(pub['title'].rstrip(' .')) + ',”',
-        publication + (', ' + esc(details) if details else ''),
-        str(pub['year']),
-        'doi: ' + esc(pub['doi']),
-    ]
-    return parts[0] + ', ' + parts[1] + ' ' + ', '.join(parts[2:]) + '.'
+    author_title = esc(ieee_authors(pub['authors'])) + ', “' + esc(pub['title'].rstrip(' .')) + ',” '
+    # IEEE journal citations put volume/pages before year; conference papers put year before pages.
+    if base in CONFERENCE_ABBREVIATIONS:
+        fields = [publication, str(pub['year'])]
+        if details:
+            fields.append(esc(details))
+    else:
+        fields = [publication + (', ' + esc(details) if details else ''), str(pub['year'])]
+    fields.append('doi: ' + esc(pub['doi']))
+    return author_title + ', '.join(fields) + '.'
 
 for language, page in (('zh', 'publications.html'), ('en', 'en/publications.html')):
     en = language == 'en'
