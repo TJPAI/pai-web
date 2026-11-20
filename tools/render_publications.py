@@ -90,7 +90,7 @@ def ieee_reference(pub):
         str(pub['year']),
         'doi: ' + esc(pub['doi']),
     ]
-    return ', '.join(parts[:-1]) + ', ' + parts[-1] + '.'
+    return parts[0] + ', ' + parts[1] + ' ' + ', '.join(parts[2:]) + '.'
 
 for language, page in (('zh', 'publications.html'), ('en', 'en/publications.html')):
     en = language == 'en'
