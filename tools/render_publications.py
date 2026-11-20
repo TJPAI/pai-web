@@ -81,6 +81,8 @@ def ieee_reference(pub):
     else:
         assert base in CONFERENCE_ABBREVIATIONS, ('unknown venue', pub['doi'], base)
         publication = 'in <em>Proc. ' + esc(CONFERENCE_ABBREVIATIONS[base]) + '</em>'
+    if pub.get('publication_status') == 'early_access':
+        publication += ', early access'
     # Apply standard IEEE volume, issue, page-range and year punctuation.
     details = re.sub(r'(?<=\d)-(?=\d)', '–', details)
     parts = [
