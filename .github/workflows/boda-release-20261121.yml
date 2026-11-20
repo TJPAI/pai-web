@@ -14,11 +14,11 @@ jobs:
       - name: Checkout exact site release
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          ref: 83df6e3ae33a1e4c56c6d19f539ea051644e175d
       - name: Validate source revision
         shell: bash
         run: |
-          test "$(git rev-parse HEAD^)" = "83df6e3ae33a1e4c56c6d19f539ea051644e175d"
+          test "$(git rev-parse HEAD)" = "83df6e3ae33a1e4c56c6d19f539ea051644e175d"
       - name: Build verified Boda server ZIP
         run: python tools/package_boda.py --output pai-web-boda-production-20261121-83df6e3.zip
       - name: Upload Boda production package
