@@ -48,6 +48,7 @@ JOURNAL_ABBREVIATIONS = {
     'IEEE Transactions on Human-Machine Systems': 'IEEE Trans. Human-Mach. Syst.',
 }
 CONFERENCE_ABBREVIATIONS = {
+    '2025 IEEE/CIC International Conference on Communications in China (ICCC)': 'IEEE/CIC Int. Conf. Commun. China (ICCC)',
     '2025 IEEE/CIC International Conference on Communications in China (ICCC Workshops)': 'IEEE/CIC Int. Conf. Commun. China (ICCC Workshops)',
     '2025 IEEE Global Blockchain Conference (GBC)': 'IEEE Global Blockchain Conf. (GBC)',
     '2024 International Conference on Future Communications and Networks (FCN), Valletta, Malta': 'Int. Conf. Future Commun. Netw. (FCN), Valletta, Malta',
@@ -59,7 +60,7 @@ CONFERENCE_ABBREVIATIONS = {
 def ieee_author(full_name):
     tokens = full_name.strip().split()
     assert len(tokens) >= 2, ('unrecognized author', full_name)
-    initials = ''.join(token[0].upper() + '. ' for token in tokens[:-1])
+    initials = ''.join('-'.join(part[0].upper() + '.' for part in token.split('-')) + ' ' for token in tokens[:-1])
     return initials + tokens[-1]
 
 def ieee_authors(names):
