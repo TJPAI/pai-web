@@ -1,16 +1,37 @@
 [
   {
     "year": 2026,
+    "title": "Periodically Anchored Gradient Tracking for Over-the-Air Decentralized Federated Learning with Finite-Time Consensus",
+    "authors": "Hexin Feng, Rui Wang, Erwu Liu, Wei Ni, Abbas Jamalipour",
+    "venue": "IEEE Transactions on Wireless Communications, vol. 25, pp. 25874-25890",
+    "doi": "10.1109/TWC.2026.3747782"
+  },
+  {
+    "year": 2026,
+    "title": "Task-Oriented Framework for Communication-Efficient Federated Learning: From Isolated Optimization to Holistic Synergy",
+    "authors": "Fan Pan, Yan Liu, Erwu Liu, Arumugam Nallanathan",
+    "venue": "IEEE Internet of Things Magazine",
+    "doi": "10.1109/MIOT.2026.3707892"
+  },
+  {
+    "year": 2026,
+    "title": "Full Domain Resource Programming in Wideband MIMO Systems: A Step Towards 6G",
+    "authors": "Xuanrui Li, Zhongxiang Wei, Junyuan Wang, Wen Ji, Erwu Liu",
+    "venue": "2026 IEEE International Conference on Communications Workshops (ICC Workshops), pp. 1-6",
+    "doi": "10.1109/ICCWorkshops63917.2026.11586270"
+  },
+  {
+    "year": 2026,
     "title": "A Survey of Decentralized Physical Infrastructure Network, Research Directions, and Open Challenges",
     "authors": "Ming Jiang, Erwu Liu, Xinyu Qu, Wei Ni, Zhongxiang Wei, Ekram Hossain",
-    "venue": "IEEE Communications Surveys & Tutorials",
+    "venue": "IEEE Communications Surveys & Tutorials, vol. 28, pp. 7213-7249",
     "doi": "10.1109/COMST.2026.3729997"
   },
   {
     "year": 2026,
     "title": "Effective Range and Optimal Frequency of Through-the-Earth Magnetic Induction Communication",
     "authors": "Honglei Ma, Erwu Liu, Wei Ni, Jun Zhu, Zhijun Fang, Rui Wang, Yongbin Gao, Xinyu Qu",
-    "venue": "IEEE Transactions on Vehicular Technology",
+    "venue": "IEEE Transactions on Vehicular Technology, vol. 75, no. 11, pp. 28950-28955",
     "doi": "10.1109/TVT.2026.3721188"
   },
   {
@@ -30,7 +51,7 @@
   {
     "year": 2026,
     "title": "Hierarchical Attention-Driven Multi-Agent Reinforcement Learning for Resource Allocation in Cell-Free Massive MIMO With Integrated Sensing and Communication",
-    "authors": "Ming Jiang, Erwu Liu, Wei Ni, Shuyan Hu, Lingzhi Xia, Yuanzhe Geng, Dusit Niyato, Abbas Jamalipour",
+    "authors": "Ming Jiang, Erwu Liu, Wei Ni, Rui Wang, Shuyan Hu, Lingzhi Xia, Yuanzhe Geng, Dusit Niyato, Abbas Jamalipour",
     "venue": "IEEE Transactions on Cognitive Communications and Networking, vol. 12, pp. 6955-6969",
     "doi": "10.1109/TCCN.2026.3676012"
   },
@@ -49,18 +70,39 @@
     "doi": "10.1109/TWC.2026.3659648"
   },
   {
-    "year": 2025,
+    "year": 2026,
     "title": "Fault Detection and Performance Analysis of Integrated Multi-Constellation GNSS/5G Positioning in Urban Environments",
     "authors": "Yuan Zhang, Rui Wang, Erwu Liu",
-    "venue": "IEEE Transactions on Wireless Communications",
+    "venue": "IEEE Transactions on Wireless Communications, vol. 25, pp. 6491-6506",
     "doi": "10.1109/TWC.2025.3625223"
   },
   {
-    "year": 2025,
+    "year": 2026,
     "title": "Through-the-Earth Magnetic Induction Communication and Networking: A Comprehensive Survey",
     "authors": "Honglei Ma, Erwu Liu, Wei Ni, Zhijun Fang, Rui Wang, Yongbin Gao, Dusit Niyato, Ekram Hossain",
-    "venue": "IEEE Communications Surveys & Tutorials",
+    "venue": "IEEE Communications Surveys & Tutorials, vol. 28, pp. 2263-2305",
     "doi": "10.1109/COMST.2025.3623258"
+  },
+  {
+    "year": 2026,
+    "title": "Web 3.0: A Survey on the Architectures, Enabling Technologies, Applications, and Challenges",
+    "authors": "Bin Cao, Shaohe Xiao, Long Shi, Taotao Wang, Jinyu Chen, Jiaheng Wang, Xintong Ling, Hao Xu, Shengli Zhang, Erwu Liu",
+    "venue": "IEEE Communications Surveys & Tutorials, vol. 28, pp. 841-881",
+    "doi": "10.1109/COMST.2025.3589692"
+  },
+  {
+    "year": 2026,
+    "title": "Toward Quantum-Native Communication Systems: State-of-the-Art, Trends, and Challenges",
+    "authors": "Xiaolin Zhou, Anqi Shen, Shuyan Hu, Wei Ni, Xin Wang, Ekram Hossain",
+    "venue": "IEEE Communications Surveys & Tutorials, vol. 28, pp. 1436-1482",
+    "doi": "10.1109/COMST.2025.3575842"
+  },
+  {
+    "year": 2026,
+    "title": "Efficient Federated Edge Learning with ADMM Over RIS Empowered Wireless Channels",
+    "authors": "Heju Li, Rui Wang, Jun Wu, Jianquan Liu, Ying Li",
+    "venue": "IEEE Transactions on Cognitive Communications and Networking, vol. 12, pp. 1107-1124",
+    "doi": "10.1109/TCCN.2025.3578472"
   },
   {
     "year": 2025,
@@ -73,7 +115,7 @@
     "year": 2025,
     "title": "Decentralized Federated Learning via Dynamic Topologies and MIMO Over-the-Air Computation",
     "authors": "Hexin Feng, Rui Wang, Erwu Liu, Wei Ni",
-    "venue": "2025 IEEE/CIC International Conference on Communications in China (ICCC Workshops), pp. 1-6",
+    "venue": "2025 IEEE/CIC International Conference on Communications in China (ICCC), pp. 1-6",
     "doi": "10.1109/ICCC65529.2025.11148660"
   },
   {
@@ -99,44 +141,23 @@
   },
   {
     "year": 2025,
-    "title": "Web 3.0: A Survey on the Architectures, Enabling Technologies, Applications, and Challenges",
-    "authors": "Bin Cao, Shaohe Xiao, Long Shi, Taotao Wang, Jinyu Chen, Jiaheng Wang, Xintong Ling, Hao Xu, Shengli Zhang, Erwu Liu",
-    "venue": "IEEE Communications Surveys & Tutorials",
-    "doi": "10.1109/COMST.2025.3589692"
-  },
-  {
-    "year": 2025,
-    "title": "Towards Quantum-Native Communication Systems: State-of-the-Art, Trends, and Challenges",
-    "authors": "Xiaolin Zhou, Anqi Shen, Shuyan Hu, Wei Ni, Xin Wang, Ekram Hossain",
-    "venue": "IEEE Communications Surveys & Tutorials",
-    "doi": "10.1109/COMST.2025.3575842"
-  },
-  {
-    "year": 2025,
     "title": "Joint Cramér-Rao Bound and Communication Rate Optimization for Dual-Functional Radar-Communication Systems with Target DoA Estimation Errors",
     "authors": "Zhe Xing, Xiaodong Zhao, Menglong Wu, Rui Wang, Xiaojun Yuan",
-    "venue": "IEEE Transactions on Wireless Communications",
+    "venue": "IEEE Transactions on Wireless Communications, vol. 24, no. 12, pp. 9911-9927",
     "doi": "10.1109/TWC.2025.3575651"
-  },
-  {
-    "year": 2025,
-    "title": "Efficient Federated Edge Learning with ADMM Over RIS Empowered Wireless Channels",
-    "authors": "Heju Li, Rui Wang, Jun Wu, Jianquan Liu, Ying Li",
-    "venue": "IEEE Transactions on Cognitive Communications and Networking",
-    "doi": "10.1109/TCCN.2025.3578472"
   },
   {
     "year": 2025,
     "title": "Statistical Channel Modeling and Estimation for PMMA-Based Vehicle-Mounted Magnetic Communication Systems",
     "authors": "Mingtao Chen, Xinyu Qu, Erwu Liu, Wei Ni, Qingming Long, Honglei Ma",
-    "venue": "IEEE Transactions on Vehicular Technology",
+    "venue": "IEEE Transactions on Vehicular Technology, vol. 74, no. 11, pp. 18196-18201",
     "doi": "10.1109/TVT.2025.3574843"
   },
   {
     "year": 2025,
     "title": "Indoor Localization Fusing Inertial Navigation With Monocular Depth Estimation in Federated Learning Framework With Data Heterogeneity",
     "authors": "Jie Wang, Xiaolong Wu, Jindong Tian, Erwu Liu, Yebo Wu, Rucong Lai, Yong Tian",
-    "venue": "IEEE Transactions on Instrumentation and Measurement, vol. 74, pp. 1-13",
+    "venue": "IEEE Transactions on Instrumentation and Measurement, vol. 74, art. no. 2529213, pp. 1-13",
     "doi": "10.1109/TIM.2025.3568978"
   },
   {
@@ -182,6 +203,20 @@
     "doi": "10.1109/TVT.2024.3457241"
   },
   {
+    "year": 2025,
+    "title": "Reconfigurable Intelligent Surface-Assisted Wireless Federated Learning with Imperfect Aggregation",
+    "authors": "Pengcheng Sun, Erwu Liu, Wei Ni, Rui Wang, Zhe Xing, Bofeng Li, Abbas Jamalipour",
+    "venue": "IEEE Transactions on Communications, vol. 73, no. 2, pp. 1058-1071",
+    "doi": "10.1109/TCOMM.2024.3450605"
+  },
+  {
+    "year": 2025,
+    "title": "When Web 3.0 Meets Reality: A Hyperdimensional Fractal Polytope P2P Ecosystem",
+    "authors": "Hao Xu, Yunqing Sun, Xiaoshuai Zhang, Erwu Liu, Chih-Lin I",
+    "venue": "IEEE Network, vol. 39, no. 1, pp. 157-164",
+    "doi": "10.1109/MNET.2024.3425223"
+  },
+  {
     "year": 2024,
     "title": "BeACONS: A Blockchain-enabled Authentication and Communications Network for Scalable IoV",
     "authors": "Qi Shi, Jingyi Sun, Hanwei Fu, Peizhe Fu, Jiayuan Ma, Hao Xu, Erwu Liu",
@@ -204,13 +239,6 @@
   },
   {
     "year": 2024,
-    "title": "Reconfigurable Intelligent Surface-Assisted Wireless Federated Learning with Imperfect Aggregation",
-    "authors": "Pengcheng Sun, Erwu Liu, Wei Ni, Rui Wang, Zhe Xing, Bofeng Li, Abbas Jamalipour",
-    "venue": "IEEE Transactions on Communications",
-    "doi": "10.1109/TCOMM.2024.3450605"
-  },
-  {
-    "year": 2024,
     "title": "OFDMA-F²L: Federated Learning With Flexible Aggregation Over an OFDMA Air Interface",
     "authors": "Shuyan Hu, Xin Yuan, Wei Ni, Xin Wang, Ekram Hossain, H. Vincent Poor",
     "venue": "IEEE Transactions on Wireless Communications, vol. 23, no. 7, pp. 6793-6807",
@@ -220,15 +248,8 @@
     "year": 2024,
     "title": "Fast-Fading Channel and Power Optimization of the Magnetic Inductive Cellular Network",
     "authors": "Honglei Ma, Erwu Liu, Zhijun Fang, Rui Wang, Yongbin Gao, Wenjun Yu, Dongming Zhang",
-    "venue": "IEEE Transactions on Wireless Communications",
+    "venue": "IEEE Transactions on Wireless Communications, vol. 23, no. 10, pp. 15096-15111",
     "doi": "10.1109/TWC.2024.3425473"
-  },
-  {
-    "year": 2024,
-    "title": "When Web 3.0 Meets Reality: A Hyperdimensional Fractal Polytope P2P Ecosystems",
-    "authors": "Hao Xu, Yunqing Sun, Xiaoshuai Zhang, Erwu Liu, Chih-Lin I",
-    "venue": "IEEE Network, pp. 1-8",
-    "doi": "10.1109/MNET.2024.3425223"
   },
   {
     "year": 2024,
@@ -241,7 +262,7 @@
     "year": 2024,
     "title": "Balancing Performance and Cost for Two-Hop Cooperative Communications: Stackelberg Game and Distributed Multi-Agent Reinforcement Learning",
     "authors": "Yuanzhe Geng, Erwu Liu, Wei Ni, Rui Wang, Yan Liu, Hao Xu, Chen Cai, Abbas Jamalipour",
-    "venue": "IEEE Transactions on Cognitive Communications and Networking",
+    "venue": "IEEE Transactions on Cognitive Communications and Networking, vol. 10, no. 6, pp. 2193-2208",
     "doi": "10.1109/TCCN.2024.3400516"
   },
   {
@@ -262,7 +283,7 @@
     "year": 2024,
     "title": "The Electric Field DOA Estimation of Low Frequency with Small Aperture Arrays via the Sparse Bayesian Focusing Method",
     "authors": "Qixin Guo, Liang Yu, Rui Wang, Yifan Diao, Weikang Jiang, Wancheng Ge",
-    "venue": "IEEE Sensors Journal",
+    "venue": "IEEE Sensors Journal, vol. 24, no. 11, pp. 17941-17953",
     "doi": "10.1109/JSEN.2024.3387581"
   },
   {
