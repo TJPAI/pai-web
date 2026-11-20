@@ -1,6 +1,27 @@
 [
   {
     "year": 2026,
+    "title": "Periodically Anchored Gradient Tracking for Over-the-Air Decentralized Federated Learning with Finite-Time Consensus",
+    "authors": "Hexin Feng, Rui Wang, Erwu Liu, Wei Ni, Abbas Jamalipour",
+    "venue": "IEEE Transactions on Wireless Communications",
+    "doi": "10.1109/TWC.2026.3747782"
+  },
+  {
+    "year": 2026,
+    "title": "Task-Oriented Framework for Communication-Efficient Federated Learning: From Isolated Optimization to Holistic Synergy",
+    "authors": "Fan Pan, Yan Liu, Erwu Liu, Arumugam Nallanathan",
+    "venue": "IEEE Internet of Things Magazine",
+    "doi": "10.1109/MIOT.2026.3707892"
+  },
+  {
+    "year": 2026,
+    "title": "Full Domain Resource Programming in Wideband MIMO Systems: A Step Towards 6G",
+    "authors": "Xuanrui Li, Zhongxiang Wei, Junyuan Wang, Wen Ji, Erwu Liu",
+    "venue": "2026 IEEE International Conference on Communications Workshops (ICC Workshops), pp. 1-6",
+    "doi": "10.1109/ICCWorkshops63917.2026.11586270"
+  },
+  {
+    "year": 2026,
     "title": "A Survey of Decentralized Physical Infrastructure Network, Research Directions, and Open Challenges",
     "authors": "Ming Jiang, Erwu Liu, Xinyu Qu, Wei Ni, Zhongxiang Wei, Ekram Hossain",
     "venue": "IEEE Communications Surveys & Tutorials, vol. 28, pp. 7213-7249",
