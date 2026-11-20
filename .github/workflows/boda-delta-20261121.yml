@@ -1,0 +1,66 @@
+name: Build verified Boda delta 2026-11-21
+on:
+  push:
+    branches: [release/boda-incremental-20261121-865a-to-83df]
+    paths: [.github/workflows/boda-delta-20261121.yml]
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build both Boda production packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "83df6e3ae33a1e4c56c6d19f539ea051644e175d"
+          git worktree add --detach ../pai-web-baseline 865a07102035e2bfd3f65a9ee6a7ca97bc4a1e3f
+          python ../pai-web-baseline/tools/package_boda.py --output "$RUNNER_TEMP/baseline-boda.zip"
+          python tools/package_boda.py --output "$RUNNER_TEMP/current-boda.zip"
+      - name: Compare final rendered production artifacts, package only changed files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, os, zipfile
+          from pathlib import Path
+          oldpath=Path(os.environ['RUNNER_TEMP'])/'baseline-boda.zip'
+          newpath=Path(os.environ['RUNNER_TEMP'])/'current-boda.zip'
+          result=Path('PAI-Web-Boda-Incremental-865a0710-to-83df6e3a.zip')
+          manifest=Path('PAI-Web-Boda-Incremental-MANIFEST.txt')
+          with zipfile.ZipFile(oldpath) as old, zipfile.ZipFile(newpath) as new:
+              oldnames=set(old.namelist())
+              newnames=set(new.namelist())
+              changed=sorted(n for n in newnames if n not in oldnames or hashlib.sha256(new.read(n)).digest()!=hashlib.sha256(old.read(n)).digest())
+              removed=sorted(oldnames-newnames)
+              if removed:
+                  raise RuntimeError('Unsafe incremental release: files removed from target; use full package. Removed: '+', '.join(removed))
+              if not changed: raise RuntimeError('No changed production files found')
+              with zipfile.ZipFile(result,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+                  for name in changed: z.writestr(name,new.read(name))
+              with zipfile.ZipFile(result) as z:
+                  assert z.testzip() is None
+                  assert set(z.namelist())==set(changed)
+              notes=['PAI-Web Boda incremental production package',
+                     'Source baseline SHA: 865a07102035e2bfd3f65a9ee6a7ca97bc4a1e3f',
+                     'Target site SHA: 83df6e3ae33a1e4c56c6d19f539ea051644e175d',
+                     'Production package comparison: rendered ZIP vs rendered ZIP, not source-file guesses.',
+                     'Apply only if Boda current deployed site is exactly this baseline.',
+                     'Backup target web root before upload; overwrite listed files preserving paths.',
+                     'Do not delete any unlisted files. Do not overwrite platform-owned index.jsp.',
+                     f'Changed files: {len(changed)}',f'Full target files: {len(newnames)}','', 'Files to upload:', *('- '+n for n in changed),'']
+              manifest.write_text('\n'.join(notes),encoding='utf-8')
+              print(manifest.read_text())
+          PY
+      - name: Upload verified incremental ZIP and manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: pai-web-boda-incremental-865a-to-83df
+          path: |
+            PAI-Web-Boda-Incremental-865a0710-to-83df6e3a.zip
+            PAI-Web-Boda-Incremental-MANIFEST.txt
+          if-no-files-found: error
+          retention-days: 30
