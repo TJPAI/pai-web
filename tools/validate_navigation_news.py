@@ -53,7 +53,7 @@ for path in ('publications.html','en/publications.html'):
     assert '2026-10' in a[0] and '2026-09' in a[0]
     assert ('(latest updates)' if path.startswith('en/') else '（最新动态）') in js
     if path.startswith('en/'):
-        assert 'High-Level Expert Panel' in a[0]
+        assert 'High-Level Expert Panel' in pane
         assert 'High-Level Expert Group' not in pane
         assert 'successful large-scale mine trials.' in html
     else:
