@@ -20,6 +20,78 @@ for item in items:
 def esc(value):
     return escape(str(value), quote=True)
 
+# Journal-title abbreviations follow standard IEEE bibliographic practice.
+JOURNAL_ABBREVIATIONS = {
+    'IEEE Communications Surveys & Tutorials': 'IEEE Commun. Surveys Tuts.',
+    'IEEE Transactions on Vehicular Technology': 'IEEE Trans. Veh. Technol.',
+    'IEEE Transactions on Network Science and Engineering': 'IEEE Trans. Netw. Sci. Eng.',
+    'IEEE Communications Letters': 'IEEE Commun. Lett.',
+    'IEEE Transactions on Cognitive Communications and Networking': 'IEEE Trans. Cogn. Commun. Netw.',
+    'IEEE Transactions on Wireless Communications': 'IEEE Trans. Wireless Commun.',
+    'IEEE Transactions on Information Forensics and Security': 'IEEE Trans. Inf. Forensics Security',
+    'IEEE Transactions on Instrumentation and Measurement': 'IEEE Trans. Instrum. Meas.',
+    'IEEE Transactions on Mobile Computing': 'IEEE Trans. Mobile Comput.',
+    'IEEE Wireless Communications Letters': 'IEEE Wireless Commun. Lett.',
+    'IEEE Transactions on Signal Processing': 'IEEE Trans. Signal Process.',
+    'IEEE Transactions on Intelligent Transportation Systems': 'IEEE Trans. Intell. Transp. Syst.',
+    'IEEE Transactions on Communications': 'IEEE Trans. Commun.',
+    'IEEE Network': 'IEEE Netw.',
+    'IEEE Internet of Things Journal': 'IEEE Internet Things J.',
+    'IEEE Access': 'IEEE Access',
+    'IEEE Sensors Journal': 'IEEE Sensors J.',
+    'IET Blockchain': 'IET Blockchain',
+    'IEEE Transactions on Industrial Informatics': 'IEEE Trans. Ind. Informat.',
+    'IEEE Vehicular Technology Magazine': 'IEEE Veh. Technol. Mag.',
+    'IEEE Journal on Selected Areas in Communications': 'IEEE J. Sel. Areas Commun.',
+    'IEEE Wireless Communications': 'IEEE Wireless Commun.',
+    'IEEE Journal on Selected Topics in Signal Processing': 'IEEE J. Sel. Topics Signal Process.',
+    'IEEE Transactions on Human-Machine Systems': 'IEEE Trans. Human-Mach. Syst.',
+}
+CONFERENCE_ABBREVIATIONS = {
+    '2025 IEEE/CIC International Conference on Communications in China (ICCC Workshops)': 'IEEE/CIC Int. Conf. Commun. China (ICCC Workshops)',
+    '2025 IEEE Global Blockchain Conference (GBC)': 'IEEE Global Blockchain Conf. (GBC)',
+    '2024 International Conference on Future Communications and Networks (FCN), Valletta, Malta': 'Int. Conf. Future Commun. Netw. (FCN), Valletta, Malta',
+    '2023 IEEE Conference on Antenna Measurements and Applications (CAMA), Genoa, Italy': 'IEEE Conf. Antenna Meas. Appl. (CAMA), Genoa, Italy',
+    '2022 IEEE 95th Vehicular Technology Conference (VTC2022-Spring)': 'IEEE 95th Veh. Technol. Conf. (VTC2022-Spring)',
+    'ICC 2022 - IEEE International Conference on Communications': 'IEEE Int. Conf. Commun. (ICC)',
+}
+
+def ieee_author(full_name):
+    tokens = full_name.strip().split()
+    assert len(tokens) >= 2, ('unrecognized author', full_name)
+    initials = ''.join(token[0].upper() + '. ' for token in tokens[:-1])
+    return initials + tokens[-1]
+
+def ieee_authors(names):
+    authors = [ieee_author(name) for name in names.split(', ')]
+    if len(authors) == 1:
+        return authors[0]
+    if len(authors) == 2:
+        return authors[0] + ' and ' + authors[1]
+    return ', '.join(authors[:-1]) + ', and ' + authors[-1]
+
+def ieee_reference(pub):
+    venue = pub['venue']
+    # Remove machine-readable volume/pages fields without guessing absent fields.
+    m = re.search(r', (?:vol\.|pp\.)', venue)
+    base = venue[:m.start()] if m else venue
+    details = venue[m.start()+2:] if m else ''
+    if base in JOURNAL_ABBREVIATIONS:
+        publication = '<em>' + esc(JOURNAL_ABBREVIATIONS[base]) + '</em>'
+    else:
+        assert base in CONFERENCE_ABBREVIATIONS, ('unknown venue', pub['doi'], base)
+        publication = 'in <em>Proc. ' + esc(CONFERENCE_ABBREVIATIONS[base]) + '</em>'
+    # Apply standard IEEE volume, issue, page-range and year punctuation.
+    details = re.sub(r'(?<=\d)-(?=\d)', '–', details)
+    parts = [
+        esc(ieee_authors(pub['authors'])),
+        '“' + esc(pub['title'].rstrip(' .')) + ',”',
+        publication + (', ' + esc(details) if details else ''),
+        str(pub['year']),
+        'doi: ' + esc(pub['doi']),
+    ]
+    return ', '.join(parts[:-1]) + ', ' + parts[-1] + '.'
+
 for language, page in (('zh', 'publications.html'), ('en', 'en/publications.html')):
     en = language == 'en'
     parts = ['<div data-publications data-publications-static="1">', '<!-- publications:start -->']
@@ -36,7 +108,7 @@ for language, page in (('zh', 'publications.html'), ('en', 'en/publications.html
             key = esc(pub.get('doi') or pub['title'])
             extra = index >= VISIBLE_DEFAULT
             class_name = 'pub is-collapsed' if extra else 'pub'
-            parts.append(f'<article class="{class_name}" data-pub-extra="{int(extra)}" data-publication-key="{key}"><h3 class="title-item">{esc(pub["title"])}</h3><p class="pub-authors">{esc(pub["authors"])}</p><p class="pub-venue">{esc(pub["venue"])} · {year}</p>')
+            parts.append(f'<article class="{class_name}" data-pub-extra="{int(extra)}" data-publication-key="{key}"><p class="pub-reference">{ieee_reference(pub)}</p>')
             if pub.get('doi'):
                 doi = quote(pub['doi'].strip(), safe="/!~*'()")
                 parts.append(f'<div class="pub-actions"><a href="https://doi.org/{esc(doi)}" target="_blank" rel="noopener noreferrer">DOI ↗</a></div>')
