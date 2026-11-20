@@ -3,6 +3,17 @@
   "default_visible": 5,
   "items": [
     {
+      "date": "2026-11",
+      "zh": {
+        "text": "刘儿兀教授获2026年IEEE区块链技术社区全球学术卓越奖",
+        "url": "https://cn.ieee.org/2026/11/18/3574/"
+      },
+      "en": {
+        "text": "Erwu Liu receives 2026 IEEE BCTC Global Academic Excellence Award",
+        "url": "https://blockchain.ieee.org/about/"
+      }
+    },
+    {
       "date": "2026-09",
       "zh": {
         "text": "Ming Jiang 等 DePIN 综述发表于 IEEE COMST",
