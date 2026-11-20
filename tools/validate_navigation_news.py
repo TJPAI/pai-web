@@ -48,9 +48,9 @@ for path in ('publications.html','en/publications.html'):
     a=pane.split('<div class="results-news-list results-news-extra"')
     assert len(a)==2
     assert a[0].count('class="results-news-row')==5,(path,'default rows')
-    assert a[1].count('class="results-news-row')==41,(path,'extra rows')
+    assert a[1].count('class="results-news-row')==42,(path,'extra rows')
     assert pane.index('aria-expanded="false"')<pane.index('results-news-extra')
-    assert '2026-09' in a[0] and '2026-05' in a[0]
+    assert '2026-10' in a[0] and '2026-09' in a[0]
     assert ('(latest updates)' if path.startswith('en/') else '（最新动态）') in js
     if path.startswith('en/'):
         assert 'High-Level Expert Panel' in a[0]

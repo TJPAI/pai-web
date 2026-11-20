@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 data = json.loads((ROOT / "data/latest-news.json").read_text(encoding="utf-8"))
 items = data["items"]
 visible = data["default_visible"]
-assert visible == 5 and len(items) == 46
+assert visible == 5 and len(items) == 47
 assert len({(x["date"], x["zh"]["text"]) for x in items}) == len(items)
 assert all(re.fullmatch(r"[0-9]{4}-[0-9]{2}", x["date"]) for x in items)
 assert [x["date"] for x in items] == sorted((x["date"] for x in items), reverse=True)

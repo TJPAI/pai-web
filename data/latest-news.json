@@ -14,6 +14,17 @@
       }
     },
     {
+      "date": "2026-10",
+      "zh": {
+        "text": "Hexin Feng 等去中心化联邦学习梯度跟踪研究发表于 IEEE TWC",
+        "url": "https://doi.org/10.1109/TWC.2026.3747782"
+      },
+      "en": {
+        "text": "Hexin Feng et al. publish gradient-tracking study on decentralized federated learning in IEEE TWC",
+        "url": "https://doi.org/10.1109/TWC.2026.3747782"
+      }
+    },
+    {
       "date": "2026-09",
       "zh": {
         "text": "Ming Jiang 等 DePIN 综述发表于 IEEE COMST",
