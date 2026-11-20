@@ -37,6 +37,7 @@ JOURNAL_ABBREVIATIONS = {
     'IEEE Transactions on Communications': 'IEEE Trans. Commun.',
     'IEEE Network': 'IEEE Netw.',
     'IEEE Internet of Things Journal': 'IEEE Internet Things J.',
+    'IEEE Internet of Things Magazine': 'IEEE Internet Things Mag.',
     'IEEE Access': 'IEEE Access',
     'IEEE Sensors Journal': 'IEEE Sensors J.',
     'IET Blockchain': 'IET Blockchain',
@@ -55,6 +56,7 @@ CONFERENCE_ABBREVIATIONS = {
     '2023 IEEE Conference on Antenna Measurements and Applications (CAMA), Genoa, Italy': 'IEEE Conf. Antenna Meas. Appl. (CAMA), Genoa, Italy',
     '2022 IEEE 95th Vehicular Technology Conference (VTC2022-Spring)': 'IEEE 95th Veh. Technol. Conf. (VTC2022-Spring)',
     'ICC 2022 - IEEE International Conference on Communications': 'IEEE Int. Conf. Commun. (ICC)',
+    '2026 IEEE International Conference on Communications Workshops (ICC Workshops)': 'IEEE Int. Conf. Commun. Workshops (ICC Workshops)',
 }
 
 def ieee_author(full_name):
