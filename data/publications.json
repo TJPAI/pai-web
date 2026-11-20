@@ -10,7 +10,7 @@
     "year": 2026,
     "title": "Effective Range and Optimal Frequency of Through-the-Earth Magnetic Induction Communication",
     "authors": "Honglei Ma, Erwu Liu, Wei Ni, Jun Zhu, Zhijun Fang, Rui Wang, Yongbin Gao, Xinyu Qu",
-    "venue": "IEEE Transactions on Vehicular Technology",
+    "venue": "IEEE Transactions on Vehicular Technology, pp. 1-6",
     "doi": "10.1109/TVT.2026.3721188",
     "publication_status": "early_access"
   },
@@ -31,7 +31,7 @@
   {
     "year": 2026,
     "title": "Hierarchical Attention-Driven Multi-Agent Reinforcement Learning for Resource Allocation in Cell-Free Massive MIMO With Integrated Sensing and Communication",
-    "authors": "Ming Jiang, Erwu Liu, Wei Ni, Shuyan Hu, Lingzhi Xia, Yuanzhe Geng, Dusit Niyato, Abbas Jamalipour",
+    "authors": "Ming Jiang, Erwu Liu, Wei Ni, Rui Wang, Shuyan Hu, Lingzhi Xia, Yuanzhe Geng, Dusit Niyato, Abbas Jamalipour",
     "venue": "IEEE Transactions on Cognitive Communications and Networking, vol. 12, pp. 6955-6969",
     "doi": "10.1109/TCCN.2026.3676012"
   },
