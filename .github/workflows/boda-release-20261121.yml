@@ -1,0 +1,28 @@
+name: Build Boda production ZIP 2026-11-21
+on:
+  push:
+    branches:
+      - release/boda-package-20261121-83df6e3
+    paths:
+      - .github/workflows/boda-release-20261121.yml
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact site release
+        uses: actions/checkout@v4
+      - name: Validate source revision
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD^)" = "83df6e3ae33a1e4c56c6d19f539ea051644e175d"
+      - name: Build verified Boda server ZIP
+        run: python tools/package_boda.py --output pai-web-boda-production-20261121-83df6e3.zip
+      - name: Upload Boda production package
+        uses: actions/upload-artifact@v4
+        with:
+          name: pai-web-boda-production-20261121-83df6e3
+          path: pai-web-boda-production-20261121-83df6e3.zip
+          if-no-files-found: error
+          retention-days: 30
