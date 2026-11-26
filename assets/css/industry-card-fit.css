@@ -1,7 +1,7 @@
 /* Preserve original grid, gaps and typography. No text clipping on any card.
    New seven cards alone use the strict line-count layout; legacy copy is unchanged. */
-.page-results .industry-six-rows .industry-card .title-item,
-.page-results .industry-six-rows .industry-card .industry-summary{
+html[lang] .page-results .industry-six-rows .industry-card .title-item,
+html[lang] .page-results .industry-six-rows .industry-card .industry-summary{
   display:block!important;
   overflow:visible!important;
   text-overflow:clip!important;
@@ -13,7 +13,7 @@
   -webkit-line-clamp:unset!important;
   line-clamp:unset!important;
 }
-.page-results .industry-six-rows .industry-card .industry-meta{
+html[lang] .page-results .industry-six-rows .industry-card .industry-meta{
   overflow:visible!important;
   text-overflow:clip!important;
   white-space:normal!important;
