@@ -5,6 +5,7 @@ on:
     paths:
       - 'tools/verify_industry_card_lines.cjs'
       - 'tools/validate_industry_enquiries.py'
+      - 'tools/validate_navigation_news.py'
       - 'assets/css/industry-card-fit.css'
       - 'publications.html'
       - 'en/publications.html'
@@ -14,6 +15,7 @@ on:
     paths:
       - 'tools/verify_industry_card_lines.cjs'
       - 'tools/validate_industry_enquiries.py'
+      - 'tools/validate_navigation_news.py'
       - 'assets/css/industry-card-fit.css'
       - 'publications.html'
       - 'en/publications.html'
@@ -28,6 +30,7 @@ jobs:
       - name: Check source content and production build
         run: |
           python tools/validate_industry_enquiries.py
+          python tools/validate_navigation_news.py
           python tools/normalize_asset_versions.py --check
           python tools/package_boda.py --output /tmp/industry-boda-qa.zip
       - name: Install Playwright
