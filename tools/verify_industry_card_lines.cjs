@@ -15,11 +15,12 @@ const { pathToFileURL } = require("node:url");
      const page=await browser.newPage({viewport:{width,height:900},deviceScaleFactor:1});
      await page.goto(pathToFileURL(path.resolve(rel)).href,{waitUntil:"domcontentloaded"});
      const out=await page.locator(".page-results .industry-six-rows .industry-card").evaluateAll((cards,args)=>{
-      const [maxSummary,hideMeta]=args,fail=[];const eps=0.15;
+      const [maxSummary,hideMeta,mobile]=args,fail=[];const eps=0.15;
       function lines(element){
        const r=element.getBoundingClientRect(),h=parseFloat(getComputedStyle(element).lineHeight);
        return h? r.height/h : -1;
       }
+      if(mobile && cards.length>=2){const a=cards[0].getBoundingClientRect(),b=cards[1].getBoundingClientRect();if(Math.abs(a.top-b.top)>2||b.left<=a.left||b.left<a.right-1)fail.push('mobile grid must have two columns');}
       for(const card of cards){
        const id=card.id, title=card.querySelector(".title-item"),summary=card.querySelector(".industry-summary"),meta=[...card.querySelectorAll(".industry-meta")];
        if(!title||!summary||meta.length!==2){fail.push(id+": missing title, summary or metadata");continue}
@@ -35,7 +36,7 @@ const { pathToFileURL } = require("node:url");
        }
       }
       return {count:cards.length,fail};
-     },[lang==="en" && width>768 ? 2 : limit,lang==="en" && width<=768]);
+     },[lang==="en" && width>768 ? 2 : limit,lang==="en" && width<=768,width<=768]);
      if(out.count!==21)violations.push(browserName+"/"+lang+"/"+width+": expected 21 cards, got "+out.count);
      violations.push(...out.fail.map(x=>browserName+"/"+lang+"/"+width+": "+x));
      console.log(browserName,lang,width,"cards",out.count,"issues",out.fail.length);
