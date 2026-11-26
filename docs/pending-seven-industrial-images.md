@@ -1,10 +1,10 @@
-# Seven new industrial achievements — pending image assets
+# Seven industrial achievements — image intake verified
 
-This draft adds achievements 15–21 immediately following DWELT on both bilingual Outputs pages.
+The seven bilingual industrial achievement cards (15–21) are immediately after DWELT on `publications.html` and `en/publications.html`.
 
-Seven user-supplied graphics must be placed under `assets/images/technology/` **before merge**:
+## Seven original JPEG graphics
 
-| No. | Asset |
+| No. | Asset in `assets/images/technology/` |
 | --- | --- |
 | 15 | uwb-nearlink-direction-finding-radar-sensing.jpg |
 | 16 | short-range-wireless-ranging-localization.jpg |
@@ -14,15 +14,22 @@ Seven user-supplied graphics must be placed under `assets/images/technology/` **
 | 20 | autonomous-drone-navigation-obstacle-avoidance.jpg |
 | 21 | autonomous-drone-industrial-inspection.jpg |
 
-All seven images were provided as the original JPEG uploads in the conversation. This GitHub PR intentionally stays draft until the original user-provided images are committed; the current branch only contains page content and references.
+All seven image files were committed to PR #172 by Muse on 2026-11-27. Original JPEG bytes are preserved; the readable English filenames are referenced consistently in the Chinese and English HTML.
 
-Before merging: verify bilingual image paths, all 7 contact links, card order, mobile layout, packaging manifest, and no publication/award regression. The Boda production baseline confirmed by user is `5729db3c`.
+## Two existing image replacements
 
-## Two existing technology image replacements (2026-11-27)
+- `assets/images/technology/multimodal-embodied-ai-brain.jpg` — replacement JPEG, 187,410 bytes, original SHA-256 prefix `b1c24bc3007bcde1`
+- `assets/images/technology/digital-twin-ai-platform.jpg` — replacement JPEG, 169,793 bytes, original SHA-256 prefix `d800bd8f17a21ba2`
 
-Use user-uploaded JPEG bytes, unchanged, to replace the existing assets at these exact paths. The original `.jpg` extensions should stay to avoid HTML/CSS changes; JPG and JPEG are the same JPEG image format. Do not reconvert to WebP or recompress.
+Both replacements are committed in PR #172 and retain the existing website paths; JPG and JPEG use the same image encoding.
 
-- `assets/images/technology/multimodal-embodied-ai-brain.jpg` ← `48EC1402-BB77-4C25-8C7C-7A9AFE5D2BB1_compressed_5(1).jpeg` (187410 bytes, SHA-256 begins `b1c24bc3007bcde1`)
-- `assets/images/technology/digital-twin-ai-platform.jpg` ← `3F2534EC-168D-4CE5-B87F-EF20DE85875C_compressed(1).jpeg` (169793 bytes, SHA-256 begins `d800bd8f17a21ba2`)
+## Verification checklist
 
-A verified path-preserving ZIP is `PAI-Web-2-Replacement-Original-JPEG-Images.zip` in the conversation. This commit documents the change; binary image replacements must still be uploaded into the draft branch before merge. Do not mistakenly claim repository image bytes changed yet.
+- [x] 7 additional images committed under the correct paths
+- [x] 2 existing images replaced
+- [x] 21 Chinese and 21 English industrial cards, with all seven new cards immediately after DWELT
+- [x] Filenames and image references correspond in both HTML pages
+- [x] Stable production baseline confirmed by the user: `5729db3c`
+- [ ] GitHub Pages deployment and production packaging validation (after merge)
+
+No JPEG was converted to WebP. This file records the asset handoff and checks; it is not an instruction to block merging once actual files are present.
