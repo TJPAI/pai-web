@@ -7,6 +7,13 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 FULL_ENGLISH = {
+    'uwb-nearlink': 'UWB & NearLink Direction Finding and Radar Sensing',
+    'short-range-ranging': 'Short-Range Wireless Ranging and Localization',
+    'nearlink-protocol': 'NearLink Wireless Protocol Stack',
+    'nearlink-integrated': 'NearLink Communication and Positioning Technologies',
+    'drone-vision-language': 'Vision-Language Drone Target Discovery',
+    'drone-navigation': 'Autonomous Drone Navigation and Obstacle Avoidance',
+    'drone-industrial-inspection': 'Autonomous Drone Inspection in Industrial Environments',
     'port': 'Drone-Based Port Vehicle Inventory System',
     'digital-twin-ai': 'Complex Equipment Simulation and Digital Twin AI Platform',
     'embodied-brain': 'Multimodal Panoramic Perception Embodied AI Brain',
