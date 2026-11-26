@@ -55,7 +55,11 @@ for path in ('publications.html','en/publications.html'):
     if path.startswith('en/'):
         assert 'High-Level Expert Panel' in pane
         assert 'High-Level Expert Group' not in pane
-        assert 'successful large-scale mine trials.' in html
+        # Validate the relevant achievement, not an obsolete editorial sentence.
+        earth = html.split('<article class="industry-card" id="tech-earth">', 1)[1].split('</article>', 1)[0]
+        summary = earth.split('<p class="industry-summary">', 1)[1].split('</p>', 1)[0]
+        assert 'magnetic' in summary.lower() and 'two-way' in summary.lower()
+        assert 'mine-tested' in summary.lower() or ('mine' in summary.lower() and 'trial' in summary.lower()), (path, 'through-earth mine validation')
     else:
         assert '和IET首席执行官Nigel Fine共同宣布' not in pane
         assert '《IET Blockchain》期刊正式启动' in pane
