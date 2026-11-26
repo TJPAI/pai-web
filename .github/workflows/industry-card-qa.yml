@@ -1,7 +1,16 @@
 name: Bilingual industry card typography QA
 on:
   push:
-    branches: [review/industry-card-uniform-lines-20261127]
+    branches: [main, 'review/industry-*']
+    paths:
+      - 'tools/verify_industry_card_lines.cjs'
+      - 'tools/validate_industry_enquiries.py'
+      - 'assets/css/industry-card-fit.css'
+      - 'publications.html'
+      - 'en/publications.html'
+      - '.github/workflows/industry-card-qa.yml'
+  pull_request:
+    branches: [main]
     paths:
       - 'tools/verify_industry_card_lines.cjs'
       - 'tools/validate_industry_enquiries.py'
