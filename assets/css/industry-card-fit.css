@@ -30,3 +30,41 @@ html[lang] .page-results .industry-six-rows .industry-card .industry-meta{
 @media(max-width:768px){
   html[lang="en"] .page-results .industry-six-rows .industry-card .industry-meta{display:none!important}
 }
+
+/* Share each field's natural row height within the same visual card row.
+   Subgrid grows for wrapped legacy text without clipping or fixed blank lines. */
+@supports (grid-template-rows: subgrid){
+  html[lang] .page-results .industry-six-rows{
+    grid-auto-rows:auto;
+  }
+  html[lang] .page-results .industry-six-rows .industry-card{
+    display:grid;
+    grid-row:span 6;
+    grid-template-rows:subgrid;
+    row-gap:0;
+    height:auto;
+    align-items:start;
+  }
+  html[lang] .page-results .industry-six-rows .industry-card-body{
+    display:grid!important;
+    grid-row:span 5;
+    grid-template-rows:subgrid;
+    row-gap:0;
+    align-items:start;
+  }
+  html[lang] .page-results .industry-six-rows .industry-card .title-item{
+    align-self:start;
+  }
+  html[lang] .page-results .industry-six-rows .industry-card .industry-link{
+    margin-top:0!important;
+    align-self:start;
+  }
+  @media(max-width:768px){
+    html[lang="en"] .page-results .industry-six-rows .industry-card{
+      grid-row:span 4;
+    }
+    html[lang="en"] .page-results .industry-six-rows .industry-card-body{
+      grid-row:span 3;
+    }
+  }
+}
