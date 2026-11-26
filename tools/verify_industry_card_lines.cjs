@@ -23,6 +23,23 @@ const { pathToFileURL } = require("node:url");
        return h? r.height/h : -1;
       }
       if(mobile && cards.length>=2){const a=cards[0].getBoundingClientRect(),b=cards[1].getBoundingClientRect();if(Math.abs(a.top-b.top)>2||b.left<=a.left||b.left<a.right-1)fail.push('mobile grid must have two columns');}
+      // Group cards by their rendered top coordinate, not by a hard-coded column count.
+      const rows=[];
+      for(const card of cards){
+       const top=card.getBoundingClientRect().top;
+       let row=rows.find(r=>Math.abs(r.top-top)<=2);
+       if(!row){row={top,cards:[]};rows.push(row)}
+       row.cards.push(card);
+      }
+      const fields=[["image",".industry-visual"],["title",".title-item"],["summary",".industry-summary"],...(!hideMeta?[["application",".industry-meta:nth-of-type(2)"],["cooperation",".industry-meta:nth-of-type(3)"]]:[]),["enquiry",".industry-link"]];
+      for(const row of rows){
+       for(const [name,selector] of fields){
+        const elements=row.cards.map(c=>c.querySelector(selector));
+        if(elements.some(e=>!e)){fail.push("row missing "+name);continue}
+        const tops=elements.map(e=>e.getBoundingClientRect().top);
+        if(Math.max(...tops)-Math.min(...tops)>2)fail.push("row "+row.cards.map(c=>c.id).join(",")+" "+name+" vertical offset "+(Math.max(...tops)-Math.min(...tops)).toFixed(2)+"px");
+       }
+      }
       for(const card of cards){
        const id=card.id, title=card.querySelector(".title-item"),summary=card.querySelector(".industry-summary"),meta=[...card.querySelectorAll(".industry-meta")];
        if(!title||!summary||meta.length!==2){fail.push(id+": missing title, summary or metadata");continue}
