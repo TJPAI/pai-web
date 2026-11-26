@@ -2,6 +2,8 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const {chromium,webkit}=require('playwright');
 const engine=process.env.PAI_BROWSER==='webkit'?webkit:chromium;
 const BASE='https://tjpai.github.io/pai-web/',ROOT=path.resolve(__dirname,'..');
+const news=JSON.parse(fs.readFileSync(path.join(ROOT,'data/latest-news.json'),'utf8'));
+const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.length-newsDefaultVisible;
 (async()=>{
  const browser=await engine.launch({headless:true,...(engine===chromium?{args:['--no-sandbox']}:{})});
  try{
@@ -23,8 +25,8 @@ const BASE='https://tjpai.github.io/pai-web/',ROOT=path.resolve(__dirname,'..');
     assert.equal(await first.locator('.nav-updates-hint').evaluate(e=>getComputedStyle(e).color),'rgb(188, 37, 48)');
     await p.goto(BASE+lang+'publications.html');
     await p.locator('.results-news-toggle').waitFor();
-    assert.equal(await p.locator('.results-news-list:not(.results-news-extra) .results-news-row').count(),5);
-    assert.equal(await p.locator('.results-news-extra .results-news-row').count(),40);
+    assert.equal(await p.locator('.results-news-list:not(.results-news-extra) .results-news-row').count(),newsDefaultVisible);
+    assert.equal(await p.locator('.results-news-extra .results-news-row').count(),newsExpandedCount);
     assert.equal(await p.locator('.results-news-extra').isVisible(),false);
     await p.locator('.results-news-toggle').click();
     assert.equal(await p.locator('.results-news-extra').isVisible(),true);
@@ -68,7 +70,7 @@ const BASE='https://tjpai.github.io/pai-web/',ROOT=path.resolve(__dirname,'..');
      }
    }
    assert.deepEqual(errs,[]);
-   console.log('PASS',width,'both languages: menu hint + color, news 5/16 expand/collapse, overflow, no JS exceptions');
+   console.log('PASS',width,'both languages: menu hint + color, news '+newsDefaultVisible+'/'+newsExpandedCount+' expand/collapse, overflow, no JS exceptions');
    await ctx.close();
   }
  } finally{await browser.close();}
