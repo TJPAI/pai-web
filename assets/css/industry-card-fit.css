@@ -1,49 +1,32 @@
-/* Scoped industrial achievement typography. No clipping, no ellipsis.
-   Author text is abbreviated to fit: zh title <=2 / summary <=2;
-   en title <=2 / summary <=4; applications and cooperation 1 line. */
-.page-results .industry-six-rows .industry-card .title-item{
+/* Preserve original grid, gaps and typography. No text clipping on any card.
+   New seven cards alone use the strict line-count layout; legacy copy is unchanged. */
+.page-results .industry-six-rows .industry-card .title-item,
+.page-results .industry-six-rows .industry-card .industry-summary{
   display:block!important;
   overflow:visible!important;
   text-overflow:clip!important;
   white-space:normal!important;
   overflow-wrap:break-word;
-  min-height:0!important;
-  max-height:none!important;
-  -webkit-line-clamp:unset!important;
-  line-clamp:unset!important;
-  line-height:1.4!important;
-}
-.page-results .industry-six-rows .industry-card .industry-summary,
-html[lang="zh-CN"] .page-results .industry-six-rows .industry-summary,
-html[lang="en"] .page-results .industry-six-rows .industry-summary{
-  display:block!important;
-  min-height:0!important;
-  max-height:none!important;
   height:auto!important;
-  overflow:visible!important;
-  text-overflow:clip!important;
+  min-height:0!important;
+  max-height:none!important;
   -webkit-line-clamp:unset!important;
   line-clamp:unset!important;
-  line-height:1.5!important;
-  margin-bottom:5px!important;
 }
 .page-results .industry-six-rows .industry-card .industry-meta{
   overflow:visible!important;
   text-overflow:clip!important;
+  white-space:normal!important;
+  overflow-wrap:break-word;
+}
+.page-results .industry-six-rows .industry-card:is(#tech-uwb-nearlink,#tech-short-range-ranging,#tech-nearlink-protocol,#tech-nearlink-integrated,#tech-drone-vision-language,#tech-drone-navigation,#tech-drone-industrial-inspection) .industry-meta{
   white-space:nowrap!important;
   line-height:1.4!important;
-  font-size:12px;
   margin-bottom:5px!important;
 }
-.page-results .industry-six-rows .industry-card .industry-meta b{margin-right:5px}
-@media(max-width:768px){
-  .page-results .industry-six-rows{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-  .page-results .industry-six-rows .industry-card .title-item{font-size:16px!important;line-height:1.4!important}
-  .page-results .industry-six-rows .industry-card .industry-summary{font-size:12.5px!important;line-height:1.5!important}
-  .page-results .industry-six-rows .industry-card .industry-meta{font-size:11.5px!important}
-}
-
-/* English mobile: retain metadata in source, omit its layout boxes. */
+.page-results .industry-six-rows .industry-card:is(#tech-uwb-nearlink,#tech-short-range-ranging,#tech-nearlink-protocol,#tech-nearlink-integrated,#tech-drone-vision-language,#tech-drone-navigation,#tech-drone-industrial-inspection) .title-item{line-height:1.4!important}
+.page-results .industry-six-rows .industry-card:is(#tech-uwb-nearlink,#tech-short-range-ranging,#tech-nearlink-protocol,#tech-nearlink-integrated,#tech-drone-vision-language,#tech-drone-navigation,#tech-drone-industrial-inspection) .industry-summary{line-height:1.5!important;margin-bottom:5px!important}
+.page-results .industry-six-rows .industry-card:is(#tech-uwb-nearlink,#tech-short-range-ranging,#tech-nearlink-protocol,#tech-nearlink-integrated,#tech-drone-vision-language,#tech-drone-navigation,#tech-drone-industrial-inspection) .industry-meta b{margin-right:5px}
 @media(max-width:768px){
   html[lang="en"] .page-results .industry-six-rows .industry-card .industry-meta{display:none!important}
 }
