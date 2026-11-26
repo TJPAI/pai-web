@@ -6,13 +6,13 @@ Seven user-supplied graphics must be placed under `assets/images/technology/` **
 
 | No. | Asset |
 | --- | --- |
-| 15 | 65B997DD-982E-438E-B54C-3EE02C69C057_compressed.jpeg |
-| 16 | 0A8AEE37-8F5C-4BF6-B60B-7863B71102F2_compressed.jpeg |
-| 17 | ECEB1AC6-BB0B-4472-83F4-D66C997C01B5_compressed.jpeg |
-| 18 | CA47ABE7-CB8E-44BB-B3B7-1D43B83E7E96_compressed.jpeg |
-| 19 | 90D5C551-2EF7-4C32-8B12-92752A058559_compressed.jpeg |
-| 20 | 7ECCEFC8-FA17-460E-8668-21EA3BFC96C0_compressed.jpeg |
-| 21 | 1E67117D-7E9F-40E3-9C89-436B5C12A4B3_compressed(1).jpeg |
+| 15 | uwb-nearlink-direction-finding-radar-sensing.jpg |
+| 16 | short-range-wireless-ranging-localization.jpg |
+| 17 | nearlink-wireless-protocol-stack.jpg |
+| 18 | nearlink-communication-positioning.jpg |
+| 19 | vision-language-drone-target-discovery.jpg |
+| 20 | autonomous-drone-navigation-obstacle-avoidance.jpg |
+| 21 | autonomous-drone-industrial-inspection.jpg |
 
 All seven images were provided as the original JPEG uploads in the conversation. This GitHub PR intentionally stays draft until the original user-provided images are committed; the current branch only contains page content and references.
 
