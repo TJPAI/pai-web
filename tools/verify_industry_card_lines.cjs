@@ -15,7 +15,7 @@ const { pathToFileURL } = require("node:url");
      const page=await browser.newPage({viewport:{width,height:900},deviceScaleFactor:1});
      await page.goto(pathToFileURL(path.resolve(rel)).href,{waitUntil:"domcontentloaded"});
      const out=await page.locator(".page-results .industry-six-rows .industry-card").evaluateAll((cards,args)=>{
-      const [maxSummary]=args,fail=[];const eps=0.15;
+      const [maxSummary,hideMeta]=args,fail=[];const eps=0.15;
       function lines(element){
        const r=element.getBoundingClientRect(),h=parseFloat(getComputedStyle(element).lineHeight);
        return h? r.height/h : -1;
@@ -26,8 +26,8 @@ const { pathToFileURL } = require("node:url");
        const n=lines(title),d=lines(summary);
        if(n>2+eps)fail.push(id+": title "+n.toFixed(2)+" lines");
        if(d>maxSummary+eps)fail.push(id+": summary "+d.toFixed(2)+" lines");
-       for(const m of meta){const ml=lines(m);if(ml>1+eps)fail.push(id+": metadata "+ml.toFixed(2)+" lines");if(m.scrollWidth>m.clientWidth+1)fail.push(id+": metadata horizontal overflow "+m.scrollWidth+"/"+m.clientWidth)}
-       for(const el of [title,summary,...meta]){
+       for(const m of meta){if(hideMeta){if(getComputedStyle(m).display!=="none"||m.getClientRects().length!==0)fail.push(id+": mobile English metadata visible");continue}if(getComputedStyle(m).display==="none"||m.getClientRects().length===0)fail.push(id+": metadata unexpectedly hidden");const ml=lines(m);if(ml>1+eps)fail.push(id+": metadata "+ml.toFixed(2)+" lines");if(m.scrollWidth>m.clientWidth+1)fail.push(id+": metadata horizontal overflow "+m.scrollWidth+"/"+m.clientWidth)}
+       for(const el of [title,summary,...(hideMeta?[]:meta)]){
         if(/…|\.{3}/.test(el.textContent)||getComputedStyle(el).textOverflow==="ellipsis")fail.push(id+": ellipsis");
         const style=getComputedStyle(el);
         if(["hidden","clip"].includes(style.overflowX)||["hidden","clip"].includes(style.overflowY)||(/^\d+$/.test(style.webkitLineClamp)&&Number(style.webkitLineClamp)>0))fail.push(id+": clipped overflow");
@@ -35,7 +35,7 @@ const { pathToFileURL } = require("node:url");
        }
       }
       return {count:cards.length,fail};
-     },[lang==="en" && width>768 ? 2 : limit]);
+     },[lang==="en" && width>768 ? 2 : limit,lang==="en" && width<=768]);
      if(out.count!==21)violations.push(browserName+"/"+lang+"/"+width+": expected 21 cards, got "+out.count);
      violations.push(...out.fail.map(x=>browserName+"/"+lang+"/"+width+": "+x));
      console.log(browserName,lang,width,"cards",out.count,"issues",out.fail.length);
