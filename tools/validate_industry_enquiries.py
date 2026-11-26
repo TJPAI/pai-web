@@ -29,6 +29,15 @@ FULL_ENGLISH = {
     'privacy': 'Privacy Computing and Trusted Data Collaboration Platform',
     'finance': 'Financial Blockchain Ecosystem Security and Risk Supervision Platform',
 }
+FULL_CHINESE_NEW = {
+    'uwb-nearlink': '基于UWB和星闪的测向与雷达感知',
+    'short-range-ranging': '基于短距无线通信的测距与定位',
+    'nearlink-protocol': '星闪无线通信协议栈研究与实现',
+    'nearlink-integrated': '星闪无线通信关键技术研究与应用',
+    'drone-vision-language': '大模型驱动的无人机智能目标探测系统',
+    'drone-navigation': '复杂环境无人机自主避障与智能导航系统',
+    'drone-industrial-inspection': '复杂工业环境无人机自主智能巡检系统',
+}
 errors = []
 for page, english in [('publications.html', False), ('en/publications.html', True)]:
     text = (ROOT / page).read_text(encoding='utf-8')
@@ -41,7 +50,7 @@ for page, english in [('publications.html', False), ('en/publications.html', Tru
         if not heading or not link:
             errors.append(f'{page}:{ident}: missing heading or enquiry link')
             continue
-        expected = FULL_ENGLISH.get(ident) if english else html.unescape(heading.group(1))
+        expected = FULL_ENGLISH.get(ident) if english else FULL_CHINESE_NEW.get(ident, html.unescape(heading.group(1)))
         if not expected:
             errors.append(f'{page}:{ident}: unknown identity')
             continue
