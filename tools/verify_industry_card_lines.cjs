@@ -28,12 +28,14 @@ const { pathToFileURL } = require("node:url");
        if(d>maxSummary+eps)fail.push(id+": summary "+d.toFixed(2)+" lines");
        for(const m of meta){const ml=lines(m);if(ml>1+eps)fail.push(id+": metadata "+ml.toFixed(2)+" lines");if(m.scrollWidth>m.clientWidth+1)fail.push(id+": metadata horizontal overflow "+m.scrollWidth+"/"+m.clientWidth)}
        for(const el of [title,summary,...meta]){
-        if(el.textContent.includes("…")||getComputedStyle(el).textOverflow==="ellipsis")fail.push(id+": ellipsis");
-        if(getComputedStyle(el).overflow==="hidden")fail.push(id+": clipped overflow");
+        if(/…|\.{3}/.test(el.textContent)||getComputedStyle(el).textOverflow==="ellipsis")fail.push(id+": ellipsis");
+        const style=getComputedStyle(el);
+        if(["hidden","clip"].includes(style.overflowX)||["hidden","clip"].includes(style.overflowY)||(/^\d+$/.test(style.webkitLineClamp)&&Number(style.webkitLineClamp)>0))fail.push(id+": clipped overflow");
+        if(el.scrollWidth>el.clientWidth+1||el.scrollHeight>el.clientHeight+1)fail.push(id+": content overflow");
        }
       }
       return {count:cards.length,fail};
-     },[limit]);
+     },[lang==="en" && width>768 ? 2 : limit]);
      if(out.count!==21)violations.push(browserName+"/"+lang+"/"+width+": expected 21 cards, got "+out.count);
      violations.push(...out.fail.map(x=>browserName+"/"+lang+"/"+width+": "+x));
      console.log(browserName,lang,width,"cards",out.count,"issues",out.fail.length);
