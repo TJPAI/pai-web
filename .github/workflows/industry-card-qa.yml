@@ -1,0 +1,29 @@
+name: Bilingual industry card typography QA
+on:
+  push:
+    branches: [review/industry-card-uniform-lines-20261127]
+    paths:
+      - 'tools/verify_industry_card_lines.cjs'
+      - 'tools/validate_industry_enquiries.py'
+      - 'assets/css/industry-card-fit.css'
+      - 'publications.html'
+      - 'en/publications.html'
+      - '.github/workflows/industry-card-qa.yml'
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check source content and production build
+        run: |
+          python tools/validate_industry_enquiries.py
+          python tools/normalize_asset_versions.py --check
+          python tools/package_boda.py --output /tmp/industry-boda-qa.zip
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Check line counts and clipping in Chromium and WebKit
+        run: node tools/verify_industry_card_lines.cjs
