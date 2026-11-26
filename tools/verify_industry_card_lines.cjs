@@ -26,6 +26,12 @@ const { pathToFileURL } = require("node:url");
       for(const card of cards){
        const id=card.id, title=card.querySelector(".title-item"),summary=card.querySelector(".industry-summary"),meta=[...card.querySelectorAll(".industry-meta")];
        if(!title||!summary||meta.length!==2){fail.push(id+": missing title, summary or metadata");continue}
+       const zh=document.documentElement.lang.toLowerCase().startsWith("zh");
+       const countText=el=>Array.from(el.textContent.trim().replace(/\s+/g," ")).length;
+       const countMeta=el=>{const copy=el.cloneNode(true);copy.querySelector("b")?.remove();return countText(copy)};
+       const counts=[["title",countText(title),zh?16:28],["summary",countText(summary),zh?28:100]];
+       if(zh)meta.forEach((m,i)=>counts.push([i===0?"application":"cooperation",countMeta(m),13]));
+       for(const [field,len,max] of counts)if(len>max)fail.push(id+": "+field+" "+len+" characters (max "+max+")");
        const n=lines(title),d=lines(summary),lineIssues=newIds.has(id)?fail:legacy;
        if(n>2+eps)lineIssues.push(id+": title "+n.toFixed(2)+" lines");
        if(d>maxSummary+eps)lineIssues.push(id+": summary "+d.toFixed(2)+" lines");
@@ -49,5 +55,5 @@ const { pathToFileURL } = require("node:url");
   }finally{await browser.close()}
  }
  if(violations.length){console.error("Card line-limit violations:\n"+violations.join("\n"));process.exitCode=1}
- else console.log("PASS: 21 bilingual cards checked for full visibility and mobile grid; seven new cards meet strict line limits; legacy line exceptions reported separately");
+ else console.log("PASS: all 21 bilingual cards meet character limits, full visibility and mobile grid; seven new cards meet strict line limits; legacy line exceptions reported separately");
 })().catch(e=>{console.error(e);process.exit(1)});
