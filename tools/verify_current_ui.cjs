@@ -30,6 +30,10 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
     assert.notEqual(rhythm.news,rhythm.challenge);
     assert.equal(rhythm.news,rhythm.research);
     if(width===390){assert.ok(rhythm.hero>=rhythm.viewport*.78&&rhythm.hero<=rhythm.viewport*.84,JSON.stringify(rhythm));assert.ok(rhythm.padding<=36);}
+    if(width===1280){
+      const rails=await p.evaluate(()=>({hero:document.querySelector('.home-hero>.container').getBoundingClientRect().left,news:document.querySelector('.home-news .results-news').getBoundingClientRect().left}));
+      assert.ok(Math.abs(rails.hero-rails.news)<=1,JSON.stringify(rails));
+    }
     const homeMarkup=await homePanel.evaluate(e=>e.outerHTML);
     for(const page of ['index.html','publications.html']){
     if(page==='publications.html'){
