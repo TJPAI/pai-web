@@ -809,7 +809,7 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 
 /* Results hero latest-news panel */
 .page-results .page-hero>.container.std{display:block}
-.page-results.page-inner>.page-hero{padding-bottom:0;border-bottom:0}
+
 .page-results .results-achievements .highlights{border-top:0}
 .results-news{
   position:relative;
@@ -850,7 +850,7 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
 @media(max-width:768px){
   .page-results .page-hero>.container.std>.title-page{font-size:clamp(38px,10.5vw,52px)}
   .page-results .page-hero>.container.std>p{font-size:clamp(13px,3.7vw,17px);line-height:1.55}
-  .page-results .page-hero{padding-bottom:0}
+
   .results-news{margin-top:28px;padding:20px 0}
   .page-results .results-achievements .highlight:first-child{border-top:0}
   .results-news h2{margin-bottom:4px;font-size:15px;font-weight:560;color:#4F5968}
@@ -1021,14 +1021,14 @@ html[lang="en"] .page-results .industry-six-rows .industry-card .title-item{
 }
 
 /* Restrained red accent for Latest News, using the existing full-width grey panel. */
-:is(.page-results,.page-home) .results-news h2{
+.page-home .results-news h2{
   display:flex;
   align-items:center;
   gap:10px;
   color:#BC2530;
   font-weight:600;
 }
-:is(.page-results,.page-home) .results-news h2::before{
+.page-home .results-news h2::before{
   content:"";
   display:block;
   flex:none;
@@ -1037,12 +1037,12 @@ html[lang="en"] .page-results .industry-six-rows .industry-card .title-item{
   background:#BC2530;
 }
 @media(hover:hover) and (pointer:fine){
-  :is(.page-results,.page-home) a.results-news-row:hover span{color:#BC2530}
-  :is(.page-results,.page-home) a.results-news-row:hover span::after{content:" ↗";color:#BC2530}
+  .page-home a.results-news-row:hover span{color:#BC2530}
+  .page-home a.results-news-row:hover span::after{content:" ↗";color:#BC2530}
 }
 @media(max-width:768px){
-  :is(.page-results,.page-home) .results-news h2{color:#BC2530;font-weight:600;gap:8px}
-  :is(.page-results,.page-home) .results-news h2::before{height:18px;width:3px}
+  .page-home .results-news h2{color:#BC2530;font-weight:600;gap:8px}
+  .page-home .results-news h2::before{height:18px;width:3px}
 }
 
 /* Chinese cards: place Applications directly after actual summary text, not reserved 3-line space. */
@@ -1061,10 +1061,10 @@ html[lang="zh-CN"] .page-results .industry-six-rows .industry-meta{
 }
 
 /* Force latest-news title text red even when generic page-title rules override h2 color. */
-:is(.page-results,.page-home) .results-news h2,
-:is(.page-results,.page-home) .results-news h2.title-item,
-:is(.page-results,.page-home) .results-news h2.title-section,
-:is(.page-results,.page-home) .results-news h2 * {color:#BC2530!important}
+.page-home .results-news h2,
+.page-home .results-news h2.title-item,
+.page-home .results-news h2.title-section,
+.page-home .results-news h2 * {color:#BC2530!important}
 
 
 /* English Outputs technology cards: max four lines, no reserved blank lines
@@ -1112,26 +1112,23 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
 }
 
 /* Latest News: centered bottom chevron and expandable rows. */
-:is(.page-results,.page-home) .results-news-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:8px}
-:is(.page-results,.page-home) .results-news-head h2{margin:0!important}
-:is(.page-results,.page-home) .results-news-toggle{appearance:none;border:0;background:transparent;color:#BC2530;display:flex;align-items:center;justify-content:center;width:56px;height:28px;margin:0 auto;padding:0;cursor:pointer;scroll-margin-block:80px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-:is(.page-results,.page-home) .results-news{padding-bottom:6px}
-:is(.page-results,.page-home) .results-news-list:not(:has(+.results-news-extra:not([hidden]))) .results-news-row:last-child{padding-bottom:0}
-:is(.page-results,.page-home) .results-news-toggle svg{display:block;flex:none}
-:is(.page-results,.page-home) .results-news-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
-@media(hover:hover) and (pointer:fine){:is(.page-results,.page-home) .results-news-toggle:hover{opacity:.7}}
-:is(.page-results,.page-home) .results-news-toggle:focus:not(:focus-visible),:is(.page-results,.page-home) .results-news-toggle:active{outline:none;box-shadow:none;background:transparent}
-:is(.page-results,.page-home) .results-news-toggle:focus-visible{outline:2px solid #BC2530;outline-offset:3px}
-:is(.page-results,.page-home) .results-news-extra[hidden]{display:none!important}
-:is(.page-results,.page-home) .results-news-list:not(.results-news-extra):has(+.results-news-extra:not([hidden])) .results-news-row:last-child{border-bottom:1px solid var(--line);padding-bottom:11px}
-:is(.page-results,.page-home) .results-news-row-static{cursor:default}
-:is(.page-results,.page-home) .results-news-extra .results-news-row:last-child{border-bottom:0}
-@media(max-width:768px){:is(.page-results,.page-home) .results-news-head{margin-bottom:5px}}
+.page-home .results-news-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:8px}
+.page-home .results-news-head h2{margin:0!important}
+.page-home .results-news-toggle{appearance:none;border:0;background:transparent;color:#BC2530;display:flex;align-items:center;justify-content:center;width:56px;height:28px;margin:0 auto;padding:0;cursor:pointer;scroll-margin-block:80px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.page-home .results-news{padding-bottom:6px}
+.page-home .results-news-list:not(:has(+.results-news-extra:not([hidden]))) .results-news-row:last-child{padding-bottom:0}
+.page-home .results-news-toggle svg{display:block;flex:none}
+.page-home .results-news-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+@media(hover:hover) and (pointer:fine){.page-home .results-news-toggle:hover{opacity:.7}}
+.page-home .results-news-toggle:focus:not(:focus-visible),.page-home .results-news-toggle:active{outline:none;box-shadow:none;background:transparent}
+.page-home .results-news-toggle:focus-visible{outline:2px solid #BC2530;outline-offset:3px}
+.page-home .results-news-extra[hidden]{display:none!important}
+.page-home .results-news-list:not(.results-news-extra):has(+.results-news-extra:not([hidden])) .results-news-row:last-child{border-bottom:1px solid var(--line);padding-bottom:11px}
+.page-home .results-news-row-static{cursor:default}
+.page-home .results-news-extra .results-news-row:last-child{border-bottom:0}
+@media(max-width:768px){.page-home .results-news-head{margin-bottom:5px}}
 
 /* Regular navigation only: unobtrusive red Latest Updates qualifier. */
-.site-header .nav-updates-hint{color:#BC2530;font-size:.86em;font-weight:600;white-space:nowrap}
-.site-header .nav-links a:has(.nav-updates-hint){white-space:nowrap}
-@media(max-width:768px){.site-header .mobile-menu .nav-updates-hint{font-size:.87em}}
 
 
 /* Link discoverability: deliberately limited to the four requested surfaces. */
@@ -1145,13 +1142,13 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
 }
 .home-media-coverage .media-item .media-title,
 .page-about .media-coverage .media-item .media-title,
-:is(.page-results,.page-home) .results-news-row[href] > span:last-child{
+.page-home .results-news-row[href] > span:last-child{
   color:#315D90;text-decoration:underline;text-decoration-thickness:1px;
   text-underline-offset:3px;text-decoration-color:#A4BAD0;
 }
 .home-media-coverage .media-item:hover .media-title,
 .page-about .media-coverage .media-item:hover .media-title,
-:is(.page-results,.page-home) .results-news-row[href]:hover > span:last-child,
+.page-home .results-news-row[href]:hover > span:last-child,
 .selected-updates .update-item h3 a:hover,
 .page-about .detail-block[class*="platform-"] h3 a:hover{
   color:#23456E;text-decoration-color:currentColor;
@@ -1174,8 +1171,8 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
   text-decoration-color:#8CA9C7!important;
 }
 /* Outputs: Latest News links use an underline only; static news remains plain. */
-:is(.page-results,.page-home) .results-news-row[href] > span:last-child,
-:is(.page-results,.page-home) .results-news-row[href]:hover > span:last-child{
+.page-home .results-news-row[href] > span:last-child,
+.page-home .results-news-row[href]:hover > span:last-child{
   color:inherit!important;
   text-decoration-line:underline!important;
   text-decoration-color:currentColor!important;
@@ -1195,12 +1192,12 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
 
 /* Latest News: restore original text styling; only a quiet trailing arrow
    distinguishes linked rows. Non-linked updates remain unchanged. */
-:is(.page-results,.page-home) .results-news-row[href] > span:last-child,
-:is(.page-results,.page-home) .results-news-row[href]:hover > span:last-child{
+.page-home .results-news-row[href] > span:last-child,
+.page-home .results-news-row[href]:hover > span:last-child{
   color:inherit!important;
   text-decoration:none!important;
 }
-:is(.page-results,.page-home) .results-news-row[href] > span:last-child::after{
+.page-home .results-news-row[href] > span:last-child::after{
   content:" ↗";
   display:inline;
   color:inherit;

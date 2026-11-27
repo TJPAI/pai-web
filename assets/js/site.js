@@ -128,19 +128,7 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
             }
             let key='';
             try{ key=sectionForPath(normalizedPath(new URL(link.href,location.href).pathname)); }catch(_e){}
-            // Static HTML already contains standard nav links; synchronize the
-            // updates qualifier even when the navigation is not rebuilt.
-            if(key==='publications'){
-              const hints=[...link.querySelectorAll('.nav-updates-hint')];
-              hints.slice(1).forEach(node=>node.remove());
-              let hint=hints[0];
-              if(!hint){
-                hint=document.createElement('span');
-                hint.className='nav-updates-hint';
-                link.append(' ',hint);
-              }
-              hint.textContent=lang==='en'?'(latest updates)':'（最新动态）';
-            }
+            link.querySelectorAll('.nav-updates-hint').forEach(node=>node.remove());
             const isActive=!!active&&key===active;
             link.classList.toggle('active',isActive);
             if(isActive) link.setAttribute('aria-current','page');

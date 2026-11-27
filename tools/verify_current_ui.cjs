@@ -17,12 +17,9 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
     return route.fulfill({status:200,body:fs.readFileSync(file),contentType:mime});
    });
    const p=await ctx.newPage(),errs=[];p.on('pageerror',e=>errs.push(e.message));
-   for(const [lang,label,word] of [['','（最新动态）','更多'],['en/','(latest updates)','More']]){
+   for(const lang of ['', 'en/']){
     await p.goto(BASE+lang+'index.html');
-    await p.locator('.site-header .nav-links a[href$="publications.html"] .nav-updates-hint').waitFor({state:'attached'});
-    assert.equal((await p.locator('.site-header .nav-links .nav-updates-hint').first().textContent()).trim(),label);
-    const first=p.locator('.site-header .nav-links a[href$="publications.html"]');
-    assert.equal(await first.locator('.nav-updates-hint').evaluate(e=>getComputedStyle(e).color),'rgb(188, 37, 48)');
+    assert.equal(await p.locator('.nav-updates-hint').count(),0);
     const homePanel=p.locator('.home-news .results-news');
     await homePanel.waitFor();
     assert.equal(await p.locator('main > section').nth(1).getAttribute('class'),'home-news');
@@ -33,12 +30,6 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
     if(width===1280){
       const rails=await p.evaluate(()=>({hero:document.querySelector('.home-hero>.container').getBoundingClientRect().left,news:document.querySelector('.home-news .results-news').getBoundingClientRect().left}));
       assert.ok(Math.abs(rails.hero-rails.news)<=1,JSON.stringify(rails));
-    }
-    const homeMarkup=await homePanel.evaluate(e=>e.outerHTML);
-    for(const page of ['index.html','publications.html']){
-    if(page==='publications.html'){
-      await p.goto(BASE+lang+page);
-      assert.equal(await p.locator('.results-news').evaluate(e=>e.outerHTML),homeMarkup);
     }
     const toggle=p.locator('.results-news-toggle');
     await toggle.waitFor();
@@ -71,10 +62,12 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
       assert.equal(await toggle.evaluate(e=>document.activeElement===e&&e.matches(':focus-visible')),true);
       assert.equal(await toggle.evaluate(e=>getComputedStyle(e).outlineStyle),'solid');
     }
-    assert.equal(await p.locator('.site-header .nav-links .nav-updates-hint').first().textContent(),label);
+    assert.equal(await p.locator('.nav-updates-hint').count(),0);
     const overflow=await p.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
-    assert.ok(overflow<=2,'horizontal overflow: '+overflow+' '+width+' '+lang+' '+page);
-    }
+    assert.ok(overflow<=2,'horizontal overflow: '+overflow+' '+width+' '+lang);
+    await p.goto(BASE+lang+'publications.html');
+    assert.equal(await p.locator('.results-news').count(),0);
+    assert.equal(await p.locator('.nav-updates-hint').count(),0);
    }
    // Real navigation: internal link, Back/Forward and homepage research CTA.
    for(const lang of ['', 'en/']){
@@ -83,12 +76,16 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
      await cta.scrollIntoViewIfNeeded();
      await cta.click();
      await p.waitForURL(BASE+lang+'publications.html');
-     await p.locator('.results-news-toggle').waitFor();
+     await p.locator('.page-results .results-achievements').waitFor();
+     assert.equal(await p.locator('.results-news-toggle,.nav-updates-hint').count(),0);
      await p.goBack();
      await p.waitForURL(BASE+lang+'index.html');
+     await p.locator('.home-news .results-news-toggle').waitFor();
+     assert.equal(await p.locator('.nav-updates-hint').count(),0);
      await p.goForward();
      await p.waitForURL(BASE+lang+'publications.html');
-     await p.locator('.results-news-toggle').waitFor();
+     await p.locator('.page-results .results-achievements').waitFor();
+     assert.equal(await p.locator('.results-news-toggle,.nav-updates-hint').count(),0);
      if(width===390){
        const menu=p.locator('.menu-btn');
        await menu.click();
@@ -135,7 +132,7 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
      assert.equal(await p.locator('#cooperation a[href^="tel:"]').count(),0);
    }
    assert.deepEqual(errs,[]);
-   console.log('PASS',width,'both languages: menu hint + color, news '+newsDefaultVisible+'/'+newsExpandedCount+' expand/collapse, overflow, no JS exceptions');
+   console.log('PASS',width,'both languages: no menu hint, homepage-only news, news '+newsDefaultVisible+'/'+newsExpandedCount+' expand/collapse, overflow, no JS exceptions');
    await ctx.close();
   }
  } finally{await browser.close();}

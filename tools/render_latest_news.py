@@ -30,7 +30,7 @@ def item_html(entry, lang):
     return (f'<div class="results-news-row results-news-row-static"><time datetime="{date}">'
             f'{label}</time><span>{title}</span></div>')
 
-for lang, page in (("zh", "publications.html"), ("en", "en/publications.html"), ("zh", "index.html"), ("en", "en/index.html")):
+for lang, page in (("zh", "index.html"), ("en", "en/index.html")):
     path = ROOT / page
     source = path.read_text(encoding="utf-8")
     replacement = ('<div class="results-news-list">'

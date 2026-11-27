@@ -5,10 +5,10 @@ from html.parser import HTMLParser
 ROOT=Path(__file__).resolve().parents[1]
 js=(ROOT/'assets/js/site.js').read_text()
 css=(ROOT/'assets/css/refine.css').read_text()
-assert "link.querySelectorAll('.nav-updates-hint')" in js, "Existing static header links must receive the news hint"
-assert "hint.textContent=lang==='en'?'(latest updates)':'（最新动态）'" in js
+assert "hint.className='nav-updates-hint'" not in js, "Header must not create news hints"
+assert "(latest updates)" not in js and "（最新动态）" not in js
 assert "for(const selector of ['.nav-links','.mobile-menu'])" in js, "Destination static menus must be copied when navigating"
-assert ".site-header .nav-updates-hint" in css
+assert ".site-header .nav-updates-hint" not in css
 assert "results-news-toggle" in js and "extra.hidden=!open" in js
 # Outside-click dismissal must be registered globally, not inside initOrbitMenu.
 outside_marker = "// Dismiss either navigation menu when tapping outside its interactive surface."
@@ -40,7 +40,7 @@ class NewsParser(HTMLParser):
         if tag=='aside':self.in_news=False
         if tag=='div' and self.in_list:
             pass
-for path in ('publications.html','en/publications.html'):
+for path in ('index.html','en/index.html'):
     html=(ROOT/path).read_text()
     start=html.index('<aside class="results-news"')
     end=html.index('</aside>',start)+len('</aside>')
@@ -54,12 +54,11 @@ for path in ('publications.html','en/publications.html'):
     assert pane.endswith('</svg></button></aside>')
     assert ('aria-label="Expand latest news"' if path.startswith('en/') else 'aria-label="展开最新动态"') in pane
     assert '2026-10' in a[0] and '2026-09' in a[0]
-    assert ('(latest updates)' if path.startswith('en/') else '（最新动态）') in js
     if path.startswith('en/'):
         assert 'High-Level Expert Panel' in pane
         assert 'High-Level Expert Group' not in pane
         # Validate the relevant achievement, not an obsolete editorial sentence.
-        earth = html.split('<article class="industry-card" id="tech-earth">', 1)[1].split('</article>', 1)[0]
+        earth = (ROOT/'en/publications.html').read_text().split('<article class="industry-card" id="tech-earth">', 1)[1].split('</article>', 1)[0]
         summary = earth.split('<p class="industry-summary">', 1)[1].split('</p>', 1)[0]
         assert 'magnetic' in summary.lower() and 'two-way' in summary.lower()
         assert 'mine-tested' in summary.lower() or ('mine' in summary.lower() and any(term in summary.lower() for term in ('trial', 'verified', 'validated', 'tested'))), (path, 'through-earth mine validation')
@@ -72,7 +71,7 @@ for prefix in ('', 'en/'):
     def news_panel(source):
         return source.split('<aside class="results-news"',1)[1].split('</aside>',1)[0]
     assert home.count('<aside class="results-news"')==1
-    assert news_panel(home)==news_panel(outputs), (prefix,'news copy must match')
+    assert '<aside class="results-news"' not in outputs and 'results-news-toggle' not in outputs, (prefix,'news must be homepage only')
     assert home.index('<section class="hero home-hero">') < home.index('<section class="home-news">') < home.index('<section class="section soft">')
 print('PASS: regular navigation and bilingual Latest News static contracts')
 
@@ -80,13 +79,16 @@ print('PASS: regular navigation and bilingual Latest News static contracts')
 from pathlib import Path as _Path
 for _page in list(_Path('.').glob('*.html')) + list(_Path('en').glob('*.html')) + list(_Path('people').glob('*.html')) + list(_Path('en/people').glob('*.html')):
     _html = _page.read_text(encoding='utf-8')
+    assert 'nav-updates-hint' not in _html, (_page, 'no static navigation hint')
     if '<footer ' in _html:
         assert ('<strong>PAI Research Center</strong>' if str(_page).startswith('en/') else '<strong>PAI研究中心</strong>') in _html.split('<footer ',1)[1], (_page, 'footer brand')
 for _page in ('publications.html', 'en/publications.html'):
     _html = _Path(_page).read_text(encoding='utf-8')
     assert 'DWELT定位项目获' not in _html and 'DWELT localization project wins' not in _html
-    assert ('DWELT technology wins gold' if _page.startswith('en/') else 'DWELT技术获') in _html
-    _news = _html.split('<aside class="results-news"', 1)[1].split('</aside>', 1)[0]
+    _home = _Path('en/index.html' if _page.startswith('en/') else 'index.html').read_text(encoding='utf-8')
+    _news = _home.split('<aside class="results-news"', 1)[1].split('</aside>', 1)[0]
+    assert ('DWELT technology wins gold' if _page.startswith('en/') else 'DWELT技术获') in _news
+    assert 'DWELT定位项目获' not in _news and 'DWELT localization project wins' not in _news
     assert _news.count('https://doi.org/') >= 24
     assert ('等论文发表于' if not _page.startswith('en/') else '— TWC paper published') not in _news
 
@@ -152,7 +154,7 @@ assert 'from.innerHTML=to.innerHTML' not in _js, 'Header DOM must not be rebuilt
 # SPA header reconciliation must not incorporate rendered news hints into base text.
 assert "target.childNodes[0]?.textContent" in _js, 'Header label must ignore updates hint children'
 assert "hints.forEach(node=>node.remove())" in _js, 'Old navigation hint nodes must be cleared on route transition'
-assert "hints.slice(1).forEach(node=>node.remove())" in _js, 'Navigation hint must not duplicate'
+assert "hint.className='nav-updates-hint'" not in _js, 'Navigation hint must not be recreated'
 
 # Mobile menu highlights must never overlay or obscure their own label text.
 _mobile_css=_Path('assets/css/site.css').read_text(encoding='utf-8')
