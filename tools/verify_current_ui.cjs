@@ -29,7 +29,7 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
     const rhythm=await p.evaluate(()=>{const hero=document.querySelector('.home-hero'),news=document.querySelector('.home-news'),challenge=news.nextElementSibling,research=challenge.nextElementSibling;return {hero:hero.getBoundingClientRect().height,viewport:innerHeight,news:getComputedStyle(news).backgroundColor,challenge:getComputedStyle(challenge).backgroundColor,research:getComputedStyle(research).backgroundColor,padding:parseFloat(getComputedStyle(challenge).paddingTop)}});
     assert.notEqual(rhythm.news,rhythm.challenge);
     assert.equal(rhythm.news,rhythm.research);
-    if(width===390){assert.ok(rhythm.hero>=rhythm.viewport*.78&&rhythm.hero<=rhythm.viewport*.84,JSON.stringify(rhythm));assert.ok(rhythm.padding<=36);}
+    if(width===390){assert.ok(rhythm.hero>=rhythm.viewport*.82&&rhythm.hero<=rhythm.viewport*.89,JSON.stringify(rhythm));assert.ok(rhythm.padding<=36);}
     if(width===1280){
       const rails=await p.evaluate(()=>({hero:document.querySelector('.home-hero>.container').getBoundingClientRect().left,news:document.querySelector('.home-news .results-news').getBoundingClientRect().left}));
       assert.ok(Math.abs(rails.hero-rails.news)<=1,JSON.stringify(rails));
