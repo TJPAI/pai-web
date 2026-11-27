@@ -1222,6 +1222,15 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
   .home-achievement-stories>.home-achievement-story:nth-child(-n+3) img{height:auto!important;aspect-ratio:auto!important;object-fit:contain!important}
 }
 
-/* Homepage trial: retain the Outputs panel styling and keep the first-screen hero intact. */
+/* Homepage news: independent background and compact transition into challenges. */
 .page-home>.home-news .results-news{margin-top:0}
 .page-home>.home-news{background:var(--soft)}
+
+.page-home>.home-news+.section.soft{background:#fff;padding-top:60px}
+.page-home>.home-news+.section+.section{background:var(--soft)}
+.page-home>.home-achievements.section.soft{background:#fff}
+@media(max-width:768px){
+  .page-home>.home-hero{min-height:calc(85svh - 95px);padding:64px 0 42px}
+  .page-home>.home-hero .hero-grid{min-height:0;align-content:center}
+  .page-home>.home-news+.section.soft{padding-top:32px}
+}
