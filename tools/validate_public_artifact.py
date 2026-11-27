@@ -107,7 +107,9 @@ if site_js_path.is_file():
         ("link.setAttribute('tabindex','-1')", 'closed orbit links remain keyboard-focusable'),
         ("link.removeAttribute('tabindex')", 'open orbit links do not restore keyboard focusability'),
         ("syncOrbitA11y(false)", 'orbit is not initialized in the hidden/non-focusable state'),
-        ("if(link.closest('.pai-orbit-wheel')) closeOrbitMenu()", 'orbit selection does not close the quick menu before navigation'),
+        ("if(link.closest('.pai-orbit-wheel')) prepareOrbitNavigation(link,event.detail===0)", 'orbit selection must use shared navigation cleanup'),
+        ("prepareOrbitNavigation=(link,keyboard)=>{", 'orbit navigation cleanup missing'),
+        ("if(wheel.contains(document.activeElement)) document.activeElement.blur();\n      setOpen(false);", 'orbit navigation must clear focus and close the wheel'),
         ("const orbit=document.querySelector('.pai-orbit.open')", 'Escape handling does not detect an open orbit'),
         ("orbit.querySelector('.pai-orbit-toggle')?.focus()", 'Escape handling does not restore focus to the orbit toggle'),
     )
