@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 
@@ -89,9 +90,30 @@ jobs:
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
           path: _site
+          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Wait for Pages artifact metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_NAME: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 20); do
+            count=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?per_page=100" | jq --arg name "$ARTIFACT_NAME" '[.artifacts[] | select(.name == $name and .expired == false)] | length') || count=0
+            if [ "$count" = 1 ]; then
+              echo "Pages artifact metadata ready: $ARTIFACT_NAME"
+              exit 0
+            fi
+            echo "Waiting for Pages artifact metadata ($attempt/20): $count"
+            sleep 3
+          done
+          echo "::error::Pages artifact metadata not ready or not unique: $ARTIFACT_NAME"
+          exit 1
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
 
   production-dry-run:
     name: Validate production server build
