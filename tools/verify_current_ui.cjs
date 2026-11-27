@@ -112,40 +112,7 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
      for(const [label,destination] of [['EN','en/'],['Research','en/research.html'],['中文','research.html'],['返回首页','']]){
        const orbit=p.locator('.pai-orbit-toggle');
        await orbit.click();
-       const item=p.locator('.pai-orbit-item').filter({has:p.locator('.pai-orbit-sr',{hasText:new RegExp('^'+label+'
-   for(const lang of ['', 'en/']){
-     await p.goto(BASE+lang+'contact.html');
-     const page=p.locator('.page-contact');
-     const buttons=page.locator('button[data-contact-phone]');
-     assert.equal(await buttons.count(),2);
-     assert.equal(await page.locator('a[href^="tel:"]').count(),0);
-     for(const key of ['cooperation','recruitment']){
-       const card=page.locator('#'+key);
-       const button=card.locator('button[data-contact-phone]');
-       const digits=(key==='cooperation'?['159','2179','7370']:['195','3699','0671']).join('');
-       if(width===390) await button.tap(); else {await button.focus();await button.press('Enter');}
-       const link=card.locator('a[href^="tel:"]');
-       await link.waitFor();
-       assert.equal(await link.getAttribute('href'),'tel:+86'+digits);
-       assert.equal((await link.textContent()).replace(/\s/g,''),(lang?'+86':'')+digits);
-       assert.equal(await button.count(),0);
-     }
-     await p.goto(BASE+lang+'join.html');
-     const cta=p.locator('main a[href$="contact.html#recruitment"]').first();
-     await cta.click();
-     await p.waitForURL(BASE+lang+'contact.html#recruitment');
-     const recruit=p.locator('#recruitment button[data-contact-phone]');
-     await recruit.click();
-     assert.equal(await p.locator('#recruitment a[href^="tel:"]').count(),1);
-     assert.equal(await p.locator('#cooperation a[href^="tel:"]').count(),0);
-   }
-   assert.deepEqual(errs,[]);
-   console.log('PASS',width,'both languages: no menu hint, homepage-only news, news '+newsDefaultVisible+'/'+newsExpandedCount+' expand/collapse, overflow, no JS exceptions');
-   await ctx.close();
-  }
- } finally{await browser.close();}
-})().catch(e=>{console.error(e);process.exitCode=1});
-)})});
+       const item=p.locator('.pai-orbit-item[aria-label="'+label+'"]');
        await item.waitFor({state:'attached'});
        // Sector clip paths are not rectangular hit targets; dispatch the activation
        // directly, with focus, to exercise shared routing and cleanup deterministically.
