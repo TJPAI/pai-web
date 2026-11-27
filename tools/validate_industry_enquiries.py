@@ -30,6 +30,7 @@ FULL_ENGLISH = {
     'finance': 'Financial Blockchain Ecosystem Security and Risk Supervision Platform',
 }
 FULL_CHINESE_NEW = {
+    'navigation': '“导路者”融合定位与导航系统',
     'uwb-nearlink': '基于UWB和星闪的测向与雷达感知',
     'short-range-ranging': '基于短距无线通信的测距与定位',
     'nearlink-protocol': '星闪无线通信协议栈研究与实现',
