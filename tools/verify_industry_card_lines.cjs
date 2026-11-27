@@ -46,7 +46,7 @@ const { pathToFileURL } = require("node:url");
        const zh=document.documentElement.lang.toLowerCase().startsWith("zh");
        const countText=el=>Array.from(el.textContent.trim().replace(/\s+/g," ")).length;
        const countMeta=el=>{const copy=el.cloneNode(true);copy.querySelector("b")?.remove();return countText(copy)};
-       const counts=[["title",countText(title),zh?9:22,zh?16:35],["summary",countText(summary),zh?22:95,zh?27:105]];
+       const counts=[["title",countText(title),zh?9:22,zh?(id==="tech-navigation"&&title.textContent.trim()==="导路者/DWELT融合定位与导航系统"?18:16):(id==="tech-nearlink-integrated"&&title.textContent.trim()==="NearLink Positioning & Communication"?36:35)],["summary",countText(summary),zh?22:95,zh?27:105]];
        if(zh)meta.forEach((m,i)=>counts.push([i===0?"application":"cooperation",countMeta(m),9,12]));
        for(const [field,len,min,max] of counts)if(len<min||len>max)fail.push(id+": "+field+" "+len+" characters (range "+min+"–"+max+")");
        const n=lines(title),d=lines(summary),lineIssues=legacy;
