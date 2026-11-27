@@ -31,7 +31,9 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
     assert.equal(await toggle.locator('svg').count(),1);
     assert.equal(await toggle.getAttribute('aria-label'),lang?'Expand latest news':'展开最新动态');
     assert.equal(await toggle.locator('svg').evaluate(e=>getComputedStyle(e).transform),'none');
-    assert.ok((await toggle.boundingBox()).height>=44);
+    const toggleBox=await toggle.boundingBox();
+    assert.ok(toggleBox.height>=24&&toggleBox.height<=30&&toggleBox.width>=48);
+    assert.ok(await toggle.evaluate(e=>parseFloat(getComputedStyle(e.parentElement).paddingBottom)<=6));
     assert.equal(await p.locator('.results-news-list:not(.results-news-extra) .results-news-row').count(),newsDefaultVisible);
     assert.equal(await p.locator('.results-news-extra .results-news-row').count(),newsExpandedCount);
     assert.equal(await p.locator('.results-news-extra').isVisible(),false);
