@@ -207,7 +207,17 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     extra.hidden=!open;
     button.setAttribute('aria-expanded',String(open));
     const en=(document.documentElement.lang||'').toLowerCase().startsWith('en');
-    button.textContent=open?(en?'Less':'收起'):(en?'More':'更多');
+    button.setAttribute('aria-label',open?(en?'Collapse latest news':'收起最新动态'):(en?'Expand latest news':'展开最新动态'));
+    if(!open){
+      requestAnimationFrame(()=>{
+        if(!button.isConnected||button.getAttribute('aria-expanded')!=='false') return;
+        const rect=button.getBoundingClientRect();
+        const headerBottom=document.querySelector('.site-header')?.getBoundingClientRect().bottom||0;
+        if(rect.top<headerBottom+8||rect.bottom>window.innerHeight-8){
+          button.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'});
+        }
+      });
+    }
   });
 
   document.addEventListener('click',event=>{
