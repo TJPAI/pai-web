@@ -422,7 +422,9 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       };
       const shift=transitionDirection>0?-18:18;
       const startShift=transitionDirection?Math.max(-18,Math.min(18,Number(gestureOffset)||0)):0;
-      currentMain.style.willChange='transform, opacity';
+      if(transitionDirection&&!reduceMotion&&typeof currentMain.animate==='function'){
+        currentMain.style.willChange='transform, opacity';
+      }
       await animateMain(currentMain,[
         {transform:`translate3d(${startShift}px,0,0)`,opacity:1},
         {transform:`translate3d(${shift}px,0,0)`,opacity:.9}
