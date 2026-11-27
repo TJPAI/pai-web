@@ -76,13 +76,9 @@ if text.count(old_doi_rel) != 1:
     raise SystemExit('site.js DOI link privacy contract changed')
 text = text.replace(old_doi_rel, new_doi_rel)
 
-# Lightweight navigation already closes the top mobile menu. Apply the same behavior to
-# orbit links so the destination page is never left covered by the quick-navigation wheel.
-old_nav_close = "    const mobileMenu=link.closest('.mobile-menu');\n    if(mobileMenu){\n      setMobileMenu(false);\n    }\n    saveCurrentScroll();"
-new_nav_close = "    const mobileMenu=link.closest('.mobile-menu');\n    if(mobileMenu){\n      setMobileMenu(false);\n    }\n    if(link.closest('.pai-orbit-wheel')) closeOrbitMenu();\n    saveCurrentScroll();"
-if text.count(old_nav_close) != 1:
-    raise SystemExit('site.js navigation menu-close contract changed')
-text = text.replace(old_nav_close, new_nav_close)
+# Orbit navigation cleanup now lives in source, shared by preview and deployment.
+if 'prepareOrbitNavigation(link,event.detail===0)' not in text:
+    raise SystemExit('site.js shared orbit navigation cleanup missing')
 
 # The closed orbit is visually hidden. Keep its links out of the keyboard/accessibility
 # navigation order until the menu is actually opened.
