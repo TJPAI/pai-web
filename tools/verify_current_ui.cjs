@@ -20,6 +20,11 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
    for(const lang of ['', 'en/']){
     await p.goto(BASE+lang+'index.html');
     assert.equal(await p.locator('.nav-updates-hint').count(),0);
+    const heroContact=p.locator('.home-hero .btn.textual');
+    await heroContact.hover();
+    const hoverCapable=await p.evaluate(()=>matchMedia('(hover:hover) and (pointer:fine)').matches);
+    assert.equal(await heroContact.evaluate(e=>getComputedStyle(e).textDecorationLine.includes('underline')),hoverCapable);
+    await p.mouse.move(0,0);
     const homePanel=p.locator('.home-news .results-news');
     await homePanel.waitFor();
     assert.equal(await p.locator('main > section').nth(1).getAttribute('class'),'home-news');
