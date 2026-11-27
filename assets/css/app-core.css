@@ -149,7 +149,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #318AF5;outline-offset:3p
 }
 
 /* PAI orbit quick menu — clean rebuild from the pre-orbit stable CSS. */
-.pai-orbit{position:fixed;inset:0;z-index:1200;pointer-events:none;--orbit-size:min(52vw,220px);--orbit-x:50%;--orbit-y:calc(100dvh - 122px)}
+.pai-orbit{position:fixed;inset:0;z-index:900;pointer-events:none;--orbit-size:min(52vw,220px);--orbit-x:50%;--orbit-y:calc(100dvh - 122px)}
 .pai-orbit-backdrop{position:absolute;inset:0;background:transparent;opacity:0;pointer-events:none}
 .pai-orbit-wheel{position:absolute;left:var(--orbit-x);top:var(--orbit-y);width:var(--orbit-size);height:var(--orbit-size);border-radius:50%;background:rgba(255,255,255,.98);box-shadow:0 14px 42px rgba(20,24,32,.14);opacity:0;transform:translate(-50%,-50%) scale(.06) rotate(var(--orbit-rotation,0deg));transform-origin:50% 50%;transition:opacity .48s ease,transform .78s cubic-bezier(.22,.72,.18,1);pointer-events:none;touch-action:none;will-change:transform}
 .pai-orbit-wheel:before{content:"";position:absolute;inset:32%;border:1px solid rgba(23,26,31,.06);border-radius:50%;pointer-events:none}
