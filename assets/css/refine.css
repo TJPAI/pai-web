@@ -1114,7 +1114,9 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
 /* Latest News: centered bottom chevron and expandable rows. */
 .page-results .results-news-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:8px}
 .page-results .results-news-head h2{margin:0!important}
-.page-results .results-news-toggle{appearance:none;border:0;background:transparent;color:inherit;display:flex;align-items:center;justify-content:center;width:48px;height:44px;margin:0 auto;padding:0;cursor:pointer;scroll-margin-block:80px}
+.page-results .results-news-toggle{appearance:none;border:0;background:transparent;color:inherit;display:flex;align-items:center;justify-content:center;width:56px;height:28px;margin:0 auto;padding:0;cursor:pointer;scroll-margin-block:80px}
+.page-results .results-news{padding-bottom:6px}
+.page-results .results-news-list:not(:has(+.results-news-extra:not([hidden]))) .results-news-row:last-child{padding-bottom:0}
 .page-results .results-news-toggle svg{display:block;flex:none}
 .page-results .results-news-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
 .page-results .results-news-toggle:hover{opacity:.7}
