@@ -85,9 +85,10 @@ for _page in list(_Path('.').glob('*.html')) + list(_Path('en').glob('*.html')) 
 for _page in ('publications.html', 'en/publications.html'):
     _html = _Path(_page).read_text(encoding='utf-8')
     assert 'DWELT定位项目获' not in _html and 'DWELT localization project wins' not in _html
-    assert ('DWELT technology wins gold' if _page.startswith('en/') else 'DWELT技术获') in _html
     _home = _Path('en/index.html' if _page.startswith('en/') else 'index.html').read_text(encoding='utf-8')
     _news = _home.split('<aside class="results-news"', 1)[1].split('</aside>', 1)[0]
+    assert ('DWELT technology wins gold' if _page.startswith('en/') else 'DWELT技术获') in _news
+    assert 'DWELT定位项目获' not in _news and 'DWELT localization project wins' not in _news
     assert _news.count('https://doi.org/') >= 24
     assert ('等论文发表于' if not _page.startswith('en/') else '— TWC paper published') not in _news
 
