@@ -37,7 +37,9 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
     assert.equal(await p.locator('.results-news-list:not(.results-news-extra) .results-news-row').count(),newsDefaultVisible);
     assert.equal(await p.locator('.results-news-extra .results-news-row').count(),newsExpandedCount);
     assert.equal(await p.locator('.results-news-extra').isVisible(),false);
-    await p.locator('.results-news-toggle').click();
+    if(width===390) await toggle.tap(); else await toggle.click();
+    assert.equal(await toggle.evaluate(e=>getComputedStyle(e).outlineStyle),'none');
+    assert.equal(await toggle.evaluate(e=>getComputedStyle(e).webkitTapHighlightColor),'rgba(0, 0, 0, 0)');
     assert.equal(await p.locator('.results-news-extra').isVisible(),true);
     assert.equal(await toggle.getAttribute('aria-expanded'),'true');
     assert.equal(await toggle.getAttribute('aria-label'),lang?'Collapse latest news':'收起最新动态');
@@ -47,6 +49,12 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
     assert.equal(await toggle.getAttribute('aria-expanded'),'false');
     await p.waitForFunction(()=>{const b=document.querySelector('.results-news-toggle').getBoundingClientRect();const h=document.querySelector('.site-header').getBoundingClientRect();return b.top>=h.bottom&&b.bottom<=innerHeight;});
     assert.equal(await toggle.locator('svg').evaluate(e=>getComputedStyle(e).transform),'none');
+    if(width===1280){
+      await toggle.press('Tab');
+      await p.keyboard.press('Shift+Tab');
+      assert.equal(await toggle.evaluate(e=>document.activeElement===e&&e.matches(':focus-visible')),true);
+      assert.equal(await toggle.evaluate(e=>getComputedStyle(e).outlineStyle),'solid');
+    }
     assert.equal(await p.locator('.site-header .nav-links .nav-updates-hint').first().textContent(),label);
     const overflow=await p.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
     assert.ok(overflow<=2,'horizontal overflow: '+overflow+' '+width+' '+lang);
