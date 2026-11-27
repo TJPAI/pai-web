@@ -820,17 +820,6 @@ html[lang="en"] .direction-facts strong{letter-spacing:.01em}
   border-top:0;
   background:transparent;
 }
-.results-news::before{
-  content:"";
-  position:absolute;
-  z-index:-1;
-  top:0;
-  bottom:0;
-  left:50%;
-  width:100vw;
-  transform:translateX(-50%);
-  background:var(--soft);
-}
 .results-news h2{margin:0 0 8px;font-size:18px;line-height:1.25;font-weight:560;letter-spacing:-.01em;color:#4F5968}
 .results-news-list{border-top:0}
 .results-news-row{
