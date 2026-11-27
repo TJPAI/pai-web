@@ -38,7 +38,7 @@ for lang, page in (("zh", "publications.html"), ("en", "en/publications.html")):
                    + '</div><div class="results-news-list results-news-extra" id="results-news-extra" hidden>'
                    + "".join(item_html(x, lang) for x in items[visible:])
                    + '</div>')
-    pattern = r'<div class="results-news-list">.*?</div><div class="results-news-list results-news-extra" id="results-news-extra" hidden>.*?</div>(?=</aside>)'
+    pattern = r'<div class="results-news-list">.*?</div><div class="results-news-list results-news-extra" id="results-news-extra" hidden>.*?</div>(?=<button type="button" class="results-news-toggle")'
     rendered, count = re.subn(pattern, lambda _: replacement, source, count=1, flags=re.S)
     if count != 1:
         raise SystemExit(f"{page}: cannot find Latest News lists")

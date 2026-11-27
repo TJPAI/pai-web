@@ -49,7 +49,10 @@ for path in ('publications.html','en/publications.html'):
     assert len(a)==2
     assert a[0].count('class="results-news-row')==5,(path,'default rows')
     assert a[1].count('class="results-news-row')==45,(path,'extra rows')
-    assert pane.index('aria-expanded="false"')<pane.index('results-news-extra')
+    assert pane.index('aria-expanded="false"')>pane.index('id="results-news-extra"'), (path, 'toggle must follow extra list')
+    assert pane.count('class="results-news-toggle"')==1
+    assert pane.endswith('</svg></button></aside>')
+    assert ('aria-label="Expand latest news"' if path.startswith('en/') else 'aria-label="展开最新动态"') in pane
     assert '2026-10' in a[0] and '2026-09' in a[0]
     assert ('(latest updates)' if path.startswith('en/') else '（最新动态）') in js
     if path.startswith('en/'):
