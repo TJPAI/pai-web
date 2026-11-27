@@ -20,7 +20,7 @@ html[lang] .page-results .industry-six-rows .industry-card .industry-meta{
   overflow-wrap:break-word;
 }
 .page-results .industry-six-rows .industry-card:is(#tech-uwb-nearlink,#tech-short-range-ranging,#tech-nearlink-protocol,#tech-nearlink-integrated,#tech-drone-vision-language,#tech-drone-navigation,#tech-drone-industrial-inspection) .industry-meta{
-  white-space:nowrap!important;
+  white-space:normal!important;
   line-height:1.4!important;
   margin-bottom:5px!important;
 }
