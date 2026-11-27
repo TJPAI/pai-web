@@ -23,7 +23,15 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
     assert.equal((await p.locator('.site-header .nav-links .nav-updates-hint').first().textContent()).trim(),label);
     const first=p.locator('.site-header .nav-links a[href$="publications.html"]');
     assert.equal(await first.locator('.nav-updates-hint').evaluate(e=>getComputedStyle(e).color),'rgb(188, 37, 48)');
-    await p.goto(BASE+lang+'publications.html');
+    const homePanel=p.locator('.home-news .results-news');
+    await homePanel.waitFor();
+    assert.equal(await p.locator('main > section').nth(1).getAttribute('class'),'home-news');
+    const homeMarkup=await homePanel.evaluate(e=>e.outerHTML);
+    for(const page of ['index.html','publications.html']){
+    if(page==='publications.html'){
+      await p.goto(BASE+lang+page);
+      assert.equal(await p.locator('.results-news').evaluate(e=>e.outerHTML),homeMarkup);
+    }
     const toggle=p.locator('.results-news-toggle');
     await toggle.waitFor();
     assert.equal(await toggle.evaluate(e=>e.parentElement.lastElementChild===e),true);
@@ -57,7 +65,8 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
     }
     assert.equal(await p.locator('.site-header .nav-links .nav-updates-hint').first().textContent(),label);
     const overflow=await p.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
-    assert.ok(overflow<=2,'horizontal overflow: '+overflow+' '+width+' '+lang);
+    assert.ok(overflow<=2,'horizontal overflow: '+overflow+' '+width+' '+lang+' '+page);
+    }
    }
    // Real navigation: internal link, Back/Forward and homepage research CTA.
    for(const lang of ['', 'en/']){

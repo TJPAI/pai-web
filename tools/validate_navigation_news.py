@@ -66,6 +66,14 @@ for path in ('publications.html','en/publications.html'):
     else:
         assert '和IET首席执行官Nigel Fine共同宣布' not in pane
         assert '《IET Blockchain》期刊正式启动' in pane
+for prefix in ('', 'en/'):
+    home=(ROOT/(prefix+'index.html')).read_text()
+    outputs=(ROOT/(prefix+'publications.html')).read_text()
+    def news_panel(source):
+        return source.split('<aside class="results-news"',1)[1].split('</aside>',1)[0]
+    assert home.count('<aside class="results-news"')==1
+    assert news_panel(home)==news_panel(outputs), (prefix,'news copy must match')
+    assert home.index('<section class="hero home-hero">') < home.index('<section class="home-news">') < home.index('<section class="section soft">')
 print('PASS: regular navigation and bilingual Latest News static contracts')
 
 # Guard the shared two-line footer brand and editorial news wording.
