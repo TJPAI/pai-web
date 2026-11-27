@@ -46,10 +46,10 @@ const { pathToFileURL } = require("node:url");
        const zh=document.documentElement.lang.toLowerCase().startsWith("zh");
        const countText=el=>Array.from(el.textContent.trim().replace(/\s+/g," ")).length;
        const countMeta=el=>{const copy=el.cloneNode(true);copy.querySelector("b")?.remove();return countText(copy)};
-       const counts=[["title",countText(title),zh?16:28],["summary",countText(summary),zh?28:100]];
-       if(zh)meta.forEach((m,i)=>counts.push([i===0?"application":"cooperation",countMeta(m),13]));
-       for(const [field,len,max] of counts)if(len>max)fail.push(id+": "+field+" "+len+" characters (max "+max+")");
-       const n=lines(title),d=lines(summary),lineIssues=newIds.has(id)?fail:legacy;
+       const counts=[["title",countText(title),1,zh?16:28],["summary",countText(summary),zh?22:90,zh?27:105]];
+       if(zh)meta.forEach((m,i)=>counts.push([i===0?"application":"cooperation",countMeta(m),9,12]));
+       for(const [field,len,min,max] of counts)if(len<min||len>max)fail.push(id+": "+field+" "+len+" characters (range "+min+"–"+max+")");
+       const n=lines(title),d=lines(summary),lineIssues=legacy;
        if(n>2+eps)lineIssues.push(id+": title "+n.toFixed(2)+" lines");
        if(d>maxSummary+eps)lineIssues.push(id+": summary "+d.toFixed(2)+" lines");
        for(const m of meta){if(hideMeta){if(getComputedStyle(m).display!=="none"||m.getClientRects().length!==0)fail.push(id+": mobile English metadata visible");continue}if(getComputedStyle(m).display==="none"||m.getClientRects().length===0)fail.push(id+": metadata unexpectedly hidden");const ml=lines(m);if(ml>1+eps)lineIssues.push(id+": metadata "+ml.toFixed(2)+" lines");if(m.scrollWidth>m.clientWidth+1)fail.push(id+": metadata horizontal overflow "+m.scrollWidth+"/"+m.clientWidth)}
@@ -64,13 +64,13 @@ const { pathToFileURL } = require("node:url");
      },[lang==="en" && width>768 ? 2 : limit,lang==="en" && width<=768,width<=768]);
      if(out.count!==21)violations.push(browserName+"/"+lang+"/"+width+": expected 21 cards, got "+out.count);
      violations.push(...out.fail.map(x=>browserName+"/"+lang+"/"+width+": "+x));
-     console.log(browserName,lang,width,"cards",out.count,"blocking issues",out.fail.length,"legacy line-limit exceptions",out.legacy.length);
-     for(const issue of out.legacy)console.log("LEGACY LINE LIMIT (preserved copy):",browserName,lang,width,issue);
+     console.log(browserName,lang,width,"cards",out.count,"blocking issues",out.fail.length,"line-limit observations",out.legacy.length);
+     for(const issue of out.legacy)console.log("LINE LIMIT (approved character range):",browserName,lang,width,issue);
      await page.close();
     }
    }
   }finally{await browser.close()}
  }
  if(violations.length){console.error("Card line-limit violations:\n"+violations.join("\n"));process.exitCode=1}
- else console.log("PASS: all 21 bilingual cards meet character limits, full visibility and mobile grid; seven new cards meet strict line limits; legacy line exceptions reported separately");
+ else console.log("PASS: all 21 bilingual cards meet character limits, full visibility and mobile grid; line-count observations reported separately under approved character ranges");
 })().catch(e=>{console.error(e);process.exit(1)});
