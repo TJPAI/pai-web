@@ -8,6 +8,23 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
   const absolute=path=>new URL(root(path),location.origin).href;
   const PUB_VISIBLE_DEFAULT=2;
 
+  // Reveal contact numbers only on intentional activation; delegated for lightweight navigation.
+  const contactPhoneCodes={"cooperation":[20,29,18,28,0,3,14,13,14,119,115],"recruitment":[20,17,30,29,7,13,14,10,11,119,114]};
+  document.addEventListener('click',event=>{
+    const button=event.target.closest?.('button[data-contact-phone]');
+    if(!button||!button.closest('.page-contact')) return;
+    const key=button.dataset.contactPhone;
+    if(!Object.prototype.hasOwnProperty.call(contactPhoneCodes,key)) return;
+    const number=contactPhoneCodes[key].map((code,i)=>String.fromCharCode(code^(37+i*3))).join('');
+    const link=document.createElement('a');
+    link.href='tel:+86'+number;
+    link.textContent=document.documentElement.lang.toLowerCase().startsWith('en')
+      ? '+86 '+number.slice(0,3)+' '+number.slice(3,7)+' '+number.slice(7) : number;
+    button.replaceWith(link);
+    link.focus();
+  });
+
+
   const normalizedPath=(pathname=location.pathname)=>{
     let path=pathname||'/';
     if(prefix&&path.startsWith(prefix)) path=path.slice(prefix.length)||'/';
