@@ -1234,3 +1234,11 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
   .page-home>.home-hero .hero-grid{min-height:0;align-content:center}
   .page-home>.home-news+.section.soft{padding-top:32px}
 }
+
+/* Desktop homepage news follows the hero reading rail; keep its background full-bleed. */
+@media(min-width:769px){
+  .page-home>.home-news>.container.std{max-width:none}
+}
+@media(min-width:1025px){
+  .page-home>.home-news>.container.std{max-width:1060px}
+}
