@@ -8,6 +8,14 @@ on:
       - '*.html'
       - 'en/**'
       - 'tools/verify_current_ui.cjs'
+  pull_request:
+    paths:
+      - 'assets/js/**'
+      - 'assets/css/**'
+      - '*.html'
+      - 'en/**'
+      - 'tools/verify_current_ui.cjs'
+      - '.github/workflows/browser-smoke-refresh.yml'
   workflow_dispatch:
 permissions:
   contents: read
