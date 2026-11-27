@@ -29,7 +29,7 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
     const rhythm=await p.evaluate(()=>{const hero=document.querySelector('.home-hero'),news=document.querySelector('.home-news'),challenge=news.nextElementSibling,research=challenge.nextElementSibling;return {hero:hero.getBoundingClientRect().height,viewport:innerHeight,news:getComputedStyle(news).backgroundColor,challenge:getComputedStyle(challenge).backgroundColor,research:getComputedStyle(research).backgroundColor,padding:parseFloat(getComputedStyle(challenge).paddingTop)}});
     assert.notEqual(rhythm.news,rhythm.challenge);
     assert.equal(rhythm.news,rhythm.research);
-    if(width===390){assert.ok(rhythm.hero<=rhythm.viewport*.8,JSON.stringify(rhythm));assert.ok(rhythm.padding<=36);}
+    if(width===390){assert.ok(rhythm.hero>=rhythm.viewport*.78&&rhythm.hero<=rhythm.viewport*.84,JSON.stringify(rhythm));assert.ok(rhythm.padding<=36);}
     const homeMarkup=await homePanel.evaluate(e=>e.outerHTML);
     for(const page of ['index.html','publications.html']){
     if(page==='publications.html'){
