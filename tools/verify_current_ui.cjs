@@ -114,15 +114,19 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
      await p.goto(BASE+'index.html');
      await p.evaluate(()=>localStorage.setItem('pai-lang','zh'));
      await p.goto(BASE+'index.html');
-     for(const [label,destination] of [['EN','en/'],['Research','en/research.html'],['中文','research.html'],['返回首页','']]){
+     for(const [label,destination] of [['EN','en/'],['中文',''],['EN','en/'],['Research','en/research.html'],['中文','research.html'],['返回首页','']]){
        const orbit=p.locator('.pai-orbit-toggle');
        await orbit.click();
        const item=p.locator('.pai-orbit-item[aria-label="'+label+'"]');
        await item.waitFor({state:'attached'});
        // Sector clip paths are not rectangular hit targets; dispatch the activation
        // directly, with focus, to exercise shared routing and cleanup deterministically.
-       await item.evaluate(e=>{e.focus({preventScroll:true});e.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0,detail:1}));});
+       const freshDocument=label==='EN'&&destination==='en/'||label==='中文'&&destination==='';
+       await p.evaluate(()=>{window.__orbitNavigationProbe=true;});
+       await item.evaluate(e=>{e.focus({preventScroll:true});e.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0,detail:1}));}).catch(e=>{if(!freshDocument||!String(e).includes('Execution context was destroyed'))throw e;});
        await p.waitForURL(BASE+destination);
+       await p.waitForLoadState('domcontentloaded');
+       assert.equal(await p.evaluate(()=>window.__orbitNavigationProbe===true),!freshDocument);
        await p.waitForFunction(()=>!document.querySelector('.pai-orbit.open,.pai-orbit.dragging,.pai-orbit.auto-rotating')&&!document.activeElement?.closest('.pai-orbit-wheel'));
        assert.equal(await orbit.getAttribute('aria-expanded'),'false');
        await p.waitForFunction(()=>document.querySelector('main').style.willChange==='');
