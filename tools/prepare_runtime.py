@@ -77,7 +77,7 @@ if text.count(old_doi_rel) != 1:
 text = text.replace(old_doi_rel, new_doi_rel)
 
 # Orbit navigation cleanup now lives in source, shared by preview and deployment.
-if "if(link.closest('.pai-orbit-wheel')) closeOrbitMenu();" not in text:
+if "if(link.closest('.pai-orbit-wheel')) prepareOrbitNavigation(link,event.detail===0);" not in text:
     raise SystemExit('site.js shared orbit navigation cleanup missing')
 
 # The closed orbit is visually hidden. Keep its links out of the keyboard/accessibility
