@@ -16,6 +16,7 @@ const { pathToFileURL } = require("node:url");
      await page.goto(pathToFileURL(path.resolve(rel)).href,{waitUntil:"domcontentloaded"});
      const out=await page.locator(".page-results .industry-six-rows .industry-card").evaluateAll((cards,args)=>{
       const [maxSummary,hideMeta,mobile]=args,fail=[],legacy=[];const eps=0.15;
+      const confidentialIds=new Set(['tech-earth','tech-blasting']);
       const newIds=new Set(['tech-uwb-nearlink','tech-short-range-ranging','tech-nearlink-protocol','tech-nearlink-integrated','tech-drone-vision-language','tech-drone-navigation','tech-drone-industrial-inspection']);
       if(cards.filter(c=>newIds.has(c.id)).length!==7)fail.push('expected all seven new achievements');
       function lines(element){
@@ -34,7 +35,9 @@ const { pathToFileURL } = require("node:url");
       const fields=[["image",".industry-visual"],["title",".title-item"],["summary",".industry-summary"],...(!hideMeta?[["application",".industry-meta:nth-of-type(2)"],["cooperation",".industry-meta:nth-of-type(3)"]]:[]),["enquiry",".industry-link"]];
       for(const row of rows){
        for(const [name,selector] of fields){
-        const elements=row.cards.map(c=>c.querySelector(selector));
+        const applicable=row.cards.filter(c=>!confidentialIds.has(c.id)||name==='image'||name==='title');
+        if(!applicable.length)continue;
+        const elements=applicable.map(c=>c.querySelector(selector));
         if(elements.some(e=>!e)){fail.push("row missing "+name);continue}
         const tops=elements.map(e=>e.getBoundingClientRect().top);
         if(Math.max(...tops)-Math.min(...tops)>2)fail.push("row "+row.cards.map(c=>c.id).join(",")+" "+name+" vertical offset "+(Math.max(...tops)-Math.min(...tops)).toFixed(2)+"px");
@@ -42,6 +45,13 @@ const { pathToFileURL } = require("node:url");
       }
       for(const card of cards){
        const id=card.id, title=card.querySelector(".title-item"),summary=card.querySelector(".industry-summary"),meta=[...card.querySelectorAll(".industry-meta")];
+       if(confidentialIds.has(id)){
+        const notice=card.querySelector('.industry-confidential');
+        if(!title||summary||meta.length||!notice||!card.querySelector('.industry-link')){fail.push(id+': invalid confidential card');continue}
+        if(!notice.textContent.includes(document.documentElement.lang.startsWith('zh')?'签署保密协议':'non-disclosure agreement (NDA)'))fail.push(id+': NDA notice missing');
+        if(notice.scrollWidth>notice.clientWidth+1||notice.scrollHeight>notice.clientHeight+1||notice.getClientRects().length===0)fail.push(id+': NDA notice clipped');
+        continue;
+       }
        if(!title||!summary||meta.length!==2){fail.push(id+": missing title, summary or metadata");continue}
        const zh=document.documentElement.lang.toLowerCase().startsWith("zh");
        const countText=el=>Array.from(el.textContent.trim().replace(/\s+/g," ")).length;
