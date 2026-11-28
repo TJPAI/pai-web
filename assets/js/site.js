@@ -1017,12 +1017,8 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     event.preventDefault();
     start.lastDx=dx;
     const direction=dx<0?1:-1;
-    positionSwipePages(dx);
-    if(direction!==start.direction){
-      ensureSwipePreview(direction).then(()=>{
-        if(pageSwipeStart===start) positionSwipePages(start.lastDx);
-      });
-    }
+    // Diagnostic: retain gesture recognition without creating or moving visual layers.
+    start.direction=direction;
   },{passive:false});
 
   document.addEventListener('selectionchange',()=>{
@@ -1038,18 +1034,15 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
   },{passive:true});
 
   document.addEventListener('touchcancel',()=>{
-    const hadLocked=pageSwipeStart?.locked;
     pageSwipeStart=null;
-    if(hadLocked) settleSwipeBack();
-    else destroySwipePreview();
+    destroySwipePreview();
   },{passive:true});
 
   document.addEventListener('touchend',event=>{
     const start=pageSwipeStart;
     if(!start||!start.locked||event.changedTouches.length!==1||navigating){
       pageSwipeStart=null;
-      if(start?.locked) settleSwipeBack();
-      else destroySwipePreview();
+      destroySwipePreview();
       return;
     }
     const touch=event.changedTouches[0];
@@ -1062,23 +1055,27 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     const flickCommit=Math.abs(dx)>=SWIPE_FLICK_MIN_X&&elapsed<=SWIPE_FLICK_MAX_MS&&Math.abs(vx)>=SWIPE_FLICK_MIN_VX;
     const direction=dx<0?1:-1;
 
-    if(elapsed>SWIPE_MAX_MS||!horizontal||(!distanceCommit&&!flickCommit)||!swipePreview||swipePreview.direction!==direction){
+    if(elapsed>SWIPE_MAX_MS||!horizontal||(!distanceCommit&&!flickCommit)){
       pageSwipeStart=null;
-      settleSwipeBack();
+      destroySwipePreview();
       return;
     }
 
     const current=normalizedPath();
     if(current!==start.path){
       pageSwipeStart=null;
-      settleSwipeBack();
+      destroySwipePreview();
       return;
     }
     event.preventDefault();
     saveCurrentScroll();
     cacheCurrentPageSnapshot();
-    start.settling=true;
-    commitSwipe(direction).finally(()=>{ if(pageSwipeStart===start) pageSwipeStart=null; });
+    const targetPath=swipeTargetFor(start.path,start.lang,direction);
+    pageSwipeStart=null;
+    destroySwipePreview();
+    if(!targetPath) return;
+    const targetUrl=new URL(root(targetPath),location.origin);
+    applyPage(targetUrl,{transitionDirection:0,preserveScrollY:destinationScrollForPath(targetPath)}).catch(()=>{location.href=targetUrl.href;});
   },{passive:false});
 
   const responseFor=async(url,priority)=>{
