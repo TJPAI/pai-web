@@ -46,6 +46,14 @@ for page, english in [('publications.html', False), ('en/publications.html', Tru
     if len(cards) != len(FULL_ENGLISH):
         errors.append(f'{page}: expected {len(FULL_ENGLISH)} technology cards, got {len(cards)}')
     for ident, card in cards:
+        if ident in ('earth', 'blasting'):
+            notice = 'Technical and application details are confidential. Further discussion requires a signed non-disclosure agreement (NDA).' if english else '相关技术及应用信息不公开，签署保密协议后可进一步交流。'
+            if 'class="industry-summary"' in card or 'class="industry-meta"' in card:
+                errors.append(f'{page}:{ident}: confidential details must not be present in public HTML')
+            if card.count('class="industry-confidential"') != 1 or notice not in card:
+                errors.append(f'{page}:{ident}: missing NDA notice')
+        elif 'class="industry-confidential"' in card:
+            errors.append(f'{page}:{ident}: unexpected confidential notice')
         heading = re.search(r'<h3 class="title-item">([^<]+)</h3>', card)
         link = re.search(r'<a class="industry-link" href="([^"]+)">([^<]+)</a>', card)
         if not heading or not link:
