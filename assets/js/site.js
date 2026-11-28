@@ -606,14 +606,16 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     }
     options={...options,focusDestination:event.detail===0};
     const sourcePath=normalizedPath();
-    const deferHomeOrbitLanguage=orbitLink&&isLanguageSwitch&&(sourcePath==='/'||sourcePath==='/en/')&&counterpartFor(sourcePath)===normalizedPath(url.pathname);
-    // Give the closed orbit a rendering boundary before swapping the homepage.
-    const navigate=()=>applyPage(url,options).then(()=>{pendingMobileSelection=null;}).catch(()=>{
+    const homeOrbitLanguage=orbitLink&&isLanguageSwitch&&(sourcePath==='/'||sourcePath==='/en/')&&counterpartFor(sourcePath)===normalizedPath(url.pathname);
+    // Use a fresh document only for the problematic homepage orbit language switch.
+    if(homeOrbitLanguage){
+      location.assign(url.href);
+      return;
+    }
+    applyPage(url,options).then(()=>{pendingMobileSelection=null;}).catch(()=>{
       pendingMobileSelection?.restore();
       location.href=url.href;
     });
-    if(deferHomeOrbitLanguage) requestAnimationFrame(()=>requestAnimationFrame(navigate));
-    else navigate();
   });
 
   addEventListener('popstate',event=>{
