@@ -9,7 +9,7 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
   const PUB_VISIBLE_DEFAULT=2;
 
   // Reveal contact numbers only on intentional activation; delegated for lightweight navigation.
-  const contactPhoneCodes={"cooperation":[20,29,18,28,0,3,14,13,14,119,115],"recruitment":[20,17,30,29,7,13,14,10,11,119,114]};
+  const contactPhoneCodes={"cooperation":[20,17,30,29,7,13,14,10,11,119,114],"recruitment":[20,27,28,24,0,0,4,3,12,116,113]};
   document.addEventListener('click',event=>{
     const button=event.target.closest?.('button[data-contact-phone]');
     if(!button||!button.closest('.page-contact')) return;
