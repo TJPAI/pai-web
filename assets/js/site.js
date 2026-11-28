@@ -1446,11 +1446,12 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       moved=false;
       orbit.classList.remove('dragging');
       if(wheel.contains(document.activeElement)) document.activeElement.blur();
+      // Remove the expanded wheel from rendering before the shared router runs.
+      // Keep it hidden until the next explicit opening.
+      wheel.style.display='none';
       setOpen(false);
-      // Finish the closing transition before the shared router replaces page DOM.
-      // Ordinary manual opening/closing retains its existing animation.
       for(const animation of wheel.getAnimations?.({subtree:true})||[]){
-        try{animation.finish();}catch(_e){try{animation.cancel();}catch(_ignored){}}
+        try{animation.cancel();}catch(_e){}
       }
       if(keyboard) toggle.focus({preventScroll:true});
     };
@@ -1486,7 +1487,17 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       }
     });
 
-    toggle.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();setOpen(!orbit.classList.contains('open'));});
+    toggle.addEventListener('click',e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      const open=!orbit.classList.contains('open');
+      if(open&&wheel.style.display==='none'){
+        wheel.style.removeProperty('display');
+        // Establish the ordinary closed geometry before starting the opening animation.
+        wheel.getBoundingClientRect();
+      }
+      setOpen(open);
+    });
 
     if(window.PointerEvent){
       wheel.addEventListener('pointerdown',e=>{e.stopPropagation();begin(e);});
