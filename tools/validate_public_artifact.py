@@ -109,7 +109,7 @@ if site_js_path.is_file():
         ("syncOrbitA11y(false)", 'orbit is not initialized in the hidden/non-focusable state'),
         ("const orbitLink=link.closest('.pai-orbit-wheel');", 'orbit selection must identify the wheel'),
         ("if(orbitLink) prepareOrbitNavigation(link,event.detail===0)", 'orbit selection must use shared navigation cleanup'),
-        ("if(deferHomeOrbitLanguage) requestAnimationFrame(()=>requestAnimationFrame(navigate));", 'home orbit language switching must preserve its rendering boundary'),
+        ("if(homeOrbitLanguage){\n      location.assign(url.href);\n      return;\n    }", 'home orbit language switching must use document navigation'),
         ("prepareOrbitNavigation=(link,keyboard)=>{", 'orbit navigation cleanup missing'),
         ("if(wheel.contains(document.activeElement)) document.activeElement.blur();\n      setOpen(false);", 'orbit navigation must clear focus and close the wheel'),
         ("const orbit=document.querySelector('.pai-orbit.open')", 'Escape handling does not detect an open orbit'),
