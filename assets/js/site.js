@@ -1365,10 +1365,13 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
         for(let i=steps;i>=0;i--) points.push(point(-half+2*half*i/steps,29));
         return `polygon(${points.join(',')})`;
       };
-      const currentSection=sectionForPath(normalizedPath());
+      const currentPath=normalizedPath();
+      const currentSection=sectionForPath(currentPath);
+      const isHome=currentPath==='/'||currentPath==='/en/';
       layout.forEach(({label,href,chars,charStep,span,center},index)=>{
-        // Home and language switch are never selected. Faculty profiles map to People.
-        const selected=index>0&&index<layout.length-1&&!!currentSection&&
+        // Highlight Home on either homepage; never select the language switch.
+        // Faculty profiles continue to map to People.
+        const selected=index===0?isHome:index<layout.length-1&&!!currentSection&&
           sectionForPath(normalizedPath(new URL(root(href),location.origin).pathname))===currentSection;
         markup.push(`<a class="pai-orbit-item${selected?' is-current':''}" ${selected?'aria-current="page" ':''}aria-label="${label}" href="${root(href)}" style="--item-angle:${center}deg;clip-path:${sectorClip(span)}"><span class="pai-orbit-sr">${label}</span></a>`);
         chars.forEach((ch,j)=>{
