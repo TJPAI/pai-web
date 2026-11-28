@@ -831,7 +831,7 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       position:'absolute',top:`${mainDocumentTop}px`,left:'0',width:'100%',
       margin:'0',willChange:'transform',pointerEvents:'none',
       background:getComputedStyle(document.body).backgroundColor||'#fff',
-      transform:`translate3d(${direction>0?'100%':'-100%'},0,0)`
+      transform:`translateX(${direction>0?'100%':'-100%'})`
     });
     shell.appendChild(previewMain);
     if(previewFooter){
@@ -839,7 +839,7 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       previewFooter.querySelectorAll('[id]').forEach(node=>node.removeAttribute('id'));
       Object.assign(previewFooter.style,{
         position:'absolute',left:'0',width:'100%',margin:'0',willChange:'transform',pointerEvents:'none',
-        transform:`translate3d(${direction>0?'100%':'-100%'},0,0)`
+        transform:`translateX(${direction>0?'100%':'-100%'})`
       });
       shell.appendChild(previewFooter);
     }
@@ -877,18 +877,18 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     const current=start.main;
     if(current){
       current.style.willChange='transform';
-      current.style.transform=`translate3d(${bounded}px,0,0)`;
+      current.style.transform=`translateX(${bounded}px)`;
     }
     const currentFooter=start.visibleFooter;
     if(currentFooter){
       currentFooter.style.willChange='transform';
-      currentFooter.style.transform=`translate3d(${bounded}px,0,0)`;
+      currentFooter.style.transform=`translateX(${bounded}px)`;
     }
     const preview=swipePreview;
     if(!preview||preview.direction!==direction) return;
     const incoming=bounded+(direction>0?width:-width);
-    preview.main.style.transform=`translate3d(${incoming}px,0,0)`;
-    if(preview.footer) preview.footer.style.transform=`translate3d(${incoming}px,0,0)`;
+    preview.main.style.transform=`translateX(${incoming}px)`;
+    if(preview.footer) preview.footer.style.transform=`translateX(${incoming}px)`;
   };
 
   const animateElementTransform=(node,from,to,duration=SWIPE_SETTLE_MS)=>new Promise(resolve=>{
@@ -919,25 +919,25 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     const current=document.querySelector('main');
     const preview=swipePreview;
     if(!current){ destroySwipePreview(); return; }
-    const currentFrom=current.style.transform||'translate3d(0,0,0)';
+    const currentFrom=current.style.transform||'translateX(0)';
     const currentFooter=document.querySelector('.site-footer');
-    const footerFrom=currentFooter?.style.transform||'translate3d(0,0,0)';
+    const footerFrom=currentFooter?.style.transform||'translateX(0)';
     if(!preview){
       await Promise.all([
-        animateElementTransform(current,currentFrom,'translate3d(0,0,0)',253),
-        currentFooter?.style.transform?animateElementTransform(currentFooter,footerFrom,'translate3d(0,0,0)',253):Promise.resolve()
+        animateElementTransform(current,currentFrom,'translateX(0)',253),
+        currentFooter?.style.transform?animateElementTransform(currentFooter,footerFrom,'translateX(0)',253):Promise.resolve()
       ]);
       destroySwipePreview();
       return;
     }
     const width=Math.max(1,innerWidth);
-    const incomingFrom=preview.main.style.transform||`translate3d(${preview.direction>0?width:-width}px,0,0)`;
+    const incomingFrom=preview.main.style.transform||`translateX(${preview.direction>0?width:-width}px)`;
     const previewFooterFrom=preview.footer?.style.transform||incomingFrom;
     await Promise.all([
-      animateElementTransform(current,currentFrom,'translate3d(0,0,0)',253),
-      currentFooter?.style.transform?animateElementTransform(currentFooter,footerFrom,'translate3d(0,0,0)',253):Promise.resolve(),
-      animateElementTransform(preview.main,incomingFrom,`translate3d(${preview.direction>0?width:-width}px,0,0)`,253),
-      preview.footer?animateElementTransform(preview.footer,previewFooterFrom,`translate3d(${preview.direction>0?width:-width}px,0,0)`,253):Promise.resolve()
+      animateElementTransform(current,currentFrom,'translateX(0)',253),
+      currentFooter?.style.transform?animateElementTransform(currentFooter,footerFrom,'translateX(0)',253):Promise.resolve(),
+      animateElementTransform(preview.main,incomingFrom,`translateX(${preview.direction>0?width:-width}px)`,253),
+      preview.footer?animateElementTransform(preview.footer,previewFooterFrom,`translateX(${preview.direction>0?width:-width}px)`,253):Promise.resolve()
     ]);
     destroySwipePreview();
   };
@@ -948,20 +948,20 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     const start=pageSwipeStart;
     if(!current||!preview||!start){ destroySwipePreview(); return; }
     const width=Math.max(1,innerWidth);
-    const currentFrom=current.style.transform||'translate3d(0,0,0)';
+    const currentFrom=current.style.transform||'translateX(0)';
     const currentFooter=document.querySelector('.site-footer');
-    const footerFrom=currentFooter?.style.transform||'translate3d(0,0,0)';
-    const incomingFrom=preview.main.style.transform||`translate3d(${direction>0?width:-width}px,0,0)`;
+    const footerFrom=currentFooter?.style.transform||'translateX(0)';
+    const incomingFrom=preview.main.style.transform||`translateX(${direction>0?width:-width}px)`;
     const previewFooterFrom=preview.footer?.style.transform||incomingFrom;
     const targetUrl=preview.url;
     const targetScroll=Number.isFinite(preview.targetScroll)
       ?preview.targetScroll
       :destinationScrollForPath(normalizedPath(targetUrl.pathname));
     await Promise.all([
-      animateElementTransform(current,currentFrom,`translate3d(${direction>0?-width:width}px,0,0)`,330),
-      currentFooter?.style.transform?animateElementTransform(currentFooter,footerFrom,`translate3d(${direction>0?-width:width}px,0,0)`,330):Promise.resolve(),
-      animateElementTransform(preview.main,incomingFrom,'translate3d(0,0,0)',330),
-      preview.footer?animateElementTransform(preview.footer,previewFooterFrom,'translate3d(0,0,0)',330):Promise.resolve()
+      animateElementTransform(current,currentFrom,`translateX(${direction>0?-width:width}px)`,330),
+      currentFooter?.style.transform?animateElementTransform(currentFooter,footerFrom,`translateX(${direction>0?-width:width}px)`,330):Promise.resolve(),
+      animateElementTransform(preview.main,incomingFrom,'translateX(0)',330),
+      preview.footer?animateElementTransform(preview.footer,previewFooterFrom,'translateX(0)',330):Promise.resolve()
     ]);
     try{
       await applyPage(targetUrl,{transitionDirection:0,preserveScrollY:targetScroll});
