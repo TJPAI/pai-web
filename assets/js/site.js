@@ -172,7 +172,6 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
   document.querySelectorAll('.footer-meta span').forEach(el=>{el.textContent='© '+new Date().getFullYear()+' PAI Research Center · Tongji University';});
 
   let closeOrbitMenu=()=>{};
-  let prepareOrbitNavigation=()=>{};
   const setMobileMenu=open=>{
     const header=document.querySelector('.site-header');
     const menu=header?.querySelector('.mobile-menu');
@@ -592,8 +591,7 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     if(mobileMenu){
       setMobileMenu(false);
     }
-    const orbitLink=link.closest('.pai-orbit-wheel');
-    if(orbitLink) prepareOrbitNavigation(link,event.detail===0);
+    if(link.closest('.pai-orbit-wheel')) closeOrbitMenu();
     saveCurrentScroll();
     cacheCurrentPageSnapshot();
     const label=(link.textContent||'').trim();
@@ -605,13 +603,6 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       options={preserveScrollY:destinationScrollForPath(normalizedPath(url.pathname))};
     }
     options={...options,focusDestination:event.detail===0};
-    const sourcePath=normalizedPath();
-    const homeOrbitLanguage=orbitLink&&isLanguageSwitch&&(sourcePath==='/'||sourcePath==='/en/')&&counterpartFor(sourcePath)===normalizedPath(url.pathname);
-    // Use a fresh document only for the problematic homepage orbit language switch.
-    if(homeOrbitLanguage){
-      location.assign(url.href);
-      return;
-    }
     applyPage(url,options).then(()=>{pendingMobileSelection=null;}).catch(()=>{
       pendingMobileSelection?.restore();
       location.href=url.href;
@@ -1437,27 +1428,16 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       }
       toggle.setAttribute('aria-label',open?(normalizedPath().startsWith('/en/')?'Close quick menu':'关闭快捷菜单'):(normalizedPath().startsWith('/en/')?'Open quick menu':'打开快捷菜单'));
     };
-    closeOrbitMenu=()=>setOpen(false);
+    closeOrbitMenu=()=>{
+      if(wheel.contains(document.activeElement)) toggle.focus({preventScroll:true});
+      setOpen(false);
+    };
     let capturedPointer=null;
     const releaseOrbitPointer=()=>{
       if(!capturedPointer) return;
       const {node,id}=capturedPointer;
       capturedPointer=null;
       try{if(node.hasPointerCapture?.(id))node.releasePointerCapture(id);}catch(_e){}
-    };
-    prepareOrbitNavigation=(link,keyboard)=>{
-      releaseOrbitPointer();
-      dragging=false;
-      moved=false;
-      orbit.classList.remove('dragging');
-      if(wheel.contains(document.activeElement)) document.activeElement.blur();
-      setOpen(false);
-      // Finish the closing transition before the shared router replaces page DOM.
-      // Ordinary manual opening/closing retains its existing animation.
-      for(const animation of wheel.getAnimations?.({subtree:true})||[]){
-        try{animation.finish();}catch(_e){try{animation.cancel();}catch(_ignored){}}
-      }
-      if(keyboard) toggle.focus({preventScroll:true});
     };
     const begin=e=>{
       if(!orbit.classList.contains('open')) return;
