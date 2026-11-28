@@ -119,6 +119,7 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
        await orbit.click();
        const item=p.locator('.pai-orbit-item[aria-label="'+label+'"]');
        await item.waitFor({state:'attached'});
+       assert.notEqual(await p.locator('.pai-orbit-wheel').evaluate(e=>getComputedStyle(e).display),'none');
        // Sector clip paths are not rectangular hit targets; dispatch the activation
        // directly, with focus, to exercise shared routing and cleanup deterministically.
        await p.evaluate(()=>{window.__orbitNavigationProbe=true;});
@@ -128,6 +129,7 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
        assert.equal(await p.evaluate(()=>window.__orbitNavigationProbe===true),true);
        await p.waitForFunction(()=>!document.querySelector('.pai-orbit.open,.pai-orbit.dragging,.pai-orbit.auto-rotating')&&!document.activeElement?.closest('.pai-orbit-wheel'));
        assert.equal(await orbit.getAttribute('aria-expanded'),'false');
+       assert.equal(await p.locator('.pai-orbit-wheel').evaluate(e=>getComputedStyle(e).display),'none');
        await p.waitForFunction(()=>document.querySelector('main').style.willChange==='');
      }
      assert.equal(await p.evaluate(()=>window.scrollY),0);
