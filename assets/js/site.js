@@ -791,7 +791,11 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     const shell=document.createElement('div');
     shell.setAttribute('aria-hidden','true');
     Object.assign(shell.style,{
-      position:'fixed',inset:'0',overflow:'hidden',pointerEvents:'none',
+      // T16-S: preserve the original sibling preview, but do not cap its
+      // painting boundary at the layout viewport's innerHeight.
+      position:'fixed',top:'0',left:'0',right:'0',
+      height:`${Math.max(window.innerHeight,document.documentElement.scrollHeight-window.scrollY)}px`,
+      overflow:'hidden',pointerEvents:'none',
       zIndex:'12',contain:'layout paint',background:'transparent'
     });
     const previewMain=document.importNode(nextMain,true);
