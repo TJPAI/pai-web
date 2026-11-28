@@ -1240,5 +1240,5 @@ html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-s
 }
 
 /* Confidential results: preserve the standard card layout without exposing details. */
-.page-results .industry-six-rows .industry-card .industry-confidential{display:flex;align-items:flex-start;gap:6px;color:#647084;margin:0 0 6px;line-height:1.58;overflow-wrap:anywhere}
+.page-results .industry-six-rows .industry-card .industry-confidential{display:flex;align-items:flex-start;gap:6px;color:#96713B;margin:0 0 6px;line-height:1.58;overflow-wrap:anywhere}
 .page-results .industry-six-rows .industry-confidential svg{flex:0 0 14px;margin-top:2px}
