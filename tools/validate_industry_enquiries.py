@@ -47,9 +47,9 @@ for page, english in [('publications.html', False), ('en/publications.html', Tru
         errors.append(f'{page}: expected {len(FULL_ENGLISH)} technology cards, got {len(cards)}')
     for ident, card in cards:
         if ident in ('earth', 'blasting'):
-            notice = 'Technical and application details are confidential. Further discussion requires a signed non-disclosure agreement (NDA).' if english else '相关技术及应用信息不公开，签署保密协议后可进一步交流。'
-            if 'class="industry-summary"' in card or 'class="industry-meta"' in card:
-                errors.append(f'{page}:{ident}: confidential details must not be present in public HTML')
+            notice = 'Details are confidential. Further discussion requires a signed non-disclosure agreement (NDA).' if english else '相关信息不公开，签署保密协议后方可进一步交流。'
+            if 'class="industry-summary"' in card or card.count('class="industry-meta"') != 2:
+                errors.append(f'{page}:{ident}: confidential summary must be absent and two metadata fields retained')
             if card.count('class="industry-confidential"') != 1 or notice not in card:
                 errors.append(f'{page}:{ident}: missing NDA notice')
         elif 'class="industry-confidential"' in card:
