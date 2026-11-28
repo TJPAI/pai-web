@@ -47,7 +47,7 @@ const { pathToFileURL } = require("node:url");
        const id=card.id, title=card.querySelector(".title-item"),summary=card.querySelector(".industry-summary"),meta=[...card.querySelectorAll(".industry-meta")];
        if(confidentialIds.has(id)){
         const notice=card.querySelector('.industry-confidential');
-        if(!title||summary||meta.length||!notice||!card.querySelector('.industry-link')){fail.push(id+': invalid confidential card');continue}
+        if(!title||summary||meta.length!==2||!notice||!card.querySelector('.industry-link')){fail.push(id+': invalid confidential card');continue}
         if(!notice.textContent.includes(document.documentElement.lang.startsWith('zh')?'签署保密协议':'non-disclosure agreement (NDA)'))fail.push(id+': NDA notice missing');
         if(notice.scrollWidth>notice.clientWidth+1||notice.scrollHeight>notice.clientHeight+1||notice.getClientRects().length===0)fail.push(id+': NDA notice clipped');
         continue;
