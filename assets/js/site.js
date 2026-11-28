@@ -592,7 +592,8 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     if(mobileMenu){
       setMobileMenu(false);
     }
-    if(link.closest('.pai-orbit-wheel')) prepareOrbitNavigation(link,event.detail===0);
+    const orbitLink=link.closest('.pai-orbit-wheel');
+    if(orbitLink) prepareOrbitNavigation(link,event.detail===0);
     saveCurrentScroll();
     cacheCurrentPageSnapshot();
     const label=(link.textContent||'').trim();
@@ -604,10 +605,15 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       options={preserveScrollY:destinationScrollForPath(normalizedPath(url.pathname))};
     }
     options={...options,focusDestination:event.detail===0};
-    applyPage(url,options).then(()=>{pendingMobileSelection=null;}).catch(()=>{
+    const sourcePath=normalizedPath();
+    const deferHomeOrbitLanguage=orbitLink&&isLanguageSwitch&&(sourcePath==='/'||sourcePath==='/en/')&&counterpartFor(sourcePath)===normalizedPath(url.pathname);
+    // Give the closed orbit a rendering boundary before swapping the homepage.
+    const navigate=()=>applyPage(url,options).then(()=>{pendingMobileSelection=null;}).catch(()=>{
       pendingMobileSelection?.restore();
       location.href=url.href;
     });
+    if(deferHomeOrbitLanguage) requestAnimationFrame(()=>requestAnimationFrame(navigate));
+    else navigate();
   });
 
   addEventListener('popstate',event=>{
