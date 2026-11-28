@@ -114,7 +114,7 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
      for(const key of ['cooperation','recruitment']){
        const card=page.locator('#'+key);
        const button=card.locator('button[data-contact-phone]');
-       const digits=(key==='cooperation'?['159','2179','7370']:['195','3699','0671']).join('');
+       const digits=(key==='cooperation'?['195','3699','0671']:['137','6143','9142']).join('');
        if(width===390) await button.tap(); else {await button.focus();await button.press('Enter');}
        const link=card.locator('a[href^="tel:"]');
        await link.waitFor();
