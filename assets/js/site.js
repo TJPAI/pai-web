@@ -172,6 +172,7 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
   document.querySelectorAll('.footer-meta span').forEach(el=>{el.textContent='© '+new Date().getFullYear()+' PAI Research Center · Tongji University';});
 
   let closeOrbitMenu=()=>{};
+  let prepareOrbitNavigation=()=>{};
   const setMobileMenu=open=>{
     const header=document.querySelector('.site-header');
     const menu=header?.querySelector('.mobile-menu');
@@ -591,7 +592,7 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
     if(mobileMenu){
       setMobileMenu(false);
     }
-    if(link.closest('.pai-orbit-wheel')) closeOrbitMenu();
+    if(link.closest('.pai-orbit-wheel')) prepareOrbitNavigation(link,event.detail===0);
     saveCurrentScroll();
     cacheCurrentPageSnapshot();
     const label=(link.textContent||'').trim();
@@ -1438,6 +1439,20 @@ document.addEventListener('error',function(event){var el=event.target;if(el&&el.
       const {node,id}=capturedPointer;
       capturedPointer=null;
       try{if(node.hasPointerCapture?.(id))node.releasePointerCapture(id);}catch(_e){}
+    };
+    prepareOrbitNavigation=(link,keyboard)=>{
+      releaseOrbitPointer();
+      dragging=false;
+      moved=false;
+      orbit.classList.remove('dragging');
+      if(wheel.contains(document.activeElement)) document.activeElement.blur();
+      setOpen(false);
+      // Finish the closing transition before the shared router replaces page DOM.
+      // Ordinary manual opening/closing retains its existing animation.
+      for(const animation of wheel.getAnimations?.({subtree:true})||[]){
+        try{animation.finish();}catch(_e){try{animation.cancel();}catch(_ignored){}}
+      }
+      if(keyboard) toggle.focus({preventScroll:true});
     };
     const begin=e=>{
       if(!orbit.classList.contains('open')) return;
