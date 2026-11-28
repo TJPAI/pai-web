@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /
+
+# Preview environment only. Indexing is disabled by config/site.json.

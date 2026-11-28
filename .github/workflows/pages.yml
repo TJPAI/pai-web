@@ -1,0 +1,47 @@
+name: Deploy release preview to GitHub Pages (manual only)
+
+# Manual-only deployment for the controlled release test branch.
+# This workflow never runs on push: creating or updating
+# release/preview-20261129 must not deploy the official site.
+# Run it by hand with workflow_dispatch only, after review.
+# It deploys only the committed built static files; it does not
+# rebuild from private source, tools, or configuration.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release tree
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Stage deploy tree without workflow metadata
+        run: |
+          set -euo pipefail
+          rm -rf _deploy
+          mkdir _deploy
+          tar --exclude='./.git' --exclude='./.github' --exclude='./_deploy' -cf - . | tar -xf - -C _deploy
+          test -f _deploy/index.html
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _deploy
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

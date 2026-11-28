@@ -1,0 +1,1865 @@
+/* Generated deployment bundle. Source of truth remains refine.css and its imported layers. */
+
+/* ---- refine-base.css ---- */
+/* Homepage refinement — final mobile visual pass */
+.home-hero .hero-kicker{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
+.home-hero .hero-kicker:before{content:"";width:32px;height:1px;background:var(--graphite);opacity:.45}
+.home-hero .hero-note{max-width:520px;color:var(--muted);font-size:var(--text-support-size);margin:0 0 28px}
+.research-code{display:flex;align-items:baseline;gap:9px;font-weight:700}.research-index{display:inline;color:var(--muted);font-weight:450;letter-spacing:.06em}
+.partner-inline{font-weight:520}
+.highlight p{max-width:34em}
+.impact .tag{margin-top:0}.impact-capabilities{margin-top:14px;color:var(--ink);font-size:var(--text-support-size);font-weight:600;letter-spacing:.005em}
+.home-news-meta{display:none}
+
+/* Shared inner-page system */
+.page-hero{padding:112px 0 82px}.page-hero .container{max-width:1120px}.page-hero .eyebrow{margin-bottom:14px}.page-hero h1{margin:0 0 22px}.page-hero p{max-width:760px;font-size:var(--text-lead-size);line-height:var(--text-lead-line);margin:0;color:var(--muted)}
+.content-section{padding:96px 0}.content-section h2{margin:10px 0 24px}.content-section p{font-size:var(--text-body-size);line-height:1.85}.prose h2+ p{margin-top:0}.prose h2:not(:first-child){margin-top:64px}.muted{color:var(--muted)}
+.inner-section{padding:104px 0}.inner-section.soft{background:var(--soft)}
+.research-detail{max-width:920px}.research-detail h2{max-width:18em}.research-detail .muted{font-size:var(--text-support-size);line-height:1.8;margin-top:26px}
+.direction-id{display:flex;align-items:baseline;gap:10px;margin-bottom:22px;font-size:11px;letter-spacing:.11em}.direction-id span{color:#9AA1AC;font-weight:500}.direction-id strong{color:var(--ink);font-size:12px;letter-spacing:.12em}.direction-id em{font-style:normal;color:var(--muted);letter-spacing:.035em;text-transform:uppercase;font-size:9px}.direction-keywords{letter-spacing:.005em}
+.join-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.join-item{padding:30px 24px 34px}.join-item+.join-item{border-left:1px solid var(--line)}.join-item .num{margin-bottom:26px}.join-item h3{margin:0 0 12px}.join-item p{margin:0;color:var(--muted);font-size:var(--text-support-size);line-height:1.7}.join-context{border-top:1px solid var(--line)}
+
+/* Shared compact footer */
+.site-footer.compact-footer{padding:38px 0 18px}.compact-footer .footer-grid{grid-template-columns:1.2fr 1.2fr 1fr;gap:42px;align-items:start}.compact-footer .brand strong{letter-spacing:-.025em}.compact-footer .brand span{opacity:.58}.compact-footer .footer-links{display:flex;flex-wrap:wrap;gap:8px 22px;align-content:flex-start;opacity:.88}.compact-footer .footer-contact{font-size:13px;line-height:1.65;color:rgba(255,255,255,.48)}.compact-footer .footer-meta{margin-top:24px;color:rgba(255,255,255,.42)}.compact-footer .footer-meta a{color:inherit}
+
+/* Publications */
+.publication-note{display:flex;justify-content:space-between;gap:24px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:52px;color:var(--muted);font-size:13px}.publication-note strong{color:var(--ink);font-size:var(--text-support-size)}.pub-group+.pub-group{margin-top:72px}.pub-year-row{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:10px}.pub-year-row span{font-size:12px;color:var(--muted);padding-bottom:8px}.pub-year{font-size:36px;line-height:1;margin:0;letter-spacing:-.04em}.pub{padding:26px 0 28px}.pub h3{margin-bottom:9px}.pub-authors{color:#3f4652;font-size:var(--text-support-size);line-height:1.6}.pub-venue{font-size:var(--text-meta-size);line-height:1.55;margin-top:3px}.pub-actions a{display:inline-block}.pub-actions a+a{margin-left:16px}
+
+/* Team overview */
+.team-grid .person{min-width:0}.team-grid .person-photo{overflow:hidden}.team-grid .person-photo img{width:100%;height:100%;object-fit:cover}.person .research-line{font-size:var(--text-support-size);color:#3d4551;min-height:46px}.person .bio-short{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.person .person-link{display:inline-block;margin-top:10px;font-size:13px;font-weight:600}
+
+/* Faculty detail */
+.person-detail{display:grid;grid-template-columns:300px 1fr;gap:64px;align-items:start}.person-detail>.person-photo{position:sticky;top:96px;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 18%;background:#f2f3f5}.person-detail h2{margin:0 0 8px}.person-detail .role{color:var(--muted);margin-bottom:20px}.detail-block{padding:26px 0;border-top:1px solid var(--line)}.detail-block h3{margin:0 0 10px}.detail-block p{margin:0;color:#303642}.detail-list{margin:0;padding-left:1.2em;color:#303642}.detail-list li+li{margin-top:6px}
+
+@media(max-width:1024px){.join-grid{grid-template-columns:1fr 1fr}.join-item{border-bottom:1px solid var(--line)}.join-item+.join-item{border-left:0}.join-item:nth-child(even){border-left:1px solid var(--line)}.join-item:last-child{grid-column:1/-1}}
+
+@media(max-width:768px){
+ .home-hero{min-height:calc(100svh - 112px);padding:100px 0 54px}
+ .home-hero .hero-grid{min-height:calc(100svh - 252px);align-content:center}
+ .home-hero .hero-kicker{font-size:9px;margin-bottom:10px}.home-hero .hero-kicker:before{width:24px}
+ .home-hero h1{margin:18px 0 27px;max-width:8.8em}
+ .home-hero .hero-sub{font-size:15px;margin-bottom:2px}.home-hero .hero-en{font-size:10px;letter-spacing:.03em;opacity:.68;margin-bottom:26px}
+ .home-hero .hero-note{display:none}
+ .home-hero .hero-art{right:-138px;bottom:-82px;width:480px;height:370px;opacity:.34}.home-hero .hero-art svg{transform:scale(1.42)}
+ .challenge{position:relative;padding:31px 0 33px;overflow:hidden}.challenge .num{margin-bottom:15px}.challenge h3{position:relative;z-index:1}
+ .research{padding:50px 0 54px}.research-code{font-size:13px;margin-bottom:22px;gap:8px;font-weight:720;color:var(--graphite)}.research-index{font-size:12px;color:#A8AFB9;font-weight:450}.research h3{max-width:12.5em}.research p{font-size:14px;line-height:1.7;margin-top:16px}.research .text-link{margin-top:21px}
+ .partner{padding:25px 0}.home-hero~.section .partner h3{margin-bottom:8px}.partner-inline{font-size:15px;color:var(--muted);line-height:1.6}
+ .highlight,.highlight:nth-child(odd),.highlight:nth-child(even){padding:27px 0}.highlight p{font-size:13px;color:var(--muted);line-height:1.55}
+ .impact{padding:44px 0 46px}.impact .tag{font-size:9px;letter-spacing:.16em;margin-bottom:14px}.impact .num{display:none}.impact p{font-size:14px;color:#7C8594;margin-top:11px;letter-spacing:.01em}.impact-capabilities{font-size:15px;line-height:1.6;margin-top:12px;color:var(--ink);font-weight:620}.impact .fact{margin-top:16px;padding-top:14px;font-size:12px;line-height:1.65;color:var(--muted)}
+ .news-row{grid-template-columns:74px 46px 1fr;gap:11px;padding:25px 0}.news-row time,.news-row .label{font-size:var(--text-meta-size);line-height:1.4}
+ .join{padding:124px 0}.join h2{max-width:8.5em}
+ .page-hero{padding:82px 0 58px}.page-hero h1{margin-bottom:18px}.page-hero p{font-size:16px;line-height:1.75}.content-section,.inner-section{padding:72px 0}.prose h2:not(:first-child){margin-top:52px}
+ .research-direction{padding:58px 0 62px}.research-direction .research-detail>p:not(.muted){font-size:15px;line-height:1.82}.direction-id{margin-bottom:17px;gap:8px}.direction-id em{font-size:8px}.research-direction h2{margin-top:0;margin-bottom:20px}.research-detail .direction-keywords{font-size:12px;line-height:1.7;margin-top:22px;color:#7B8492}
+ .join-opportunities{padding:58px 0 66px}.join-grid{grid-template-columns:1fr;border-bottom:0}.join-item,.join-item:nth-child(even),.join-item:last-child{grid-column:auto;border-left:0;border-bottom:1px solid var(--line);padding:21px 0 23px}.join-item:first-child{border-top:0}.join-item h3{margin-bottom:8px}.join-item .num{margin-bottom:10px}.join-item p{font-size:13px;line-height:1.65}.join-context{padding-top:70px}.join-context .section-head{margin-bottom:48px}.join-context .section-head:last-of-type{margin-bottom:30px}.join-context .section-head h2{margin-top:8px}.join-context .btn{border-radius:3px;padding:12px 17px}
+ .site-footer.compact-footer{padding:28px 0 12px}.compact-footer .footer-grid{grid-template-columns:1fr;gap:16px}.compact-footer .brand strong{font-size:21px}.compact-footer .brand span{font-size:9px;opacity:.55}.compact-footer .footer-links{gap:6px 16px;font-size:11px;opacity:.82}.compact-footer .footer-contact{font-size:10px;line-height:1.55;color:rgba(255,255,255,.45)}.compact-footer .footer-meta{margin-top:14px;padding-top:11px;gap:8px 14px;font-size:9px;color:rgba(255,255,255,.38)}
+ .publication-note{display:block;margin-bottom:38px}.publication-note span{display:block;margin-top:4px}.pub-group+.pub-group{margin-top:58px}.pub-year{font-size:34px}.pub-year-row span{font-size:11px}.pub{padding:23px 0 25px}.pub-authors{font-size:13px}.pub-venue{font-size:var(--text-meta-size)}.pub-actions{font-size:var(--text-meta-size)}
+ .team-grid .person-photo{aspect-ratio:4/3}.person .research-line{min-height:auto}.person .bio-short{-webkit-line-clamp:2}.person .person-link{margin-top:8px}
+ .person-detail{grid-template-columns:1fr;gap:30px}.person-detail>.person-photo{position:static;aspect-ratio:3/2;max-height:320px;object-position:50% 20%}.detail-block{padding:22px 0}
+}
+
+/* Research naming expansion */
+.research-code-main{display:flex;flex-direction:column;gap:3px;min-width:0}.research-expansion{font-size:9px;line-height:1.35;letter-spacing:.045em;text-transform:uppercase;color:var(--muted);font-weight:500;max-width:25em}
+@media(max-width:768px){.research-code{align-items:flex-start}.research-expansion{font-size:8px;line-height:1.4;max-width:22em}}
+
+/* Mobile typography harmonization — 2026-09 */
+@media(max-width:768px){
+  /* Stable global hierarchy */
+  .page-hero p{font-size:var(--text-lead-size);line-height:1.62}
+  .content-section p,.prose p{font-size:var(--text-body-size);line-height:var(--text-body-line)}
+
+  /* Homepage: strong hero, quieter supporting hierarchy */
+  .home-hero .hero-sub{font-size:17px;line-height:1.5}
+  .research p{font-size:15px;line-height:1.68}
+  .highlight p{font-size:14px;line-height:1.6}
+  .impact p{font-size:15px;line-height:1.62}
+  .metric strong{font-size:32px;line-height:1}
+  .metric span{font-size:13px;line-height:1.45}
+
+  /* Research detail pages */
+  .research-direction .research-detail>p:not(.muted){font-size:16px;line-height:1.7}
+  .research-detail .direction-keywords{font-size:13px;line-height:1.55}
+  .direction-id{font-size:11px;line-height:1.2}
+
+  /* People cards: lift small text one step for phone readability */
+  .team-grid .person .role{font-size:13px;line-height:1.45}
+  .team-grid .person .research-line{font-size:var(--text-support-size);line-height:var(--text-support-line)}
+  .team-grid .person .bio-short{font-size:14px;line-height:1.6}
+  .team-grid .person .person-link{font-size:13px;line-height:1.45}
+
+  /* Join */
+  .join-item p{font-size:var(--text-support-size);line-height:var(--text-support-line)}
+
+  /* Footer: readable but still subordinate */
+  .compact-footer .brand strong{font-size:21px}
+  .compact-footer .brand span{font-size:10px}
+  .compact-footer .footer-links{font-size:12px;line-height:1.4}
+  .compact-footer .footer-contact{font-size:13px;line-height:1.55}
+  .compact-footer .footer-meta{font-size:11px;line-height:1.4}
+}
+
+/* Achievement index hierarchy */
+@media(max-width:768px){.highlight .num{margin:2px 0 0}}
+
+/* ---- app-core.css ---- */
+/* Shared cross-page presentation. Behavior belongs in site.js. */
+
+html{scroll-behavior:auto!important}
+
+/* Native hash fallback aligns targets to the header edge.
+   Lightweight navigation performs a final live-header correction in anchor-navigation.js. */
+main [id]{scroll-margin-top:73px}
+@media(max-width:768px){main [id]{scroll-margin-top:63px}}
+
+/* One menu button style everywhere */
+@media(max-width:768px){
+  .menu-btn{position:relative!important;width:50px!important;height:50px!important;padding:0!important;margin-right:-7px!important;font-size:0!important;line-height:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;-webkit-appearance:none!important;appearance:none!important;-webkit-tap-highlight-color:transparent!important;color:#318AF5!important;touch-action:manipulation!important;cursor:pointer}
+  .menu-btn:hover,.menu-btn:active,.menu-btn:focus,.menu-btn:focus-visible{background:transparent!important;box-shadow:none!important;outline:none!important}
+  .menu-btn::before,.menu-btn::after{content:"";position:absolute;left:8px;width:34px;height:3px;border-radius:2px;background:currentColor;transform-origin:center;transition:top .18s ease,transform .18s ease,opacity .12s ease,box-shadow .18s ease;pointer-events:none}
+  .menu-btn::before{top:13px;box-shadow:0 10px 0 currentColor,0 20px 0 currentColor}
+  .menu-btn::after{top:23px;opacity:0}
+  .menu-btn[aria-expanded="true"]::before{top:23px;box-shadow:none;transform:rotate(45deg)}
+  .menu-btn[aria-expanded="true"]::after{top:23px;opacity:1;transform:rotate(-45deg)}
+}
+
+/* Team overview: globally available so direct load and SPA navigation match */
+.team-grid img.person-photo{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:50% 20%;display:block;background:#f2f3f5}
+.team-grid .person:nth-child(1) img.person-photo{object-position:50% 22%}
+.team-grid .person:nth-child(2) img.person-photo{object-position:50% 20%}
+.team-grid .person:nth-child(3) img.person-photo{object-position:50% 18%}
+.team-grid .person:nth-child(4) img.person-photo{object-position:50% 20%}
+.team-grid .person:nth-child(5) img.person-photo{object-position:50% 18%}
+.team-grid .person:nth-child(6) img.person-photo{object-position:50% 18%}
+.person-photo-source{font-size:10px;color:var(--muted);margin-top:6px}
+@media(max-width:768px){
+  .team-grid img.person-photo{aspect-ratio:4/3}
+  .team-grid .person{padding-bottom:4px}
+  .team-grid .person h3{margin-top:14px;margin-bottom:4px}
+  .team-grid .person .role{margin-bottom:9px}
+  .team-grid .person .research-line{margin-bottom:8px}
+  .team-grid .person .bio-short{-webkit-line-clamp:2;margin-top:0}
+}
+
+/* Publications */
+.pub-year-row{justify-content:flex-start;align-items:baseline;gap:12px}
+.pub-year-row span{padding-bottom:0}
+.publication-toolbar{margin:-20px 0 42px;padding:14px 0 6px;border-bottom:1px solid var(--line)}
+.publication-years{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0;padding:0}
+.publication-year-link{appearance:none;border:0;background:transparent;padding:0;color:var(--muted);font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.publication-year-link:hover,.publication-year-link:focus-visible{color:var(--ink)}
+.pub-toggle{appearance:none;border:0;background:transparent;color:var(--ink);font:inherit;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;padding:10px 0 0}
+.pub-toggle:hover{text-decoration:underline}
+.pub.is-collapsed{display:none}
+[data-pub-enhancement][hidden]{display:none!important}
+.pub-back-top{position:fixed;right:22px;bottom:28px;z-index:45;border:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-radius:999px;padding:9px 13px;color:var(--ink);font-size:12px;font-weight:600;box-shadow:0 6px 22px rgba(17,24,39,.08);opacity:0;pointer-events:none;transform:translateY(8px);transition:.18s ease;-webkit-tap-highlight-color:transparent}
+.pub-back-top.visible{opacity:1;pointer-events:auto;transform:none}
+@media(max-width:768px){
+  .publication-toolbar{margin:-14px 0 34px;padding:11px 0 6px}
+  .publication-years{gap:8px 17px}
+  .publication-year-link{font-size:13.5px}
+  .pub-toggle{font-size:12px;padding-top:8px}
+  .pub-back-top{right:18px;bottom:92px}
+}
+
+/* Canonical research identity: homepage and Research page share one definition. */
+.research-identity{display:grid;grid-template-columns:max-content max-content minmax(0,1fr);column-gap:12px;align-items:start;justify-content:start;width:100%;max-width:100%;padding:0;line-height:1;text-align:left}
+.research-identity>.research-index{grid-column:1;margin:0;padding:0;font-size:18px;line-height:1.05;letter-spacing:.08em;font-weight:700;color:#A8AFB9;white-space:nowrap}
+.research-identity>.research-code-main{display:contents}
+.research-identity>.research-code-main>span{grid-column:2;margin:0;padding:0;font-size:18px;line-height:1.05;letter-spacing:.09em;font-weight:700;color:var(--ink);white-space:nowrap}
+.research-identity>.research-code-main>.research-expansion{grid-column:3;width:auto;max-width:180px;margin:0;padding:0;font-size:8.5px;line-height:1.05;letter-spacing:.055em;font-style:normal;font-weight:500;text-transform:uppercase;color:var(--muted);white-space:normal;text-align:left}
+.research .research-identity{margin-bottom:34px}
+.research-direction .research-identity{margin-bottom:22px}
+@media(max-width:768px){
+  .research-identity>.research-index,.research-identity>.research-code-main>span{font-size:17px}
+  .research-identity>.research-code-main>.research-expansion{font-size:8px;line-height:1.05}
+  .research .research-identity{margin-bottom:22px}
+  .research .research-title,.research-direction .research-title{width:auto;max-width:13em;margin:0 0 20px;padding:0}
+}
+
+/* About page links */
+#international-impact .impact-link{color:inherit;text-decoration:none}
+#international-impact .impact-link:hover,#international-impact .impact-link:focus-visible{text-decoration:underline;text-underline-offset:3px}
+
+/* Canonical mobile presentation — one final definition per component. */
+@media(max-width:768px){
+  /* Shared inner-page rhythm, using Join as the reference pace. */
+  main>.page-hero{padding:80px 0 56px}
+  main>.content-section:not(.join-opportunities){padding-top:68px;padding-bottom:68px}
+  #overview.section,#collaboration.section,#achievements.section,#international-impact.section{padding-top:76px;padding-bottom:76px}
+  #collaboration .section-head,#achievements .section-head,#international-impact .section-head{margin-bottom:32px}
+
+  /* Contact */
+  .contact-grid{gap:18px;margin-top:-10px}
+  .contact-card{padding:20px 0}
+  .contact-card h3{margin-bottom:14px}
+  .contact-card p{line-height:1.72}
+  .contact-card p+p{margin-top:20px}
+  .contact-card p strong{font-weight:600}
+  .contact-card p a{font-weight:400}
+
+  /* Research */
+  .research-direction{padding-top:48px;padding-bottom:49px}
+  .research-direction .research-identity{margin-bottom:22px}
+  .research-direction .direction-keywords{margin-top:20px}
+
+
+  /* Publications */
+  .pub{padding-top:21px;padding-bottom:23px;border-top-color:#EEF0F3}
+  .pub h3{margin-bottom:8px}
+  .pub-authors{color:#78808D;line-height:1.55}
+  .pub-venue{margin-top:5px;color:#9299A5;line-height:1.5}
+  .pub-actions{margin-top:13px;color:#747C89}
+
+  /* Footer */
+  .site-footer.compact-footer{padding:24px 0 10px}
+  .compact-footer .footer-grid{gap:14px}
+  .compact-footer .footer-links{gap:5px 15px}
+  .compact-footer .brand span{opacity:.48}
+  .compact-footer .footer-contact{color:rgba(255,255,255,.40)}
+  .compact-footer .footer-meta{margin-top:10px;padding-top:8px;color:rgba(255,255,255,.34)}
+}
+
+/* English mobile reading polish — 2026-09-19 */
+@media(max-width:768px){
+  html[lang="en"] .research-title{max-width:15.5em}
+  html[lang="en"] .research-detail>p:not(.direction-keywords),
+  html[lang="en"] .contact-card>p,
+  html[lang="en"] .prose>p{max-width:34em}
+
+  html[lang="en"] .team-grid .person .research-line{margin-bottom:11px}
+  html[lang="en"] .team-grid .person .bio-short{color:#747D8B;margin-bottom:11px}
+  html[lang="en"] .team-grid .person .person-link,
+  html[lang="en"] .team-grid .person>a:last-child{display:inline-block;margin-top:3px}
+
+  html[lang="en"] .prose h2+p{margin-top:16px}
+}
+
+/* Site completeness polish — 2026-09-19 */
+.skip-link{position:fixed;left:16px;top:10px;z-index:9999;transform:translateY(-150%);padding:9px 13px;border-radius:4px;background:#171A1F;color:#fff;font-size:13px;font-weight:650;text-decoration:none;transition:transform .14s ease}
+.skip-link:focus{transform:none}
+a:focus-visible,button:focus-visible{outline:2px solid #318AF5;outline-offset:3px}
+.updates-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--line)}
+.update-item{padding:28px 34px 30px 0;border-bottom:1px solid var(--line)}
+.update-item+.update-item{padding-left:34px;border-left:1px solid var(--line)}
+.update-meta{margin-bottom:15px;font-size:11px;line-height:1.3;font-weight:700;letter-spacing:.12em;color:var(--muted)}
+.update-item h3{margin:0 0 12px}
+.update-item p{margin:0 0 17px;color:var(--muted);line-height:1.68}
+@media(max-width:768px){
+  .menu-btn:focus-visible{outline:0!important;box-shadow:0 0 0 3px rgba(49,138,245,.25)!important;border-radius:8px!important}
+  .updates-grid{grid-template-columns:1fr}
+  .update-item,.update-item+.update-item{padding:24px 0 26px;border-left:0}
+  .update-meta{margin-bottom:12px}
+  .update-item p{margin-bottom:14px}
+}
+
+/* PAI orbit quick menu — clean rebuild from the pre-orbit stable CSS. */
+.pai-orbit{position:fixed;left:50%;top:calc(100dvh - 122px);width:0;height:0;overflow:visible;z-index:1200;pointer-events:none;--orbit-size:min(52vw,220px);--orbit-x:0px;--orbit-y:0px}
+.pai-orbit-backdrop{position:absolute;inset:0;background:transparent;opacity:0;pointer-events:none}
+.pai-orbit-wheel{position:absolute;left:var(--orbit-x);top:var(--orbit-y);width:var(--orbit-size);height:var(--orbit-size);border-radius:50%;background:rgba(255,255,255,.98);box-shadow:0 14px 42px rgba(20,24,32,.14);opacity:0;transform:translate(-50%,-50%) scale(.06) rotate(var(--orbit-rotation,0deg));transform-origin:50% 50%;transition:opacity .48s ease,transform .78s cubic-bezier(.22,.72,.18,1);pointer-events:none;touch-action:none;will-change:transform}
+.pai-orbit-wheel:before{content:"";position:absolute;inset:32%;border:1px solid rgba(23,26,31,.06);border-radius:50%;pointer-events:none}
+.pai-orbit-item{position:absolute;inset:0;display:block;color:#171A1F;text-decoration:none;transform:rotate(var(--item-angle));transform-origin:50% 50%;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;z-index:2}
+.pai-orbit-sr{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.pai-orbit-char{position:absolute;left:50%;top:50%;width:1.05em;height:1.2em;margin:-.6em 0 0 -.525em;display:flex;align-items:center;justify-content:center;color:#171A1F;font-size:11.2px;font-weight:620;line-height:1;letter-spacing:0;transform:rotate(var(--char-angle)) translateY(calc(var(--orbit-size)*-.415));transform-origin:50% 50%;pointer-events:none;user-select:none;-webkit-user-select:none;z-index:3;backface-visibility:hidden;-webkit-backface-visibility:hidden;will-change:transform}
+.pai-orbit-toggle{position:absolute;left:var(--orbit-x);top:var(--orbit-y);width:54px;height:54px;transform:translate(-50%,-50%);border:1px solid rgba(23,26,31,.09);border-radius:50%;background:#fff;box-shadow:0 5px 16px rgba(20,24,32,.09);pointer-events:auto;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pai-orbit-toggle span,.pai-orbit-toggle span:after{position:absolute;content:"";left:50%;top:50%;width:19px;height:1.4px;background:#171A1F;border-radius:2px;transform:translate(-50%,-50%);transition:transform .58s cubic-bezier(.2,.8,.2,1)}
+.pai-orbit-toggle span:after{transform:translate(-50%,-50%) rotate(90deg)}
+.pai-orbit.open{pointer-events:none}
+.pai-orbit.open .pai-orbit-backdrop{opacity:0;pointer-events:none}
+.pai-orbit.open .pai-orbit-wheel{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(var(--orbit-rotation,0deg));pointer-events:auto;transition-duration:.30s,.52s;transition-timing-function:ease,cubic-bezier(.16,.84,.2,1)}
+.pai-orbit.dragging .pai-orbit-wheel,.pai-orbit.auto-rotating .pai-orbit-wheel{transition:none!important}
+.pai-orbit.open .pai-orbit-toggle span{transform:translate(-50%,-50%) rotate(45deg);transition-duration:.40s}
+.pai-orbit.open .pai-orbit-toggle span:after{transform:translate(-50%,-50%) rotate(90deg)}
+@media(min-width:769px){.pai-orbit{--orbit-size:240px;top:calc(100dvh - 136px)}.pai-orbit-toggle{width:58px;height:58px}}
+@media(max-width:390px){.pai-orbit{--orbit-size:min(54vw,210px);top:calc(100dvh - 117px)}}
+@media(prefers-reduced-motion:reduce){.pai-orbit *{transition:none!important}}
+
+@media(max-width:768px){html[lang="en"] .pai-orbit-char{font-size:10.4px}}
+
+
+/* Only current page lettering is emphasized; do not color orbit sectors. */
+.pai-orbit-char.is-current{color:#175E9E;font-weight:800;text-shadow:0 0 .15px currentColor}
+
+/* ---- typography.css ---- */
+/* Global typography hierarchy — single source of truth for title and body text typography.
+   Layout belongs in site.css/refine-base.css/app-core.css. Type size/weight/color belong here. */
+
+:root{
+  --title-display-size:clamp(42px,5vw,68px);
+  --title-page-size:clamp(42px,4.8vw,58px);
+  --title-section-size:clamp(30px,3.4vw,42px);
+  --title-feature-size:30px;
+  --title-item-size:20px;
+  --title-minor-size:16px;
+  --title-eyebrow-size:12px;
+  --title-display-weight:650;
+  --title-page-weight:650;
+  --title-section-weight:620;
+  --title-feature-weight:620;
+  --title-item-weight:650;
+  --title-minor-weight:650;
+  --title-index-weight:450;
+
+  /* Shared prose hierarchy */
+  --text-lead-size:18px;
+  --text-body-size:16px;
+  --text-support-size:14px;
+  --text-meta-size:13px;
+  --text-lead-line:1.75;
+  --text-body-line:1.70;
+  --text-support-line:1.60;
+  --text-meta-line:1.50;
+}
+
+/* Level 0 — homepage display title */
+.title-display{
+  font-size:var(--title-display-size)!important;
+  line-height:1.10!important;
+  letter-spacing:-.045em!important;
+  font-weight:var(--title-display-weight)!important;
+  color:var(--ink)!important;
+}
+
+/* Level 1 — page title */
+.title-page{
+  font-size:var(--title-page-size)!important;
+  line-height:1.10!important;
+  letter-spacing:-.04em!important;
+  font-weight:var(--title-page-weight)!important;
+  color:var(--ink)!important;
+}
+
+/* Level 2 — major section title */
+.title-section{
+  font-size:var(--title-section-size)!important;
+  line-height:1.16!important;
+  letter-spacing:-.03em!important;
+  font-weight:var(--title-section-weight)!important;
+  color:var(--ink)!important;
+}
+
+/* Level 3 — featured subsection / research title */
+.title-feature{
+  font-size:var(--title-feature-size)!important;
+  line-height:1.24!important;
+  letter-spacing:-.025em!important;
+  font-weight:var(--title-feature-weight)!important;
+  color:var(--ink)!important;
+}
+
+/* Level 4 — item/card/list title */
+.title-item{
+  font-size:var(--title-item-size)!important;
+  line-height:1.34!important;
+  letter-spacing:-.01em!important;
+  font-weight:var(--title-item-weight)!important;
+  color:var(--ink)!important;
+}
+
+/* Indexed items: number shares the title's size/line-height, but is visually de-emphasized. */
+.item-index{
+  font-size:var(--title-item-size)!important;
+  line-height:1.34!important;
+  font-weight:var(--title-index-weight)!important;
+  letter-spacing:0!important;
+  color:#8A93A2!important;
+  margin:0!important;
+  align-self:start!important;
+}
+
+/* Level 5 — minor detail title */
+.title-minor{
+  font-size:var(--title-minor-size)!important;
+  line-height:1.35!important;
+  letter-spacing:0!important;
+  font-weight:var(--title-minor-weight)!important;
+  color:var(--ink)!important;
+}
+
+/* Eyebrow / section kicker */
+.eyebrow{
+  font-size:var(--title-eyebrow-size)!important;
+  line-height:1.2!important;
+  letter-spacing:.17em!important;
+  font-weight:600!important;
+  color:var(--muted)!important;
+  text-transform:uppercase!important;
+}
+
+/* Shared prose levels */
+.text-lead{
+  font-size:var(--text-lead-size)!important;
+  line-height:var(--text-lead-line)!important;
+}
+.text-body{
+  font-size:var(--text-body-size)!important;
+  line-height:var(--text-body-line)!important;
+}
+.text-support{
+  font-size:var(--text-support-size)!important;
+  line-height:var(--text-support-line)!important;
+}
+.text-meta{
+  font-size:var(--text-meta-size)!important;
+  line-height:var(--text-meta-line)!important;
+}
+
+@media(max-width:768px){
+  :root{
+    --title-display-size:38px;
+    --title-page-size:34px;
+    --title-section-size:32px;
+    --title-feature-size:27px;
+    --title-item-size:20px;
+    --title-minor-size:17px;
+    --title-eyebrow-size:10px;
+    --text-lead-size:17px;
+    --text-body-size:16px;
+    --text-support-size:14px;
+    --text-meta-size:12px;
+  }
+}
+
+/* Bilingual footer geometry: matching slots across Chinese and English. */
+.site-footer .footer-links a:nth-child(-n+6){
+  width:4em;
+}
+.site-footer .footer-links a:nth-child(7){
+  width:2em;
+}
+
+/* English desktop header uses uppercase labels without changing its geometry. */
+@media(min-width:769px){
+  html[lang="en"] .site-header .nav-links a{text-transform:uppercase}
+}
+
+/* English title refinements — 2026-09-19 */
+@media(max-width:768px){
+  html[lang="en"] .research-title{font-size:26px!important;line-height:1.17!important;letter-spacing:-.022em!important}
+  html[lang="en"] .contact-card .title-item{letter-spacing:-.018em!important}
+}
+
+/* Semantic item headings may be h2 or h3; layout must not depend on rank. */
+.highlight .title-item{margin:0}
+.contact-card .title-item{margin:0 0 10px}
+.join-item .title-item{margin:0 0 12px}
+@media(max-width:768px){.join-item .title-item{margin-bottom:8px}}
+
+/* Platform introduction keeps its approved display scale. */
+#international-impact .title-section{font-size:clamp(30px,4vw,52px)!important;line-height:1.08!important;letter-spacing:-.035em!important}
+#international-impact .eyebrow{font-size:11px!important;line-height:1.3!important;letter-spacing:.16em!important}
+#international-impact .platform-china .title-item{font-size:20px!important;line-height:1.35!important}
+@media(max-width:768px){
+  #international-impact .platform-china .title-item{font-size:18px!important}
+}
+
+/* Desktop inner-page type scale. Homepage and mobile retain their established tokens. */
+@media(min-width:1025px){
+  .page-inner:not(.page-person-detail){
+    --title-page-size:48px;
+    --title-section-size:32px;
+    --title-feature-size:28px;
+    --title-item-size:20px;
+  }
+  .page-inner:not(.page-person-detail) :is(.prose>p,.research-detail>p:not(.direction-keywords)){
+    font-size:var(--text-body-size);
+    line-height:var(--text-body-line);
+    font-weight:400;
+  }
+  .page-inner :is(.section-head>p,.highlight p,.join-item p,.contact-card p,#international-impact .detail-block p,#collaboration .partner p){
+    font-size:var(--text-body-size);
+    line-height:var(--text-body-line);
+    font-weight:400;
+  }
+  .page-inner :is(.direction-keywords,.person .bio-short,.person .role,.pub-authors){
+    font-size:var(--text-support-size);
+    line-height:var(--text-support-line);
+  }
+  .page-inner :is(.person .person-link,.pub-venue,.pub-actions){
+    font-size:var(--text-meta-size);
+    line-height:var(--text-meta-line);
+  }
+  #international-impact .title-section{
+    font-size:var(--title-section-size)!important;
+    line-height:1.16!important;
+    letter-spacing:-.03em!important;
+  }
+  .page-inner .join-context .title-section{
+    --title-section-size:24px;
+  }
+  .page-results>.results-publications .pub-year{font-size:28px;font-weight:var(--title-feature-weight)}
+
+}
+
+/* ---- desktop-layout.css ---- */
+/* Full-viewport divider rules intentionally reach the viewport edges. On Windows Chrome,
+   classic scrollbars can make 100vw slightly wider than the visible page; clip only that
+   unintended root-level horizontal overflow without affecting vertical scrolling. */
+html,body{overflow-x:clip}
+
+/* Desktop header: keep logo and primary navigation together on every non-mobile viewport.
+   This must not depend on the 1025px wide-layout breakpoint because browser zoom changes CSS viewport width. */
+@media(min-width:769px){
+  .site-header .nav{
+    justify-content:flex-start;
+    gap:0;
+  }
+  .site-header .nav-links{
+    margin-left:clamp(24px,3vw,36px);
+  }
+}
+
+/* Desktop layout density — keep wide-screen reading focused without changing mobile presentation. */
+@media(min-width:1025px){
+  :root{
+    --desktop-wide:1180px;
+    --desktop-hero:1080px;
+    --desktop-main:1040px;
+    --desktop-read:900px;
+  }
+
+  /* Chrome may breathe a little wider than the reading canvas. */
+  .site-header .container,
+  .site-footer .container{
+    max-width:var(--desktop-wide);
+  }
+
+  /* Keep the hero relationship visible as one composition instead of two distant islands. */
+  .home-hero>.container{
+    max-width:var(--desktop-hero);
+  }
+  .home-hero .hero-grid{
+    grid-template-columns:minmax(0,1.16fr) minmax(320px,.84fr);
+    gap:56px;
+  }
+
+  /* Main desktop reading canvas. Backgrounds remain full-bleed; information stays central. */
+  .page-home>.section>.container,
+  main>.page-hero>.container,
+  main>.content-section>.container,
+  main>.section>.container{
+    max-width:var(--desktop-main);
+  }
+
+  /* Metrics benefit from an even tighter visual span. */
+  .home-numbers>.container{
+    max-width:var(--desktop-read);
+  }
+
+  /* Inner pages share a frame, but prose and publication lists keep their own measure.
+     Scope follows the current main element through lightweight navigation. */
+  .page-inner:not(.page-person-detail){
+    --desktop-prose:820px;
+  }
+  .page-inner:not(.page-person-detail)>.page-hero{
+    padding:80px 0 56px;
+  }
+  .page-inner:not(.page-person-detail)>.page-hero h1{
+    margin:0 0 20px;
+  }
+  .page-inner:not(.page-person-detail)>.page-hero p{
+    max-width:760px;
+  }
+  .page-inner:not(.page-person-detail)>:is(.content-section,.section){
+    padding-top:72px;
+    padding-bottom:72px;
+  }
+  .page-inner:not(.page-person-detail) .section-head{
+    margin-bottom:36px;
+  }
+  .page-inner>.content-section>.container.prose{
+    max-width:var(--desktop-prose);
+    margin-left:max(24px,calc((100% - var(--desktop-main))/2));
+  }
+  .page-inner .prose h2:not(:first-child){
+    margin-top:40px;
+  }
+  .page-inner .prose>p:last-child{
+    margin-bottom:0;
+  }
+  .page-research>.research-direction>.container,
+  .page-results>.results-achievements>.container,
+  .page-results>.results-publications>.container{
+    max-width:var(--desktop-read);
+  }
+  /* Align narrower reading columns to the page-hero rail, not the viewport center. */
+  .page-research>.research-direction>.container{
+    margin-left:max(24px,calc((100% - var(--desktop-main))/2));
+  }
+  /* The publication canvas must not change width when JavaScript inserts the list. */
+  .page-inner:not(.page-person-detail)>.results-publications{
+    padding-top:0;
+  }
+
+  /* Research: retain the three-direction sequence with a readable text measure. */
+  .page-research>.research-direction .research-title{max-width:28em;margin:0 0 20px}
+  .page-research>.research-direction .research-detail>p{max-width:var(--desktop-prose)}
+  .page-research>.research-direction .direction-id{margin-bottom:18px}
+  .page-research>.research-direction .direction-keywords{margin-top:20px;margin-bottom:0}
+
+  .page-inner #media-coverage .media-coverage{margin-top:24px}
+  .page-inner #media-coverage .media-summary{margin:0 0 24px}
+
+  .page-inner .join-context .section-head{margin-bottom:0}
+
+  /* Six faculty retain equal-sized cards, with compact and consistent row spacing. */
+  .page-inner .team-grid{gap:36px 28px}
+  .page-inner .team-grid .person .research-line{margin-top:12px}
+
+  /* Achievement 01–06 is one reading sequence, followed by the year-indexed papers. */
+  .page-results>.results-achievements .highlights,
+  .page-results>.results-publications .highlights{grid-template-columns:1fr}
+  .page-results>.results-achievements .highlights{margin-top:0}
+  .page-results>:is(.results-achievements,.results-publications) .highlight{
+    grid-template-columns:44px minmax(0,1fr);
+    gap:20px;
+    padding:22px 0;
+    border-left:0;
+  }
+  .page-results>:is(.results-achievements,.results-publications) .highlight p{max-width:none}
+  .page-results>.results-publications .results-publications-heading{border-top:0}
+  .page-results>.results-publications .publication-toolbar{margin:0 0 28px;padding:12px 0}
+  .page-results>.results-publications .pub{padding:20px 0}
+  .page-results>.results-publications .pub-group+.pub-group{margin-top:48px}
+  .page-results>.results-publications .pub-year-row{margin-bottom:12px}
+
+}
+
+/* ---- refine.css page-level refinements ---- */
+/* Shared presentation entry point. Bundle every layer here in cascade order. */
+/* Header brand: keep the accessible PAI text in the DOM, render the canonical static SVG mark visually. */
+.site-header .brand strong{
+  display:block;
+  width:92px;
+  height:48px;
+  font-size:0;
+  color:transparent;
+  background-repeat:no-repeat;
+  background-position:left center;
+  background-size:contain;
+  background-image:url("../images/brand/pai-logo.svg");
+}
+.site-header .brand span{display:none}
+@media(max-width:768px){
+  .site-header .brand strong{width:80px;height:42px}
+}
+
+/* English editorial hierarchy: use all caps only for small eyebrow labels. */
+html[lang^="en"] .eyebrow{text-transform:uppercase}
+
+/* Homepage actions: restrained institutional feedback instead of generic floating-button motion. */
+.home-hero .btn{transition:background-color .18s ease,border-color .18s ease,color .18s ease}
+.home-hero .btn:hover{transform:none}
+
+/* Orbit navigation is a mobile interaction aid; desktop already has the full top navigation. */
+@media(min-width:769px){
+  .pai-orbit{display:none!important}
+}
+
+/* Desktop editorial polish: give primary navigation and footer a little more presence without changing layout height. */
+@media(min-width:1025px){
+  .site-header .nav-links{font-size:15px;font-weight:560;gap:28px;letter-spacing:.005em}
+  .site-footer.compact-footer{padding:64px 0 28px}
+  .site-footer .brand strong{font-size:28px;letter-spacing:-.035em}
+  .site-footer .brand span{font-size:11px;line-height:1.35;margin-top:7px}
+  .site-footer .footer-links{font-weight:520;line-height:1.65}
+  .site-footer .footer-contact{line-height:1.8}
+  .site-footer .footer-meta{margin-top:42px;padding-top:20px}
+}
+
+/* Homepage vertical rhythm follows content density: quick metrics, steady collaboration, spacious visual work. */
+@media(min-width:769px){
+  .home-numbers{padding-top:98px;padding-bottom:100px}
+  .home-numbers .section-head{margin-bottom:42px}
+  .home-partners{padding-top:112px;padding-bottom:114px}
+  .home-partners .section-head{margin-bottom:46px}
+  .home-achievements{padding-top:132px;padding-bottom:130px}
+  .home-achievements .section-head{margin-bottom:50px}
+}
+
+/* Shared 2×2 partner-index skeleton; homepage and About keep their own density. */
+@media(min-width:1025px){
+  :is(.home-partners,.page-about #collaboration) .partner-grid{grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
+  :is(.home-partners,.page-about #collaboration) .partner{border-left:0;border-top:0;border-bottom:1px solid var(--line)}
+  :is(.home-partners,.page-about #collaboration) .partner:nth-child(even){border-left:1px solid var(--line)}
+
+  .home-partners .partner{padding:28px 34px 30px 0}
+  .home-partners .partner:nth-child(even){padding-left:34px;padding-right:0}
+  .home-partners .partner:nth-child(n+3){padding-top:30px}
+  .home-partners .partner h3{margin-bottom:14px}
+  .home-partners .partner p{font-size:17px;line-height:1.8;color:#394150}
+
+  .page-about #collaboration .partner{padding:30px 38px 32px 0}
+  .page-about #collaboration .partner:nth-child(even){padding-left:38px;padding-right:0}
+  .page-about #collaboration .partner:nth-child(n+3){padding-top:32px}
+  .page-about #collaboration .partner h3{margin-bottom:15px}
+  .page-about #collaboration .partner p{font-size:16px;line-height:1.78;color:#394150}
+}
+
+/* Homepage collaboration platforms: keep the three institutions equal, but present them as editorial rows instead of another three-column card grid. */
+@media(min-width:1025px){
+  .selected-updates .updates-grid{display:block;border-top:1px solid var(--line)}
+  .selected-updates .update-item,.selected-updates .update-item+.update-item{display:grid;grid-template-columns:130px minmax(260px,.8fr) minmax(0,1.2fr);gap:28px;align-items:start;padding:26px 0;border-left:0;border-bottom:1px solid var(--line)}
+  .selected-updates .update-meta{margin:4px 0 0}
+  .selected-updates .update-item h3{margin:0}
+  .selected-updates .update-item p{margin:0;max-width:46em}
+}
+
+/* Real-world application imagery on the home-page translation section. Preserve each source image's native aspect ratio. */
+.impact-visuals{display:grid;grid-template-columns:1.12fr .88fr;gap:18px;margin:0 0 38px;align-items:start}
+.impact-visual{margin:0;border:1px solid var(--line);background:var(--soft);overflow:hidden}
+.impact-visual a{display:block}
+.impact-visual img{display:block;width:100%;height:auto}
+.impact-visual figcaption{padding:14px 16px 16px;font-size:13px;line-height:1.55;color:var(--muted);border-top:1px solid var(--line)}
+.impact-visual figcaption strong{display:block;color:var(--ink);font-size:14px;font-weight:620;margin-bottom:3px}
+.impact-visual-source{font-size:11px;letter-spacing:.02em;color:#8A93A2}
+@media(max-width:768px){
+  .impact-visuals{grid-template-columns:1fr;gap:14px;margin-bottom:28px}
+  .impact-visual img{display:block;width:100%;height:auto}
+}
+
+/* Compact media coverage index: factual third-party coverage, visually secondary to research outcomes. */
+:is(.media-summary,.section-summary){max-width:760px;margin:-18px 0 30px;color:var(--muted);font-size:14px;line-height:1.75}
+/* Unified divider system: divider-wide is an explicit full-viewport rule; divider-short-list owns internal row rules. */
+.divider-wide{
+  display:block;
+  width:100vw;
+  height:0;
+  margin-left:calc(50% - 50vw);
+  border:0;
+  border-top:1px solid var(--line);
+}
+.page-hero.divider-wide{
+  width:auto;
+  height:auto;
+  margin-left:0;
+  border-top:0;
+  border-bottom:1px solid var(--line);
+}
+.media-coverage{margin-top:34px}
+.media-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:0}
+.media-item{display:grid;grid-template-columns:118px minmax(0,1fr);gap:16px;align-items:start;padding:15px 0;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}
+.media-item:nth-child(odd){padding-right:24px}
+.media-item:nth-child(even){padding-left:24px;border-left:1px solid var(--line)}
+.media-meta{font-size:11px;line-height:1.5;letter-spacing:.035em;color:#7D8794;text-transform:none}
+.media-title{font-size:14px;line-height:1.55;color:var(--ink)}
+.media-item:hover .media-title{text-decoration:underline;text-underline-offset:3px}
+.media-more{margin-top:22px}
+@media(max-width:768px){
+  :is(.media-summary,.section-summary){margin:-14px 0 24px;font-size:13px;line-height:1.7}
+  .media-list{grid-template-columns:1fr}
+  .media-item{grid-template-columns:98px minmax(0,1fr);gap:12px;padding:14px 0!important;border-left:0!important}
+  .media-title{font-size:13px}
+}
+
+/* Homepage mobile rhythm — compact but still editorial */
+@media(max-width:768px){
+  .page-home>.section{padding-top:72px;padding-bottom:72px}
+  .page-home>.section .section-head{margin-bottom:34px}
+  .home-numbers{padding-top:60px;padding-bottom:62px}
+  .home-numbers .section-head{margin-bottom:30px}
+  .home-partners{padding-top:68px;padding-bottom:70px}
+  .home-partners .section-head{margin-bottom:32px}
+  .home-achievements{padding-top:82px;padding-bottom:80px}
+  .home-achievements .section-head{margin-bottom:38px}
+  .page-home>.section .challenge{padding-top:28px;padding-bottom:29px}
+  .page-home>.section .research{padding-top:36px;padding-bottom:40px}
+  .home-partners .partner{padding-top:21px!important;padding-bottom:21px!important}
+  .page-home>.section .highlight,.page-home>.section .highlight:nth-child(odd),.page-home>.section .highlight:nth-child(even){padding-top:24px;padding-bottom:24px}
+  .page-home>.section .impact{padding-top:39px;padding-bottom:41px}
+  .page-home>.join{padding-top:108px;padding-bottom:108px}
+}
+
+/* Mobile WebView text autosizing guard. WeChat on iOS can enlarge Chinese text after layout. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.home-hero .title-display{white-space:nowrap!important}
+
+/* Homepage visual storytelling. */
+.home-feature-visual{margin:30px 0 22px;border:1px solid var(--line);background:var(--soft);overflow:hidden}
+.home-feature-visual a{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(250px,.65fr);align-items:start}
+.home-feature-visual img{display:block;width:100%;height:auto;min-height:0;max-height:none}
+.home-feature-visual figcaption{display:flex;flex-direction:column;justify-content:flex-end;padding:24px;color:var(--muted);font-size:13px;line-height:1.55;border-left:1px solid var(--line);align-self:stretch}
+.home-feature-visual figcaption strong{color:var(--ink);font-size:16px;font-weight:620;line-height:1.4;margin-bottom:7px}
+.home-feature-visual figcaption span{display:block}
+.achievement-feature{max-width:920px;margin-top:34px}
+.update-feature{margin-top:-10px;margin-bottom:36px}
+@media(max-width:768px){
+  .home-feature-visual{margin:24px 0 20px}
+  .home-feature-visual a{grid-template-columns:1fr}
+  .home-feature-visual img{display:block;width:100%;height:auto;min-height:0;max-height:none}
+  .home-feature-visual figcaption{padding:14px 16px 16px;border-left:0;border-top:1px solid var(--line)}
+  .home-feature-visual figcaption strong{font-size:14px;margin-bottom:4px}
+  .update-feature{margin-top:0;margin-bottom:28px}
+}
+
+/* Three flagship stories on the homepage: use content-driven asymmetry instead of equal cards. */
+.home-achievement-stories{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1.15fr) minmax(0,.8fr);gap:18px;align-items:start}
+.home-achievement-story{margin:0;border:1px solid var(--line);background:#fff;overflow:hidden}
+.home-achievement-story a{display:block;color:inherit;text-decoration:none}
+.home-achievement-story img{display:block;width:100%;aspect-ratio:16/9;height:auto;object-fit:cover;transition:transform .32s cubic-bezier(.2,.7,.2,1)}
+.home-achievement-story:nth-child(3) img{aspect-ratio:4/5;object-position:center 35%}
+.home-achievement-story figcaption{padding:17px 18px 18px;min-height:150px}
+.home-achievement-story strong{display:block;font-size:15px;line-height:1.45;color:var(--ink);margin-bottom:7px}
+.home-achievement-story span{display:block;font-size:13px;line-height:1.6;color:var(--muted)}
+.home-achievement-story small{display:block;margin-top:10px;font-size:11px;line-height:1.4;color:#8A93A2}
+@media(hover:hover) and (pointer:fine){
+  .home-achievement-story a:hover img{transform:scale(1.012)}
+  .home-achievement-story a:hover strong{text-decoration:underline;text-underline-offset:3px}
+}
+@media(prefers-reduced-motion:reduce){.home-achievement-story img{transition:none}.home-achievement-story a:hover img{transform:none}}
+.home-achievements-more{margin-top:26px}
+.home-platform-more{margin-top:28px}
+.home-media-section{border-top:0}
+.home-media-section .media-coverage{margin-top:0}
+@media(max-width:768px){
+  .home-achievement-stories{grid-template-columns:1fr;gap:16px}
+  .home-achievement-story img,.home-achievement-story:nth-child(3) img{aspect-ratio:auto;height:auto;object-fit:contain;object-position:center}
+  .home-achievement-story figcaption{min-height:0;padding:15px 16px 17px}
+}
+
+/* Homepage closing sequence: media acts as a compact credibility appendix, while Join gets the final pause. */
+.home-media-section{padding-top:92px;padding-bottom:86px}
+.home-media-section .section-head{margin-bottom:32px}
+.home-media-section .media-title{font-size:13px;line-height:1.5;color:#46505E}
+.home-media-section .media-meta{color:#9098A4}
+.home-media-section .media-more{margin-top:18px}
+.home-media-section+.join{border-top:0;padding-top:154px;padding-bottom:158px}
+.home-media-section+.join h2{max-width:720px;margin-top:14px;margin-bottom:28px}
+@media(max-width:768px){
+  .home-media-section{padding-top:62px;padding-bottom:58px}
+  .home-media-section .section-head{margin-bottom:28px}
+  .home-media-section .media-more{margin-top:16px}
+  .home-media-section+.join{padding-top:118px;padding-bottom:122px}
+  .home-media-section+.join h2{margin-bottom:24px}
+}
+
+.page-join .join-opportunities .join-grid{
+  border-top:0;
+  border-bottom:0;
+}
+.page-join>.join-context{
+  border-top:0;
+}
+
+.page-about #collaboration .partner-grid{
+  border-top:0;
+}
+
+/* Explicit short-divider ownership: repeated rows own short rules; page/section boundaries never infer them. */
+.divider-short-list{
+  border-top:0!important;
+  border-bottom:0!important;
+}
+.divider-short-list>:is(.challenge,.research,.partner,.update-item,.media-item,.highlight,.join-item),
+.divider-short-list .contact-card,
+.divider-short-list .detail-block{
+  border-top:0!important;
+  border-bottom:1px solid var(--line)!important;
+}
+.divider-short-list.no-final-divider>:last-child,
+.divider-short-list.no-final-divider :is(.contact-card,.detail-block):last-child{
+  border-bottom:0!important;
+}
+
+/* About first intro heading uses the same line-to-title distance as later intro headings. */
+.page-about>.content-section{
+  padding-top:28px!important;
+}
+@media(max-width:768px){
+  .page-about>.content-section{
+    padding-top:22px!important;
+  }
+}
+
+/* About intro prose: use the same editorial divider rhythm as the rest of the page. */
+.page-about>.content-section .prose>.title-feature{
+  padding-top:28px;
+  border-top:1px solid var(--line);
+}
+.page-about>.content-section .prose>.title-feature:first-child{
+  margin-top:0;
+  padding-top:0;
+  border-top:0;
+}
+.page-about>.content-section .prose>.title-feature:not(:first-child){
+  margin-top:36px;
+}
+@media(max-width:768px){
+  .page-about>.content-section .prose>.title-feature{
+    padding-top:22px;
+  }
+  .page-about>.content-section .prose>.title-feature:not(:first-child){
+    margin-top:28px;
+  }
+}
+
+/* Join ends directly at its full-width section boundary. */
+.page-join>.join-opportunities{
+  padding-bottom:0;
+}
+
+/* About page: achievements live on Research Results; external media closes the About narrative. */
+.page-about{display:flex;flex-direction:column}
+.page-about>#achievements{display:none}
+
+/* Platform content and order live in the bilingual HTML, not generated CSS. */
+#international-impact>.container{display:flex;flex-direction:column}
+#international-impact .detail-block p{font-size:15px;line-height:1.72;color:var(--muted);font-weight:400}
+@media(max-width:768px){
+  .page-about :is(#collaboration .partner,#international-impact .detail-block){
+    padding:22px 0;
+    margin-top:0;
+    border-left:0;
+  }
+  .page-about :is(#collaboration .partner,#international-impact .detail-block) h3{
+    margin-bottom:8px;
+  }
+  #international-impact .detail-block p{font-size:14px;line-height:1.65}
+}
+
+/* Inner-list first rows use the same distance from their upper divider as following rows. */
+.page-about #media-coverage .media-coverage{
+  margin-top:0;
+}
+@media(max-width:768px){
+  .page-contact .contact-grid{
+    gap:0!important;
+  }
+}
+
+/* People profile-list: one internal rhythm, content-driven card heights. */
+.team-grid .person{padding-bottom:0}
+.team-grid .person h3{margin:16px 0 4px}
+.team-grid .person .role{margin:0;color:#7D8693;font-size:13px;line-height:1.45}
+.team-grid .person .research-line{margin:11px 0 0;min-height:0;color:#303744;font-weight:620}
+.team-grid .person .bio-short{margin:8px 0 0;color:#7B8492}
+.team-grid .person :is(.role,.research-line,.bio-short){margin-bottom:0}
+.team-grid .person .person-link{display:inline-block;margin-top:11px;font-weight:620;color:#4B5563}
+.team-grid .person .person-link:hover{text-decoration:underline;text-underline-offset:3px}
+@media(min-width:769px){
+  .team-grid .person h3{margin-top:18px}
+  .page-inner .team-grid .person .research-line{margin-top:14px;font-size:14px;line-height:1.55}
+  .team-grid .person .bio-short{margin-top:9px;font-size:13px;line-height:1.65}
+  .team-grid .person .person-link{margin-top:13px;font-size:12px}
+}
+@media(max-width:768px){
+  .page-inner .team-grid{row-gap:38px}
+  .team-grid .person h3{margin-top:14px}
+  .team-grid .person .research-line{margin-top:10px}
+  .team-grid .person .bio-short{margin-top:7px}
+  .team-grid .person .person-link{margin-top:10px}
+}
+
+/* Join context: one whitespace rhythm for all three background sections on phones. */
+@media(max-width:768px){
+  .join-context .section-head,
+  .join-context .section-head:last-of-type{
+    margin-bottom:40px;
+  }
+  .join-context .btn{
+    margin-top:-10px;
+  }
+}
+
+/* Shared desktop editorial-row skeleton for About platforms, Join context, and Contact. */
+@media(min-width:1025px){
+  :is(#international-impact .detail-block,.join-context .section-head,.contact-grid .contact-card){display:grid;align-items:start}
+
+  #international-impact .section-head{margin-bottom:36px}
+  #international-impact .detail-block{grid-template-columns:minmax(220px,260px) minmax(0,1fr);gap:36px;padding:25px 0}
+  #international-impact .detail-block h3{margin:0;line-height:1.45}
+  #international-impact .detail-block p{margin:0;max-width:39em}
+
+  .join-context>.container{display:flex;flex-direction:column}
+  :is(.join-context .section-head,.contact-grid .contact-card){grid-template-columns:minmax(220px,280px) minmax(0,1fr);column-gap:42px;padding:27px 0}
+  .join-context .section-head{row-gap:5px;margin:0;border-top:0}
+  .join-context .section-head:last-of-type{border-bottom:0}
+  .join-context .section-head .eyebrow{grid-column:1;margin:2px 0 0}
+  .join-context .section-head h2{grid-column:1;margin:8px 0 0;font-size:24px;line-height:1.25}
+  .join-context .section-head p{grid-column:2;grid-row:1 / span 2;margin:0;max-width:46em;font-size:15px;line-height:1.78;color:#4A5563}
+  .join-context .btn{align-self:flex-start;margin-top:34px}
+
+  .contact-grid{display:block}
+  .contact-grid>div{display:contents}
+  .contact-grid .contact-card{row-gap:6px}
+  .contact-grid .contact-card .eyebrow{grid-column:1;grid-row:1;margin:2px 0 0}
+  .contact-grid .contact-card .title-item{grid-column:1;grid-row:2;margin:0;line-height:1.35}
+  .contact-grid .contact-card p{grid-column:2;margin:0;max-width:46em;font-size:15px;line-height:1.75}
+  .contact-grid .contact-card p:first-of-type{grid-row:1 / span 2}
+  .contact-grid .contact-card p+p{grid-row:3;margin-top:8px}
+}
+
+/* Desktop opportunities: give long English role names the same generous column as Chinese. */
+@media(min-width:1025px){
+  .join-opportunities .join-grid{grid-template-columns:1fr;border-bottom:0}
+  .join-opportunities .join-item{
+    display:grid;
+    grid-template-columns:44px minmax(220px,280px) minmax(0,1fr);
+    gap:24px;
+    align-items:start;
+    padding:24px 0;
+    border-left:0;
+    border-bottom:1px solid var(--line);
+  }
+  .join-opportunities .join-item .title-item{margin:0}
+  .join-opportunities .join-item p{margin:0}
+  .page-join .join-opportunities .join-item:last-child{border-bottom:0}
+}
+
+/* Results 01–06 share one list rhythm across desktop and mobile. */
+.page-results>:is(.results-achievements,.results-publications) .highlight{
+  border-top:0!important;
+  border-left:0!important;
+}
+.page-results>.results-achievements .highlight{
+  border-bottom:1px solid var(--line);
+}
+.page-results>.results-achievements .highlight:first-child{
+  border-top:0!important;
+}
+.page-results>.results-publications .results-publications-heading .highlight{
+  border-bottom:0!important;
+}
+@media(max-width:768px){
+  .page-results>:is(.results-achievements,.results-publications) .highlight,
+  .page-results>:is(.results-achievements,.results-publications) .highlight:nth-child(odd),
+  .page-results>:is(.results-achievements,.results-publications) .highlight:nth-child(even){
+    grid-template-columns:42px minmax(0,1fr);
+    gap:10px;
+    padding:25px 0;
+  }
+}
+
+/* Research Results page: items 01-06 form one continuous achievement sequence. */
+.results-achievements{padding:70px 0 0;border-bottom:0}
+.results-achievements .highlights{margin-top:0}
+.results-achievements .highlight{padding-top:22px;padding-bottom:22px}
+.page-results>.results-publications{padding-top:0}
+.results-publications{padding-top:0}
+.results-publications-heading{margin-top:0}
+.results-publications-heading{
+  border-top:0!important;
+}
+.results-publications-heading .highlight{
+  padding-top:22px;
+  padding-bottom:22px;
+  border-top:0!important;
+  border-bottom:0!important;
+}
+
+/* Static publication HTML stays collapsed before JS enhancement; all paper text remains in source for indexing. */
+[data-publications-static="1"] .pub[data-pub-extra="1"].is-collapsed{
+  display:none;
+}
+
+/* Publication year navigation: one lower rule only, with slightly stronger emphasis. */
+.results-publications .publication-toolbar{
+  border-top:0!important;
+  border-bottom:1px solid var(--line);
+  box-shadow:none;
+  outline:0;
+}
+.results-publications .publication-year-link{
+  color:#4B5563;
+  font-weight:650;
+  font-size:15px;
+}
+.results-publications .pub-toggle-all{
+  color:var(--ink);
+  font-weight:650;
+}
+@media(max-width:768px){
+  .results-publications .publication-year-link{
+    font-size:14px;
+  }
+  .results-publications-heading .highlight{
+    padding-top:25px;
+    padding-bottom:25px;
+  }
+}
+
+@media(max-width:768px){
+  .results-achievements{padding:56px 0 0}
+  /* app-core gives generic mobile content sections 68px top padding;
+     Results 06 is a continuation of items 01–05, so it must start directly
+     after item 05's divider and rely only on the highlight's row padding. */
+  main.page-results>.content-section.results-publications{padding-top:0!important}
+  .results-publications{padding-top:0}
+}
+
+
+/* First-section content starts on the same item rhythm as following rows. */
+.page-contact .contact-grid{margin-top:0!important}
+
+/* Parallel card summaries reserve the same rows, including short entries. */
+@media(min-width:769px){
+  .team-grid .person .research-line,
+  .team-grid .person .bio-short,
+  html[lang="en"] .research-grid .research>h3,
+  html[lang="en"] .research-grid .research>p,
+  html[lang="en"] .home-achievement-story figcaption>span{
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:var(--summary-lines);
+    overflow:hidden;
+    height:calc(var(--summary-lines)*1lh);
+    min-height:calc(var(--summary-lines)*1lh);
+  }
+  .team-grid .person .research-line{--summary-lines:1}
+  .team-grid .person .bio-short{--summary-lines:2}
+  html[lang="en"] .team-grid .person .research-line{--summary-lines:2}
+  html[lang="en"] .team-grid .person .bio-short{--summary-lines:3}
+  html[lang="en"] .research-grid .research>h3{--summary-lines:3;line-height:1.3}
+  html[lang="en"] .research-grid .research>p{--summary-lines:3}
+  html[lang="en"] .home-achievement-story figcaption>span{--summary-lines:2}
+
+  /* One row: index, acronym, and a readable two-line expansion. */
+  .research-identity{
+    display:grid;grid-template-columns:max-content max-content minmax(0,1fr);
+    align-items:center;column-gap:12px;line-height:1.2;
+  }
+  .research-identity>.research-index{display:block;letter-spacing:.03em;color:#8B94A2}
+  .research-identity>.research-code-main{display:contents}
+  .research-identity>.research-code-main>span{letter-spacing:0;color:var(--ink);white-space:nowrap}
+  .research-identity>.research-code-main>.research-expansion{
+    letter-spacing:0;text-transform:none;
+    font-weight:500;max-width:none;color:#596577;
+  }
+  .research-direction .research-identity{column-gap:16px}
+  .selected-updates .update-meta{font-size:15px;line-height:1.4;font-weight:600;letter-spacing:.04em;color:#596577}
+}
+@media(max-width:768px){
+  .team-grid .person .bio-short{display:block;-webkit-line-clamp:unset;overflow:visible;height:auto}
+}
+
+@media(min-width:769px) and (max-width:1099px){
+  .research-grid .research{padding-left:16px;padding-right:16px}
+  .research-grid .research-identity{column-gap:8px}
+}
+
+/* Match the first-line boxes of source/year and headline in each media row. */
+.media-list .media-item{align-items:start}
+.media-list .media-item>.media-meta,
+.media-list .media-item>.media-title{margin:0;align-self:start;line-height:24px}
+
+/* Keep secondary information readable on phones without truncating content. */
+@media(max-width:768px){
+  .research-identity>.research-code-main>.research-expansion{
+    letter-spacing:0;text-transform:none;
+  }
+  .media-list .media-item>.media-meta{font-size:12px;color:#667085}
+  .home-achievement-story small{font-size:12px;color:#667085}
+  .selected-updates .update-meta{font-size:13px;line-height:1.4;letter-spacing:.04em;color:#596577}
+}
+
+/* Mid-size screens favor readable cards and full research summaries. */
+@media(min-width:769px) and (max-width:1099px){
+  .team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .research-grid{grid-template-columns:minmax(0,1fr)}
+  .research-grid .research{display:grid;grid-template-columns:220px minmax(0,1fr);column-gap:28px;padding:28px 0}
+  .research-grid .research+.research{border-left:0;border-top:1px solid var(--line)}
+  .research-grid .research>.research-identity{grid-column:1;grid-row:1 / span 3;align-self:start;margin:0}
+  .research-grid .research>:is(h3,p,a){grid-column:2}
+  .research-grid .research>h3{margin-top:0}
+  .research-grid .research>p{margin-bottom:0}
+  html[lang="en"] .research-grid .research>:is(h3,p){display:block;height:auto;min-height:0;-webkit-line-clamp:unset;overflow:visible}
+  .media-list{grid-template-columns:minmax(0,1fr)}
+  .media-list .media-item{padding-left:0;padding-right:0;border-left:0}
+}
+@media(max-width:480px){
+  .media-list .media-item{grid-template-columns:minmax(0,1fr);gap:5px}
+  .media-list .media-item>.media-meta{line-height:1.5}
+  .media-list .media-item>.media-title{font-size:14px;line-height:1.65}
+}
+
+/* Research identity is one visual row: index, acronym and two-line expansion share a common vertical center. */
+@media(max-width:768px){
+  .research-identity{align-items:center}
+  .research-identity>.research-index,
+  .research-identity>.research-code-main>span,
+  .research-identity>.research-code-main>.research-expansion{
+    align-self:center;margin-top:0;padding-top:0;
+  }
+
+  /* Homepage research reads as capability identity, not a second challenge list. */
+  .page-home .research-grid .research-identity{
+    display:grid;
+    grid-template-columns:max-content max-content minmax(0,1fr);
+    column-gap:11px;
+    align-items:center;
+    margin-bottom:20px;
+    letter-spacing:0;
+  }
+  .page-home .research-grid .research-identity>.research-index{
+    display:block;
+    margin:0;
+    color:#929BA8;
+  }
+  .page-home .research-grid .research-identity>.research-code-main{
+    display:contents;
+  }
+  .page-home .research-grid .research-identity>.research-code-main>span{
+    letter-spacing:-.02em;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .page-home .research-grid .research-identity>.research-code-main>.research-expansion{
+    margin-top:0;
+    font-weight:500;
+    color:#697586;
+  }
+
+  /* Give visual work a clearer mid-page transition without adding decoration. */
+  .home-achievements{
+    padding-top:92px;
+  }
+
+  /* Platform names carry the hierarchy; category labels stay secondary. */
+  .selected-updates .update-item h3{
+    font-size:17px;
+    line-height:1.45;
+    font-weight:650;
+  }
+  .selected-updates .update-meta{
+    font-size:12px;
+    font-weight:560;
+    color:#7D8794;
+  }
+
+  /* Let the final CTA read as a deliberate close to the homepage. */
+  .home-media-section+.join{
+    padding-top:132px;
+  }
+}
+
+
+/* First item rhythm: section boundaries must not add a second layer of top spacing. */
+.page-results>.results-achievements,
+.page-join>.join-opportunities,
+.page-contact>.content-section{
+  padding-top:0!important;
+}
+.page-research>.research-direction:not(:last-child){
+  padding-bottom:0!important;
+}
+
+/* Research editorial sections: separate directions with whitespace, not divider chrome. */
+.page-research>.research-direction{
+  border-top:0;
+  border-bottom:0;
+}
+@media(min-width:769px){
+  .page-research>.research-direction{
+    padding-top:60px;
+    padding-bottom:60px;
+  }
+}
+@media(max-width:768px){
+  .page-research>.research-direction{
+    padding-top:40px;
+    padding-bottom:42px;
+  }
+}
+
+/* Research direction facts: structure existing content without adding card chrome. */
+.direction-facts{margin-top:24px;border-top:1px solid var(--line)}
+.direction-facts p{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;margin:0;padding:13px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.62}
+.direction-facts strong{font-weight:650;color:var(--ink)}
+.direction-facts span{color:var(--muted)}
+@media(max-width:768px){
+  .direction-facts{margin-top:22px}
+  .direction-facts p{grid-template-columns:1fr;gap:4px;padding:12px 0;font-size:14px;line-height:1.58}
+  .direction-facts strong{font-size:12px;letter-spacing:.06em}
+}
+html[lang="en"] .direction-facts strong{letter-spacing:.01em}
+
+/* Final visual rows do not draw a closing short rule. */
+@media(max-width:768px){
+  :is(.challenge-grid,.research-grid,.partner-grid,.updates-grid,.media-list).divider-short-list>:last-child{
+    border-bottom:0!important;
+  }
+}
+@media(min-width:769px) and (max-width:1024px){
+  .challenge-grid.divider-short-list>:nth-last-child(-n+2),
+  .partner-grid.divider-short-list>:nth-last-child(-n+2){
+    border-bottom:0!important;
+  }
+  .research-grid.divider-short-list>:last-child,
+  .media-list.divider-short-list>:last-child{
+    border-bottom:0!important;
+  }
+  .updates-grid.divider-short-list>:nth-last-child(-n+3){
+    border-bottom:0!important;
+  }
+}
+@media(min-width:1025px){
+  .challenge-grid.divider-short-list>:nth-last-child(-n+2),
+  .partner-grid.divider-short-list>:nth-last-child(-n+2),
+  .media-list.divider-short-list>:nth-last-child(-n+2){
+    border-bottom:0!important;
+  }
+  .research-grid.divider-short-list>:nth-last-child(-n+3),
+  .updates-grid.divider-short-list>:last-child{
+    border-bottom:0!important;
+  }
+}
+
+/* Canonical research identity size lock — final cascade */
+.research-identity{
+  align-items:center;
+  --research-label-size:28px;
+  --research-index-size:30px;
+  --research-expansion-size:12px;
+  --research-expansion-line:1.15;
+  --research-label-weight:650;
+  --research-gap-index-code:14px;
+  --research-gap-code-expansion:11px;
+  column-gap:0!important;
+}
+.research-direction .research-identity{
+  --research-label-size:36px;
+  --research-index-size:38px;
+  --research-expansion-size:15px;
+  --research-gap-index-code:15px;
+  --research-gap-code-expansion:12px;
+}
+.research-identity>.research-code-main>span{
+  font-size:var(--research-label-size)!important;
+  line-height:1!important;
+  font-weight:var(--research-label-weight)!important;
+}
+/* Numerals render optically smaller than the letter labels at the same CSS size.
+   Give 01/02/03 a small optical correction while keeping the same baseline rhythm. */
+.research-identity>.research-index{
+  font-size:var(--research-index-size,var(--research-label-size))!important;
+  line-height:1!important;
+  font-weight:var(--research-label-weight)!important;
+  color:#8B94A2!important;
+  align-self:center;
+  margin-top:0!important;
+  margin-inline-end:var(--research-gap-index-code)!important;
+}
+.research-identity>.research-code-main>span{
+  align-self:center;
+  margin-top:0!important;
+  margin-inline-end:var(--research-gap-code-expansion)!important;
+}
+.research-identity>.research-code-main>.research-expansion{
+  align-self:center;
+  margin-top:0!important;
+  font-size:var(--research-expansion-size)!important;
+  line-height:var(--research-expansion-line)!important;
+}
+@media(min-width:769px) and (max-width:1099px){
+  .page-home .research-identity{
+    --research-label-size:24px;
+    --research-index-size:26px;
+    --research-expansion-size:11px;
+    --research-gap-index-code:12px;
+    --research-gap-code-expansion:9px;
+  }
+}
+@media(max-width:768px){
+  .page-home .research-identity{
+    --research-label-size:25px;
+    --research-index-size:27px;
+    --research-expansion-size:10.5px;
+    --research-expansion-line:1.18;
+    --research-label-weight:680;
+    --research-gap-index-code:12px;
+    --research-gap-code-expansion:9px;
+  }
+  .research-direction .research-identity{
+    --research-label-size:17px;
+    --research-index-size:18px;
+    --research-expansion-size:8px;
+    --research-expansion-line:1.05;
+    --research-gap-index-code:10px;
+    --research-gap-code-expansion:8px;
+  }
+}
+
+/* Consolidated rules migrated from the retired homepage-logo stylesheet. */
+.home-hero .hero-grid{grid-template-columns:minmax(0,1fr);gap:0}
+.home-hero .hero-grid>div:first-child{max-width:760px}
+
+@media(min-width:1025px){
+  .home-hero{padding-top:64px;padding-bottom:70px}
+  .home-hero>.container{max-width:1060px}
+  .home-hero~.section>.container{max-width:1000px}
+  .home-hero~.section:has(.challenge-grid)>.container{max-width:1020px}
+  .home-hero~.section:has(.research-grid)>.container{max-width:1100px}
+  .home-hero~.section:has(.numbers)>.container{max-width:860px}
+  .home-hero~.section:has(.partner-grid)>.container{max-width:980px}
+  .home-hero~.section:has(.home-achievement-stories)>.container{max-width:1100px}
+  .selected-updates>.container,.home-media-section>.container{max-width:960px}
+  .home-hero~.section .title-section{font-size:38px!important;line-height:1.15!important}
+  .home-hero~.section .eyebrow,.home-hero~.join .eyebrow{font-size:11px!important;letter-spacing:.145em!important}
+  .home-hero~.section .title-item{font-size:19px!important;line-height:1.38!important}
+  .home-hero~.section .research-title.title-feature{font-size:23px!important;line-height:1.28!important}
+  .home-hero~.section :is(.challenge p,.research p,.partner p,.update-item p){font-size:16.5px;line-height:1.72}
+  .home-hero~.section .text-link{font-size:14.5px}
+  .home-hero~.section .media-title{font-size:15px;line-height:1.55}
+  .home-hero~.section .media-meta{font-size:12px}
+  .home-hero~.section:has(.partner-grid) .partner{padding-top:25px;padding-bottom:27px}
+  .home-hero~.section:has(.partner-grid) .partner h3{font-size:20px!important;margin-bottom:12px}
+  .home-hero~.section:has(.partner-grid) .partner p{font-size:16.5px;line-height:1.66}
+  .home-hero~.section:has(.challenge-grid){padding-top:110px;padding-bottom:110px}
+  .home-hero~.section:has(.research-grid){padding-top:110px;padding-bottom:112px}
+  .home-hero~.section:has(.numbers){padding-top:90px;padding-bottom:92px}
+  .home-hero~.section:has(.partner-grid){padding-top:96px;padding-bottom:98px}
+  .home-hero~.section:has(.home-achievement-stories){padding-top:118px;padding-bottom:116px}
+  .selected-updates{padding-top:106px;padding-bottom:106px}
+  .home-media-section{padding-top:82px;padding-bottom:78px}
+  .selected-updates .update-item h3{font-size:18.5px!important}
+  .selected-updates .update-item p{font-size:15.5px;line-height:1.62}
+  .home-media-section .media-list{line-height:1.5}
+}
+@media(min-width:769px){
+  .home-achievement-stories{grid-template-columns:minmax(0,1.80961357fr) minmax(0,2.40903388fr) minmax(0,2.09150327fr);max-width:1077.18px;margin-inline:auto;gap:18px;justify-content:center;align-items:start}
+  .home-achievement-story,.home-achievement-story>a{height:auto;width:100%}
+  .home-achievement-story>a{display:block}
+  .home-achievement-story img,.home-achievement-story:nth-child(3) img{display:block;width:100%!important;height:auto!important;max-width:none;margin:0;aspect-ratio:auto!important;object-fit:contain!important;object-position:center!important}
+  .home-achievement-story figcaption{min-height:0}
+}
+:is(.team-grid img.person-photo,.page-person-detail .person-detail>.person-photo){display:block;width:100%;height:auto!important;max-height:none!important;aspect-ratio:auto!important;object-fit:contain!important;object-position:center!important;background:#f2f3f5;border:1px solid var(--line)}
+@media(min-width:1025px){
+  .join-context .section-head p:first-of-type{grid-row:1 / span 2}
+  .join-context .section-head p+p{grid-row:auto;margin-top:8px}
+}
+
+
+/* Results hero latest-news panel */
+.page-results .page-hero>.container.std{display:block}
+
+.page-results .results-achievements .highlights{border-top:0}
+.results-news{
+  position:relative;
+  z-index:0;
+  min-width:0;
+  margin-top:34px;
+  padding:24px 0;
+  border-top:0;
+  background:transparent;
+}
+.results-news::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:100vw;
+  transform:translateX(-50%);
+  background:var(--soft);
+}
+.results-news h2{margin:0 0 8px;font-size:18px;line-height:1.25;font-weight:560;letter-spacing:-.01em;color:#4F5968}
+.results-news-list{border-top:0}
+.results-news-row{
+  display:grid;
+  grid-template-columns:68px minmax(0,1fr);
+  gap:10px;
+  align-items:start;
+  padding:11px 0;
+  border-bottom:1px solid var(--line);
+  color:inherit;
+  text-decoration:none;
+}
+.results-news-row:last-child{border-bottom:0;padding-bottom:4px}
+.results-news-row time{color:#8B94A2;font-size:14px;line-height:1.55;font-weight:500;font-variant-numeric:tabular-nums;position:static;top:auto}
+.results-news-row span{color:#303744;font-size:14px;line-height:1.55;font-weight:520}
+@media(hover:hover) and (pointer:fine){a.results-news-row:hover span{text-decoration:underline;text-underline-offset:3px}}
+@media(max-width:768px){
+  .page-results .page-hero>.container.std>.title-page{font-size:clamp(38px,10.5vw,52px)}
+  .page-results .page-hero>.container.std>p{font-size:clamp(13px,3.7vw,17px);line-height:1.55}
+
+  .results-news{margin-top:28px;padding:20px 0}
+  .page-results .results-achievements .highlight:first-child{border-top:0}
+  .results-news h2{margin-bottom:4px;font-size:15px;font-weight:560;color:#4F5968}
+  .results-news-row{grid-template-columns:50px minmax(0,1fr);gap:8px;padding:8px 0}
+  .results-news-row time{font-size:11.5px;line-height:1.48}
+  .results-news-row span{font-size:11.5px;line-height:1.48;font-weight:520;color:#303744}
+}
+@media(max-width:380px){
+  .results-news{margin-top:24px;padding:18px 0}
+  .results-news-row{grid-template-columns:48px minmax(0,1fr);gap:7px}
+  .results-news-row time,.results-news-row span{font-size:11px}
+}
+
+/* Industry showcase: source content, real project imagery can replace placeholders later. */
+.industry-home{padding:96px 0 104px}.industry-home .section-head{margin-bottom:34px}.industry-home .section-head p{color:var(--muted);max-width:720px;font-size:16px}
+.industry-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 24px}.industry-featured{grid-template-columns:repeat(3,minmax(0,1fr))}
+.industry-card{border-top:1px solid var(--line);min-width:0}.industry-visual{aspect-ratio:16/9;background:#F4F6F8;display:flex;flex-direction:column;justify-content:space-between;padding:16px 18px;color:#8B94A2}.industry-visual-index{font-size:11px;letter-spacing:.16em;font-weight:650}.industry-visual-hint{font-size:12px}
+.industry-card-body{padding:17px 0 8px}.industry-card .title-item{margin:0 0 10px;font-size:19px;line-height:1.42}.industry-card p{margin:0 0 9px;font-size:14px;line-height:1.68}.industry-card .industry-value{color:#303744}.industry-card .industry-proof{color:#647084;font-size:13px}.industry-card .industry-meta{color:#647084;font-size:12.5px}.industry-card .industry-meta b{color:#3B4655;margin-right:6px}
+.industry-link{display:inline-block;margin-top:8px;color:#35445B;font-size:13px;font-weight:650;text-decoration:underline;text-decoration-color:#B7BEC9;text-underline-offset:5px}.industry-more{text-align:right;margin:26px 0 0}
+.industry-group-title{display:flex;align-items:baseline;gap:18px;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:28px}.industry-group-title span{color:#8B94A2;font-size:13px}.industry-group-title .title-section{margin:0;font-size:27px}
+.page-industry .page-hero{padding-bottom:58px}.page-industry .industry-category{padding:64px 0 80px}.page-industry .industry-category:nth-of-type(odd){background:#F8F9FB}.industry-cta{padding:70px 0 90px}.industry-cta p{max-width:700px;color:var(--muted)}
+@media(max-width:1024px){.industry-featured{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:768px){.industry-home{padding:66px 0 72px}.industry-home .section-head{margin-bottom:24px}.industry-home .section-head p{font-size:14px}.industry-grid,.industry-featured{grid-template-columns:1fr;gap:22px}.industry-featured .industry-card{display:grid;grid-template-columns:112px minmax(0,1fr);gap:14px;padding-top:14px}.industry-featured .industry-visual{aspect-ratio:4/3;padding:10px}.industry-featured .industry-visual-hint{font-size:9px}.industry-featured .industry-card-body{padding:0}.industry-featured .industry-card .title-item{font-size:15px;margin-bottom:6px}.industry-featured .industry-card p{font-size:12px;line-height:1.52;margin-bottom:5px}.industry-featured .industry-card .industry-proof{font-size:11px}.industry-featured .industry-link{font-size:12px;margin-top:4px}.industry-group-title .title-section{font-size:20px}.page-industry .industry-category{padding:44px 0 56px}.industry-cta{padding:58px 0 70px}}
+
+/* Merged Outputs sections share the existing typography and divider system. */
+.results-jump-links{display:flex;gap:22px;flex-wrap:wrap;align-items:center;margin-top:28px;font-size:13px;color:#596577}
+.results-jump-links a{color:inherit;text-decoration:none;border-bottom:1px solid #B8C0CB;padding-bottom:6px}
+.results-jump-links a:hover{color:var(--ink);border-color:var(--ink)}
+.results-industry{padding-top:68px;border-top:1px solid var(--line)}
+.results-industry>.container>.section-head{margin-bottom:22px}
+.results-industry>.container>.section-head p{max-width:700px;color:var(--muted)}
+.page-results .results-industry .industry-category{padding:30px 0 66px}
+.page-results .results-industry .industry-category:nth-of-type(even){background:#F8F9FB}
+.page-results .results-industry .industry-cta{padding:54px 0 72px}
+@media(max-width:768px){.results-jump-links{gap:14px;margin-top:22px;font-size:12px}.results-industry{padding-top:48px}.page-results .results-industry .industry-category{padding:26px 0 46px}}
+
+/* Five selected achievements: three in first row, two in second row on desktop. */
+.home-achievement-stories{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.home-achievement-story:nth-child(3) img{aspect-ratio:16/9;object-position:center}
+.home-achievement-story:nth-child(n+4) img{aspect-ratio:16/9;object-fit:cover}
+.home-achievement-story:nth-child(n+4) figcaption{min-height:150px}
+.industry-all .industry-six-rows{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 24px}
+.industry-visual-image{padding:0;background:#F3F6F8}
+.industry-visual-image img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:16/9}
+.results-industry-heading{margin-bottom:28px}
+.results-industry-heading .highlight{border-bottom:0!important;padding-left:0!important}
+.page-results .results-industry .industry-all{padding:12px 0 56px;background:transparent}
+@media(max-width:768px){.home-achievement-stories{grid-template-columns:1fr 1fr;gap:12px}.home-achievement-story:nth-child(n+4) figcaption{min-height:0}.industry-all .industry-six-rows{grid-template-columns:1fr;gap:24px}}
+@media(max-width:480px){.home-achievement-stories{grid-template-columns:1fr}.industry-all .industry-six-rows{grid-template-columns:1fr}}
+
+/* Industry technologies: three columns on desktop, two columns on mobile; accommodates 14 cards. */
+.page-results .industry-six-rows{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 22px}
+.page-results .industry-six-rows .industry-card .title-item{font-size:17px;line-height:1.4}
+.page-results .industry-six-rows .industry-card p{font-size:13px;line-height:1.62}
+.page-results .industry-six-rows .industry-card .industry-proof,.page-results .industry-six-rows .industry-card .industry-meta{font-size:12px}
+.page-results .industry-six-rows .industry-card-body{display:flex;flex-direction:column}
+.page-results .industry-six-rows .industry-card{display:flex;flex-direction:column}
+.page-results .industry-six-rows .industry-link{margin-top:auto;padding-top:12px}
+.industry-photo{width:100%;aspect-ratio:16/9;background-color:#F3F6F8;background-repeat:no-repeat;background-position:center;background-size:cover}
+@media(max-width:768px){.page-results .industry-six-rows{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 13px}.page-results .industry-six-rows .industry-card .title-item{font-size:14px}.page-results .industry-six-rows .industry-card p{font-size:11.5px;line-height:1.5}.page-results .industry-six-rows .industry-card .industry-proof,.page-results .industry-six-rows .industry-card .industry-meta{font-size:11px}.page-results .industry-six-rows .industry-card-body{padding-top:12px}.page-results .industry-six-rows .industry-link{font-size:11px}}
+@media(max-width:480px){.page-results .industry-six-rows{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Results 05 → 06: one divider only, no duplicate boundary lines. */
+.page-results>.results-achievements .highlight:last-child{border-bottom:0!important}
+.page-results>.results-achievements{border-bottom:0!important}
+.page-results .results-industry{border-top:1px solid var(--line);padding-top:0}
+.page-results .results-industry .results-industry-heading{border-top:0!important;margin-bottom:24px}
+.page-results .results-industry .results-industry-heading .highlight{border-top:0!important}
+.page-results .results-industry .industry-all{padding-top:0}
+@media(max-width:768px){.page-results .results-industry .results-industry-heading{margin-bottom:18px}}
+
+
+/* Results page 06/07: align section separators with the short 02–05 rules. */
+.page-results .results-industry{
+  border-top:0!important;
+}
+.page-results .results-industry .results-industry-heading{
+  border-top:0!important;
+}
+.page-results .results-industry .results-industry-heading .highlight{
+  border-top:1px solid var(--line)!important;
+}
+.page-results .results-publications .results-publications-heading{
+  border-top:0!important;
+}
+.page-results .results-publications .results-publications-heading .highlight{
+  border-top:1px solid var(--line)!important;
+}
+
+/* Equal-height technology cards: preserve all content and align cooperation links. */
+.page-results .industry-six-rows{
+  grid-auto-rows:1fr;
+  align-items:stretch;
+}
+.page-results .industry-six-rows .industry-card{
+  height:100%;
+  min-height:0;
+}
+.page-results .industry-six-rows .industry-card-body{
+  flex:1 1 auto;
+}
+
+/* Compact industry cards: one three-line summary, one line per metadata row. */
+.page-results .industry-six-rows .industry-card-body{display:flex;flex-direction:column;gap:0;padding-top:12px;padding-bottom:0}
+.page-results .industry-six-rows .industry-card .title-item{margin:0 0 8px}
+.page-results .industry-six-rows .industry-summary{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;min-height:calc(1.58em * 3);max-height:calc(1.58em * 3);line-height:1.58;margin:0 0 8px}
+.page-results .industry-six-rows .industry-meta{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.5;margin:0 0 5px}
+.page-results .industry-six-rows .industry-link{margin-top:3px;padding-top:4px;align-self:flex-start}
+@media(max-width:768px){
+.page-results .industry-six-rows .industry-card-body{padding-top:10px}
+.page-results .industry-six-rows .industry-card .title-item{margin-bottom:6px}
+.page-results .industry-six-rows .industry-summary{min-height:calc(1.48em * 3);max-height:calc(1.48em * 3);line-height:1.48;margin-bottom:6px}
+.page-results .industry-six-rows .industry-meta{margin-bottom:4px}
+.page-results .industry-six-rows .industry-link{padding-top:3px;margin-top:2px}
+}
+
+/* Chinese technology summaries: never truncate source-backed descriptions. */
+html[lang="zh-CN"] .page-results .industry-six-rows .industry-summary{
+ display:block;overflow:visible;-webkit-line-clamp:unset;line-clamp:unset;
+ min-height:calc(1.58em * 3);max-height:none;line-height:1.58;
+ overflow-wrap:anywhere;
+}
+@media(max-width:768px){
+ html[lang="zh-CN"] .page-results .industry-six-rows .industry-summary{
+  min-height:calc(1.48em * 3);max-height:none;line-height:1.48;
+ }
+}
+/* Match 06→07 spacing to the compact numbered achievements above. */
+.page-results .results-industry .industry-all{padding-bottom:0!important}
+.page-results .results-industry{padding-bottom:0!important}
+.page-results .results-publications{padding-top:0!important}
+.page-results .results-publications-heading{margin-top:0!important}
+
+/* Equal 05→06 and 06→07 divider rhythm; measure the gap from final text to divider. */
+.page-results .results-industry .industry-all{padding-bottom:22px!important}
+.page-results .results-industry .industry-all .industry-grid{margin-bottom:0!important}
+.page-results .results-publications{padding-top:0!important}
+.page-results .results-publications-heading{margin-top:0!important}
+/* English card title: two-line space; final summary rules below govern descriptions. */
+html[lang="en"] .page-results .industry-six-rows .industry-card .title-item{
+ display:block;overflow:visible;-webkit-line-clamp:unset;line-clamp:unset;
+ min-height:calc(1.42em * 2);max-height:none;line-height:1.42;
+}
+
+/* Tighten the gap between section 06 introduction and first photo row. */
+.page-results .results-industry .results-industry-heading{margin-bottom:8px!important}
+.page-results .results-industry .industry-all{padding-top:0!important}
+.page-results .results-industry .industry-all .industry-grid{margin-top:0!important}
+/* Reserve seven readable lines for English descriptions on two-column phones.
+   Preserve natural wrapping: never crop or ellipsize supplied project evidence. */
+@media(max-width:768px){
+ html[lang="en"] .page-results .industry-six-rows .industry-summary{
+  min-height:calc(1.48em * 7);max-height:none;line-height:1.48;
+  display:block;overflow:visible;-webkit-line-clamp:unset;line-clamp:unset;
+ }
+}
+
+/* 06 intro → photographs: remove generic content-section spacing, preserve 06/07 divider rhythm. */
+.page-results .results-industry .industry-category.industry-all{
+ padding-top:0!important;
+ margin-top:0!important;
+}
+.page-results .results-industry .results-industry-heading{
+ margin-bottom:2px!important;
+}
+.page-results .results-industry .industry-six-rows{
+ margin-top:0!important;
+}
+
+/* Restrained red accent for Latest News, using the existing full-width grey panel. */
+.page-home .results-news h2{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#BC2530;
+  font-weight:600;
+}
+.page-home .results-news h2::before{
+  content:"";
+  display:block;
+  flex:none;
+  width:4px;
+  height:22px;
+  background:#BC2530;
+}
+@media(hover:hover) and (pointer:fine){
+  .page-home a.results-news-row:hover span{color:#BC2530}
+  .page-home a.results-news-row:hover span::after{content:" ↗";color:#BC2530}
+}
+@media(max-width:768px){
+  .page-home .results-news h2{color:#BC2530;font-weight:600;gap:8px}
+  .page-home .results-news h2::before{height:18px;width:3px}
+}
+
+/* Chinese cards: place Applications directly after actual summary text, not reserved 3-line space. */
+html[lang="zh-CN"] .page-results .industry-six-rows .industry-summary{
+  min-height:0!important;
+  height:auto!important;
+  max-height:none!important;
+  margin-bottom:4px!important;
+  overflow:visible!important;
+  -webkit-line-clamp:unset!important;
+  line-clamp:unset!important;
+}
+html[lang="zh-CN"] .page-results .industry-six-rows .industry-meta{
+  margin-top:0!important;
+  margin-bottom:4px;
+}
+
+/* Force latest-news title text red even when generic page-title rules override h2 color. */
+.page-home .results-news h2,
+.page-home .results-news h2.title-item,
+.page-home .results-news h2.title-section,
+.page-home .results-news h2 * {color:#BC2530!important}
+
+
+/* English Outputs technology cards: max four lines, no reserved blank lines
+   between short summaries and their Enquiry links (mobile and desktop). */
+html[lang="en"] .page-results .industry-six-rows .industry-summary{
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:4!important;
+  line-clamp:4!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  min-height:0!important;
+  height:auto!important;
+  max-height:calc(1.58em * 4)!important;
+  line-height:1.58!important;
+  margin-bottom:3px!important;
+}
+html[lang="en"] .page-results .industry-six-rows .industry-link{
+  margin-top:0!important;
+  padding-top:0!important;
+}
+@media(max-width:768px){
+  html[lang="en"] .page-results .industry-six-rows .industry-summary{
+    max-height:calc(1.48em * 4)!important;
+    line-height:1.48!important;
+  }
+}
+
+/* Outputs: keep Enquiry attached to the last visible sentence rather than the
+   bottom of an equal-height grid card. Alignment of the outer cards is retained. */
+html[lang="en"] .page-results .industry-six-rows .industry-card-body{
+  flex:0 0 auto!important;
+  justify-content:flex-start!important;
+  align-content:flex-start!important;
+}
+html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-link{
+  flex:0 0 auto!important;
+  align-self:flex-start!important;
+  margin-block-start:0!important;
+  padding-block-start:0!important;
+}
+html[lang="en"] .page-results .industry-six-rows .industry-card-body .industry-summary{
+  flex:0 0 auto!important;
+  margin-block-end:2px!important;
+}
+
+/* Latest News: centered bottom chevron and expandable rows. */
+.page-home .results-news-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:8px}
+.page-home .results-news-head h2{margin:0!important}
+.page-home .results-news-toggle{appearance:none;border:0;background:transparent;color:#BC2530;display:flex;align-items:center;justify-content:center;width:56px;height:28px;margin:0 auto;padding:0;cursor:pointer;scroll-margin-block:80px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.page-home .results-news{padding-bottom:6px}
+.page-home .results-news-list:not(:has(+.results-news-extra:not([hidden]))) .results-news-row:last-child{padding-bottom:0}
+.page-home .results-news-toggle svg{display:block;flex:none}
+.page-home .results-news-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+@media(hover:hover) and (pointer:fine){.page-home .results-news-toggle:hover{opacity:.7}}
+.page-home .results-news-toggle:focus:not(:focus-visible),.page-home .results-news-toggle:active{outline:none;box-shadow:none;background:transparent}
+.page-home .results-news-toggle:focus-visible{outline:2px solid #BC2530;outline-offset:3px}
+.page-home .results-news-extra[hidden]{display:none!important}
+.page-home .results-news-list:not(.results-news-extra):has(+.results-news-extra:not([hidden])) .results-news-row:last-child{border-bottom:1px solid var(--line);padding-bottom:11px}
+.page-home .results-news-row-static{cursor:default}
+.page-home .results-news-extra .results-news-row:last-child{border-bottom:0}
+@media(max-width:768px){.page-home .results-news-head{margin-bottom:5px}}
+
+/* Regular navigation only: unobtrusive red Latest Updates qualifier. */
+
+
+/* Link discoverability: deliberately limited to the four requested surfaces. */
+.home-achievement-story a figcaption strong::after{
+  content:" ↗";color:#315D90;font-size:.92em;font-weight:600;
+}
+.selected-updates .update-item h3 a,
+.page-about .detail-block[class*="platform-"] h3 a{
+  color:#315D90;text-decoration:underline;text-decoration-thickness:1px;
+  text-underline-offset:3px;text-decoration-color:#8CA9C7;
+}
+.home-media-coverage .media-item .media-title,
+.page-about .media-coverage .media-item .media-title,
+.page-home .results-news-row[href] > span:last-child{
+  color:#315D90;text-decoration:underline;text-decoration-thickness:1px;
+  text-underline-offset:3px;text-decoration-color:#A4BAD0;
+}
+.home-media-coverage .media-item:hover .media-title,
+.page-about .media-coverage .media-item:hover .media-title,
+.page-home .results-news-row[href]:hover > span:last-child,
+.selected-updates .update-item h3 a:hover,
+.page-about .detail-block[class*="platform-"] h3 a:hover{
+  color:#23456E;text-decoration-color:currentColor;
+}
+.site-footer .footer-links a[aria-current="page"]{
+  color:#315D90;font-weight:650;
+}
+
+
+/* Requested refinement: About platform links must be visibly linked in both languages. */
+.page-about .detail-block.platform-journal .impact-link,
+.page-about .detail-block.platform-conference .impact-link,
+.page-about .detail-block.platform-community .impact-link,
+.page-about .detail-block.platform-center .impact-link{
+  color:#315D90!important;
+  text-decoration-line:underline!important;
+  text-decoration-style:solid!important;
+  text-decoration-thickness:1px!important;
+  text-underline-offset:3px!important;
+  text-decoration-color:#8CA9C7!important;
+}
+/* Outputs: Latest News links use an underline only; static news remains plain. */
+.page-home .results-news-row[href] > span:last-child,
+.page-home .results-news-row[href]:hover > span:last-child{
+  color:inherit!important;
+  text-decoration-line:underline!important;
+  text-decoration-color:currentColor!important;
+  text-decoration-thickness:1px!important;
+  text-underline-offset:3px!important;
+}
+/* Footer: current page is bold and underlined, never recolored. */
+.site-footer .footer-links a[aria-current="page"]{
+  color:inherit!important;
+  font-weight:700!important;
+  text-decoration-line:underline!important;
+  text-decoration-color:currentColor!important;
+  text-decoration-thickness:1px!important;
+  text-underline-offset:4px!important;
+}
+
+
+/* Latest News: restore original text styling; only a quiet trailing arrow
+   distinguishes linked rows. Non-linked updates remain unchanged. */
+.page-home .results-news-row[href] > span:last-child,
+.page-home .results-news-row[href]:hover > span:last-child{
+  color:inherit!important;
+  text-decoration:none!important;
+}
+.page-home .results-news-row[href] > span:last-child::after{
+  content:" ↗";
+  display:inline;
+  color:inherit;
+  font-size:.88em;
+  font-weight:400;
+  white-space:nowrap;
+}
+
+
+
+/* Desktop: restore the original 3-image proportional widths/identical photo heights;
+   keep the next three achievements equal-width in their own row. */
+@media(min-width:769px){
+  .home-achievement-stories{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+  .home-achievement-stories>.home-achievement-story{min-width:0;flex:0 0 calc((100% - 40px)/3)}
+  .home-achievement-stories>.home-achievement-story:nth-child(1){flex-basis:calc((100% - 40px)*1.80961357/6.31015072)}
+  .home-achievement-stories>.home-achievement-story:nth-child(2){flex-basis:calc((100% - 40px)*2.40903388/6.31015072)}
+  .home-achievement-stories>.home-achievement-story:nth-child(3){flex-basis:calc((100% - 40px)*2.09150327/6.31015072)}
+  .home-achievement-stories>.home-achievement-story:nth-child(-n+3) img{height:auto!important;aspect-ratio:auto!important;object-fit:contain!important}
+}
+
+/* Homepage news: independent background and compact transition into challenges. */
+.page-home>.home-news .results-news{margin-top:0}
+.page-home>.home-news{background:var(--soft)}
+
+.page-home>.home-news+.section.soft{background:#fff;padding-top:60px}
+.page-home>.home-news+.section+.section{background:var(--soft)}
+.page-home>.home-achievements.section.soft{background:#fff}
+@media(max-width:768px){
+  .page-home>.home-hero{min-height:calc(92svh - 60px);padding:94px 0 48px}
+  .page-home>.home-hero .hero-grid{min-height:0;align-content:center}
+  .page-home>.home-news+.section.soft{padding-top:32px}
+}
+
+/* Desktop homepage news follows the hero reading rail; keep its background full-bleed. */
+@media(min-width:769px){
+  .page-home>.home-news>.container.std{max-width:none}
+}
+@media(min-width:1025px){
+  .page-home>.home-news>.container.std{max-width:1060px}
+}
+
+/* Confidential results: preserve the standard card layout without exposing details. */
+.page-results .industry-six-rows .industry-card .industry-confidential{display:flex;align-items:flex-start;gap:6px;color:#96713B;margin:0 0 6px;line-height:1.58;overflow-wrap:anywhere}
+.page-results .industry-six-rows .industry-confidential svg{flex:0 0 14px;margin-top:2px}
