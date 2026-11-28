@@ -121,12 +121,11 @@ const newsDefaultVisible=news.default_visible,newsExpandedCount=news.items.lengt
        await item.waitFor({state:'attached'});
        // Sector clip paths are not rectangular hit targets; dispatch the activation
        // directly, with focus, to exercise shared routing and cleanup deterministically.
-       const freshDocument=label==='EN'&&destination==='en/'||label==='中文'&&destination==='';
        await p.evaluate(()=>{window.__orbitNavigationProbe=true;});
-       await item.evaluate(e=>{e.focus({preventScroll:true});e.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0,detail:1}));}).catch(e=>{if(!freshDocument||!String(e).includes('Execution context was destroyed'))throw e;});
+       await item.evaluate(e=>{e.focus({preventScroll:true});e.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0,detail:1}));});
        await p.waitForURL(BASE+destination);
        await p.waitForLoadState('domcontentloaded');
-       assert.equal(await p.evaluate(()=>window.__orbitNavigationProbe===true),!freshDocument);
+       assert.equal(await p.evaluate(()=>window.__orbitNavigationProbe===true),true);
        await p.waitForFunction(()=>!document.querySelector('.pai-orbit.open,.pai-orbit.dragging,.pai-orbit.auto-rotating')&&!document.activeElement?.closest('.pai-orbit-wheel'));
        assert.equal(await orbit.getAttribute('aria-expanded'),'false');
        await p.waitForFunction(()=>document.querySelector('main').style.willChange==='');
